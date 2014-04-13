@@ -6,6 +6,7 @@
 #include "../../../src/library/api/license++.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
+#include "../../src/library/reader/SimpleIni.h"
 
 
 namespace fs = boost::filesystem;

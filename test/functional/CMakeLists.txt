@@ -6,8 +6,8 @@ add_executable(
 
 target_link_libraries(
  standard_license_test
- license_generator_lib
  license++_static
+ license_generator_lib
 )
 
 SET_TARGET_PROPERTIES(standard_license_test PROPERTIES LINK_SEARCH_START_STATIC ON)

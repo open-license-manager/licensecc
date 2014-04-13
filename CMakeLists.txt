@@ -29,7 +29,7 @@ else(WIN32)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
     SET(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -pipe" CACHE INTERNAL "Linker flags")
     SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} -Wl,--strip-all")
-    #SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
     #you need to "force" the change in cmake_install_prefix after the project keyword
 	IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
@@ -49,10 +49,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
 #include_directories(${CRYPTOPP_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
 
-find_package(OpenSSL REQUIRED)
-include_directories(${OPENSSL_INCLUDE_DIR})
-list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
-#link_directories ( ${OPENSSL_LIBRARIES} )
+
 
 SET(Boost_USE_STATIC_LIBS ON)
 # static runtime requires /MT 
@@ -61,6 +58,11 @@ SET(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS date_time program_options filesystem system unit_test_framework)
 #include_directories(${Boost_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
+
+#find a static version of openssl crypto library
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR})
+list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 
 FIND_PACKAGE(Doxygen)
 

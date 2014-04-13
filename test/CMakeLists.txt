@@ -5,3 +5,4 @@ link_directories ( ${Boost_LIBRARY_DIRS} )
 
 add_subdirectory(library)
 add_subdirectory(license-generator)
+add_subdirectory(functional)

@@ -13,8 +13,6 @@ target_link_libraries(
      ${Boost_LIBRARIES}
      ${EXTERNAL_LIBS}
 )
-#SET_TARGET_PROPERTIES(license_generator_lib PROPERTIES LINK_SEARCH_START_STATIC ON)
-#SET_TARGET_PROPERTIES(license_generator_lib PROPERTIES LINK_SEARCH_END_STATIC ON)
 
 add_executable(
  license_generator

@@ -7,11 +7,8 @@ add_executable(
 
 target_link_libraries(
  license_reader_test
- ${Boost_LIBRARIES}
  reader
- os
- base
- ${PLATFORM_LIBS}
+ ${Boost_LIBRARIES}
 )
 
 SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_START_STATIC ON)

@@ -50,6 +50,27 @@ FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 		extra_data(extra_data) {
 }
 
+EventRegistry FullLicenseInfo::validate(int sw_version) {
+	EventRegistry er;
+	bool sigVerified = OsFunctions::verifySignature(printForSign().c_str(),
+			license_signature.c_str());
+	if (sigVerified) {
+		er.addEvent(LICENSE_VERIFIED, INFO);
+	} else {
+		er.addEvent(LICENSE_CORRUPTED, SEVERITY_ERROR);
+	}
+	if(has_expiry){
+		time_t now = time(NULL);
+		if(this->to_date<now){
+			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR, "");
+		}
+		if(this->from_date>now){
+			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR);
+		}
+	}
+	return er;
+}
+
 void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 	if (license != NULL) {
 		strncpy(license->proprietary_data, extra_data.c_str(),
@@ -88,7 +109,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		ini.Reset();
 		SI_Error rc = ini.LoadFile((*it).c_str());
 		if (rc < 0) {
-			result.addEvent(FILE_FORMAT_NOT_RECOGNIZED, WARN, *it);
+			result.addEvent(FILE_FORMAT_NOT_RECOGNIZED, SEVERITY_WARN, *it);
 			continue;
 		} else {
 			loadAtLeastOneFile = true;
@@ -96,7 +117,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		const char* productNamePtr = product.c_str();
 		int sectionSize = ini.GetSectionSize(productNamePtr);
 		if (sectionSize <= 0) {
-			result.addEvent(PRODUCT_NOT_LICENSED, WARN, *it);
+			result.addEvent(PRODUCT_NOT_LICENSED, SEVERITY_WARN, *it);
 			continue;
 		} else {
 			atLeastOneProductLicensed = true;
@@ -120,7 +141,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {
-			result.addEvent(LICENSE_MALFORMED, WARN, *it);
+			result.addEvent(LICENSE_MALFORMED, SEVERITY_WARN, *it);
 		}
 	}
 	if (!loadAtLeastOneFile) {
@@ -155,7 +176,8 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 				}
 			}
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, WARN, varName);
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SEVERITY_WARN,
+					varName);
 		}
 	}
 	return licenseFoundWithExplicitLocation;
@@ -183,14 +205,16 @@ bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 						eventRegistry.addEvent(LICENSE_FILE_FOUND, INFO, *it);
 					}
 				} else {
-					eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, WARN,
-							env_var_value);
+					eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND,
+							SEVERITY_WARN, env_var_value);
 				}
 			} else {
-				eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, WARN);
+				eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
+						SEVERITY_WARN);
 			}
 		} else {
-			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, WARN);
+			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
+					SEVERITY_WARN);
 		}
 	}
 	return licenseFileFoundWithEnvVariable;
@@ -209,7 +233,7 @@ EventRegistry LicenseReader::getLicenseDiskFiles(vector<string>& diskFiles) {
 			diskFiles.push_back(temptativeLicense);
 			eventRegistry.addEvent(LICENSE_FILE_FOUND, INFO, temptativeLicense);
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, WARN,
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SEVERITY_WARN,
 					temptativeLicense);
 		}
 		f.close();

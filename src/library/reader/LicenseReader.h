@@ -46,9 +46,7 @@ public:
 			const string& extra_data = "");
 	string printForSign() const;
 	void printAsIni(ostream & a_ostream) const;
-	inline bool signatureVerified() const {
-		return OsFunctions::verifySignature(printForSign().c_str(), license_signature.c_str());
-	}
+
 	void toLicenseInfo(LicenseInfo* license) const;
 	EventRegistry validate(int sw_version);
 };

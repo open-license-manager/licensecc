@@ -8,6 +8,7 @@
 #include "EventRegistry.h"
 #include <cstddef>
 #include <string.h>
+#include <algorithm>
 
 namespace license {
 EventRegistry::EventRegistry() {
@@ -49,11 +50,11 @@ bool EventRegistry::turnEventIntoError(EVENT_TYPE event) {
 
 AuditEvent const * EventRegistry::getLastFailure() const {
 	const AuditEvent* result = NULL;
-	if(logs.size() == 0){
+	if (logs.size() == 0) {
 		return result;
 	}
 	auto it = logs.end();
-	do  {
+	do {
 		--it;
 		if (it->severity == SEVERITY_ERROR) {
 			result = &(*it);
@@ -75,8 +76,8 @@ bool EventRegistry::isGood() const {
 	return isGood;
 }
 
-void EventRegistry::addError(EVENT_TYPE event){
-	addEvent(event,SEVERITY_ERROR);
+void EventRegistry::addError(EVENT_TYPE event) {
+	addEvent(event, SEVERITY_ERROR);
 }
 void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity) {
 	AuditEvent audit;
@@ -92,9 +93,25 @@ void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity,
 	AuditEvent audit;
 	audit.severity = severity;
 	audit.event_type = event;
-	strncpy(audit.param1,eventParameter.c_str(),255);
+	strncpy(audit.param1, eventParameter.c_str(), 255);
 	audit.param2[0] = '\0';
 	logs.push_back(audit);
 }
 
+bool EventRegistry::turnErrosIntoWarnings() {
+	bool eventFound = false;
+	for (auto it = logs.begin(); it != logs.end(); ++it) {
+		if (it->severity == SEVERITY_ERROR) {
+			it->severity = SEVERITY_WARN;
+			eventFound = true;
+		}
+	}
+	return eventFound;
 }
+
+void EventRegistry::exportLastEvents(AuditEvent* auditEvents, int nlogs) {
+	int sizeToCopy = std::min(nlogs, (int) logs.size());
+	std::copy(logs.begin(), logs.begin() + sizeToCopy, auditEvents);
+}
+}
+

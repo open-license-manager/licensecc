@@ -32,13 +32,14 @@ enum EVENT_TYPE {
 	LICENSE_SERVER_NOT_FOUND = 2, 		//license server can't be contacted
 	ENVIRONMENT_VARIABLE_NOT_DEFINED = 3, //environment variable not defined
 	FILE_FORMAT_NOT_RECOGNIZED = 4,	//license file has invalid format (not .ini file)
-	LICENSE_MALFORMED = 5,//some mandatory field are missing, or data can't be fully read.
+	LICENSE_MALFORMED = 5,          //some mandatory field are missing, or data can't be fully read.
 	PRODUCT_NOT_LICENSED = 6,		//this product was not licensed
 	PRODUCT_EXPIRED = 7,
-	LICENSE_CORRUPTED = 8,		//License serial and calculated one didn't match
-	IDENTIFIERS_MISMATCH = 9, //Calculated identifier and the one provided in license didn't match
+	LICENSE_CORRUPTED = 8,		//License signature didn't match with current license
+	IDENTIFIERS_MISMATCH = 9,   //Calculated identifier and the one provided in license didn't match
 
-	LICENSE_FILE_FOUND = 100
+	LICENSE_FILE_FOUND = 100,
+	LICENSE_VERIFIED = 101
 
 };
 
@@ -47,7 +48,7 @@ enum LICENSE_TYPE {
 };
 
 enum SEVERITY {
-	INFO, WARN, SEVERITY_ERROR
+	INFO, SEVERITY_WARN, SEVERITY_ERROR
 };
 
 

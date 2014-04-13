@@ -69,12 +69,16 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	char *pubKey = PUBLIC_KEY
 	;
 
-	BIO* bio = BIO_new_mem_buf((void*) (pubKey), sizeof(pubKey));
-	EVP_PKEY *pktmp = PEM_read_bio_PUBKEY(bio, NULL, NULL, NULL);
+	BIO* bio = BIO_new_mem_buf((void*) (pubKey), strlen(pubKey));
+	RSA *rsa = PEM_read_bio_RSAPublicKey(bio, NULL,NULL,NULL);
 	BIO_free(bio);
-	if (pktmp == NULL) {
+	if (rsa == NULL) {
 		throw new logic_error("Error reading public key");
 	}
+	EVP_PKEY *pkey = EVP_PKEY_new();
+
+	EVP_PKEY_assign_RSA(pkey, rsa);
+
 	/*BIO* bo = BIO_new(BIO_s_mem());
 	 BIO_write(bo, pubKey, strlen(pubKey));
 	 RSA *key = 0;
@@ -87,7 +91,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	if (!(mdctx = EVP_MD_CTX_create())) {
 		throw new logic_error("Error creating context");
 	}
-	if (1 != EVP_DigestVerifyInit(mdctx, NULL, EVP_sha256(), NULL, pktmp)) {
+	if (1 != EVP_DigestVerifyInit(mdctx, NULL, EVP_sha256(), NULL, pkey)) {
 		throw new logic_error("Error initializing digest");
 	}
 

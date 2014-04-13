@@ -1,0 +1,91 @@
+/*
+ * LicenseReader.h
+ *
+ *  Created on: Mar 30, 2014
+ *      Author: devel
+ */
+
+#ifndef LICENSEREADER_H_
+#define LICENSEREADER_H_
+
+#include "../api/datatypes.h"
+#include "../base/EventRegistry.h"
+#include "../os/os.hpp"
+#include <string>
+#include <ctime>
+namespace license {
+
+using namespace std;
+
+class FullLicenseInfo {
+public:
+	string source;
+	string product;
+	string license_signature;
+	int license_version;
+	time_t from_date;
+	time_t to_date;
+	bool has_expiry;
+	unsigned int from_sw_version;
+	unsigned int to_sw_version;
+	bool has_versions;
+	string client_signature;
+	bool has_client_sig;
+	string extra_data;
+
+	static const time_t UNUSED_TIME = (time_t) 0;
+	static const unsigned int UNUSED_SOFTWARE_VERSION = 0;
+
+	FullLicenseInfo(const string& source, const string& product,
+			const string& license_signature, int licenseVersion,
+			time_t from_date = UNUSED_TIME,
+			time_t tp_date = UNUSED_TIME, //
+			const string& client_signature = "", //
+			unsigned int from_sw_version = UNUSED_SOFTWARE_VERSION,
+			unsigned int to_sw_version = UNUSED_SOFTWARE_VERSION,
+			const string& extra_data = "");
+	string printForSign() const;
+	void printAsIni(ostream & a_ostream) const;
+	inline bool signatureVerified() const {
+		return OsFunctions::verifySignature(printForSign().c_str(), license_signature.c_str());
+	}
+	void toLicenseInfo(LicenseInfo* license) const;
+	EventRegistry validate(int sw_version);
+};
+/**
+ * This class it is responsible to read the licenses from the disk
+ * (in future from network) examining all the possible LicenseLocation
+ * positions.
+ *
+ * Each section of the ini file represents a product.
+ * <pre>
+ * [product]
+ *  sw_version_from = (optional int)
+ *  sw_version_to = (optional int)
+ *  from_date = YYYY-MM-DD (optional)
+ *  to_date  = YYYY-MM-DD (optional)
+ *  client_signature = XXXXXXXX (optional string 16)
+ *  license_signature = XXXXXXXXXX (mandatory, 1024)
+ *  application_data = xxxxxxxxx (optional string 16)
+ *	license_version = 100 (mandatory int)
+ *  </pre>
+ */
+class LicenseReader {
+private:
+	const LicenseLocation licenseLocation;
+	EventRegistry getLicenseDiskFiles(vector<string>& diskFiles);
+	vector<string> filterExistingFiles(vector<string> licensePositions);
+	vector<string> splitLicensePositions(string licensePositions);
+	bool findLicenseWithExplicitLocation(vector<string>& diskFiles,
+			EventRegistry& eventRegistry);
+	bool findFileWithEnvironmentVariable(vector<string>& diskFiles,
+			EventRegistry& eventRegistry);
+
+public:
+	LicenseReader(const LicenseLocation& licenseLocation);
+	EventRegistry readLicenses(const string &product,
+			vector<FullLicenseInfo>& licenseInfoOut);
+	virtual ~LicenseReader();
+};
+}
+#endif /* LICENSEREADER_H_ */

@@ -1,6 +1,7 @@
 #include <build_properties.h>
 #include "LicenseSigner.h"
 #include "license-generator.h"
+#include "../library/base/StringUtils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -75,7 +76,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	if (vm.count("end_date")) {
 		const std::string dt_end = vm["end_date"].as<string>();
 		try {
-			end_date = seconds_from_epoch(dt_end);
+			end_date = seconds_from_epoch(dt_end.c_str());
 			begin_date = time(NULL);
 		} catch (invalid_argument &e) {
 			cerr << endl << "End date not recognized: " << dt_end
@@ -86,7 +87,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	if (vm.count("begin_date")) {
 		const std::string begin_date_str = vm["begin_date"].as<string>();
 		try {
-			begin_date = seconds_from_epoch(begin_date_str);
+			begin_date = seconds_from_epoch(begin_date_str.c_str());
 		} catch (invalid_argument &e) {
 			cerr << endl << "Begin date not recognized: " << begin_date_str
 					<< " Please enter a valid date in format YYYYMMDD" << endl;
@@ -110,9 +111,9 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	if (vm.count("extra_data")) {
 		extra_data = vm["extra_data"].as<string>();
 	}
-	unsigned int from_sw_version = end_date = vm["start_version"].as<
+	unsigned int from_sw_version = vm["start_version"].as<
 			unsigned int>();
-	unsigned int to_sw_version = end_date =
+	unsigned int to_sw_version =
 			vm["end_version"].as<unsigned int>();
 	if (vm.count("product") == 0) {
 		cerr << endl << "Parameter [product] not found. " << endl;
@@ -183,28 +184,6 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 	return 0;
 }
 
-const std::locale formats[] = { std::locale(std::locale::classic(),
-		new bt::time_input_facet("%Y-%m-%d")), //
-std::locale(std::locale::classic(), new bt::time_input_facet("%Y/%m/%d")), //
-std::locale(std::locale::classic(), new bt::time_input_facet("%Y%m%d")) };
-const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
 
-time_t LicenseGenerator::seconds_from_epoch(const std::string& s) {
-	bt::ptime pt;
-	for (size_t i = 0; i < formats_n; ++i) {
-		std::istringstream is(s);
-		is.imbue(formats[i]);
-		is >> pt;
-		if (pt != bt::ptime()) {
-			break;
-		}
-	}
-	if (pt == bt::ptime()) {
-		throw invalid_argument(string("Date not regognized") + s);
-	}
-	bt::ptime timet_start(boost::gregorian::date(1970, 1, 1));
-	bt::time_duration diff = pt - timet_start;
-	return diff.ticks() / bt::time_duration::rep_type::ticks_per_second;
-}
 
 }

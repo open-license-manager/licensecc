@@ -8,9 +8,11 @@
 #ifndef LICENSEREADER_H_
 #define LICENSEREADER_H_
 
-#include "../api/datatypes.h"
-#include "../base/EventRegistry.h"
-#include "../os/os.hpp"
+#include "api/datatypes.h"
+#include "base/EventRegistry.h"
+#include "os/os.hpp"
+#define SI_SUPPORT_IOSTREAMS
+#include "ini/SimpleIni.h"
 #include <string>
 #include <ctime>
 namespace license {
@@ -39,7 +41,7 @@ public:
 	FullLicenseInfo(const string& source, const string& product,
 			const string& license_signature, int licenseVersion,
 			time_t from_date = UNUSED_TIME,
-			time_t tp_date = UNUSED_TIME, //
+			time_t to_date = UNUSED_TIME, //
 			const string& client_signature = "", //
 			unsigned int from_sw_version = UNUSED_SOFTWARE_VERSION,
 			unsigned int to_sw_version = UNUSED_SOFTWARE_VERSION,
@@ -70,6 +72,8 @@ public:
  */
 class LicenseReader {
 private:
+	time_t read_date(const char * productName, const char * ini_key,
+			const CSimpleIniA& ini) const;
 	const LicenseLocation licenseLocation;
 	EventRegistry getLicenseDiskFiles(vector<string>& diskFiles);
 	vector<string> filterExistingFiles(vector<string> licensePositions);

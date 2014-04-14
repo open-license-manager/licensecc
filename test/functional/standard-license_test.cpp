@@ -6,34 +6,18 @@
 #include "../../../src/library/api/license++.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
-#include "../../src/library/reader/SimpleIni.h"
-
+#include "../../src/library/ini/SimpleIni.h"
+#include "generate-license.h"
 
 namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
-void generate_license(const string& prod_name, const string& fname) {
-	int argc = 4;
-	const char** argv = new const char*[argc + 1];
-	argv[0] = "lic-generator";
-	argv[1] = "-o";
-	argv[2] = fname.c_str();
-	argv[3] = "test";
-	int retCode = LicenseGenerator::generateLicense(argc, argv);
-	delete (argv);
-	BOOST_CHECK_EQUAL(retCode, 0);
-	BOOST_ASSERT(fs::exists(fname));
-	CSimpleIniA ini;
-	SI_Error rc = ini.LoadFile(fname.c_str());
-	BOOST_CHECK_GE(rc,0);
-	int sectionSize = ini.GetSectionSize(prod_name.c_str());
-	BOOST_CHECK_GT(sectionSize,0);
-}
 
 BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/standard_license.lic");
-	generate_license(string("TEST"), licLocation);
+	vector<string> extraArgs;
+	generate_license(licLocation, extraArgs);
 	/* */
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
@@ -46,4 +30,6 @@ BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 }
+
+
 

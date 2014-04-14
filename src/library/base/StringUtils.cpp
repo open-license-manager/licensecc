@@ -9,6 +9,7 @@
 #include "StringUtils.h"
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <algorithm>
 
 namespace license {
@@ -28,8 +29,38 @@ string trim_copy(const string& string_to_trim) {
 
 string toupper_copy(const string& lowercase) {
 	string cp(lowercase);
-	std::transform(cp.begin(), cp.end(), cp.begin(), (int(*)(int))toupper);
+	std::transform(cp.begin(), cp.end(), cp.begin(), (int (*)(int))toupper);
 	return cp;
 }
 
+time_t seconds_from_epoch(const char* timeString) {
+	int year, month, day;
+	tm tm;
+	if (strlen(timeString) == 8) {
+		int nfield = sscanf(timeString, "%4d%2d%2d", &year, &month, &day);
+		if (nfield != 3) {
+			throw invalid_argument("Date not recognized");
+		}
+	} else if (strlen(timeString) == 10) {
+		int nfield = sscanf(timeString, "%4d-%2d-%2d", &year, &month, &day);
+		if (nfield != 3) {
+			int nfield = sscanf(timeString, "%4d/%2d/%2d", &year, &month, &day);
+			if (nfield != 3) {
+				throw invalid_argument("Date not recognized");
+			}
+		}
+	} else{
+		throw invalid_argument("Date not recognized");
+	}
+	tm.tm_isdst = -1;
+	tm.tm_year = year - 1900;
+	tm.tm_mon = month - 1;
+	tm.tm_mday = day;
+	tm.tm_hour = 0;
+	tm.tm_min = 0;
+	tm.tm_sec = 0;
+	tm.tm_yday = -1;
+	tm.tm_wday = -1;
+	return mktime(&tm);
+}
 } /* namespace license */

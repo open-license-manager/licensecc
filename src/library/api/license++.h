@@ -43,7 +43,7 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
  * @param license[out] optional, can be NULL.
  */
 
-DllExport EVENT_TYPE acquire_license(char * productName,
+DllExport EVENT_TYPE acquire_license(const char * productName,
 		LicenseLocation licenseLocation, LicenseInfo* license);
 
 /**

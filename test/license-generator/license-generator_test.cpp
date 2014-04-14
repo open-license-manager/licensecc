@@ -5,7 +5,7 @@
 #include "../../../src/license-generator/license-generator.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
-#include "../../src/library/reader/SimpleIni.h"
+#include "../../src/library/ini/SimpleIni.h"
 
 namespace fs = boost::filesystem;
 using namespace license;

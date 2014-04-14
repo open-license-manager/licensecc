@@ -22,6 +22,7 @@ string trim_copy(const string& string_to_trim);
 
 string toupper_copy(const string& lowercase);
 
+time_t seconds_from_epoch(const char* s);
 } /* namespace license */
 
 #endif /* STRINGUTILS_H_ */

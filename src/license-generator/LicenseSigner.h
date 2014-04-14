@@ -8,7 +8,7 @@
 #ifndef LICENSESIGNER_H_
 #define LICENSESIGNER_H_
 
-#include "../library/reader/LicenseReader.h"
+#include "../library/LicenseReader.h"
 
 namespace license {
 

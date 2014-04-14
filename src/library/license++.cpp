@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include "api/license++.h"
-#include "reader/LicenseReader.h"
+#include "LicenseReader.h"
 
 using namespace std;
 DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {
@@ -39,8 +39,8 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 	}
 }
 
-EVENT_TYPE acquire_license(char * product, LicenseLocation licenseLocation,
-		LicenseInfo* license) {
+EVENT_TYPE acquire_license(const char * product,
+		LicenseLocation licenseLocation, LicenseInfo* license) {
 	license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	license::EventRegistry er = lr.readLicenses(string(product), licenses);
@@ -50,7 +50,7 @@ EVENT_TYPE acquire_license(char * product, LicenseLocation licenseLocation,
 		vector<license::FullLicenseInfo> licenses_ok;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
 			license::EventRegistry validation_er = it->validate(0);
-			if (er.isGood()) {
+			if (validation_er.isGood()) {
 				licenses_ok.push_back(*it);
 			} else {
 				licenses_with_errors.push_back(*it);

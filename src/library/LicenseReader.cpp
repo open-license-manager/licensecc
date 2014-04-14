@@ -5,12 +5,11 @@
  *      Author: devel
  */
 
-#include "LicenseReader.h"
-#include "../base/StringUtils.h"
-#include "../base/public-key.h"
-#include <build_properties.h>
-#define SI_SUPPORT_IOSTREAMS
-#include "SimpleIni.h"
+#ifdef _WIN32
+# pragma warning(disable: 4786)
+#else
+# include <unistd.h>
+#endif
 #include <cstring>
 #include <ctime>
 #include <vector>
@@ -19,22 +18,18 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include "LicenseReader.h"
+#include "base/StringUtils.h"
+#include "base/public-key.h"
+#include <build_properties.h>
 
-#ifdef _WIN32
-# pragma warning(disable: 4786)
-#else
-# include <unistd.h>
-#endif
-
-#define SI_SUPPORT_IOSTREAMS
-#include "SimpleIni.h"
-#include "../os/os.hpp"
+#include "os/os.hpp"
 
 namespace license {
 
 FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
-		const string& license_signature, int licenseVersion, time_t from_date,
-		time_t to_date, //
+		const string& license_signature, int licenseVersion, //
+		time_t from_date, time_t to_date, //
 		const string& client_signature, unsigned int from_sw_version,
 		unsigned int to_sw_version, const string& extra_data) :
 		source(source), product(product), //
@@ -59,12 +54,12 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	} else {
 		er.addEvent(LICENSE_CORRUPTED, SEVERITY_ERROR);
 	}
-	if(has_expiry){
+	if (has_expiry) {
 		time_t now = time(NULL);
-		if(this->to_date<now){
+		if (this->to_date < now) {
 			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR, "");
 		}
-		if(this->from_date>now){
+		if (this->from_date > now) {
 			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR);
 		}
 	}
@@ -92,6 +87,16 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 LicenseReader::LicenseReader(const LicenseLocation& licenseLocation) :
 		licenseLocation(licenseLocation) {
 
+}
+
+time_t LicenseReader::read_date(const char * productName, const char * ini_key,
+		const CSimpleIniA& ini) const {
+	string from_date_str = ini.GetValue(productName, ini_key);
+	time_t from_date = FullLicenseInfo::UNUSED_TIME;
+	if (from_date_str.length() > 0) {
+		from_date = seconds_from_epoch(from_date_str.c_str());
+	}
+	return from_date;
 }
 
 EventRegistry LicenseReader::readLicenses(const string &product,
@@ -136,8 +141,10 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		long license_version = ini.GetLongValue(productNamePtr,
 				"license_version", -1);
 		if (license_signature != NULL && license_version > 0) {
+			time_t from_date = read_date(productNamePtr, "from_date", ini);
+			time_t to_date = read_date(productNamePtr, "to_date", ini);
 			FullLicenseInfo licInfo(*it, product, license_signature,
-					(int) license_version);
+					(int) license_version, from_date, to_date);
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {
@@ -321,9 +328,10 @@ void FullLicenseInfo::printAsIni(ostream & a_ostream) const {
 		strftime(buff, 20, "%Y-%m-%d", localtime(&this->from_date));
 		ini.SetValue(product.c_str(), "from_date", buff);
 	}
+	char buff2[20];
 	if (this->to_date != UNUSED_TIME) {
-		strftime(buff, 20, "%Y-%m-%d", localtime(&this->to_date));
-		ini.SetValue(product.c_str(), "to_date", buff);
+		strftime(buff2, 20, "%Y-%m-%d", localtime(&this->to_date));
+		ini.SetValue(product.c_str(), "to_date", buff2);
 	}
 	if (this->extra_data.length() > 0) {
 		ini.SetValue(product.c_str(), "extra_data", this->extra_data.c_str());

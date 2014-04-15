@@ -31,8 +31,8 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 			if (!it->has_expiry) {
 				it->toLicenseInfo(license);
 				break;
-			} else if (curLicense_exp < it->to_date) {
-				curLicense_exp = it->to_date;
+			} else if (curLicense_exp < it->expires_on()) {
+				curLicense_exp = it->expires_on();
 				it->toLicenseInfo(license);
 			}
 		}

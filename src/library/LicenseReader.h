@@ -25,8 +25,8 @@ public:
 	string product;
 	string license_signature;
 	int license_version;
-	time_t from_date;
-	time_t to_date;
+	string from_date;
+	string to_date;
 	bool has_expiry;
 	unsigned int from_sw_version;
 	unsigned int to_sw_version;
@@ -35,22 +35,23 @@ public:
 	bool has_client_sig;
 	string extra_data;
 
-	static const time_t UNUSED_TIME = (time_t) 0;
+	static constexpr const char* UNUSED_TIME = "0000-00-00";
 	static const unsigned int UNUSED_SOFTWARE_VERSION = 0;
 
 	FullLicenseInfo(const string& source, const string& product,
 			const string& license_signature, int licenseVersion,
-			time_t from_date = UNUSED_TIME,
-			time_t to_date = UNUSED_TIME, //
+			string from_date = UNUSED_TIME,
+			string to_date = UNUSED_TIME, //
 			const string& client_signature = "", //
 			unsigned int from_sw_version = UNUSED_SOFTWARE_VERSION,
 			unsigned int to_sw_version = UNUSED_SOFTWARE_VERSION,
 			const string& extra_data = "");
 	string printForSign() const;
 	void printAsIni(ostream & a_ostream) const;
-
 	void toLicenseInfo(LicenseInfo* license) const;
 	EventRegistry validate(int sw_version);
+	time_t expires_on() const;
+	time_t valid_from() const;
 };
 /**
  * This class it is responsible to read the licenses from the disk
@@ -72,8 +73,6 @@ public:
  */
 class LicenseReader {
 private:
-	time_t read_date(const char * productName, const char * ini_key,
-			const CSimpleIniA& ini) const;
 	const LicenseLocation licenseLocation;
 	EventRegistry getLicenseDiskFiles(vector<string>& diskFiles);
 	vector<string> filterExistingFiles(vector<string> licensePositions);

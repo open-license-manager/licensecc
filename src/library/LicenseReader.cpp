@@ -28,10 +28,10 @@
 namespace license {
 
 FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
-		const string& license_signature, int licenseVersion, //
-		time_t from_date, time_t to_date, //
-		const string& client_signature, unsigned int from_sw_version,
-		unsigned int to_sw_version, const string& extra_data) :
+		const string& license_signature, int licenseVersion, string from_date,
+		string to_date, const string& client_signature,
+		unsigned int from_sw_version, unsigned int to_sw_version,
+		const string& extra_data) :
 		source(source), product(product), //
 		license_signature(license_signature), license_version(licenseVersion), //
 		from_date(from_date), to_date(to_date), //
@@ -47,6 +47,7 @@ FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 
 EventRegistry FullLicenseInfo::validate(int sw_version) {
 	EventRegistry er;
+	OsFunctions::initialize();
 	bool sigVerified = OsFunctions::verifySignature(printForSign().c_str(),
 			license_signature.c_str());
 	if (sigVerified) {
@@ -56,10 +57,10 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	}
 	if (has_expiry) {
 		time_t now = time(NULL);
-		if (this->to_date < now) {
+		if (expires_on() < now) {
 			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR, "");
 		}
-		if (this->from_date > now) {
+		if (valid_from() > now) {
 			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR);
 		}
 	}
@@ -77,9 +78,9 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			license->expiry_date[0] = '\0';
 			license->days_left = 999999;
 		} else {
-			tm * timeinfo = localtime(&to_date);
-			strftime(license->expiry_date, 11, "%Y-%m-%d", timeinfo);
-			double secs = difftime(time(NULL), to_date);
+			strncpy(license->expiry_date, to_date.c_str(), 11);
+			double secs = difftime(time(NULL),
+					seconds_from_epoch(to_date.c_str()));
 			license->days_left = (int) secs / 60 * 60 * 24;
 		}
 	}
@@ -87,16 +88,6 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 LicenseReader::LicenseReader(const LicenseLocation& licenseLocation) :
 		licenseLocation(licenseLocation) {
 
-}
-
-time_t LicenseReader::read_date(const char * productName, const char * ini_key,
-		const CSimpleIniA& ini) const {
-	string from_date_str = ini.GetValue(productName, ini_key);
-	time_t from_date = FullLicenseInfo::UNUSED_TIME;
-	if (from_date_str.length() > 0) {
-		from_date = seconds_from_epoch(from_date_str.c_str());
-	}
-	return from_date;
 }
 
 EventRegistry LicenseReader::readLicenses(const string &product,
@@ -141,8 +132,12 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		long license_version = ini.GetLongValue(productNamePtr,
 				"license_version", -1);
 		if (license_signature != NULL && license_version > 0) {
-			time_t from_date = read_date(productNamePtr, "from_date", ini);
-			time_t to_date = read_date(productNamePtr, "to_date", ini);
+			string from_date = trim_copy(
+					ini.GetValue(productNamePtr, "from_date",
+							FullLicenseInfo::UNUSED_TIME));
+			string to_date = trim_copy(
+					ini.GetValue(productNamePtr, "to_date",
+							FullLicenseInfo::UNUSED_TIME));
 			FullLicenseInfo licInfo(*it, product, license_signature,
 					(int) license_version, from_date, to_date);
 			licenseInfoOut.push_back(licInfo);
@@ -290,19 +285,22 @@ string FullLicenseInfo::printForSign() const {
 	oss << toupper_copy(trim_copy(this->product));
 	oss << SHARED_RANDOM
 	;
-	if (has_client_sig) {
-		oss << trim_copy(this->client_signature);
-	}
-	if (has_versions) {
-		oss << "|" << this->from_sw_version << "-" << this->to_sw_version;
-	}
+	/*if (has_client_sig) {
+	 oss << trim_copy(this->client_signature);
+	 }
+	 if (has_versions) {
+	 oss << "|" << this->from_sw_version << "-" << this->to_sw_version;
+	 }*/
 	if (has_expiry) {
-		oss << "|" << this->from_date << "-" << this->to_date;
-	}
-	if (this->extra_data.length() > 0) {
-		oss << "|" << extra_data;
-	}
-	return oss.str();
+		oss << "|" << this->from_date << "|" << this->to_date;
+	}/*
+	 if (this->extra_data.length() > 0) {
+	 oss << "|" << extra_data;
+	 }*/
+	string result = oss.str();
+	cout << "[" << oss.str() << "]" << endl;
+	return result;
+
 }
 
 void FullLicenseInfo::printAsIni(ostream & a_ostream) const {
@@ -323,20 +321,24 @@ void FullLicenseInfo::printAsIni(ostream & a_ostream) const {
 		ini.SetLongValue(product.c_str(), "to_sw_version", to_sw_version);
 	}
 
-	char buff[20];
 	if (this->from_date != UNUSED_TIME) {
-		strftime(buff, 20, "%Y-%m-%d", localtime(&this->from_date));
-		ini.SetValue(product.c_str(), "from_date", buff);
+		ini.SetValue(product.c_str(), "from_date", from_date.c_str());
 	}
-	char buff2[20];
 	if (this->to_date != UNUSED_TIME) {
-		strftime(buff2, 20, "%Y-%m-%d", localtime(&this->to_date));
-		ini.SetValue(product.c_str(), "to_date", buff2);
+		ini.SetValue(product.c_str(), "to_date", to_date.c_str());
 	}
 	if (this->extra_data.length() > 0) {
 		ini.SetValue(product.c_str(), "extra_data", this->extra_data.c_str());
 	}
 	ini.Save(sw);
+}
+
+time_t FullLicenseInfo::expires_on() const {
+	return seconds_from_epoch(this->to_date.c_str());
+}
+
+time_t FullLicenseInfo::valid_from() const {
+	return seconds_from_epoch(this->from_date.c_str());
 }
 
 }

@@ -34,6 +34,7 @@ struct DiskInfo {
 
 class OsFunctions {
 public:
+	static void initialize();
 	static vector<AdapterInfo> getAdapterInfos();
 	static vector<DiskInfo> getDiskInfos();
 	static string getModuleName();

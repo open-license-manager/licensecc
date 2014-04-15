@@ -210,7 +210,7 @@ string LicenseGenerator::normalize_date(const std::string& s) {
 	ostringstream oss;
 	bt::time_facet *facet = new bt::time_facet("%Y-%m-%d");
 	oss.imbue(locale(cout.getloc(), facet));
-	oss << pt << endl;
+	oss << pt;
 	//delete (facet);
 	return oss.str();
 }

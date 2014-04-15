@@ -50,7 +50,7 @@ po::options_description LicenseGenerator::configureProgramOptions() {
 	("begin_date,b", po::value<string>(),
 			"Specify the start of the validity for this license. "
 					" Format YYYYMMDD. If not specified defaults to today") //
-	("end_date,e", po::value<string>(),
+	("expire_date,e", po::value<string>(),
 			"Specify the expire date for this license. "
 					" Format YYYYMMDD. If not specified the license won't expire") //
 	("client_signature,s", po::value<string>(),
@@ -71,13 +71,16 @@ po::options_description LicenseGenerator::configureProgramOptions() {
 
 vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 		po::variables_map vm) {
-	time_t begin_date = FullLicenseInfo::UNUSED_TIME;
-	time_t end_date = FullLicenseInfo::UNUSED_TIME;
-	if (vm.count("end_date")) {
-		const std::string dt_end = vm["end_date"].as<string>();
+	string begin_date = FullLicenseInfo::UNUSED_TIME;
+	string end_date = FullLicenseInfo::UNUSED_TIME;
+	if (vm.count("expire_date")) {
+		const std::string dt_end = vm["expire_date"].as<string>();
 		try {
-			end_date = seconds_from_epoch(dt_end.c_str());
-			begin_date = time(NULL);
+			end_date = normalize_date(dt_end.c_str());
+			char curdate[20];
+			time_t curtime = time(NULL);
+			strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
+			begin_date.assign(curdate);
 		} catch (invalid_argument &e) {
 			cerr << endl << "End date not recognized: " << dt_end
 					<< " Please enter a valid date in format YYYYMMDD" << endl;
@@ -87,7 +90,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	if (vm.count("begin_date")) {
 		const std::string begin_date_str = vm["begin_date"].as<string>();
 		try {
-			begin_date = seconds_from_epoch(begin_date_str.c_str());
+			begin_date = normalize_date(begin_date_str.c_str());
 		} catch (invalid_argument &e) {
 			cerr << endl << "Begin date not recognized: " << begin_date_str
 					<< " Please enter a valid date in format YYYYMMDD" << endl;
@@ -185,5 +188,30 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 }
 
 
+const std::locale formats[] = { std::locale(std::locale::classic(),
+		new bt::time_input_facet("%Y-%m-%d")), //
+std::locale(std::locale::classic(), new bt::time_input_facet("%Y/%m/%d")), //
+std::locale(std::locale::classic(), new bt::time_input_facet("%Y%m%d")) };
+const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
 
+string LicenseGenerator::normalize_date(const std::string& s) {
+	bt::ptime pt;
+	for (size_t i = 0; i < formats_n; ++i) {
+		std::istringstream is(s);
+		is.imbue(formats[i]);
+		is >> pt;
+		if (pt != bt::ptime()) {
+			break;
+		}
+	}
+	if (pt == bt::ptime()) {
+		throw invalid_argument(string("Date not regognized") + s);
+	}
+	ostringstream oss;
+	bt::time_facet *facet = new bt::time_facet("%Y-%m-%d");
+	oss.imbue(locale(cout.getloc(), facet));
+	oss << pt << endl;
+	//delete (facet);
+	return oss.str();
+}
 }

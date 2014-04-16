@@ -14,7 +14,7 @@
 #include <openssl/bio.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
-#include <iostream>
+
 namespace license {
 
 using namespace std;
@@ -74,12 +74,11 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	RSA *rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);
 	BIO_free(bio);
 	if (rsa == NULL) {
-		cout<<"cippa!"<<endl;
 		throw new logic_error("Error reading public key");
 	}
 	EVP_PKEY *pkey = EVP_PKEY_new();
 
-	cout << "test:" <<EVP_PKEY_assign_RSA(pkey, rsa)<<endl;
+	EVP_PKEY_assign_RSA(pkey, rsa);
 
 	/*BIO* bo = BIO_new(BIO_s_mem());
 	 BIO_write(bo, pubKey, strlen(pubKey));
@@ -89,7 +88,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 
 	//RSA* rsa = EVP_PKEY_get1_RSA( key );
 	//RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
-	unsigned char buffer[129];
+	unsigned char buffer[512];
 	BIO* b64 = BIO_new(BIO_f_base64());
 	BIO* encoded_signature = BIO_new_mem_buf((void *) signatureB64,
 			strlen(signatureB64));
@@ -112,7 +111,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	if (1
 			!= EVP_DigestVerifyUpdate(mdctx, stringToVerify,
 					en)) {
-		throw new logic_error("Error initializing digest");
+		throw new logic_error("Error verifying digest");
 	}
 	bool result;
 	int res= EVP_DigestVerifyFinal(mdctx, buffer, len);

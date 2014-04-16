@@ -285,21 +285,22 @@ string FullLicenseInfo::printForSign() const {
 	oss << toupper_copy(trim_copy(this->product));
 	oss << SHARED_RANDOM
 	;
-	/*if (has_client_sig) {
-	 oss << trim_copy(this->client_signature);
-	 }
-	 if (has_versions) {
-	 oss << "|" << this->from_sw_version << "-" << this->to_sw_version;
-	 }*/
+	if (has_client_sig) {
+		oss << trim_copy(this->client_signature);
+	}
+	if (has_versions) {
+		oss << "|" << this->from_sw_version << "-" << this->to_sw_version;
+	}
 	if (has_expiry) {
 		oss << "|" << this->from_date << "|" << this->to_date;
-	}/*
-	 if (this->extra_data.length() > 0) {
-	 oss << "|" << extra_data;
-	 }*/
-	string result = oss.str();
+	}
+	if (this->extra_data.length() > 0) {
+		oss << "|" << extra_data;
+	}
+#ifdef _DEBUG
 	cout << "[" << oss.str() << "]" << endl;
-	return result;
+#endif
+	return oss.str();
 
 }
 

@@ -75,12 +75,12 @@ EVENT_TYPE acquire_license(const char * product,
 	return result;
 }
 
-DllExport enum EVENT_TYPE confirm_license(char * product,
+DllExport EVENT_TYPE confirm_license(char * product,
 		LicenseLocation licenseLocation) {
 	return LICENSE_OK;
 }
 
-DllExport enum EVENT_TYPE release_license(char * product,
+DllExport EVENT_TYPE release_license(char * product,
 		LicenseLocation licenseLocation) {
 	return LICENSE_OK;
 }

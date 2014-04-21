@@ -11,9 +11,10 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 #ifdef __unix__
 #define DllExport
-#define MAX_PATH 1024
 #else
 #include <windows.h>
 #define DllExport  __declspec( dllexport )
@@ -26,39 +27,37 @@ extern "C" {
 #define LICENESE_INT_VERSION 100
 #define LICENSEPP_VERSION "1.0.0"
 
-enum EVENT_TYPE {
+typedef enum {
 	LICENSE_OK = 0, 						//OK
 	LICENSE_FILE_NOT_FOUND = 1, 		//license file not found
 	LICENSE_SERVER_NOT_FOUND = 2, 		//license server can't be contacted
 	ENVIRONMENT_VARIABLE_NOT_DEFINED = 3, //environment variable not defined
 	FILE_FORMAT_NOT_RECOGNIZED = 4,	//license file has invalid format (not .ini file)
-	LICENSE_MALFORMED = 5,          //some mandatory field are missing, or data can't be fully read.
+	LICENSE_MALFORMED = 5, //some mandatory field are missing, or data can't be fully read.
 	PRODUCT_NOT_LICENSED = 6,		//this product was not licensed
 	PRODUCT_EXPIRED = 7,
-	LICENSE_CORRUPTED = 8,		//License signature didn't match with current license
-	IDENTIFIERS_MISMATCH = 9,   //Calculated identifier and the one provided in license didn't match
+	LICENSE_CORRUPTED = 8,//License signature didn't match with current license
+	IDENTIFIERS_MISMATCH = 9, //Calculated identifier and the one provided in license didn't match
 
 	LICENSE_FILE_FOUND = 100,
 	LICENSE_VERIFIED = 101
 
-};
+}  EVENT_TYPE;
 
-enum LICENSE_TYPE {
+typedef enum {
 	LOCAL, REMOTE //remote licenses are not supported now.
-};
+}  LICENSE_TYPE;
 
-enum SEVERITY {
+typedef enum {
 	INFO, SEVERITY_WARN, SEVERITY_ERROR
-};
+} SEVERITY;
 
-
-
-struct AuditEvent {
+typedef struct {
 	SEVERITY severity;
 	EVENT_TYPE event_type;
 	char param1[256];
 	char param2[256];
-};
+} AuditEvent;
 
 typedef struct {
 	const char *licenseFileLocation;
@@ -85,7 +84,7 @@ typedef struct {
 	/* A string of character inserted into the license understood
 	 * by the calling application.
 	 * '\0' if the application didn't specify one */
-	char proprietary_data[PROPRIETARY_DATA_SIZE+1];
+	char proprietary_data[PROPRIETARY_DATA_SIZE + 1];
 	int license_version; //license file version
 } LicenseInfo;
 
@@ -93,9 +92,9 @@ typedef struct {
  * Enum to select a specific pc identification_strategy. DEFAULT Should be used
  * in most cases.
  */
-enum IDENTIFICATION_STRATEGY {
+typedef enum {
 	DEFAULT, ETHERNET, IP_ADDRESS, DISK_NUM, DISK_LABEL
-};
+} IDENTIFICATION_STRATEGY;
 
 #ifdef __cplusplus
 }

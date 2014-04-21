@@ -51,12 +51,12 @@ DllExport EVENT_TYPE acquire_license(const char * productName,
  * Should be called from time to time to confirm we're still using the
  * slicense.
  */
-DllExport enum EVENT_TYPE confirm_license(char * productName,
+DllExport EVENT_TYPE confirm_license(char * productName,
 		LicenseLocation licenseLocation);
 /**
  * Do nothing for now, useful for network licenses.
  */
-DllExport enum EVENT_TYPE release_license(char * productName,
+DllExport EVENT_TYPE release_license(char * productName,
 		LicenseLocation licenseLocation);
 
 #ifdef __cplusplus

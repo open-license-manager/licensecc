@@ -9,6 +9,7 @@ add_subdirectory("ini")
 ADD_LIBRARY(license++_static STATIC
     license++.cpp
     LicenseReader.cpp
+    pc-identifiers.c
 )
 
 target_link_libraries(

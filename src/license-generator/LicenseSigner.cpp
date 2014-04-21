@@ -20,11 +20,11 @@ namespace license {
 using namespace std;
 
 LicenseSigner::LicenseSigner() {
-	OsFunctions::initialize();
+	os_initialize();
 }
 
 LicenseSigner::LicenseSigner(const std::string& alternatePrimaryKey) {
-	OsFunctions::initialize();
+	os_initialize();
 }
 
 string LicenseSigner::Opensslb64Encode(size_t slen, unsigned char* signature) {

@@ -1,4 +1,5 @@
 ADD_LIBRARY(os STATIC
+	os-linux.c
     os-linux.cpp
 )
 

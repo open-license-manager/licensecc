@@ -38,7 +38,7 @@ public:
 	/**
 	 * @return NULL if no failures are found.
 	 */
-	AuditEvent const  * getLastFailure() const;
+	AuditEvent const * getLastFailure() const;
 	bool isGood() const;
 
 	void addError(EVENT_TYPE event);

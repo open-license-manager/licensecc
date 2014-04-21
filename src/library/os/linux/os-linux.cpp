@@ -1,5 +1,17 @@
-#include <paths.h>
+#define _GNU_SOURCE     /* To get defns of NI_MAXSERV and NI_MAXHOST */
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <ifaddrs.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <linux/if_link.h>
+#include <sys/socket.h>
+#include <netpacket/packet.h>
+
+#include <paths.h>
+
 #include <stdlib.h>
 #include <cstring>
 #include <string>
@@ -8,8 +20,9 @@
 #include <sstream>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
-#include "../os.hpp"
+#include "../os-cpp.h"
 #include "../../base/public-key.h"
+
 #include <openssl/evp.h>
 #include <openssl/bio.h>
 #include <openssl/pem.h>
@@ -18,27 +31,6 @@
 namespace license {
 
 using namespace std;
-
-vector<AdapterInfo> OsFunctions::getAdapterInfos() {
-	return vector<AdapterInfo>();
-}
-vector<DiskInfo> OsFunctions::getDiskInfos() {
-	struct stat filename_stat, mount_stat;
-	static char discard[1024];
-	char device[64], name[64], type[64];
-	FILE *mounts = fopen(_PATH_MOUNTED, "r");
-
-	while (fscanf(mounts, "%64s %64s %64s %1024[^\n]", device, name, type,
-			discard) != EOF) {
-		if (stat(device, &mount_stat) != 0)
-			continue;
-		if (filename_stat.st_dev == mount_stat.st_rdev)
-			fprintf(stderr, "device: %s; name: %s; type: %s\n", device, name,
-					type);
-	}
-
-	return vector<DiskInfo>();
-}
 
 string OsFunctions::getModuleName() {
 	char path[2048] = { 0 };
@@ -59,9 +51,7 @@ string OsFunctions::getModuleName() {
 	return result;
 }
 
-string OsFunctions::getUserHomePath() {
-	return "";
-}
+
 
 bool OsFunctions::verifySignature(const char* stringToVerify,
 		const char* signatureB64) {
@@ -86,8 +76,8 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	 PEM_read_bio_RSAPublicKey(bo, &key, 0, 0);
 	 BIO_free(bo);*/
 
-	//RSA* rsa = EVP_PKEY_get1_RSA( key );
-	//RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
+//RSA* rsa = EVP_PKEY_get1_RSA( key );
+//RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
 	unsigned char buffer[512];
 	BIO* b64 = BIO_new(BIO_f_base64());
 	BIO* encoded_signature = BIO_new_mem_buf((void *) signatureB64,
@@ -95,7 +85,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	BIO* biosig = BIO_push(b64, encoded_signature);
 	BIO_set_flags(biosig, BIO_FLAGS_BASE64_NO_NL); //Do not use newlines to flush buffer
 	unsigned int len = BIO_read(biosig, (void *) buffer, strlen(signatureB64));
-	//Can test here if len == decodeLen - if not, then return an error
+//Can test here if len == decodeLen - if not, then return an error
 	buffer[len] = 0;
 
 	BIO_free_all(biosig);
@@ -107,14 +97,12 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	if (1 != EVP_DigestVerifyInit(mdctx, NULL, EVP_sha256(), NULL, pkey)) {
 		throw new logic_error("Error initializing digest");
 	}
-	int en=strlen(stringToVerify);
-	if (1
-			!= EVP_DigestVerifyUpdate(mdctx, stringToVerify,
-					en)) {
+	int en = strlen(stringToVerify);
+	if (1 != EVP_DigestVerifyUpdate(mdctx, stringToVerify, en)) {
 		throw new logic_error("Error verifying digest");
 	}
 	bool result;
-	int res= EVP_DigestVerifyFinal(mdctx, buffer, len);
+	int res = EVP_DigestVerifyFinal(mdctx, buffer, len);
 	if (1 == res) {
 		result = true;
 	} else {
@@ -129,20 +117,12 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 	return result;
 }
 
-void OsFunctions::initialize() {
-	static bool initialized = false;
-	if (!initialized) {
-		initialized = true;
-		ERR_load_ERR_strings();
-		ERR_load_crypto_strings();
-		OpenSSL_add_all_algorithms();
-	}
-}
 
-VIRTUALIZATION OsFunctions::getVirtualization() {
-	//http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
-	//
-	bool rc = true;
+
+VIRTUALIZATION getVirtualization() {
+//http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
+//
+//bool rc = true;
 	/*__asm__ (
 	 "push   %edx\n"
 	 "push   %ecx\n"

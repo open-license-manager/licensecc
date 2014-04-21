@@ -10,7 +10,7 @@
 
 #include "api/datatypes.h"
 #include "base/EventRegistry.h"
-#include "os/os.hpp"
+#include "os/os.h"
 #define SI_SUPPORT_IOSTREAMS
 #include "ini/SimpleIni.h"
 #include <string>

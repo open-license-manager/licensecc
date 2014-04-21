@@ -23,7 +23,7 @@
 #include "base/public-key.h"
 #include <build_properties.h>
 
-#include "os/os.hpp"
+#include "os/os-cpp.h"
 
 namespace license {
 
@@ -47,7 +47,7 @@ FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 
 EventRegistry FullLicenseInfo::validate(int sw_version) {
 	EventRegistry er;
-	OsFunctions::initialize();
+	os_initialize();
 	bool sigVerified = OsFunctions::verifySignature(printForSign().c_str(),
 			license_signature.c_str());
 	if (sigVerified) {

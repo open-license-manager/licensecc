@@ -12,3 +12,4 @@
 *.la
 *.a
 /Makefile
+/Testing

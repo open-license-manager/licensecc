@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE( read_disk_id ) {
 	BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
 	BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
 }
-/*
+
 BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 	AdapterInfo * adapter_info = NULL;
 	size_t adapter_info_size = 0;
@@ -46,4 +46,4 @@ BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 		}
 	}
 
-}*/
+}

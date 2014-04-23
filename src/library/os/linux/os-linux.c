@@ -163,8 +163,33 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
  *@param uuid uuid as read in /dev/disk/by-uuid
  *@param buffer_out: unsigned char buffer[8] output buffer for result
  */
-static void parseUUID(const char *uuid, unsigned char* buffer_out) {
-
+static void parseUUID(const char *uuid, unsigned char* buffer_out,
+		unsigned int out_size) {
+	size_t len;
+	unsigned int i, j;
+	char * hexuuid;
+	//remove characters not in hex set
+	len = strlen(uuid);
+	hexuuid = (char *) malloc(sizeof(char) * out_size * 2 + 1);
+	for (i = 0, j = 0; j < out_size * 2; i++) {
+		if (i < len) {
+			if (isxdigit(uuid[i])) {
+				hexuuid[j] = uuid[i];
+				j++;
+			} else {
+				//skip
+				continue;
+			}
+		} else {
+			hexuuid[j] = '0';
+			j++;
+		}
+	}
+	hexuuid[j] = '\0';
+	for (i = 0; i < out_size; i++) {
+		sscanf(&hexuuid[i * 2], "%2hhx", &buffer_out[i]);
+	}
+	free(hexuuid);
 }
 #define MAX_UNITS 20
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
@@ -174,12 +199,14 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	 */
 	char path[MAX_PATH], cur_dir[MAX_PATH];
 	struct mntent *ent;
-	int maxDrives, currentDrive, stat_result, i, len;
+
+	int maxDrives, currentDrive, i, drive_found;
 	__ino64_t *statDrives;
 	DiskInfo *tmpDrives;
 	FILE *aFile;
 	DIR *disk_by_uuid_dir, *disk_by_label;
 	struct dirent *dir;
+	FUNCTION_RETURN result;
 
 	if (diskInfos != NULL) {
 		maxDrives = *disk_info_size;
@@ -189,16 +216,20 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 		tmpDrives = (DiskInfo *) malloc(sizeof(DiskInfo) * maxDrives);
 	}
 	statDrives = (__ino64_t *) malloc(maxDrives * sizeof(__ino64_t ));
+	memset(tmpDrives, 0, sizeof(DiskInfo) * maxDrives);
 
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
-		perror("setmntent");
-		exit(1);
+		/*proc not mounted*/
+		return ERROR;
 	}
 
 	disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
 	if (disk_by_uuid_dir == NULL) {
-		printf("errreeee!!!");
+#ifdef _DEBUG
+		printf("Open /dev/disk/by-uuid fail");
+#endif
+		return ERROR;
 	}
 
 	currentDrive = 0;
@@ -209,49 +240,81 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				&& ent->mnt_fsname != NULL
 				&& strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
 			if (stat(ent->mnt_fsname, &mount_stat) == 0) {
-				printf("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
-						mount_stat.st_ino);
-				strcpy(tmpDrives[currentDrive].device, ent->mnt_fsname);
-				statDrives[currentDrive] = mount_stat.st_ino;
-				if (strcmp(ent->mnt_dir, "/") == 0) {
-					tmpDrives[currentDrive].preferred = true;
+				drive_found = -1;
+				for (i = 0; i < currentDrive; i++) {
+					if (statDrives[i] == mount_stat.st_ino) {
+						drive_found = i;
+					}
 				}
-				currentDrive++;
+				if (drive_found == -1) {
+#ifdef _DEBUG
+					printf("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
+							mount_stat.st_ino);
+#endif
+					strcpy(tmpDrives[currentDrive].device, ent->mnt_fsname);
+					statDrives[currentDrive] = mount_stat.st_ino;
+					drive_found = currentDrive;
+					currentDrive++;
+				}
+				if (strcmp(ent->mnt_dir, "/") == 0) {
+					strcpy(tmpDrives[drive_found].label, "root");
+#ifdef _DEBUG
+					printf("drive %d set to preferred\n", ent->mnt_fsname);
+#endif
+					tmpDrives[drive_found].preferred = true;
+				}
 			}
 		}
 	}
 	endmntent(aFile);
-
-	while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
-		strcpy(cur_dir, "/dev/disk/by-uuid/");
-		strcat(cur_dir, dir->d_name);
-		if (stat(cur_dir, &sym_stat) == 0) {
-			for (i = 0; i < currentDrive; i++) {
-				if (sym_stat.st_ino == statDrives[i]) {
-					parseUUID(dir->d_name, tmpDrives[i].disk_sn);
-					printf("uuid %d %s %s\n", i, tmpDrives[i].device, path);
-				}
-			}
-		}
-	}
-	closedir(disk_by_uuid_dir);
-
-	disk_by_label = opendir("/dev/disk/by-label");
-	if (disk_by_label != NULL) {
-		while ((dir = readdir(disk_by_label)) != NULL) {
-			strcpy(cur_dir, "/dev/disk/by-label/");
+	if (diskInfos == NULL) {
+		*disk_info_size = currentDrive;
+		free(tmpDrives);
+		result = OK;
+	} else if (*disk_info_size >= currentDrive) {
+		result = OK;
+		*disk_info_size = currentDrive;
+		while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
+			strcpy(cur_dir, "/dev/disk/by-uuid/");
 			strcat(cur_dir, dir->d_name);
 			if (stat(cur_dir, &sym_stat) == 0) {
 				for (i = 0; i < currentDrive; i++) {
 					if (sym_stat.st_ino == statDrives[i]) {
-						strncpy(tmpDrives[i].label, dir->d_name, 255);
-						printf("label %d %s %s\n", i, tmpDrives[i].label,
-								tmpDrives[i].device);
+						parseUUID(dir->d_name, tmpDrives[i].disk_sn,
+								sizeof(tmpDrives[i].disk_sn));
+#ifdef _DEBUG
+						printf("uuid %d %s %s %02x%02x%02x%02x\n", i,
+								tmpDrives[i].device, path,
+								tmpDrives[i].disk_sn[0],
+								tmpDrives[i].disk_sn[1],
+								tmpDrives[i].disk_sn[2],
+								tmpDrives[i].disk_sn[3]);
+#endif
 					}
 				}
 			}
 		}
-		closedir(disk_by_label);
+		closedir(disk_by_uuid_dir);
+
+		disk_by_label = opendir("/dev/disk/by-label");
+		if (disk_by_label != NULL) {
+			while ((dir = readdir(disk_by_label)) != NULL) {
+				strcpy(cur_dir, "/dev/disk/by-label/");
+				strcat(cur_dir, dir->d_name);
+				if (stat(cur_dir, &sym_stat) == 0) {
+					for (i = 0; i < currentDrive; i++) {
+						if (sym_stat.st_ino == statDrives[i]) {
+							strncpy(tmpDrives[i].label, dir->d_name, 255);
+							printf("label %d %s %s\n", i, tmpDrives[i].label,
+									tmpDrives[i].device);
+						}
+					}
+				}
+			}
+			closedir(disk_by_label);
+		}
+	} else {
+		result = BUFFER_TOO_SMALL;
 	}
 	/*
 	 FILE *mounts = fopen(_PATH_MOUNTED, "r");
@@ -269,7 +332,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	 }
 	 }
 	 */
-	return OK;
+	return result;
 }
 
 void os_initialize() {

@@ -4,6 +4,7 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <linux/if_link.h>
@@ -168,29 +169,33 @@ static void parseUUID(const char *uuid, unsigned char* buffer_out,
 	size_t len;
 	unsigned int i, j;
 	char * hexuuid;
+	char cur_character;
 	//remove characters not in hex set
 	len = strlen(uuid);
-	hexuuid = (char *) malloc(sizeof(char) * out_size * 2 + 1);
-	for (i = 0, j = 0; j < out_size * 2; i++) {
-		if (i < len) {
-			if (isxdigit(uuid[i])) {
-				hexuuid[j] = uuid[i];
-				j++;
-			} else {
-				//skip
-				continue;
-			}
-		} else {
-			hexuuid[j] = '0';
+	hexuuid = (char *) malloc(sizeof(char) * strlen(uuid));
+	memset(buffer_out, 0, out_size);
+
+	for (i = 0, j = 0; j < len; i++) {
+		if (isxdigit(uuid[j])) {
+			hexuuid[j] = uuid[i];
 			j++;
+		} else {
+			//skip
+			continue;
 		}
 	}
-	hexuuid[j] = '\0';
-	for (i = 0; i < out_size; i++) {
-		sscanf(&hexuuid[i * 2], "%2hhx", &buffer_out[i]);
+	if (j % 2 == 1) {
+		hexuuid[j++] = '0';
 	}
+	hexuuid[j] = '\0';
+	for (i = 0; i < j; i++) {
+		sscanf(&hexuuid[i * 2], "%2hhx", &cur_character);
+		buffer_out[i % out_size] = buffer_out[i % out_size] ^ cur_character;
+	}
+
 	free(hexuuid);
 }
+
 #define MAX_UNITS 20
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	struct stat mount_stat, sym_stat;
@@ -259,7 +264,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				if (strcmp(ent->mnt_dir, "/") == 0) {
 					strcpy(tmpDrives[drive_found].label, "root");
 #ifdef _DEBUG
-					printf("drive %d set to preferred\n", ent->mnt_fsname);
+					printf("drive %s set to preferred\n", ent->mnt_fsname);
 #endif
 					tmpDrives[drive_found].preferred = true;
 				}

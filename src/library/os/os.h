@@ -14,6 +14,7 @@ extern "C" {
 
 #include "../base/base.h"
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef enum {
 	NONE, VMWARE
@@ -31,6 +32,7 @@ typedef struct {
 	char device[255];
 	unsigned char disk_sn[8];
 	char label[255];
+	bool preferred;
 } DiskInfo;
 
 FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,

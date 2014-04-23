@@ -26,6 +26,10 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 
+#include <mntent.h>
+#include <dirent.h>
+#include <stdio.h>
+
 static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
 	int i, position;
 	position = -1;
@@ -77,7 +81,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 			strncpy(&ifnames[if_num * NI_MAXHOST], ifa->ifa_name, NI_MAXHOST);
 			if (adapterInfos != NULL && if_num < *adapter_info_size) {
 				strncpy(adapterInfos[if_num].description, ifa->ifa_name,
-						NI_MAXHOST);
+				NI_MAXHOST);
 			}
 			if_name_position = if_num;
 			if_num++;
@@ -137,7 +141,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 #endif
 				}
 #ifdef _DEBUG
-					printf("\t %s\n", ifa->ifa_name);
+				printf("\t %s\n", ifa->ifa_name);
 #endif
 
 			}
@@ -153,27 +157,119 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 	freeifaddrs(ifaddr);
 	return f_return;
 }
+/**
+ *Usually uuid are hex number separated by "-". this method read up to 8 hex
+ *numbers skipping - characters.
+ *@param uuid uuid as read in /dev/disk/by-uuid
+ *@param buffer_out: unsigned char buffer[8] output buffer for result
+ */
+static void parseUUID(const char *uuid, unsigned char* buffer_out) {
 
+}
+#define MAX_UNITS 20
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
-	struct stat filename_stat, mount_stat;
-	static char discard[1024];
-	char device[64], name[64], type[64];
-	FILE *mounts = fopen(_PATH_MOUNTED, "r");
-	if (mounts == NULL) {
-		return ERROR;
+	struct stat mount_stat, sym_stat;
+	/*static char discard[1024];
+	 char device[64], name[64], type[64];
+	 */
+	char path[MAX_PATH], cur_dir[MAX_PATH];
+	struct mntent *ent;
+	int maxDrives, currentDrive, stat_result, i, len;
+	__ino64_t *statDrives;
+	DiskInfo *tmpDrives;
+	FILE *aFile;
+	DIR *disk_by_uuid_dir, *disk_by_label;
+	struct dirent *dir;
+
+	if (diskInfos != NULL) {
+		maxDrives = *disk_info_size;
+		tmpDrives = diskInfos;
+	} else {
+		maxDrives = MAX_UNITS;
+		tmpDrives = (DiskInfo *) malloc(sizeof(DiskInfo) * maxDrives);
+	}
+	statDrives = (__ino64_t *) malloc(maxDrives * sizeof(__ino64_t ));
+
+	aFile = setmntent("/proc/mounts", "r");
+	if (aFile == NULL) {
+		perror("setmntent");
+		exit(1);
 	}
 
-	while (fscanf(mounts, "%64s %64s %64s %1024[^\n]", device, name, type,
-			discard) != EOF) {
-		if (stat(device, &mount_stat) != 0)
-			continue;
-		if (filename_stat.st_dev == mount_stat.st_rdev) {
-			fprintf(stderr, "device: %s; name: %s; type: %s\n", device, name,
-					type);
+	disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
+	if (disk_by_uuid_dir == NULL) {
+		printf("errreeee!!!");
+	}
+
+	currentDrive = 0;
+	while (NULL != (ent = getmntent(aFile))) {
+		if ((strncmp(ent->mnt_type, "ext", 3) == 0
+				|| strncmp(ent->mnt_type, "vfat", 4) == 0
+				|| strncmp(ent->mnt_type, "ntfs", 4) == 0)
+				&& ent->mnt_fsname != NULL
+				&& strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
+			if (stat(ent->mnt_fsname, &mount_stat) == 0) {
+				printf("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
+						mount_stat.st_ino);
+				strcpy(tmpDrives[currentDrive].device, ent->mnt_fsname);
+				statDrives[currentDrive] = mount_stat.st_ino;
+				if (strcmp(ent->mnt_dir, "/") == 0) {
+					tmpDrives[currentDrive].preferred = true;
+				}
+				currentDrive++;
+			}
 		}
 	}
+	endmntent(aFile);
 
-	return ERROR;
+	while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
+		strcpy(cur_dir, "/dev/disk/by-uuid/");
+		strcat(cur_dir, dir->d_name);
+		if (stat(cur_dir, &sym_stat) == 0) {
+			for (i = 0; i < currentDrive; i++) {
+				if (sym_stat.st_ino == statDrives[i]) {
+					parseUUID(dir->d_name, tmpDrives[i].disk_sn);
+					printf("uuid %d %s %s\n", i, tmpDrives[i].device, path);
+				}
+			}
+		}
+	}
+	closedir(disk_by_uuid_dir);
+
+	disk_by_label = opendir("/dev/disk/by-label");
+	if (disk_by_label != NULL) {
+		while ((dir = readdir(disk_by_label)) != NULL) {
+			strcpy(cur_dir, "/dev/disk/by-label/");
+			strcat(cur_dir, dir->d_name);
+			if (stat(cur_dir, &sym_stat) == 0) {
+				for (i = 0; i < currentDrive; i++) {
+					if (sym_stat.st_ino == statDrives[i]) {
+						strncpy(tmpDrives[i].label, dir->d_name, 255);
+						printf("label %d %s %s\n", i, tmpDrives[i].label,
+								tmpDrives[i].device);
+					}
+				}
+			}
+		}
+		closedir(disk_by_label);
+	}
+	/*
+	 FILE *mounts = fopen(_PATH_MOUNTED, "r");
+	 if (mounts == NULL) {
+	 return ERROR;
+	 }
+
+	 while (fscanf(mounts, "%64s %64s %64s %1024[^\n]", device, name, type,
+	 discard) != EOF) {
+	 if (stat(device, &mount_stat) != 0)
+	 continue;
+	 if (filename_stat.st_dev == mount_stat.st_rdev) {
+	 fprintf(stderr, "device: %s; name: %s; type: %s\n", device, name,
+	 type);
+	 }
+	 }
+	 */
+	return OK;
 }
 
 void os_initialize() {

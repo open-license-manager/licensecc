@@ -93,7 +93,7 @@ typedef struct {
  * in most cases.
  */
 typedef enum {
-	DEFAULT, ETHERNET, IP_ADDRESS, DISK_NUM, DISK_LABEL
+	DEFAULT, ETHERNET, IP_ADDRESS, DISK_NUM, DISK_LABEL, STRATEGY_UNKNOWN
 } IDENTIFICATION_STRATEGY;
 
 #ifdef __cplusplus

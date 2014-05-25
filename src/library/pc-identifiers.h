@@ -17,4 +17,6 @@ typedef char UserPcIdentifier[21];
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_size,
 		IDENTIFICATION_STRATEGY strategy);
 
+EVENT_TYPE validate_user_pc_identifier(UserPcIdentifier str_code);
+
 #endif /* PC_IDENTIFIERS_H_ */

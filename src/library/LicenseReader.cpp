@@ -64,6 +64,14 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR);
 		}
 	}
+	if (has_client_sig) {
+		UserPcIdentifier str_code;
+		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
+		EVENT_TYPE event = validate_user_pc_identifier(str_code);
+		if (event != OK) {
+			er.addEvent(event, SEVERITY_ERROR);
+		}
+	}
 	return er;
 }
 
@@ -123,7 +131,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		 *  sw_version_to = (optional int)
 		 *  from_date = YYYY-MM-DD (optional)
 		 *  to_date  = YYYY-MM-DD (optional)
-		 *  client_signature = XXXXXXXX (optional string 16)
+		 *  client_signature = XXXX-XXXX-XXXX-XXXX (optional string 16)
 		 *  license_signature = XXXXXXXXXX (mandatory, 1024)
 		 *  application_data = xxxxxxxxx (optional string 16)
 		 */
@@ -138,8 +146,19 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			string to_date = trim_copy(
 					ini.GetValue(productNamePtr, "to_date",
 							FullLicenseInfo::UNUSED_TIME));
+			string client_signature = trim_copy(
+					ini.GetValue(productNamePtr, "client_signature", ""));
+			client_signature.erase(
+					std::remove(client_signature.begin(),
+							client_signature.end(), "-"),
+					client_signature.end());
+			int from_sw_version = ini.GetLongValue(productNamePtr,
+					"from_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
+			int to_sw_version = ini.GetLongValue(productNamePtr,
+					"to_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			FullLicenseInfo licInfo(*it, product, license_signature,
-					(int) license_version, from_date, to_date);
+					(int) license_version, from_date, to_date,
+					client_signature,from_sw_version,to_sw_version);
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {

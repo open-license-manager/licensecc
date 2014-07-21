@@ -13,7 +13,9 @@ extern "C" {
 
 #ifdef __unix__
 #define DllExport
-#define MAX_PATH 1024
+#ifndef MAX_PATH
+	#define MAX_PATH 1024
+#endif
 #else
 #include <windows.h>
 #define DllExport  __declspec( dllexport )

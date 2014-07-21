@@ -175,8 +175,8 @@ static void parseUUID(const char *uuid, unsigned char* buffer_out,
 	hexuuid = (char *) malloc(sizeof(char) * strlen(uuid));
 	memset(buffer_out, 0, out_size);
 
-	for (i = 0, j = 0; j < len; i++) {
-		if (isxdigit(uuid[j])) {
+	for (i = 0, j = 0; i < len; i++) {
+		if (isxdigit(uuid[i])) {
 			hexuuid[j] = uuid[i];
 			j++;
 		} else {

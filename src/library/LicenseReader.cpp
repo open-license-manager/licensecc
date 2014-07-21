@@ -18,6 +18,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include "pc-identifiers.h"
 #include "LicenseReader.h"
 #include "base/StringUtils.h"
 #include "base/public-key.h"
@@ -68,7 +69,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 		UserPcIdentifier str_code;
 		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
 		EVENT_TYPE event = validate_user_pc_identifier(str_code);
-		if (event != OK) {
+		if (event != LICENSE_OK) {
 			er.addEvent(event, SEVERITY_ERROR);
 		}
 	}
@@ -149,8 +150,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			string client_signature = trim_copy(
 					ini.GetValue(productNamePtr, "client_signature", ""));
 			client_signature.erase(
-					std::remove(client_signature.begin(),
-							client_signature.end(), "-"),
+					std::remove(client_signature.begin(), client_signature.end(), '-'),
 					client_signature.end());
 			int from_sw_version = ini.GetLongValue(productNamePtr,
 					"from_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);

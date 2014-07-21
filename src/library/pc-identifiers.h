@@ -10,6 +10,10 @@
 #include "api/datatypes.h"
 #include "base/base.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef unsigned char PcIdentifier[6];
 typedef char UserPcIdentifier[21];
 
@@ -19,4 +23,7 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_
 
 EVENT_TYPE validate_user_pc_identifier(UserPcIdentifier str_code);
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* PC_IDENTIFIERS_H_ */

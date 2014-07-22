@@ -10,7 +10,7 @@ using namespace license;
 
 BOOST_AUTO_TEST_CASE( read_single_file ) {
 	const char * licLocation =
-			PROJECT_TEST_SRC_DIR "/library/reader/test_reader.ini";
+			PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
 	const LicenseLocation location = { licLocation, NULL, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE( read_single_file ) {
 
 BOOST_AUTO_TEST_CASE( product_not_licensed ) {
 	const char * licLocation =
-			PROJECT_TEST_SRC_DIR "/library/reader/test_reader.ini";
+			PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
 	const LicenseLocation location = { licLocation, NULL, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( product_not_licensed ) {
 
 BOOST_AUTO_TEST_CASE( file_not_found ) {
 	const char * licLocation =
-			PROJECT_TEST_SRC_DIR "/library/reader/not_found.ini";
+			PROJECT_TEST_SRC_DIR "/library/not_found.ini";
 	//const char * envName = "MYVAR";
 	const LicenseLocation location = { licLocation, NULL, false };
 	LicenseReader licenseReader(location);

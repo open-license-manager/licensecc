@@ -79,6 +79,7 @@ bool EventRegistry::isGood() const {
 void EventRegistry::addError(EVENT_TYPE event) {
 	addEvent(event, SEVERITY_ERROR);
 }
+
 void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity) {
 	AuditEvent audit;
 	audit.severity = severity;

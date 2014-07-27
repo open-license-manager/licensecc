@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 enum FEATURE_NAMES {
-  FEATURE1
-};
+  FEATURE1,
+}
 
 #endif

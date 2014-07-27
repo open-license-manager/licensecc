@@ -7,15 +7,19 @@ extern "C" {
 #endif
 
 #ifdef __unix__
+
 #include <limits.h>
 #define DllExport
-#define MAX_PATH PATH_MAX
-#else
+#ifndef MAX_PATH
+	#define MAX_PATH PATH_MAX
+#endif
+
+#else //windows
 #include <windows.h>
 #define DllExport  __declspec( dllexport )
 #endif
 
-#define _DEBUG
+/* #define _DEBUG */
 /*
 #define cmax(a,b) \
    ({ __typeof__ (a) _a = (a); \

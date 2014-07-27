@@ -15,13 +15,22 @@ extern "C" {
 #endif
 
 typedef unsigned char PcIdentifier[6];
-typedef char UserPcIdentifier[21];
-
+typedef char PcSignature[21];
 
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_size,
 		IDENTIFICATION_STRATEGY strategy);
 
-EVENT_TYPE validate_user_pc_identifier(UserPcIdentifier str_code);
+EVENT_TYPE validate_pc_signature(PcSignature str_code);
+
+/**
+ * Generates an UserPcIdentifier.
+ *
+ * @param identifier_out
+ * @param strategy
+ * @return
+ */
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
+		IDENTIFICATION_STRATEGY strategy);
 
 #ifdef __cplusplus
 }

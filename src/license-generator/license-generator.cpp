@@ -55,7 +55,7 @@ po::options_description LicenseGenerator::configureProgramOptions() {
 					" Format YYYYMMDD. If not specified the license won't expire") //
 	("client_signature,s", po::value<string>(),
 			"The signature of the pc that requires the license. "
-					"It should be in the format XXX-XXXX-XXXX."
+					"It should be in the format XXXX-XXXX-XXXX-XXXX."
 					" If not specified the license "
 					"won't be linked to a specific pc.") //
 	("start_version,t", po::value<unsigned int>()->default_value(0
@@ -101,14 +101,15 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	string client_signature = "";
 	if (vm.count("client_signature")) {
 		client_signature = vm["client_signature"].as<string>();
-		regex e("\\d{3}-[:alnum:]{4}-[:alnum:]{4}");
+		//fixme match + and /
+		/*regex e("(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}");
 		if (!regex_match(client_signature, e)) {
 			cerr << endl << "Client signature not recognized: "
 					<< client_signature
-					<< " Please enter a valid signature in format XXX-XXXX-XXX"
+					<< " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
 					<< endl;
 			exit(2);
-		}
+		}*/
 	}
 	string extra_data = "";
 	if (vm.count("extra_data")) {
@@ -136,7 +137,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	return licInfo;
 }
 
-void LicenseGenerator::generateAndOutptuLicenses(const po::variables_map& vm,
+void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
 		ostream& outputFile) {
 	vector<FullLicenseInfo> licenseInfo = parseLicenseInfo(vm);
 	license::LicenseSigner licSigner =
@@ -179,10 +180,10 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 					<< " error: " << strerror( errno);
 			exit(3);
 		}
-		generateAndOutptuLicenses(vm, ofstream);
+		generateAndOutputLicenses(vm, ofstream);
 		ofstream.close();
 	} else {
-		generateAndOutptuLicenses(vm, cout);
+		generateAndOutputLicenses(vm, cout);
 	}
 	return 0;
 }

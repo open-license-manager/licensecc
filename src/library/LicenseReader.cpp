@@ -66,9 +66,9 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 		}
 	}
 	if (has_client_sig) {
-		UserPcIdentifier str_code;
+		PcSignature str_code;
 		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
-		EVENT_TYPE event = validate_user_pc_identifier(str_code);
+		EVENT_TYPE event = validate_pc_signature(str_code);
 		if (event != LICENSE_OK) {
 			er.addEvent(event, SEVERITY_ERROR);
 		}

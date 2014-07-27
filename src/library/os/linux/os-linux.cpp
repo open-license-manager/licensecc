@@ -57,8 +57,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 		const char* signatureB64) {
 	EVP_MD_CTX *mdctx = NULL;
 
-	char *pubKey = PUBLIC_KEY
-	;
+	char *pubKey = PUBLIC_KEY;
 
 	BIO* bio = BIO_new_mem_buf((void*) (pubKey), strlen(pubKey));
 	RSA *rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);

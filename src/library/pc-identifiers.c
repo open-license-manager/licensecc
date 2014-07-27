@@ -8,6 +8,7 @@
 #include "os/os.h"
 #include "pc-identifiers.h"
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include "base/base64.h"
 
@@ -30,11 +31,11 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	} else {
 		required_id_size = disk_num;
 	}
+	int defined_identifiers = *num_identifiers;
+	*num_identifiers = required_id_size;
 	if (identifiers == NULL) {
-		*num_identifiers = required_id_size;
 		return OK;
-	} else if (*num_identifiers < required_id_size) {
-		*num_identifiers = required_id_size;
+	} else if (required_id_size > defined_identifiers) {
 		return BUFFER_TOO_SMALL;
 	}
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
@@ -42,7 +43,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	adapterInfos = (AdapterInfo*) malloc(adapter_num * sizeof(AdapterInfo));
 	result_adapterInfos = getAdapterInfos(adapterInfos, &adapter_num);
 	for (i = 0; i < disk_num; i++) {
-		for (j = 0; j < adapter_num; i++) {
+		for (j = 0; j < adapter_num; j++) {
 			for (k = 0; k < 6; k++)
 				identifiers[i * adapter_num + j][k] =
 						diskInfos[i].disk_sn[k + 2]
@@ -66,13 +67,15 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 	if (result_adapterInfos != OK) {
 		return result_adapterInfos;
 	}
+
+	int defined_adapters = *num_identifiers;
+	*num_identifiers = adapters;
 	if (identifiers == NULL) {
-		*num_identifiers = adapters;
 		return OK;
-	} else if (*num_identifiers < adapters) {
-		*num_identifiers = adapters;
+	} else if (adapters > defined_adapters) {
 		return BUFFER_TOO_SMALL;
 	}
+
 	adapterInfos = (AdapterInfo*) malloc(adapters * sizeof(AdapterInfo));
 	result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
 	for (j = 0; j < adapters; i++) {
@@ -97,20 +100,22 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, bool use_label) {
 	size_t disk_num;
 	FUNCTION_RETURN result_diskinfos;
-	unsigned int required_id_size, i, k;
+	unsigned int i, k;
 	DiskInfo * diskInfos;
 
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
 	if (result_diskinfos != OK) {
 		return result_diskinfos;
 	}
+
+	int defined_identifiers = *num_identifiers;
+	*num_identifiers = disk_num;
 	if (identifiers == NULL) {
-		*num_identifiers = disk_num;
 		return OK;
-	} else if (*num_identifiers < disk_num) {
-		*num_identifiers = disk_num;
+	} else if (disk_num > defined_identifiers) {
 		return BUFFER_TOO_SMALL;
 	}
+
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 
@@ -134,6 +139,9 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
  * for instance a machine with more than one disk and one network interface has
  * usually multiple identifiers.
  *
+ * First 4 bit of each pc identifier are reserved 3 for the type of strategy
+ * used in calculation and 1 for parity checks (not implemented here)
+ *
  * @param identifiers
  * @param array_size
  * @param
@@ -142,7 +150,8 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		unsigned int * array_size, IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
-	unsigned int i;
+	unsigned int i, j;
+	const unsigned int original_array_size = *array_size;
 	unsigned char strategy_num;
 	switch (strategy) {
 	case DEFAULT:
@@ -168,19 +177,90 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		strategy_num = strategy << 5;
 		for (i = 0; i < *array_size; i++) {
 			//encode strategy in the first three bits of the pc_identifier
-			identifiers[i][0] = (identifiers[i][0] & 31) | strategy_num;
+			identifiers[i][0] = (identifiers[i][0] & 15) | strategy_num;
+		}
+		//fill array if larger
+		for (i = *array_size; i < original_array_size; i++) {
+			identifiers[i][0] = STRATEGY_UNKNOWN;
+			for (j = 1; j < sizeof(PcIdentifier); j++) {
+				identifiers[i][j] = 42; //padding
+			}
 		}
 	}
 	return result;
 }
 
-FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
-		UserPcIdentifier* pc_identifier_out) {
+char *MakeCRC(char *BitString) {
+	static char Res[3];                                 // CRC Result
+	char CRC[2];
+	int i;
+	char DoInvert;
 
+	for (i = 0; i < 2; ++i)
+		CRC[i] = 0;                    // Init before calculation
+
+	for (i = 0; i < strlen(BitString); ++i) {
+		DoInvert = ('1' == BitString[i]) ^ CRC[1];         // XOR required?
+
+		CRC[1] = CRC[0];
+		CRC[0] = DoInvert;
+	}
+
+	for (i = 0; i < 2; ++i)
+		Res[1 - i] = CRC[i] ? '1' : '0'; // Convert binary to ASCII
+	Res[2] = 0;                                         // Set string terminator
+
+	return (Res);
 }
 
-FUNCTION_RETURN parity_check_id(UserPcIdentifier pc_identifier) {
+FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
+		PcSignature pc_identifier_out) {
+	//TODO base62 encoding, now uses base64
+	PcIdentifier concat_identifiers[2];
+	int b64_size = 0;
+	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
+	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
+	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
+	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
+	char* b64_data = base64(concat_identifiers, concatIdentifiersSize,
+			&b64_size);
+	if (b64_size > sizeof(PcSignature)) {
+		return BUFFER_TOO_SMALL;
+	}
+	sprintf(pc_identifier_out, "%.4s-%.4s-%.4s-%.4s", &b64_data[0],
+			&b64_data[4], &b64_data[8], &b64_data[12]);
+	//free(concat_identifiers);
+	free(b64_data);
+	return OK;
+}
 
+FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) {
+	return OK;
+}
+
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
+		IDENTIFICATION_STRATEGY strategy) {
+	FUNCTION_RETURN result;
+	PcIdentifier* identifiers;
+	unsigned int req_buffer_size = 0;
+	result = generate_pc_id(NULL, &req_buffer_size, strategy);
+	if (result != OK) {
+		return result;
+	}
+	if (req_buffer_size == 0) {
+		return ERROR;
+	}
+	req_buffer_size = req_buffer_size < 2 ? 2 : req_buffer_size;
+	identifiers = (PcIdentifier *) malloc(
+			sizeof(PcIdentifier) * req_buffer_size);
+	result = generate_pc_id(identifiers, &req_buffer_size, strategy);
+	if (result != OK) {
+		free(identifiers);
+		return result;
+	}
+	result = encode_pc_id(identifiers[0], identifiers[1], identifier_out);
+	free(identifiers);
+	return result;
 }
 
 /**
@@ -190,30 +270,47 @@ FUNCTION_RETURN parity_check_id(UserPcIdentifier pc_identifier) {
  * @param str_code: the code in the string format XXXX-XXXX-XXXX-XXXX
  * @return
  */
-static FUNCTION_RETURN decode_pc_id(PcIdentifier* identifier1_out,
-		PcIdentifier* identifier2_out, UserPcIdentifier str_code) {
+static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
+		PcIdentifier identifier2_out, PcSignature pc_signature_in) {
+	//TODO base62 encoding, now uses base64
 
+	unsigned char * concat_identifiers;
+	char base64ids[17];
+	int identifiers_size;
+
+	sscanf(pc_signature_in, "%.4s-%.4s-%.4s-%.4s", &base64ids[0], &base64ids[4],
+			&base64ids[8], &base64ids[12]);
+	concat_identifiers = unbase64(base64ids, 16,
+			&identifiers_size);
+	if (identifiers_size > sizeof(PcIdentifier) * 2) {
+		return BUFFER_TOO_SMALL;
+	}
+	memcpy(identifier1_out, concat_identifiers, sizeof(PcIdentifier));
+	memcpy(identifier2_out, concat_identifiers + sizeof(PcIdentifier),
+			sizeof(PcIdentifier));
+	free(concat_identifiers);
+	return OK;
 }
 
 static IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
 	return (IDENTIFICATION_STRATEGY) identifier[0] >> 5;
 }
 
-EVENT_TYPE validate_user_pc_identifier(UserPcIdentifier str_code) {
+EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	PcIdentifier user_identifiers[2];
 	FUNCTION_RETURN result;
 	IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
 	PcIdentifier* calculated_identifiers;
-	size_t calc_identifiers_size;
+	unsigned int calc_identifiers_size;
 	int i, j;
-	bool found;
+	//bool found;
 
-	result = decode_pc_id(&user_identifiers[0], &user_identifiers[1], str_code);
+	result = decode_pc_id(user_identifiers[0], user_identifiers[1], str_code);
 	if (result != OK) {
 		return result;
 	}
 	previous_strategy_id = STRATEGY_UNKNOWN;
-	found = false;
+	//found = false;
 	for (i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
 		if (current_strategy_id == STRATEGY_UNKNOWN) {

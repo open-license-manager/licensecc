@@ -24,7 +24,7 @@ private:
 	static void printHelp(const char* prog_name, const po::options_description& options);
 	static po::options_description configureProgramOptions();
 	static vector<FullLicenseInfo> parseLicenseInfo(po::variables_map vm);
-	static void generateAndOutptuLicenses(const po::variables_map& vm,
+	static void generateAndOutputLicenses(const po::variables_map& vm,
 			ostream& outputFile);
 	static string normalize_date(const std::string& s);
 public:

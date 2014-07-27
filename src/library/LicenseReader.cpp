@@ -149,9 +149,9 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 							FullLicenseInfo::UNUSED_TIME));
 			string client_signature = trim_copy(
 					ini.GetValue(productNamePtr, "client_signature", ""));
-			client_signature.erase(
+			/*client_signature.erase(
 					std::remove(client_signature.begin(), client_signature.end(), '-'),
-					client_signature.end());
+					client_signature.end());*/
 			int from_sw_version = ini.GetLongValue(productNamePtr,
 					"from_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			int to_sw_version = ini.GetLongValue(productNamePtr,

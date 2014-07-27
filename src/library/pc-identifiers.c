@@ -278,10 +278,9 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 	char base64ids[17];
 	int identifiers_size;
 
-	sscanf(pc_signature_in, "%.4s-%.4s-%.4s-%.4s", &base64ids[0], &base64ids[4],
+	sscanf(pc_signature_in, "%4s-%4s-%4s-%4s", &base64ids[0], &base64ids[4],
 			&base64ids[8], &base64ids[12]);
-	concat_identifiers = unbase64(base64ids, 16,
-			&identifiers_size);
+	concat_identifiers = unbase64(base64ids, 16, &identifiers_size);
 	if (identifiers_size > sizeof(PcIdentifier) * 2) {
 		return BUFFER_TOO_SMALL;
 	}
@@ -300,9 +299,9 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	PcIdentifier user_identifiers[2];
 	FUNCTION_RETURN result;
 	IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
-	PcIdentifier* calculated_identifiers;
-	unsigned int calc_identifiers_size;
-	int i, j;
+	PcIdentifier* calculated_identifiers = NULL;
+	unsigned int calc_identifiers_size = 0;
+	int i = 0, j = 0;
 	//bool found;
 
 	result = decode_pc_id(user_identifiers[0], user_identifiers[1], str_code);

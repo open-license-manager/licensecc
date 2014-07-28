@@ -78,7 +78,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 
 	adapterInfos = (AdapterInfo*) malloc(adapters * sizeof(AdapterInfo));
 	result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
-	for (j = 0; j < adapters; i++) {
+	for (j = 0; j < adapters; j++) {
 		for (k = 0; k < 6; k++)
 			if (use_mac) {
 				identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
@@ -303,7 +303,9 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	unsigned int calc_identifiers_size = 0;
 	int i = 0, j = 0;
 	//bool found;
-
+#ifdef _DEBUG
+	printf("Comparing pc identifiers: \n");
+#endif
 	result = decode_pc_id(user_identifiers[0], user_identifiers[1], str_code);
 	if (result != OK) {
 		return result;
@@ -319,7 +321,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 			if (calculated_identifiers != NULL) {
 				free(calculated_identifiers);
 			}
-			current_strategy_id = previous_strategy_id;
+			previous_strategy_id = current_strategy_id;
 			generate_pc_id(NULL, &calc_identifiers_size, current_strategy_id);
 			calculated_identifiers = (PcIdentifier *) malloc(
 					sizeof(PcIdentifier) * calc_identifiers_size);
@@ -328,6 +330,13 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 		}
 		//maybe skip the byte 0
 		for (j = 0; j < calc_identifiers_size; j++) {
+#ifdef _DEBUG
+			printf("generated id: %02x%02x%02x%02x%02x%02x index %d, user_supplied id %02x%02x%02x%02x%02x%02x idx: %d\n",
+					calculated_identifiers[j][0],calculated_identifiers[j][1],calculated_identifiers[j][2],
+					calculated_identifiers[j][3],calculated_identifiers[j][4],calculated_identifiers[j][5],j,
+					user_identifiers[i][0],user_identifiers[i][1],user_identifiers[i][2],user_identifiers[i][3],user_identifiers[i][4],user_identifiers[i][5],i);
+
+#endif
 			if (!memcmp(user_identifiers[i], calculated_identifiers[j],
 					sizeof(PcIdentifier))) {
 				free(calculated_identifiers);

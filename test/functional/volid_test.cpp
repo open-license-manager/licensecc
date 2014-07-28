@@ -67,15 +67,14 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	std::ifstream is(idfileLocation);
 	std::istream_iterator<string> start(is), end;
 	std::vector<string> reference_signatures(start, end);
-	BOOST_CHECK_EQUAL(reference_signatures.size(), num_strategies);
+	BOOST_ASSERT(reference_signatures.size() == num_strategies);
 	PcSignature generated_identifier;
 	BOOST_CHECKPOINT("Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::OK);
-		if (memcmp(generated_identifier, reference_signatures[i].c_str(),
-				sizeof(PcSignature))) {
+		if (reference_signatures[i] != generated_identifier) {
 			string message = string("pc signature compare fail: strategy:")
 					+ to_string(strategies[i]) + " generated: ["
 					+ generated_identifier + "] reference: ["
@@ -88,7 +87,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	for (int j = 0; j < 100; j++) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
 			PcSignature pcsig;
-			memcpy(pcsig, reference_signatures[i].c_str(), sizeof(PcSignature));
+			strncpy(pcsig, reference_signatures[i].c_str(), sizeof(PcSignature));
 			EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			string message = string("pc signature verification strategy:")
 					+ to_string(i) + " generated: [" + generated_identifier

@@ -10,7 +10,7 @@
 #include <linux/if_link.h>
 #include <sys/socket.h>
 #include <netpacket/packet.h>
-
+#include <valgrind/memcheck.h>
 #include <paths.h>
 
 #include <stdlib.h>
@@ -156,6 +156,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 		f_return = BUFFER_TOO_SMALL;
 	}
 	freeifaddrs(ifaddr);
+	free(ifnames);
 	return f_return;
 }
 /**
@@ -169,11 +170,12 @@ static void parseUUID(const char *uuid, unsigned char* buffer_out,
 	size_t len;
 	unsigned int i, j;
 	char * hexuuid;
-	char cur_character;
+	unsigned char cur_character;
 	//remove characters not in hex set
 	len = strlen(uuid);
 	hexuuid = (char *) malloc(sizeof(char) * strlen(uuid));
 	memset(buffer_out, 0, out_size);
+	memset(hexuuid, 0, sizeof(char) * strlen(uuid));
 
 	for (i = 0, j = 0; i < len; i++) {
 		if (isxdigit(uuid[i])) {
@@ -188,7 +190,7 @@ static void parseUUID(const char *uuid, unsigned char* buffer_out,
 		hexuuid[j++] = '0';
 	}
 	hexuuid[j] = '\0';
-	for (i = 0; i < j; i++) {
+	for (i = 0; i < j/2; i++) {
 		sscanf(&hexuuid[i * 2], "%2hhx", &cur_character);
 		buffer_out[i % out_size] = buffer_out[i % out_size] ^ cur_character;
 	}
@@ -220,8 +222,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 		maxDrives = MAX_UNITS;
 		tmpDrives = (DiskInfo *) malloc(sizeof(DiskInfo) * maxDrives);
 	}
-	statDrives = (__ino64_t *) malloc(maxDrives * sizeof(__ino64_t ));
 	memset(tmpDrives, 0, sizeof(DiskInfo) * maxDrives);
+	statDrives = (__ino64_t *) malloc(maxDrives * sizeof(__ino64_t ));
+	memset(statDrives, 0, sizeof(__ino64_t ) * maxDrives);;
 
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
@@ -234,6 +237,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 #ifdef _DEBUG
 		printf("Open /dev/disk/by-uuid fail");
 #endif
+		free(statDrives);
 		return ERROR;
 	}
 
@@ -288,8 +292,10 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 						parseUUID(dir->d_name, tmpDrives[i].disk_sn,
 								sizeof(tmpDrives[i].disk_sn));
 #ifdef _DEBUG
-						printf("uuid %d %s %s %02x%02x%02x%02x\n", i,
-								tmpDrives[i].device, path,
+						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
+
+						printf("uuid %d %s %02x%02x%02x%02x\n", i,
+								tmpDrives[i].device,
 								tmpDrives[i].disk_sn[0],
 								tmpDrives[i].disk_sn[1],
 								tmpDrives[i].disk_sn[2],
@@ -337,6 +343,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	 }
 	 }
 	 */
+	free(statDrives);
 	return result;
 }
 

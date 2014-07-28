@@ -59,7 +59,8 @@ string LicenseSigner::signString(const string& license) {
 	if (!mdctx) {
 		throw logic_error("Message digest creation context");
 	}
-	const char *private_key = PRIVATE_KEY;
+	const char *private_key = PRIVATE_KEY
+	;
 	BIO* bio = BIO_new_mem_buf((void*) (private_key), strlen(private_key));
 	EVP_PKEY *pktmp = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
 	BIO_free(bio);
@@ -97,8 +98,8 @@ string LicenseSigner::signString(const string& license) {
 	 */
 	//bio = BIO_new_fp(stdout, BIO_NOCLOSE);
 	/*int encodedSize = 4 * ceil(slen / 3);
-	char* buffer = (char*) (malloc(encodedSize + 1));
-	memset(buffer,0,encodedSize+1);*/
+	 char* buffer = (char*) (malloc(encodedSize + 1));
+	 memset(buffer,0,encodedSize+1);*/
 	string signatureStr = Opensslb64Encode(slen, signature);
 	/*
 	 * BIO *bio, *b64;
@@ -124,6 +125,8 @@ string LicenseSigner::signString(const string& license) {
 	 */
 	/* Clean up */
 	//free(buffer);
+	if (pktmp)
+		EVP_PKEY_free(pktmp);
 	if (signature)
 		OPENSSL_free(signature);
 

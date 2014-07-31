@@ -39,6 +39,25 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 		size_t * adapter_info_size);
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
+/**
+ * Get an identifier of the machine in an os specific way.
+ * In Linux it uses:
+ * http://stackoverflow.com/questions/328936/getting-a-unique-id-from-a-unix-like-system
+ *
+ * <ul>
+ * <li>Dbus if available</li>
+ * </ul>
+ * Can be used as a fallback in case no other methods are available.
+ * Windows:
+ * HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\ CurrentVersion\ProductId
+ * http://sowkot.blogspot.it/2008/08/generating-unique-keyfinger-print-for.html
+ * http://stackoverflow.com/questions/2842116/reliable-way-of-generating-unique-hardware-id
+ *
+ *
+ * @param identifier
+ * @return
+ */
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 VIRTUALIZATION getVirtualization();
 void os_initialize();
 

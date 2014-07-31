@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "base/base64.h"
+#include <valgrind/memcheck.h>
 
 static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers) {
@@ -98,33 +99,50 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, bool use_label) {
-	size_t disk_num;
+	size_t disk_num, available_disk_info=0;
 	FUNCTION_RETURN result_diskinfos;
-	unsigned int i, k;
+	unsigned int i, k, j;
+	char firstChar;
 	DiskInfo * diskInfos;
 
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
 	if (result_diskinfos != OK) {
 		return result_diskinfos;
 	}
+	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
+	//memset(diskInfos,0,disk_num * sizeof(DiskInfo));
+	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
+	if (result_diskinfos != OK) {
+		free(diskInfos);
+		return result_diskinfos;
+	}
+	for (i = 0; i < disk_num; i++) {
+		firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
+		available_disk_info += firstChar == 0 ? 0 : 1;
+	}
 
 	int defined_identifiers = *num_identifiers;
-	*num_identifiers = disk_num;
+	*num_identifiers = available_disk_info;
 	if (identifiers == NULL) {
+		free(diskInfos);
 		return OK;
-	} else if (disk_num > defined_identifiers) {
+	} else if (available_disk_info > defined_identifiers) {
+		free(diskInfos);
 		return BUFFER_TOO_SMALL;
 	}
 
-	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
-	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-
+	j=0;
 	for (i = 0; i < disk_num; i++) {
-		for (k = 0; k < 6; k++) {
-			if (use_label) {
-				identifiers[i][k] = diskInfos[i].label[k];
-			} else {
-				identifiers[i][k] = diskInfos[i].disk_sn[k + 2];
+		if(use_label){
+			if(diskInfos[i].label[0]!=0){
+				memset(identifiers[j],0,sizeof(PcIdentifier)); //!!!!!!!
+				strncpy(identifiers[j],diskInfos[i].label,sizeof(PcIdentifier));
+				j++;
+			}
+		}else{
+			if(diskInfos[i].disk_sn[0]!=0){
+				memcpy(identifiers[j],&diskInfos[i].disk_sn[2],sizeof(PcIdentifier));
+				j++;
 			}
 		}
 	}
@@ -181,7 +199,7 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		}
 		//fill array if larger
 		for (i = *array_size; i < original_array_size; i++) {
-			identifiers[i][0] = STRATEGY_UNKNOWN;
+			identifiers[i][0] = STRATEGY_UNKNOWN << 5;
 			for (j = 1; j < sizeof(PcIdentifier); j++) {
 				identifiers[i][j] = 42; //padding
 			}
@@ -215,11 +233,11 @@ char *MakeCRC(char *BitString) {
 
 FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 		PcSignature pc_identifier_out) {
-	//TODO base62 encoding, now uses base64
+//TODO base62 encoding, now uses base64
 	PcIdentifier concat_identifiers[2];
 	int b64_size = 0;
 	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
-	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
+//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
 	char* b64_data = base64(concat_identifiers, concatIdentifiersSize,
@@ -229,7 +247,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	}
 	sprintf(pc_identifier_out, "%.4s-%.4s-%.4s-%.4s", &b64_data[0],
 			&b64_data[4], &b64_data[8], &b64_data[12]);
-	//free(concat_identifiers);
+//free(concat_identifiers);
 	free(b64_data);
 	return OK;
 }
@@ -258,7 +276,10 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 		free(identifiers);
 		return result;
 	}
+	VALGRIND_CHECK_VALUE_IS_DEFINED(identifiers[0]);
+	VALGRIND_CHECK_VALUE_IS_DEFINED(identifiers[1]);
 	result = encode_pc_id(identifiers[0], identifiers[1], identifier_out);
+	VALGRIND_CHECK_VALUE_IS_DEFINED(identifier_out);
 	free(identifiers);
 	return result;
 }
@@ -272,7 +293,7 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
  */
 static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 		PcIdentifier identifier2_out, PcSignature pc_signature_in) {
-	//TODO base62 encoding, now uses base64
+//TODO base62 encoding, now uses base64
 
 	unsigned char * concat_identifiers;
 	char base64ids[17];
@@ -302,7 +323,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	PcIdentifier* calculated_identifiers = NULL;
 	unsigned int calc_identifiers_size = 0;
 	int i = 0, j = 0;
-	//bool found;
+//bool found;
 #ifdef _DEBUG
 	printf("Comparing pc identifiers: \n");
 #endif
@@ -311,7 +332,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 		return result;
 	}
 	previous_strategy_id = STRATEGY_UNKNOWN;
-	//found = false;
+//found = false;
 	for (i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
 		if (current_strategy_id == STRATEGY_UNKNOWN) {

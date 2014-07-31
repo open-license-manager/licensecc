@@ -16,6 +16,8 @@ project (license++ C CXX)
 SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
+
 if(WIN32)
 	SET(PLATFORM_LIBS "")
 	if(CMAKE_CL_64)
@@ -43,12 +45,9 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS_DEBUG _DEBUG)
 
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
 #find_package(CryptoPP REQUIRED)
 #include_directories(${CRYPTOPP_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
-
 
 
 SET(Boost_USE_STATIC_LIBS ON)
@@ -63,6 +62,13 @@ find_package(Boost COMPONENTS date_time program_options filesystem system unit_t
 find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+
+if(NOT WIN32)	
+	FIND_PACKAGE(Dbus REQUIRED)
+	include_directories(${DBUS_INCLUDE_DIR})
+	include_directories(${DBUS_ARCH_INCLUDE_DIR})
+	list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
+endif(NOT WIN32)
 
 FIND_PACKAGE(Doxygen)
 
@@ -100,7 +106,6 @@ configure_file (
 #include build directory to find build_properties.h
 include_directories(${CMAKE_BINARY_DIR})
 
-
 add_subdirectory(src)
 
 #test are done with boost_tests:disable them if boost not found.
@@ -115,8 +120,6 @@ IF(Boost_FOUND)
 ENDIF(Boost_FOUND)
 
 #include(build/modules/CmakeDebugVariables.txt)
-
-
 
 message("")
 message( STATUS "C compiler: " ${CMAKE_C_COMPILER})

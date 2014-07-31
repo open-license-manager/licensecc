@@ -58,6 +58,11 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 		perror("getifaddrs");
 		return ERROR;
 	}
+
+	if (adapterInfos != NULL) {
+		memset(adapterInfos, 0,  (*adapter_info_size) * sizeof(AdapterInfo));
+	}
+
 	/* count the maximum number of interfaces */
 	for (ifa = ifaddr, if_max = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
 		if (ifa->ifa_addr == NULL) {
@@ -111,8 +116,8 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 			 */
 #ifdef _DEBUG
 			s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host,
-			NI_MAXHOST,
-			NULL, 0, NI_NUMERICHOST);
+					NI_MAXHOST,
+					NULL, 0, NI_NUMERICHOST);
 			if (s != 0) {
 				printf("getnameinfo() failed: %s\n", gai_strerror(s));
 			}
@@ -190,7 +195,7 @@ static void parseUUID(const char *uuid, unsigned char* buffer_out,
 		hexuuid[j++] = '0';
 	}
 	hexuuid[j] = '\0';
-	for (i = 0; i < j/2; i++) {
+	for (i = 0; i < j / 2; i++) {
 		sscanf(&hexuuid[i * 2], "%2hhx", &cur_character);
 		buffer_out[i % out_size] = buffer_out[i % out_size] ^ cur_character;
 	}
@@ -204,7 +209,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	/*static char discard[1024];
 	 char device[64], name[64], type[64];
 	 */
-	char path[MAX_PATH], cur_dir[MAX_PATH];
+	char cur_dir[MAX_PATH];
 	struct mntent *ent;
 
 	int maxDrives, currentDrive, i, drive_found;
@@ -224,20 +229,12 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	}
 	memset(tmpDrives, 0, sizeof(DiskInfo) * maxDrives);
 	statDrives = (__ino64_t *) malloc(maxDrives * sizeof(__ino64_t ));
-	memset(statDrives, 0, sizeof(__ino64_t ) * maxDrives);;
+	memset(statDrives, 0, sizeof(__ino64_t ) * maxDrives);
+	;
 
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
 		/*proc not mounted*/
-		return ERROR;
-	}
-
-	disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
-	if (disk_by_uuid_dir == NULL) {
-#ifdef _DEBUG
-		printf("Open /dev/disk/by-uuid fail");
-#endif
-		free(statDrives);
 		return ERROR;
 	}
 
@@ -276,16 +273,25 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 		}
 	}
 	endmntent(aFile);
+
 	if (diskInfos == NULL) {
 		*disk_info_size = currentDrive;
 		free(tmpDrives);
 		result = OK;
 	} else if (*disk_info_size >= currentDrive) {
+		disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
+		if (disk_by_uuid_dir == NULL) {
+#ifdef _DEBUG
+			printf("Open /dev/disk/by-uuid fail");
+#endif
+			free(statDrives);
+			return ERROR;
+		}
 		result = OK;
 		*disk_info_size = currentDrive;
 		while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
 			strcpy(cur_dir, "/dev/disk/by-uuid/");
-			strcat(cur_dir, dir->d_name);
+			strncat(cur_dir, dir->d_name, 200);
 			if (stat(cur_dir, &sym_stat) == 0) {
 				for (i = 0; i < currentDrive; i++) {
 					if (sym_stat.st_ino == statDrives[i]) {

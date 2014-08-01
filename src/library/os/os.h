@@ -39,6 +39,8 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 		size_t * adapter_info_size);
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
+FUNCTION_RETURN getCpuId(unsigned char identifier[6]);
+FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
 /**
  * Get an identifier of the machine in an os specific way.
  * In Linux it uses:

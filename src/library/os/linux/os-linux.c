@@ -49,9 +49,9 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 
 	FUNCTION_RETURN f_return = OK;
 	struct ifaddrs *ifaddr, *ifa;
-	int family, i, s, n, if_name_position;
+	int family, i,  n, if_name_position;
 	unsigned int if_num, if_max;
-	char host[NI_MAXHOST];
+	//char host[NI_MAXHOST];
 	char *ifnames;
 
 	if (getifaddrs(&ifaddr) == -1) {
@@ -60,7 +60,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 	}
 
 	if (adapterInfos != NULL) {
-		memset(adapterInfos, 0,  (*adapter_info_size) * sizeof(AdapterInfo));
+		memset(adapterInfos, 0, (*adapter_info_size) * sizeof(AdapterInfo));
 	}
 
 	/* count the maximum number of interfaces */
@@ -361,6 +361,28 @@ void os_initialize() {
 		ERR_load_crypto_strings();
 		OpenSSL_add_all_algorithms();
 	}
+}
+
+static void _getCpuid(unsigned int* p, unsigned int ax) {
+	__asm __volatile
+	( "movl %%ebx, %%esi\n\t"
+			"cpuid\n\t"
+			"xchgl %%ebx, %%esi"
+			: "=a" (p[0]), "=S" (p[1]),
+			"=c" (p[2]), "=d" (p[3])
+			: "0" (ax)
+	);
+}
+
+FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
+	unsigned int i;
+	unsigned int cpuinfo[4] = { 0, 0, 0, 0 };
+	_getCpuid(cpuinfo, 0);
+	for (i = 0; i < 3; i++) {
+		identifier[i * 2] = cpuinfo[i] & 0xFF;
+		identifier[i * 2 + 1] = (cpuinfo[i] & 0xFF00) >> 8;
+	}
+	return OK;
 }
 
 VIRTUALIZATION getVirtualization() {

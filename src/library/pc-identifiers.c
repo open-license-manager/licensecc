@@ -15,53 +15,89 @@
 
 static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers) {
-	size_t adapter_num, disk_num;
-	FUNCTION_RETURN result_adapterInfos, result_diskinfos;
-	unsigned int required_id_size, i, j, k;
+	size_t adapter_num, disk_num, plat_spec_id;
+	FUNCTION_RETURN result_adapterInfos, result_diskinfos, result_plat_spec;
+	unsigned int required_id_size, current_identifier, i, j, k;
 	DiskInfo * diskInfos;
 	AdapterInfo *adapterInfos;
+	required_id_size = 0;
 
-	result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
-	if (result_adapterInfos != OK) {
-		//call generate_disk_pc_id;
-		return result_adapterInfos;
+	//just calculate the number of required identifiers
+	result_plat_spec = generate_platform_specific_pc_id(NULL, &plat_spec_id);
+	if (result_plat_spec == OK) {
+		required_id_size += 1;
 	}
+	result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
-	if (result_diskinfos == OK) {
-		required_id_size = disk_num * adapter_num;
-	} else {
-		required_id_size = disk_num;
+	if (result_diskinfos == OK && result_adapterInfos == OK) {
+		required_id_size += disk_num * adapter_num;
+	} else if (result_adapterInfos == OK) {
+		required_id_size += adapter_num;
+	} else if (result_diskinfos == OK) {
+		required_id_size += disk_num;
 	}
 	int defined_identifiers = *num_identifiers;
-	*num_identifiers = required_id_size;
 	if (identifiers == NULL) {
+		*num_identifiers = required_id_size;
 		return OK;
 	} else if (required_id_size > defined_identifiers) {
 		return BUFFER_TOO_SMALL;
 	}
-	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
-	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-	adapterInfos = (AdapterInfo*) malloc(adapter_num * sizeof(AdapterInfo));
-	result_adapterInfos = getAdapterInfos(adapterInfos, &adapter_num);
-	for (i = 0; i < disk_num; i++) {
-		for (j = 0; j < adapter_num; j++) {
-			for (k = 0; k < 6; k++)
-				identifiers[i * adapter_num + j][k] =
-						diskInfos[i].disk_sn[k + 2]
-								^ adapterInfos[j].mac_address[k + 2];
+
+	//calculate the identifiers
+	current_identifier = 0;
+	if (result_plat_spec == OK) {
+		generate_platform_specific_pc_id(identifiers, 1);
+		current_identifier += 1;
+	}
+	if (result_diskinfos == OK && result_adapterInfos == OK) {
+		diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
+		result_diskinfos = getDiskInfos(diskInfos, &disk_num);
+		adapterInfos = (AdapterInfo*) malloc(adapter_num * sizeof(AdapterInfo));
+		result_adapterInfos = getAdapterInfos(adapterInfos, &adapter_num);
+		for (i = 0; i < disk_num; i++) {
+			for (j = 0; j < adapter_num; j++) {
+				if (current_identifier > defined_identifiers) {
+					break;
+				}
+				for (k = 0; k < 6; k++) {
+					identifiers[current_identifier][k] = diskInfos[i].disk_sn[k
+							+ 2] ^ adapterInfos[j].mac_address[k + 2];
+				}
+				encodeStrategy(identifiers[current_identifier], DEFAULT);
+				current_identifier++;
+			}
 		}
+		free(diskInfos);
+		free(adapterInfos);
+	} else if (result_adapterInfos == OK) {
+		return generate_ethernet_pc_id(&identifiers[current_identifier],
+				defined_identifiers-current_identifier, true);
+	} else if (result_diskinfos == OK) {
+		return generate_disk_pc_id(&identifiers[current_identifier],
+				defined_identifiers-current_identifier, false);
 	}
 
-	free(diskInfos);
-	free(adapterInfos);
 	return OK;
+}
+
+static void encodeStrategy(PcIdentifier * identifier,
+		IDENTIFICATION_STRATEGY strategy) {
+	unsigned char strategy_num = strategy << 5;
+	identifier[0] = (identifier[0] & 15) | strategy_num;
+
+}
+
+static FUNCTION_RETURN generate_platform_specific_pc_id(
+		PcIdentifier * identifiers, unsigned int * num_identifiers) {
+
 }
 
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, bool use_mac) {
 	size_t adapters;
 	FUNCTION_RETURN result_adapterInfos;
-	unsigned int i, j, k;
+	unsigned int j, k;
 	AdapterInfo *adapterInfos;
 
 	result_adapterInfos = getAdapterInfos(NULL, &adapters);
@@ -99,9 +135,9 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, bool use_label) {
-	size_t disk_num, available_disk_info=0;
+	size_t disk_num, available_disk_info = 0;
 	FUNCTION_RETURN result_diskinfos;
-	unsigned int i, k, j;
+	unsigned int i, j;
 	char firstChar;
 	DiskInfo * diskInfos;
 
@@ -110,7 +146,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		return result_diskinfos;
 	}
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
-	//memset(diskInfos,0,disk_num * sizeof(DiskInfo));
+//memset(diskInfos,0,disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 	if (result_diskinfos != OK) {
 		free(diskInfos);
@@ -131,17 +167,19 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		return BUFFER_TOO_SMALL;
 	}
 
-	j=0;
+	j = 0;
 	for (i = 0; i < disk_num; i++) {
-		if(use_label){
-			if(diskInfos[i].label[0]!=0){
-				memset(identifiers[j],0,sizeof(PcIdentifier)); //!!!!!!!
-				strncpy(identifiers[j],diskInfos[i].label,sizeof(PcIdentifier));
+		if (use_label) {
+			if (diskInfos[i].label[0] != 0) {
+				memset(identifiers[j], 0, sizeof(PcIdentifier)); //!!!!!!!
+				strncpy(identifiers[j], diskInfos[i].label,
+						sizeof(PcIdentifier));
 				j++;
 			}
-		}else{
-			if(diskInfos[i].disk_sn[0]!=0){
-				memcpy(identifiers[j],&diskInfos[i].disk_sn[2],sizeof(PcIdentifier));
+		} else {
+			if (diskInfos[i].disk_sn[0] != 0) {
+				memcpy(identifiers[j], &diskInfos[i].disk_sn[2],
+						sizeof(PcIdentifier));
 				j++;
 			}
 		}
@@ -184,19 +222,14 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 	case DISK_NUM:
 		result = generate_disk_pc_id(identifiers, array_size, false);
 		break;
-	case DISK_LABEL:
-		result = generate_disk_pc_id(identifiers, array_size, true);
+	case PLATFORM_SPECIFIC:
+		result = generate_platform_specific_pc_id(identifiers, array_size);
 		break;
 	default:
 		return ERROR;
 	}
 
 	if (result == OK && identifiers != NULL) {
-		strategy_num = strategy << 5;
-		for (i = 0; i < *array_size; i++) {
-			//encode strategy in the first three bits of the pc_identifier
-			identifiers[i][0] = (identifiers[i][0] & 15) | strategy_num;
-		}
 		//fill array if larger
 		for (i = *array_size; i < original_array_size; i++) {
 			identifiers[i][0] = STRATEGY_UNKNOWN << 5;

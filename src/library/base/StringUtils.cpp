@@ -12,6 +12,10 @@
 #include <cstring>
 #include <algorithm>
 
+#ifdef WIN32
+#include <time.h> //mktime under windows
+#endif
+
 namespace license {
 using namespace std;
 

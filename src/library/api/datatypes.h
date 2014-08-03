@@ -49,7 +49,7 @@ typedef enum {
 } LICENSE_TYPE;
 
 typedef enum {
-	INFO, SEVERITY_WARN, SEVERITY_ERROR
+	SVRT_INFO, SVRT_WARN, SVRT_ERROR
 } SEVERITY;
 
 typedef struct {

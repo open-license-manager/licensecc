@@ -52,17 +52,17 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	bool sigVerified = OsFunctions::verifySignature(printForSign().c_str(),
 			license_signature.c_str());
 	if (sigVerified) {
-		er.addEvent(LICENSE_VERIFIED, INFO);
+		er.addEvent(LICENSE_VERIFIED, SVRT_INFO);
 	} else {
-		er.addEvent(LICENSE_CORRUPTED, SEVERITY_ERROR);
+		er.addEvent(LICENSE_CORRUPTED, SVRT_ERROR);
 	}
 	if (has_expiry) {
 		time_t now = time(NULL);
 		if (expires_on() < now) {
-			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR, "");
+			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR, "");
 		}
 		if (valid_from() > now) {
-			er.addEvent(PRODUCT_EXPIRED, SEVERITY_ERROR);
+			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR);
 		}
 	}
 	if (has_client_sig) {
@@ -70,7 +70,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
 		EVENT_TYPE event = validate_pc_signature(str_code);
 		if (event != LICENSE_OK) {
-			er.addEvent(event, SEVERITY_ERROR);
+			er.addEvent(event, SVRT_ERROR);
 		}
 	}
 	return er;
@@ -114,7 +114,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		ini.Reset();
 		SI_Error rc = ini.LoadFile((*it).c_str());
 		if (rc < 0) {
-			result.addEvent(FILE_FORMAT_NOT_RECOGNIZED, SEVERITY_WARN, *it);
+			result.addEvent(FILE_FORMAT_NOT_RECOGNIZED, SVRT_WARN, *it);
 			continue;
 		} else {
 			loadAtLeastOneFile = true;
@@ -122,7 +122,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		const char* productNamePtr = product.c_str();
 		int sectionSize = ini.GetSectionSize(productNamePtr);
 		if (sectionSize <= 0) {
-			result.addEvent(PRODUCT_NOT_LICENSED, SEVERITY_WARN, *it);
+			result.addEvent(PRODUCT_NOT_LICENSED, SVRT_WARN, *it);
 			continue;
 		} else {
 			atLeastOneProductLicensed = true;
@@ -162,7 +162,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {
-			result.addEvent(LICENSE_MALFORMED, SEVERITY_WARN, *it);
+			result.addEvent(LICENSE_MALFORMED, SVRT_WARN, *it);
 		}
 	}
 	if (!loadAtLeastOneFile) {
@@ -193,11 +193,11 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 				for (auto it = existing_pos.begin(); it != existing_pos.end();
 						++it) {
 					diskFiles.push_back(*it);
-					eventRegistry.addEvent(LICENSE_FILE_FOUND, INFO, *it);
+					eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO, *it);
 				}
 			}
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SEVERITY_WARN,
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
 					varName);
 		}
 	}
@@ -223,19 +223,19 @@ bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 					for (auto it = existing_pos.begin();
 							it != existing_pos.end(); ++it) {
 						diskFiles.push_back(*it);
-						eventRegistry.addEvent(LICENSE_FILE_FOUND, INFO, *it);
+						eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO, *it);
 					}
 				} else {
 					eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND,
-							SEVERITY_WARN, env_var_value);
+							SVRT_WARN, env_var_value);
 				}
 			} else {
 				eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
-						SEVERITY_WARN);
+						SVRT_WARN);
 			}
 		} else {
 			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
-					SEVERITY_WARN);
+					SVRT_WARN);
 		}
 	}
 	return licenseFileFoundWithEnvVariable;
@@ -252,9 +252,9 @@ EventRegistry LicenseReader::getLicenseDiskFiles(vector<string>& diskFiles) {
 		if (f.good()) {
 			foundNearModule = true;
 			diskFiles.push_back(temptativeLicense);
-			eventRegistry.addEvent(LICENSE_FILE_FOUND, INFO, temptativeLicense);
+			eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO, temptativeLicense);
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SEVERITY_WARN,
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
 					temptativeLicense);
 		}
 		f.close();

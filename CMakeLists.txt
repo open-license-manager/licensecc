@@ -12,7 +12,7 @@ SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 SET(CMAKE_DISABLE_SOURCE_CHANGES OFF)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-project (license++ C CXX)
+
 SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
@@ -24,7 +24,7 @@ if(WIN32)
 		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64 /INCREMENTAL:NO" CACHE STRING "Linker flags")
 	endif(CMAKE_CL_64)
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
-	set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS_DEBUG _CRT_SECURE_NO_WARNINGS)
+	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
 else(WIN32)
     SET(PLATFORM_LIBS "m")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fmessage-length=0 -std=c++11 -Wall -Wuninitialized -fPIC") 
@@ -37,6 +37,8 @@ else(WIN32)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
 	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif(WIN32)
+
+project (license++ C CXX)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 1)
@@ -58,12 +60,12 @@ find_package(Boost COMPONENTS date_time program_options filesystem system unit_t
 #include_directories(${Boost_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
 
-#find a static version of openssl crypto library
-find_package(OpenSSL REQUIRED)
-include_directories(${OPENSSL_INCLUDE_DIR})
-list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 
 if(NOT WIN32)	
+	#find a static version of openssl crypto library
+	find_package(OpenSSL REQUIRED)
+	include_directories(${OPENSSL_INCLUDE_DIR})
+	list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 	FIND_PACKAGE(Dbus REQUIRED)
 	include_directories(${DBUS_INCLUDE_DIR})
 	include_directories(${DBUS_ARCH_INCLUDE_DIR})

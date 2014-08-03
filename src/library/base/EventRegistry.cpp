@@ -10,6 +10,8 @@
 #include <string.h>
 #include <algorithm>
 
+using namespace std;
+
 namespace license {
 EventRegistry::EventRegistry() {
 }
@@ -33,7 +35,7 @@ void EventRegistry::append(const EventRegistry& eventRegistry) {
 
 void EventRegistry::turnLastEventIntoError() {
 	if (logs.size() > 0) {
-		logs.back().severity = SEVERITY_ERROR;
+		logs.back().severity = SVRT_ERROR;
 	}
 }
 
@@ -41,7 +43,7 @@ bool EventRegistry::turnEventIntoError(EVENT_TYPE event) {
 	bool eventFound = false;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
 		if (it->event_type == event) {
-			it->severity = SEVERITY_ERROR;
+			it->severity = SVRT_ERROR;
 			eventFound = true;
 		}
 	}
@@ -56,7 +58,7 @@ AuditEvent const * EventRegistry::getLastFailure() const {
 	auto it = logs.end();
 	do {
 		--it;
-		if (it->severity == SEVERITY_ERROR) {
+		if (it->severity == SVRT_ERROR) {
 			result = &(*it);
 			break;
 		}
@@ -68,7 +70,7 @@ AuditEvent const * EventRegistry::getLastFailure() const {
 bool EventRegistry::isGood() const {
 	bool isGood = true;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
-		if (it->severity == SEVERITY_ERROR) {
+		if (it->severity == SVRT_ERROR) {
 			isGood = false;
 			break;
 		}
@@ -77,7 +79,7 @@ bool EventRegistry::isGood() const {
 }
 
 void EventRegistry::addError(EVENT_TYPE event) {
-	addEvent(event, SEVERITY_ERROR);
+	addEvent(event, SVRT_ERROR);
 }
 
 void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity) {
@@ -102,8 +104,8 @@ void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity,
 bool EventRegistry::turnErrosIntoWarnings() {
 	bool eventFound = false;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
-		if (it->severity == SEVERITY_ERROR) {
-			it->severity = SEVERITY_WARN;
+		if (it->severity == SVRT_ERROR) {
+			it->severity = SVRT_WARN;
 			eventFound = true;
 		}
 	}
@@ -111,7 +113,7 @@ bool EventRegistry::turnErrosIntoWarnings() {
 }
 
 void EventRegistry::exportLastEvents(AuditEvent* auditEvents, int nlogs) {
-	int sizeToCopy = std::min(nlogs, (int) logs.size());
+	int sizeToCopy = min(nlogs, (int) logs.size());
 	std::copy(logs.begin(), logs.begin() + sizeToCopy, auditEvents);
 }
 }

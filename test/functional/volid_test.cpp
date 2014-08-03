@@ -11,12 +11,12 @@
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 #include "../../src/library/pc-identifiers.h"
-#include <dbus/dbus.h>
+#include <dbus-1.0/dbus/dbus.h>
 
 namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
-/*
+
  BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
  const string licLocation(PROJECT_TEST_TEMP_DIR "/volid_license.lic");
  PcSignature identifier_out;
@@ -99,7 +99,5 @@ using namespace std;
  }
  }
  }
- */
-BOOST_AUTO_TEST_CASE( ciiii ) {
-	cout << dbus_get_local_machine_id() << endl;
-}
+
+

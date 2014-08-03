@@ -31,6 +31,9 @@
 #include <dirent.h>
 #include <stdio.h>
 
+#include <dbus-1.0/dbus/dbus.h>
+#include <sys/utsname.h>
+
 static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
 	int i, position;
 	position = -1;
@@ -49,7 +52,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 
 	FUNCTION_RETURN f_return = OK;
 	struct ifaddrs *ifaddr, *ifa;
-	int family, i,  n, if_name_position;
+	int family, i, n, if_name_position;
 	unsigned int if_num, if_max;
 	//char host[NI_MAXHOST];
 	char *ifnames;
@@ -408,3 +411,22 @@ VIRTUALIZATION getVirtualization() {
 	return NONE;
 }
 
+FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
+	static struct utsname u;
+
+	if (uname(&u) < 0) {
+		return ERROR;
+	}
+	memcpy(identifier, u.nodename, 6);
+	return OK;
+}
+
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
+	char* dbus_id = dbus_get_local_machine_id();
+	if (dbus_id == NULL) {
+		return ERROR;
+	}
+	memcpy(identifier, dbus_id, 6);
+	dbus_free(dbus_id);
+	return OK;
+}

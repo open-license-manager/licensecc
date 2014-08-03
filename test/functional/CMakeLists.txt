@@ -44,3 +44,17 @@ SET_TARGET_PROPERTIES(volid_test PROPERTIES LINK_SEARCH_START_STATIC ON)
 ADD_TEST(standard_license_test ${EXECUTABLE_OUTPUT_PATH}/standard_license_test)
 ADD_TEST(date_test ${EXECUTABLE_OUTPUT_PATH}/date_test)
 ADD_TEST(volid_test ${EXECUTABLE_OUTPUT_PATH}/volid_test)
+
+
+
+add_executable(
+ stackoverflow
+ stackoverflow.cpp
+)
+
+target_link_libraries(
+    stackoverflow
+    license_generator_lib
+)
+
+SET_TARGET_PROPERTIES(stackoverflow PROPERTIES LINK_SEARCH_START_STATIC ON)

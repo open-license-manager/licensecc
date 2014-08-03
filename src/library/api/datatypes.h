@@ -42,11 +42,11 @@ typedef enum {
 	LICENSE_FILE_FOUND = 100,
 	LICENSE_VERIFIED = 101
 
-}  EVENT_TYPE;
+} EVENT_TYPE;
 
 typedef enum {
 	LOCAL, REMOTE //remote licenses are not supported now.
-}  LICENSE_TYPE;
+} LICENSE_TYPE;
 
 typedef enum {
 	INFO, SEVERITY_WARN, SEVERITY_ERROR
@@ -61,8 +61,7 @@ typedef struct {
 
 typedef struct {
 	const char *licenseFileLocation;
-	const char *environmentVariableName;
-	bool openFileNearModule;
+	const char *environmentVariableName;bool openFileNearModule;
 } LicenseLocation;
 
 typedef struct {
@@ -77,9 +76,7 @@ typedef struct {
 	 * can be '\0' if the software don't expire
 	 * */
 	char expiry_date[11];
-	unsigned int days_left;
-	bool has_expiry;
-	bool linked_to_pc;
+	unsigned int days_left;bool has_expiry;bool linked_to_pc;
 	LICENSE_TYPE license_type; // Local or Remote
 	/* A string of character inserted into the license understood
 	 * by the calling application.
@@ -93,7 +90,13 @@ typedef struct {
  * in most cases.
  */
 typedef enum {
-	DEFAULT, ETHERNET, IP_ADDRESS, DISK_NUM, PLATFORM_SPECIFIC, STRATEGY_UNKNOWN
+	DEFAULT,
+	ETHERNET,
+	IP_ADDRESS,
+	DISK_NUM,
+	DISK_LABEL,
+	PLATFORM_SPECIFIC,
+	STRATEGY_UNKNOWN
 } IDENTIFICATION_STRATEGY;
 
 #ifdef __cplusplus

@@ -32,7 +32,7 @@ extern "C" {
      _a < _b ? _a : _b; })
 */
 typedef enum  {
-	OK, NOOK, ERROR, BUFFER_TOO_SMALL
+	FUNC_RET_OK, FUNC_RET_NOT_AVAIL, FUNC_RET_ERROR, FUNC_RET_BUFFER_TOO_SMALL
 } FUNCTION_RETURN;
 
 #ifdef __cplusplus

@@ -50,7 +50,7 @@ static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
 FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 		size_t * adapter_info_size) {
 
-	FUNCTION_RETURN f_return = OK;
+	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	struct ifaddrs *ifaddr, *ifa;
 	int family, i, n, if_name_position;
 	unsigned int if_num, if_max;
@@ -59,7 +59,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 
 	if (getifaddrs(&ifaddr) == -1) {
 		perror("getifaddrs");
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 
 	if (adapterInfos != NULL) {
@@ -159,9 +159,9 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 
 	*adapter_info_size = if_num;
 	if (adapterInfos == NULL) {
-		f_return = OK;
+		f_return = FUNC_RET_OK;
 	} else if (*adapter_info_size < if_num) {
-		f_return = BUFFER_TOO_SMALL;
+		f_return = FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	freeifaddrs(ifaddr);
 	free(ifnames);
@@ -238,7 +238,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
 		/*proc not mounted*/
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 
 	currentDrive = 0;
@@ -280,7 +280,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	if (diskInfos == NULL) {
 		*disk_info_size = currentDrive;
 		free(tmpDrives);
-		result = OK;
+		result = FUNC_RET_OK;
 	} else if (*disk_info_size >= currentDrive) {
 		disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
 		if (disk_by_uuid_dir == NULL) {
@@ -288,9 +288,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 			printf("Open /dev/disk/by-uuid fail");
 #endif
 			free(statDrives);
-			return ERROR;
+			return FUNC_RET_ERROR;
 		}
-		result = OK;
+		result = FUNC_RET_OK;
 		*disk_info_size = currentDrive;
 		while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
 			strcpy(cur_dir, "/dev/disk/by-uuid/");
@@ -334,7 +334,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 			closedir(disk_by_label);
 		}
 	} else {
-		result = BUFFER_TOO_SMALL;
+		result = FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	/*
 	 FILE *mounts = fopen(_PATH_MOUNTED, "r");
@@ -385,7 +385,7 @@ FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 		identifier[i * 2] = cpuinfo[i] & 0xFF;
 		identifier[i * 2 + 1] = (cpuinfo[i] & 0xFF00) >> 8;
 	}
-	return OK;
+	return FUNC_RET_OK;
 }
 
 VIRTUALIZATION getVirtualization() {
@@ -415,18 +415,18 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	static struct utsname u;
 
 	if (uname(&u) < 0) {
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 	memcpy(identifier, u.nodename, 6);
-	return OK;
+	return FUNC_RET_OK;
 }
 
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 	char* dbus_id = dbus_get_local_machine_id();
 	if (dbus_id == NULL) {
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 	memcpy(identifier, dbus_id, 6);
 	dbus_free(dbus_id);
-	return OK;
+	return FUNC_RET_OK;
 }

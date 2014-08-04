@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
 	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
-	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::OK);
+	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 	cout << "Identifier:" << identifier_out << endl;
 	vector<string> extraArgs = { "-s", identifier_out };
 	generate_license(licLocation, extraArgs);
@@ -47,7 +47,7 @@ static void generate_reference_file(const string& idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
-		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::OK);
+		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 		idfile << identifier_out << endl;
 	}
 	idfile.close();
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
-		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::OK);
+		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 		if (reference_signatures[i] != generated_identifier) {
 			string message = string("pc signature compare fail: strategy:")
 					+ to_string(strategies[i]) + " generated: ["

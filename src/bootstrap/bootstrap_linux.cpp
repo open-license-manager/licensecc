@@ -75,6 +75,7 @@ void writePrivateRSAHeader(const std::string& private_fname, RSA* rsa) {
 	BIO_free_all(bio_private);
 	free(pem_key);
 }
+
 void generatePk(std::string private_fname,string public_fname) {
 	RSA *rsa = RSA_generate_key(kBits, kExp, 0, 0);
 	srand(time(NULL)); /* seed random number generator */

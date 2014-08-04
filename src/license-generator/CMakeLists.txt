@@ -4,6 +4,7 @@ ADD_LIBRARY(license_generator_lib STATIC
     license-generator.cpp
     LicenseSigner.cpp
 )
+
 link_directories ( ${Boost_LIBRARY_DIRS} )
 add_dependencies( license_generator_lib private_key )
 

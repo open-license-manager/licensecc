@@ -13,11 +13,11 @@ BOOST_AUTO_TEST_CASE( read_disk_id ) {
 	DiskInfo * diskInfos = NULL;
 	size_t disk_info_size = 0;
 	FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
-	BOOST_CHECK_EQUAL(result, OK);
+	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	BOOST_CHECK_GT(disk_info_size, 0);
 	diskInfos = (DiskInfo*) malloc(sizeof(DiskInfo) * disk_info_size);
 	result = getDiskInfos(diskInfos, &disk_info_size);
-	BOOST_CHECK_EQUAL(result, OK);
+	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	BOOST_CHECK_GT(strlen(diskInfos[0].device), 0);
 	BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
 	BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
@@ -27,12 +27,12 @@ BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 	AdapterInfo * adapter_info = NULL;
 	size_t adapter_info_size = 0;
 	FUNCTION_RETURN result = getAdapterInfos(NULL, &adapter_info_size);
-	BOOST_CHECK_EQUAL(result, OK);
+	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	BOOST_CHECK_GT(adapter_info_size, 0);
 	adapter_info = (AdapterInfo*) malloc(
 			sizeof(AdapterInfo) * adapter_info_size);
 	result = getAdapterInfos(adapter_info, &adapter_info_size);
-	BOOST_CHECK_EQUAL(result, OK);
+	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	for (size_t i = 0; i < adapter_info_size; i++) {
 		cout << "Interface found: " << string(adapter_info[i].description)
 				<< endl;

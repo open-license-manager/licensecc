@@ -32,33 +32,33 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 
 	//just calculate the number of required identifiers
 	result_plat_spec = generate_platform_specific_pc_id(NULL, &plat_spec_id);
-	if (result_plat_spec == OK) {
+	if (result_plat_spec == FUNC_RET_OK) {
 		required_id_size += 1;
 	}
 	result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
-	if (result_diskinfos == OK && result_adapterInfos == OK) {
+	if (result_diskinfos == FUNC_RET_OK && result_adapterInfos == FUNC_RET_OK) {
 		required_id_size += disk_num * adapter_num;
-	} else if (result_adapterInfos == OK) {
+	} else if (result_adapterInfos == FUNC_RET_OK) {
 		required_id_size += adapter_num;
-	} else if (result_diskinfos == OK) {
+	} else if (result_diskinfos == FUNC_RET_OK) {
 		required_id_size += disk_num;
 	}
 	int defined_identifiers = *num_identifiers;
 	if (identifiers == NULL) {
 		*num_identifiers = required_id_size;
-		return OK;
+		return FUNC_RET_OK;
 	} else if (required_id_size > defined_identifiers) {
-		return BUFFER_TOO_SMALL;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
 	//calculate the identifiers
 	current_identifier = 0;
-	if (result_plat_spec == OK) {
+	if (result_plat_spec == FUNC_RET_OK) {
 		generate_platform_specific_pc_id(identifiers, 1);
 		current_identifier += 1;
 	}
-	if (result_diskinfos == OK && result_adapterInfos == OK) {
+	if (result_diskinfos == FUNC_RET_OK && result_adapterInfos == FUNC_RET_OK) {
 		diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
 		result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 		adapterInfos = (AdapterInfo*) malloc(adapter_num * sizeof(AdapterInfo));
@@ -78,17 +78,17 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		}
 		free(diskInfos);
 		free(adapterInfos);
-	} else if (result_adapterInfos == OK) {
+	} else if (result_adapterInfos == FUNC_RET_OK) {
 		i=defined_identifiers-current_identifier;
 		return generate_ethernet_pc_id(&identifiers[current_identifier],
 				&i, true);
-	} else if (result_diskinfos == OK) {
+	} else if (result_diskinfos == FUNC_RET_OK) {
 		i=defined_identifiers-current_identifier;
 		return generate_disk_pc_id(&identifiers[current_identifier],
 				&i, false);
 	}
 
-	return OK;
+	return FUNC_RET_OK;
 }
 
 static void encodeStrategy(PcIdentifier * identifier,
@@ -113,16 +113,16 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 	AdapterInfo *adapterInfos;
 
 	result_adapterInfos = getAdapterInfos(NULL, &adapters);
-	if (result_adapterInfos != OK) {
+	if (result_adapterInfos != FUNC_RET_OK) {
 		return result_adapterInfos;
 	}
 
 	int defined_adapters = *num_identifiers;
 	*num_identifiers = adapters;
 	if (identifiers == NULL) {
-		return OK;
+		return FUNC_RET_OK;
 	} else if (adapters > defined_adapters) {
-		return BUFFER_TOO_SMALL;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
 	adapterInfos = (AdapterInfo*) malloc(adapters * sizeof(AdapterInfo));
@@ -142,7 +142,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 			}
 	}
 	free(adapterInfos);
-	return OK;
+	return FUNC_RET_OK;
 }
 
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
@@ -154,13 +154,13 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	DiskInfo * diskInfos;
 
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
-	if (result_diskinfos != OK) {
+	if (result_diskinfos != FUNC_RET_OK) {
 		return result_diskinfos;
 	}
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
 //memset(diskInfos,0,disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-	if (result_diskinfos != OK) {
+	if (result_diskinfos != FUNC_RET_OK) {
 		free(diskInfos);
 		return result_diskinfos;
 	}
@@ -173,10 +173,10 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	*num_identifiers = available_disk_info;
 	if (identifiers == NULL) {
 		free(diskInfos);
-		return OK;
+		return FUNC_RET_OK;
 	} else if (available_disk_info > defined_identifiers) {
 		free(diskInfos);
-		return BUFFER_TOO_SMALL;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
 	j = 0;
@@ -197,7 +197,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		}
 	}
 	free(diskInfos);
-	return OK;
+	return FUNC_RET_OK;
 }
 
 /**
@@ -238,10 +238,10 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		result = generate_platform_specific_pc_id(identifiers, array_size);
 		break;
 	default:
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 
-	if (result == OK && identifiers != NULL) {
+	if (result == FUNC_RET_OK && identifiers != NULL) {
 		//fill array if larger
 		for (i = *array_size; i < original_array_size; i++) {
 			identifiers[i][0] = STRATEGY_UNKNOWN << 5;
@@ -288,17 +288,17 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	char* b64_data = base64(concat_identifiers, concatIdentifiersSize,
 			&b64_size);
 	if (b64_size > sizeof(PcSignature)) {
-		return BUFFER_TOO_SMALL;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	sprintf(pc_identifier_out, "%.4s-%.4s-%.4s-%.4s", &b64_data[0],
 			&b64_data[4], &b64_data[8], &b64_data[12]);
 //free(concat_identifiers);
 	free(b64_data);
-	return OK;
+	return FUNC_RET_OK;
 }
 
 FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) {
-	return OK;
+	return FUNC_RET_OK;
 }
 
 FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
@@ -307,17 +307,17 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 	PcIdentifier* identifiers;
 	unsigned int req_buffer_size = 0;
 	result = generate_pc_id(NULL, &req_buffer_size, strategy);
-	if (result != OK) {
+	if (result != FUNC_RET_OK) {
 		return result;
 	}
 	if (req_buffer_size == 0) {
-		return ERROR;
+		return FUNC_RET_ERROR;
 	}
 	req_buffer_size = req_buffer_size < 2 ? 2 : req_buffer_size;
 	identifiers = (PcIdentifier *) malloc(
 			sizeof(PcIdentifier) * req_buffer_size);
 	result = generate_pc_id(identifiers, &req_buffer_size, strategy);
-	if (result != OK) {
+	if (result != FUNC_RET_OK) {
 		free(identifiers);
 		return result;
 	}
@@ -348,13 +348,13 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 			&base64ids[8], &base64ids[12]);
 	concat_identifiers = unbase64(base64ids, 16, &identifiers_size);
 	if (identifiers_size > sizeof(PcIdentifier) * 2) {
-		return BUFFER_TOO_SMALL;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	memcpy(identifier1_out, concat_identifiers, sizeof(PcIdentifier));
 	memcpy(identifier2_out, concat_identifiers + sizeof(PcIdentifier),
 			sizeof(PcIdentifier));
 	free(concat_identifiers);
-	return OK;
+	return FUNC_RET_OK;
 }
 
 static IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
@@ -373,7 +373,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	printf("Comparing pc identifiers: \n");
 #endif
 	result = decode_pc_id(user_identifiers[0], user_identifiers[1], str_code);
-	if (result != OK) {
+	if (result != FUNC_RET_OK) {
 		return result;
 	}
 	previous_strategy_id = STRATEGY_UNKNOWN;

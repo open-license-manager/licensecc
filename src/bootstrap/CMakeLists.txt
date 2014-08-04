@@ -1,9 +1,12 @@
 
+if(WIN32)
+	add_subdirectory(win)
+else(WIN32)
 add_executable(
  bootstrap
- bootstrap.cpp
+ bootstrap_linux.cpp
 )
-
+ENDIF(WIN32)
 
 SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_START_STATIC ON)
 SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_END_STATIC OFF)

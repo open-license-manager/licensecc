@@ -33,7 +33,7 @@ DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo);
  * This method calculate the pc identifier. The string has to be shown
  * to the user in order to calculate the license.
  */
-void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
+DllExport void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
 		char chbuffer[PC_IDENTIFIER_SIZE + 1]);
 /*
  * The optional parameter License contains the information the program that uses the library

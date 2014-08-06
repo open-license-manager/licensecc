@@ -35,7 +35,7 @@ public:
 	bool has_client_sig;
 	string extra_data;
 
-	static constexpr const char* UNUSED_TIME = "0000-00-00";
+	static const char* UNUSED_TIME;
 	static const unsigned int UNUSED_SOFTWARE_VERSION = 0;
 
 	FullLicenseInfo(const string& source, const string& product,

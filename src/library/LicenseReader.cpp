@@ -28,6 +28,8 @@
 
 namespace license {
 
+const char *FullLicenseInfo::UNUSED_TIME = "0000-00-00";
+
 FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 		const string& license_signature, int licenseVersion, string from_date,
 		string to_date, const string& client_signature,

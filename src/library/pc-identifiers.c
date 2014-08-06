@@ -11,7 +11,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include "base/base64.h"
+#ifdef __linux__
 #include <valgrind/memcheck.h>
+#endif
 
 static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers) {
@@ -276,10 +278,14 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 		free(identifiers);
 		return result;
 	}
+#ifdef __linux__
 	VALGRIND_CHECK_VALUE_IS_DEFINED(identifiers[0]);
 	VALGRIND_CHECK_VALUE_IS_DEFINED(identifiers[1]);
+#endif
 	result = encode_pc_id(identifiers[0], identifiers[1], identifier_out);
+#ifdef __linux__
 	VALGRIND_CHECK_VALUE_IS_DEFINED(identifier_out);
+#endif
 	free(identifiers);
 	return result;
 }

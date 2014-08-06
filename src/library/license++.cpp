@@ -17,8 +17,7 @@ DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {
 
 }
 
-DllExport void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
-		char chbuffer[PC_IDENTIFIER_SIZE + 1]) {
+DllExport void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFIER_SIZE + 1]) {
 
 }
 

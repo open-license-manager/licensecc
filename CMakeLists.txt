@@ -39,7 +39,6 @@ else(WIN32)
 endif(WIN32)
 
 
-
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 1)
 else(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -47,16 +46,30 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS_DEBUG _DEBUG)
 
+#TODO: determine target arch.
+SET( TargetArchitecture "X86_64")
+SET(Boost_USE_STATIC_LIBS ON)
+include(add_boost)
+set(Boost_FOUND TRUE)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories ( ${Boost_LIBRARY_DIRS} )
+
+#get_cmake_property(_variableNames VARIABLES)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
+#include_directories(${Boost_INCLUDE_DIRS})
+#link_directories ( ${Boost_LIBRARY_DIRS} )
+
 #find_package(CryptoPP REQUIRED)
 #include_directories(${CRYPTOPP_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
 
 
-SET(Boost_USE_STATIC_LIBS ON)
 # static runtime requires /MT 
 #SET(Boost_USE_MULTITHREADED ON) #SET(Boost_USE_STATIC_RUNTIME OFF)
 #find_package(Boost COMPONENTS thread date_time program_options filesystem system regex unit_test_framework)
-find_package(Boost COMPONENTS date_time program_options filesystem system unit_test_framework)
+#find_package(Boost COMPONENTS date_time program_options filesystem system unit_test_framework)
 #include_directories(${Boost_INCLUDE_DIRS})
 #link_directories ( ${Boost_LIBRARY_DIRS} )
 

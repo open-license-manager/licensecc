@@ -6,7 +6,7 @@ ADD_LIBRARY(license_generator_lib STATIC
 )
 
 link_directories ( ${Boost_LIBRARY_DIRS} )
-add_dependencies( license_generator_lib private_key )
+add_dependencies( license_generator_lib boost_filesystem private_key )
 
 target_link_libraries(
      license_generator_lib

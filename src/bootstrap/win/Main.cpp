@@ -42,6 +42,7 @@ void write_privkey_file(string private_fname, BYTE *privateKey, DWORD dwPrivateK
 		fprintf(fp, "%d", privateKey[i]);
 	}
 	fprintf(fp, "\n};\n\n");
+	fprintf(fp, "#endif\n");
 	fclose(fp);
 }
 

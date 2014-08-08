@@ -50,28 +50,10 @@ set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS_DEBUG _DEBUG)
 SET( TargetArchitecture "X86_64")
 SET(Boost_USE_STATIC_LIBS ON)
 include(add_boost)
-set(Boost_FOUND TRUE)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories ( ${Boost_LIBRARY_DIRS} )
-
-#get_cmake_property(_variableNames VARIABLES)
-#foreach (_variableName ${_variableNames})
-#    message(STATUS "${_variableName}=${${_variableName}}")
-#endforeach()
-#include_directories(${Boost_INCLUDE_DIRS})
-#link_directories ( ${Boost_LIBRARY_DIRS} )
-
-#find_package(CryptoPP REQUIRED)
-#include_directories(${CRYPTOPP_INCLUDE_DIRS})
-#link_directories ( ${Boost_LIBRARY_DIRS} )
-
-
 # static runtime requires /MT 
 #SET(Boost_USE_MULTITHREADED ON) #SET(Boost_USE_STATIC_RUNTIME OFF)
 #find_package(Boost COMPONENTS thread date_time program_options filesystem system regex unit_test_framework)
 #find_package(Boost COMPONENTS date_time program_options filesystem system unit_test_framework)
-#include_directories(${Boost_INCLUDE_DIRS})
-#link_directories ( ${Boost_LIBRARY_DIRS} )
 
 
 if(NOT WIN32)	
@@ -123,16 +105,14 @@ include_directories(${CMAKE_BINARY_DIR})
 
 add_subdirectory(src)
 
-#test are done with boost_tests:disable them if boost not found.
-IF(Boost_FOUND)
-	ENABLE_TESTING()
-	INCLUDE(CTest)
-	IF(BUILD_TESTING)
-	  SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
-	  MARK_AS_ADVANCED(BUILDNAME)
-	ENDIF(BUILD_TESTING)
-	add_subdirectory(test)
-ENDIF(Boost_FOUND)
+ENABLE_TESTING()
+INCLUDE(CTest)
+IF(BUILD_TESTING)
+  SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
+  MARK_AS_ADVANCED(BUILDNAME)
+ENDIF(BUILD_TESTING)
+add_subdirectory(test)
+
 
 #include(build/modules/CmakeDebugVariables.txt)
 

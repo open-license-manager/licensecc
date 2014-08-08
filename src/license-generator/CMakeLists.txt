@@ -1,9 +1,15 @@
 
-
+if(WIN32)
 ADD_LIBRARY(license_generator_lib STATIC
     license-generator.cpp
-    LicenseSigner.cpp
+    win/LicenseSigner.cpp
 )
+else()
+ADD_LIBRARY(license_generator_lib STATIC
+    license-generator.cpp
+    linux/LicenseSigner.cpp
+)
+endif()
 
 link_directories ( ${Boost_LIBRARY_DIRS} )
 add_dependencies( license_generator_lib boost_filesystem private_key )

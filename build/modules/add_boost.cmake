@@ -14,8 +14,6 @@ endfunction()
 set(BoostVersion 1.55.0)
 set(BoostSHA1 cef9a0cc7084b1d639e06cd3bc34e4251524c840)
 
-
-
 # Create build folder name derived from version
 string(REGEX REPLACE "beta\\.([0-9])$" "beta\\1" BoostFolderName ${BoostVersion})
 string(REPLACE "." "_" BoostFolderName ${BoostFolderName})
@@ -156,7 +154,8 @@ set(BoostSourceDir ${BoostSourceDir} ) #PARENT_SCOPE
 set(b2Args <SOURCE_DIR>/b2
            link=static
            threading=multi
-           runtime-link=shared
+#careful if changing this to static add "-s" to output files under Linux
+           runtime-link=dynamic 
            --build-dir=Build
            stage
            -d+2
@@ -201,15 +200,22 @@ elseif(UNIX)
   endif()
 endif()
 
-# Get list of components
+#Get list of components
 execute_process(COMMAND ./b2 --show-libraries WORKING_DIRECTORY ${BoostSourceDir}
                 ERROR_QUIET OUTPUT_VARIABLE Output)
 string(REGEX REPLACE "(^[^:]+:|[- ])" "" BoostComponents "${Output}")
 string(REGEX REPLACE "\n" ";" BoostComponents "${BoostComponents}")
 
+string(REGEX REPLACE "python;" "" BoostComponents "${BoostComponents}")
+string(REGEX REPLACE "graph_parallel;" "" BoostComponents "${BoostComponents}")
+string(REGEX REPLACE "graph;" "" BoostComponents "${BoostComponents}")
+
 # Build each required component
 include(ExternalProject)
 foreach(Component ${BoostComponents})
+  ms_underscores_to_camel_case(${Component} CamelCaseComponent)
+  add_library(Boost${CamelCaseComponent} STATIC IMPORTED GLOBAL)
+
   ExternalProject_Add(
       boost_${Component}
       PREFIX ${CMAKE_BINARY_DIR}/${BoostFolderName}
@@ -220,8 +226,6 @@ foreach(Component ${BoostComponents})
       INSTALL_COMMAND ""
       LOG_BUILD ON
       )
-  ms_underscores_to_camel_case(${Component} CamelCaseComponent)
-  add_library(Boost${CamelCaseComponent} STATIC IMPORTED GLOBAL)
   if(MSVC)
     if(MSVC11)
       set(CompilerName vc110)
@@ -237,12 +241,18 @@ foreach(Component ${BoostComponents})
                           IMPORTED_LOCATION_RELEASENOINLINE ${BoostSourceDir}/stage/lib/libboost_${Component}-${CompilerName}-mt-${Version}.lib
                           LINKER_LANGUAGE CXX)
   else()
+
     set_target_properties(Boost${CamelCaseComponent} PROPERTIES
-                          IMPORTED_LOCATION ${BoostSourceDir}/stage/lib/libboost_${Component}-mt.a
-                          LINKER_LANGUAGE CXX)
+                  IMPORTED_LOCATION ${BoostSourceDir}/stage/lib/libboost_${Component}-mt.a
+                  LINKER_LANGUAGE CXX)
+
+    #message ( STATUS boost_${Component} ${BoostSourceDir}/stage/lib/libboost_${ComponentLib}-mt.a)
   endif()
+  
   set_target_properties(boost_${Component} Boost${CamelCaseComponent} PROPERTIES
-                        LABELS Boost FOLDER "Third Party/Boost" EXCLUDE_FROM_ALL TRUE)
+                        LABELS Boost 
+                        FOLDER "/home/devel/prj/license-manager-cpp/build/linux" 
+                        EXCLUDE_FROM_ALL TRUE)
   add_dependencies(Boost${CamelCaseComponent} boost_${Component})
   set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent})
   if("${Component}" STREQUAL "locale")
@@ -279,7 +289,7 @@ foreach(Component ${BoostComponents})
   set(Boost${CamelCaseComponent}Libs ${Boost${CamelCaseComponent}Libs}) # PARENT_SCOPE
   list(APPEND AllBoostLibs Boost${CamelCaseComponent})
 endforeach()
-set(AllBoostLibs ${AllBoostLibs}) # PARENT_SCOPE
+#set(AllBoostLibs ${AllBoostLibs}) # PARENT_SCOPE
 add_dependencies(boost_chrono boost_system)
 add_dependencies(boost_coroutine boost_context boost_system)
 add_dependencies(boost_filesystem boost_system)

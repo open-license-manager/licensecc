@@ -5,8 +5,8 @@
  *      Author: devel
  */
 
-#include "LicenseSigner.h"
-#include "private-key.h"
+#include "../LicenseSigner.h"
+#include "../private-key.h"
 #include <stdexcept>
 #include <string.h>
 #include <openssl/evp.h>

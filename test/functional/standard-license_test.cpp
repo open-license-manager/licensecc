@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE standard_license_test
 //#define BOOST_TEST_MAIN
-#define BOOST_TEST_DYN_LINK
+//#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include "../../../src/license-generator/license-generator.h"
 #include "../../../src/library/api/license++.h"

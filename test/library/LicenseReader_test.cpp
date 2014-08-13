@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE license_reader_test
 //#define BOOST_TEST_MAIN
-#define BOOST_TEST_DYN_LINK
+//#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include "../../src/library/LicenseReader.h"
 #include <build_properties.h>

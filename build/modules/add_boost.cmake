@@ -1,4 +1,10 @@
 
+#   Boost_INCLUDE_DIRS     - Boost include directories
+#   Boost_LIBRARY_DIRS     - Link directories for Boost libraries
+#   Boost_LIBRARIES        - Boost component libraries to be linked
+#FIXME: for boost find compatibility C must be upper case
+#   Boost_<C>_LIBRARY      - Libraries to link for component <C> (c is lower-case,may include
+#                            target_link_libraries debug/optimized keywords)
 
 function(ms_underscores_to_camel_case VarIn VarOut)
   string(REPLACE "_" ";" Pieces ${VarIn})
@@ -13,8 +19,6 @@ endfunction()
 
 set(BoostVersion 1.55.0)
 set(BoostSHA1 cef9a0cc7084b1d639e06cd3bc34e4251524c840)
-
-
 
 # Create build folder name derived from version
 string(REGEX REPLACE "beta\\.([0-9])$" "beta\\1" BoostFolderName ${BoostVersion})
@@ -225,9 +229,11 @@ string(REGEX REPLACE "\n" ";" BoostComponents "${BoostComponents}")
 include(ExternalProject)
 foreach(Component ${BoostComponents})
   ms_underscores_to_camel_case(${Component} CamelCaseComponent)
-  add_library(Boost${CamelCaseComponent} SHARED 
-      IMPORTED      
-      GLOBAL)
+  if(${Boost_USE_STATIC_LIBS})
+      add_library(boost_${Component} STATIC IMPORTED GLOBAL)
+  else(${Boost_USE_STATIC_LIBS})
+      add_library(boost_${Component} SHARED IMPORTED GLOBAL)
+  endif(${Boost_USE_STATIC_LIBS})
   if(${Component} STREQUAL "test")
       set(LibName "unit_test_framework")
   else()
@@ -240,7 +246,7 @@ foreach(Component ${BoostComponents})
       set(CompilerName vc120)
     endif()
     ExternalProject_Add(
-          boost_${Component}
+          Boost${CamelCaseComponent}
           PREFIX ${CMAKE_BINARY_DIR}/${BoostFolderName}
           SOURCE_DIR ${BoostSourceDir}
           BINARY_DIR ${BoostSourceDir}
@@ -250,7 +256,7 @@ foreach(Component ${BoostComponents})
           LOG_BUILD ON )
     
     string(REGEX MATCH "[0-9]_[0-9][0-9]" Version "${BoostFolderName}")
-    set_target_properties(Boost${CamelCaseComponent} PROPERTIES
+    set_target_properties(boost_${Component} PROPERTIES
                           IMPORTED_LOCATION_DEBUG ${BoostSourceDir}/stage/lib/libboost_${Component}-${CompilerName}-mt-gd-${Version}.lib
                           IMPORTED_LOCATION_MINSIZEREL ${BoostSourceDir}/stage/lib/libboost_${Component}-${CompilerName}-mt-${Version}.lib
                           IMPORTED_LOCATION_RELEASE ${BoostSourceDir}/stage/lib/libboost_${Component}-${CompilerName}-mt-${Version}.lib
@@ -263,10 +269,10 @@ foreach(Component ${BoostComponents})
                    COMMAND ${b2Args} --with-${Component}
                    WORKING_DIRECTORY ${BoostSourceDir}
                    )
-        add_custom_target(boost_${Component} 
+        add_custom_target(Boost${CamelCaseComponent} 
             DEPENDS ${OUTPUT_FILE} 
             WORKING_DIRECTORY ${BoostSourceDir})      
-        set_target_properties(Boost${CamelCaseComponent} PROPERTIES
+        set_target_properties(boost_${Component} PROPERTIES
                           IMPORTED_LOCATION ${OUTPUT_FILE}
                           #LINK_SEARCH_START_STATIC OFF
                           LINKER_LANGUAGE CXX
@@ -274,15 +280,15 @@ foreach(Component ${BoostComponents})
   endif(MSVC)
   set_target_properties(boost_${Component} Boost${CamelCaseComponent} PROPERTIES
                         LABELS Boost FOLDER "Boost" EXCLUDE_FROM_ALL TRUE)
-  add_dependencies(Boost${CamelCaseComponent} boost_${Component})
-  set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent})
+  add_dependencies(boost_${Component} Boost${CamelCaseComponent})
+  set(Boost_${Component}_LIBRARY boost_${Component})
   if("${Component}" STREQUAL "locale")
     if(APPLE)
       find_library(IconvLib iconv)
       if(NOT IconvLib)
         message(FATAL_ERROR "libiconv.dylib must be installed to a standard location.")
       endif()
-      set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent} ${IconvLib})
+      set(Boost_${Component}_LIBRARY boost_${Component} ${IconvLib})
     elseif(UNIX)
       if(BSD)
         find_library(IconvLib libiconv.a)
@@ -291,7 +297,7 @@ foreach(Component ${BoostComponents})
           set(Msg "  For ${Msg} on FreeBSD 10 or later, run\n  pkg install libiconv")
           message(FATAL_ERROR "${Msg}")
         endif()
-        set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent} ${IconvLib})
+        set(Boost_${Component}_LIBRARY boost_${Component} ${IconvLib})
       else()
         find_library(Icui18nLib libicui18n.a)
         find_library(IcuucLib libicuuc.a)
@@ -301,28 +307,28 @@ foreach(Component ${BoostComponents})
           set(Msg "  For ${Msg} on Ubuntu/Debian, run\n  sudo apt-get install libicu-dev")
           message(FATAL_ERROR "${Msg}")
         endif()
-        set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent} ${Icui18nLib} ${IcuucLib} ${IcudataLib})
+        set(Boost_${Component}_LIBRARY boost_${Component} ${Icui18nLib} ${IcuucLib} ${IcudataLib})
       endif()
     else()
-      set(Boost${CamelCaseComponent}Libs Boost${CamelCaseComponent})
+      set(Boost_${Component}_LIBRARY boost_${Component})
     endif()
   endif()
-  set(Boost${CamelCaseComponent}Libs ${Boost${CamelCaseComponent}Libs}) # PARENT_SCOPE
-  list(APPEND AllBoostLibs Boost${CamelCaseComponent})
+  #set(Boost${CamelCaseComponent}Libs ${Boost${CamelCaseComponent}Libs}) # PARENT_SCOPE
+  list(APPEND Boost_LIBRARIES Boost_${Component}_LIBRARY)
 endforeach()
-set(AllBoostLibs ${AllBoostLibs}) # PARENT_SCOPE
-add_dependencies(boost_chrono boost_system)
-add_dependencies(boost_coroutine boost_context boost_system)
-add_dependencies(boost_filesystem boost_system)
-add_dependencies(boost_graph boost_regex)
-add_dependencies(boost_locale boost_system)
-add_dependencies(boost_log boost_chrono boost_date_time boost_filesystem boost_thread)
-add_dependencies(boost_thread boost_chrono)
-add_dependencies(boost_timer boost_chrono)
-add_dependencies(boost_wave boost_chrono boost_date_time boost_filesystem boost_thread)
+#set(AllBoostLibs ${AllBoostLibs}) # PARENT_SCOPE
+add_dependencies(BoostChrono BoostSystem)
+add_dependencies(BoostCoroutine BoostContext BoostSystem)
+add_dependencies(BoostFilesystem BoostSystem)
+add_dependencies(BoostGraph BoostRegex)
+add_dependencies(BoostLocale BoostSystem)
+add_dependencies(BoostLog BoostChrono BoostDateTime BoostFilesystem BoostThread)
+add_dependencies(BoostThread BoostChrono)
+add_dependencies(BoostTimer BoostChrono)
+add_dependencies(BoostWave BoostChrono BoostDateTime BoostFilesystem BoostThread)
 
 set(Boost_INCLUDE_DIRS ${BoostSourceDir})
-set(Boost_LIBRARY_DIRS ${BoostSourceDir}/stage)
+set(Boost_LIBRARY_DIRS ${BoostSourceDir}/stage/lib)
 
 
 

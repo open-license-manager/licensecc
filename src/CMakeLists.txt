@@ -1,8 +1,6 @@
 add_subdirectory("bootstrap")
 add_subdirectory("library")
+add_subdirectory("pc-identifier")
+add_subdirectory("license-generator")
 
-IF(Boost_FOUND)
-	add_subdirectory("pc-identifier")
-	add_subdirectory("license-generator")
-ENDIF(Boost_FOUND)
 	

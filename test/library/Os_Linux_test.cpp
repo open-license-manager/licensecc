@@ -21,6 +21,7 @@ BOOST_AUTO_TEST_CASE( read_disk_id ) {
 	BOOST_CHECK_GT(strlen(diskInfos[0].device), 0);
 	BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
 	BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
+	free(diskInfos);
 }
 
 BOOST_AUTO_TEST_CASE( read_network_adapters ) {
@@ -45,5 +46,5 @@ BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 			BOOST_CHECK_NE(adapter_info[i].mac_address[0], 0);
 		}
 	}
-
+	free(adapter_info);
 }

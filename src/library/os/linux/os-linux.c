@@ -34,6 +34,7 @@
 #include <dbus-1.0/dbus/dbus.h>
 #include <sys/utsname.h>
 
+
 static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
 	int i, position;
 	position = -1;
@@ -116,7 +117,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 			 sizeof(struct sockaddr_in) :
 			 sizeof(struct sockaddr_in6), host, NI_MAXHOST,
 			 NULL, 0, NI_NUMERICHOST);
-			 */
+
 #ifdef _DEBUG
 			s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host,
 					NI_MAXHOST,
@@ -126,7 +127,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 			}
 			printf("\t\taddress: <%s>\n", host);
 #endif
-
+*/
 			if (adapterInfos != NULL && if_name_position < *adapter_info_size) {
 				struct sockaddr_in *s1 = (struct sockaddr_in*) ifa->ifa_addr;
 				in_addr_t iaddr = s1->sin_addr.s_addr;

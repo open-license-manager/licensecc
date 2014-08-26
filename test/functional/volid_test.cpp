@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE standard_license_test
 //#define BOOST_TEST_MAIN
-//#define BOOST_TEST_DYN_LINK
+//#undef BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include <cstring>
@@ -11,7 +11,6 @@
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 #include "../../src/library/pc-identifiers.h"
-#include <dbus-1.0/dbus/dbus.h>
 
 namespace fs = boost::filesystem;
 using namespace license;

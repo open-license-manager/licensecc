@@ -7,8 +7,7 @@ add_executable(
 target_link_libraries(
  license_reader_test
  license++_static
- boost_filesystem
- boost_test
+ ${Boost_LIBRARIES}
 )
 
 #SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_START_STATIC ON)
@@ -26,7 +25,7 @@ ELSE(WIN32)
 	target_link_libraries(
  		os_linux_test
  		os
- 		${Boost_test_LIBRARY}
+ 		${Boost_LIBRARIES}
 	)
 	
 	#add_dependencies( os_linux_test )

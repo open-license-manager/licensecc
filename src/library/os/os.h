@@ -20,12 +20,17 @@ typedef enum {
 	NONE, VMWARE
 } VIRTUALIZATION;
 
+typedef enum {
+	ETHERNET, WIRELESS
+} IFACE_TYPE;
+
 typedef struct {
 	int id;
 	char description[1024];
 	unsigned char mac_address[6];
 	unsigned char ipv4_address[4];
-} AdapterInfo;
+	IFACE_TYPE type;
+} OsAdapterInfo;
 
 typedef struct {
 	int id;
@@ -35,7 +40,7 @@ typedef struct {
 	bool preferred;
 } DiskInfo;
 
-FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
+FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		size_t * adapter_info_size);
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);

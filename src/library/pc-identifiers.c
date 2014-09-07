@@ -21,7 +21,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	FUNCTION_RETURN result_adapterInfos, result_diskinfos;
 	unsigned int required_id_size, i, j, k;
 	DiskInfo * diskInfos;
-	AdapterInfo *adapterInfos;
+	OsAdapterInfo *adapterInfos;
 
 	result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
 	if (result_adapterInfos != FUNC_RET_OK) {
@@ -43,7 +43,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	}
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-	adapterInfos = (AdapterInfo*) malloc(adapter_num * sizeof(AdapterInfo));
+	adapterInfos = (OsAdapterInfo*) malloc(adapter_num * sizeof(OsAdapterInfo));
 	result_adapterInfos = getAdapterInfos(adapterInfos, &adapter_num);
 	for (i = 0; i < disk_num; i++) {
 		for (j = 0; j < adapter_num; j++) {
@@ -64,7 +64,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 	size_t adapters;
 	FUNCTION_RETURN result_adapterInfos;
 	unsigned int i, j, k;
-	AdapterInfo *adapterInfos;
+	OsAdapterInfo *adapterInfos;
 
 	result_adapterInfos = getAdapterInfos(NULL, &adapters);
 	if (result_adapterInfos != FUNC_RET_OK) {
@@ -79,7 +79,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
-	adapterInfos = (AdapterInfo*) malloc(adapters * sizeof(AdapterInfo));
+	adapterInfos = (OsAdapterInfo*)malloc(adapters * sizeof(OsAdapterInfo));
 	result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
 	for (j = 0; j < adapters; j++) {
 		for (k = 0; k < 6; k++)

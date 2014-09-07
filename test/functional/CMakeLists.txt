@@ -16,8 +16,7 @@ target_link_libraries(
  standard_license_test
  license++_static
  license_generator_snippet
- ${Boost_filesystem_LIBRARY}
- ${Boost_test_LIBRARY}
+ ${Boost_LIBRARIES}
 )
 #SET_TARGET_PROPERTIES(standard_license_test PROPERTIES LINK_SEARCH_START_STATIC ON)
 #add_dependencies( standard_license_test boost_test boost_filesystem )
@@ -31,8 +30,7 @@ target_link_libraries(
  date_test
  license++_static
  license_generator_snippet
- ${Boost_filesystem_LIBRARY}
- ${Boost_test_LIBRARY}
+ ${Boost_LIBRARIES}
 )
 #SET_TARGET_PROPERTIES(date_test PROPERTIES LINK_SEARCH_START_STATIC ON)
 #add_dependencies( date_test boost_test boost_filesystem )
@@ -46,7 +44,7 @@ target_link_libraries(
  volid_test
  license++_static
  license_generator_snippet
- ${Boost_test_LIBRARY} 
+ ${Boost_LIBRARIES}
 )
 
 #SET_TARGET_PROPERTIES(volid_test PROPERTIES LINK_SEARCH_START_STATIC ON)

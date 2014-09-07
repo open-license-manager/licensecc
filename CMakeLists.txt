@@ -17,14 +17,17 @@ SET(CMAKE_DISABLE_SOURCE_CHANGES OFF)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
 
-
 project (license++ C CXX)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
 
 include(utilities)
-string(TOLOWER ${CMAKE_BUILD_TYPE} _CMAKE_BUILD_TYPE)
-EVAL_CONDITION(RELEASE_BUILD ${_CMAKE_BUILD_TYPE} STREQUAL "release")
+if(CMAKE_BUILD_TYPE)
+	string(TOLOWER ${CMAKE_BUILD_TYPE} _CMAKE_BUILD_TYPE)
+	EVAL_CONDITION(RELEASE_BUILD ${_CMAKE_BUILD_TYPE} STREQUAL "release")
+else(CMAKE_BUILD_TYPE)
+	set(RELEASE_BUILD 0)
+endif(CMAKE_BUILD_TYPE)
 
 if(WIN32)
 	SET(PLATFORM_LIBS "")
@@ -38,8 +41,7 @@ else(WIN32)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
     #use static libraries in release to make it easier to distribute it
     #SET(Boost_USE_STATIC_RUNTIME ${RELEASE_BUILD})
-    SET(Boost_USE_STATIC_LIBS ${RELEASE_BUILD})
-    if(${RELEASE_BUILD})
+    if(RELEASE_BUILD)
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
     else()
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .a .so) 
@@ -51,9 +53,7 @@ else(WIN32)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
 	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif(WIN32)
-#TODO uncomment: source temporarily broken
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
-set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
 
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -62,15 +62,12 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 0)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-#TODO: determine target arch.
-SET( TargetArchitecture "X86_64")
-
 include(add_boost)
-# static runtime requires /MT 
-#SET(Boost_USE_MULTITHREADED ON) #SET(Boost_USE_STATIC_RUNTIME OFF)
-#find_package(Boost COMPONENTS thread date_time program_options filesystem system regex unit_test_framework)
-#find_package(Boost COMPONENTS date_time program_options filesystem system unit_test_framework)
-
+add_boost(STATIC MODULES date_time test program_options system filesystem) 
+#set below in case of dynamic linking in debug.
+#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
+add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
+add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
 
 if(NOT WIN32)	
 	#find a static version of openssl crypto library

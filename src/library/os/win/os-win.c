@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <iphlpapi.h>
+#include "../../base/logger.h"
 #include"../os.h"
 #pragma comment(lib, "IPHLPAPI.lib")
 
@@ -51,13 +52,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH, &volSerial,
 					&FileMaxLen, &FileFlags, FileSysName, MAX_PATH);
 				if (success) {
-#ifdef _DEBUG
-					printf("drive         : %s\n", szSingleDrive);
-					printf("Volume Name   : %s\n", volName);
-					printf("Volume Serial : 0x%x\n", volSerial);
-					printf("Max file length : %d\n", FileMaxLen);
-					printf("Filesystem      : %s\n", FileSysName);
-#endif
+					LOG_INFO("drive         : %s\n", szSingleDrive);
+					LOG_INFO("Volume Name   : %s\n", volName);
+					LOG_INFO("Volume Serial : 0x%x\n", volSerial);
+					LOG_DEBUG("Max file length : %d\n", FileMaxLen);
+					LOG_DEBUG("Filesystem      : %s\n", FileSysName);
 					if (diskInfos != NULL && * disk_info_size<ndrives){
 						strncpy(diskInfos[ndrives].device,volName,MAX_PATH);
 						strncpy(diskInfos[ndrives].label, FileSysName , MAX_PATH);
@@ -68,12 +67,10 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 					ndrives++;
 				}
 				else {
-					printf("Unable to retreive information of '%s'\n", szSingleDrive);
+					LOG_WARN("Unable to retrieve information of '%s'\n", szSingleDrive);
 				}
 			}
-#ifdef _DEBUG
-			printf("This volume is not a fixed disk : %s\n", szSingleDrive);
-#endif
+			LOG_INFO("This volume is not fixed : %s, type: %d\n", szSingleDrive);
 			szSingleDrive += strlen(szSingleDrive) + 1;
 		}
 	}

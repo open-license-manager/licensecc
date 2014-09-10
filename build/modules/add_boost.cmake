@@ -151,7 +151,8 @@ function(add_boost)
 	  endif()
 	  execute_process(COMMAND ${b2Bootstrap} WORKING_DIRECTORY ${BOOST_ROOT}
 					  RESULT_VARIABLE Result OUTPUT_VARIABLE Output ERROR_VARIABLE Error)
-	  if(NOT Result EQUAL 0)
+	  find_program(b2Path NAMES b2 PATHS ${BOOST_ROOT} NO_DEFAULT_PATH)
+	  if(NOT Result EQUAL 0 OR NOT b2Path)
 		message(FATAL_ERROR "Failed running ${b2Bootstrap}:\n${Output}\n${Error}\n")
 	  endif()
 	endif()
@@ -272,7 +273,7 @@ function(add_boost)
 	#   BOOST_LIBRARYDIR       - Preferred library directory e.g. <prefix>/lib
 	#   Boost_NO_SYSTEM_PATHS  - Set to ON to disable searching in locations not
 	#                            specified by these hint variables. Default is OFF.
-	set (BOOST_LIBRARYDIR ${BoostSourceDir}/stage/lib CACHE PATH "BOOST library dir")
+	set (BOOST_LIBRARYDIR ${BOOST_ROOT}/stage/lib CACHE PATH "BOOST library dir")
 	#set (Boost_NO_SYSTEM_PATHS ON)
 	find_package(Boost 1.55 REQUIRED COMPONENTS ${ADD_BOOST_MODULES})
 	#clean up variables

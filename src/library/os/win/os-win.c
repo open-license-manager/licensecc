@@ -1,22 +1,30 @@
 #include <Windows.h>
 #include <iphlpapi.h>
+//definition of size_t
+#include <stdlib.h>
 #include "../../base/logger.h"
 #include"../os.h"
 #pragma comment(lib, "IPHLPAPI.lib")
 
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]){
-
+	return FUNC_RET_NOT_AVAIL;
 }
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
+	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
 	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
 	BOOL cmpName = GetComputerName(
 		buffer, &bufsize);
-	strncpy(identifier, buffer, 6);
+	if (cmpName){
+		strncpy(identifier, buffer, 6);
+		result = FUNC_RET_OK;
+	}
+	return result;
 }
 
 FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
+	return FUNC_RET_NOT_AVAIL;
 }
 
 void os_initialize() {
@@ -30,6 +38,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	int ndrives = 0;
 	DWORD FileFlags;
 	char volName[_MAX_FNAME], FileSysName[_MAX_FNAME];
+	char* szSingleDrive;
 	DWORD volSerial = 0;
 	BOOL success;
 	UINT driveType;
@@ -42,7 +51,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	if (dwResult > 0 && dwResult <= MAX_PATH)
 	{
 		return_value = FUNC_RET_OK;
-		char* szSingleDrive = szLogicalDrives;
+		szSingleDrive = szLogicalDrives;
 		while (*szSingleDrive && ndrives < MAX_UNITS)
 		{
 
@@ -57,11 +66,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 					LOG_INFO("Volume Serial : 0x%x\n", volSerial);
 					LOG_DEBUG("Max file length : %d\n", FileMaxLen);
 					LOG_DEBUG("Filesystem      : %s\n", FileSysName);
-					if (diskInfos != NULL && * disk_info_size<ndrives){
-						strncpy(diskInfos[ndrives].device,volName,MAX_PATH);
-						strncpy(diskInfos[ndrives].label, FileSysName , MAX_PATH);
-						diskInfos[ndrives].id=ndrives;
-						diskInfos[ndrives].preferred = (strncmp(szSingleDrive,"C",1)!=0);
+					if (diskInfos != NULL && * disk_info_size < ndrives){
+						strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
+						strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
+						diskInfos[ndrives].id = ndrives;
+						diskInfos[ndrives].preferred = (strncmp(szSingleDrive, "C", 1) != 0);
 
 					}
 					ndrives++;
@@ -132,7 +141,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
-	memset(adapterInfos, 0,*adapter_info_size);
+	memset(adapterInfos, 0, *adapter_info_size);
 	pAdapter = pAdapterInfo;
 	i = 0;
 	result = FUNC_RET_OK;
@@ -140,6 +149,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 		strncpy(adapterInfos[i].description, pAdapter->Description, min(sizeof(adapterInfos->description), MAX_ADAPTER_DESCRIPTION_LENGTH));
 		memcpy(adapterInfos[i].mac_address, pAdapter->Address, 8);
 		translate(pAdapter->IpAddressList.IpAddress.String, adapterInfos[i].ipv4_address);
+		adapterInfos[i].type = IFACE_TYPE_ETHERNET;
 		i++;
 		pAdapter = pAdapter->Next;
 		if (i == *adapter_info_size){

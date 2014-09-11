@@ -14,14 +14,18 @@ extern "C" {
 
 #include "../base/base.h"
 #include <stddef.h>
+//definition of size_t
+#include <stdlib.h>
+#ifdef __unix__
 #include <stdbool.h>
+#endif
 
 typedef enum {
 	NONE, VMWARE
 } VIRTUALIZATION;
 
 typedef enum {
-	ETHERNET, WIRELESS
+	IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS
 } IFACE_TYPE;
 
 typedef struct {

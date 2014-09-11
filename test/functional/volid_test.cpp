@@ -46,7 +46,7 @@ static void generate_reference_file(const string& idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
-		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
+		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		idfile << identifier_out << endl;
 	}
 	idfile.close();
@@ -55,10 +55,10 @@ static void generate_reference_file(const string& idfileLocation,
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(PROJECT_TEST_TEMP_DIR "/identifiers_file");
 	IDENTIFICATION_STRATEGY strategies[] =
-			{ IDENTIFICATION_STRATEGY::DEFAULT,
-					IDENTIFICATION_STRATEGY::DISK_LABEL,
-					IDENTIFICATION_STRATEGY::DISK_NUM,
-					IDENTIFICATION_STRATEGY::ETHERNET };
+			{ DEFAULT,
+					DISK_LABEL,
+					DISK_NUM,
+					ETHERNET };
 	const int num_strategies = sizeof(strategies) / sizeof(strategies[0]);
 	std::ifstream test_idfile_exist(idfileLocation);
 	if (!test_idfile_exist.good()) {
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 		if (reference_signatures[i] != generated_identifier) {
 			string message = string("pc signature compare fail: strategy:")
-					+ to_string(strategies[i]) + " generated: ["
+					+ to_string((long double) strategies[i]) + " generated: ["
 					+ generated_identifier + "] reference: ["
 					+ reference_signatures[i] + "]";
 			BOOST_FAIL(message);

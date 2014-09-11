@@ -7,7 +7,6 @@ extern "C" {
 #endif
 
 #ifdef __unix__
-
 #include <limits.h>
 #define DllExport
 #ifndef MAX_PATH
@@ -17,8 +16,14 @@ extern "C" {
 #else //windows
 #include <windows.h>
 #define DllExport  __declspec( dllexport )
+
+#ifndef __cplusplus
+typedef int bool;
+#define false 0
+#define true -1
 #endif
 
+#endif
 /* #define _DEBUG */
 /*
 #define cmax(a,b) \

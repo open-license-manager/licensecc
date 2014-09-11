@@ -158,7 +158,6 @@ function(add_boost)
 	endif()
 	execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${BOOST_ROOT}/Build)
 
-	
 	#ADD_BOOST_STATIC_RUNTIME is a parsed function parameter
 	if(ADD_BOOST_STATIC_RUNTIME)
 		set(RUNTIME_LINK "static")
@@ -259,10 +258,13 @@ function(add_boost)
 	  else(MSVC)
 			set(OUTPUT_FILE ${BOOST_ROOT}/stage/lib/libboost_${libName}-mt${BOOST_LIB_SUFFIX}.${LINUX_LIB_EXTENSION})
 	  endif(MSVC)
-	  if(NOT EXISTS "${OUTPUT_FILE}")
-		  message(STATUS "Building ${Component}")
-		  execute_process(COMMAND ${b2Args} --with-${Component} WORKING_DIRECTORY ${BOOST_ROOT})
-	  endif()
+	  #if(NOT EXISTS "${OUTPUT_FILE}")
+		  message(STATUS "Building ${Component}: ${b2Args}")
+		  execute_process(COMMAND ${b2Args} --with-${Component} WORKING_DIRECTORY ${BOOST_ROOT} RESULT_VARIABLE Result OUTPUT_VARIABLE Output ERROR_VARIABLE Error)
+		  if(NOT Result EQUAL 0)
+			message(ERROR "Failed running ${b2Args} --with-${Component}:\n${Output}\n${Error}\n")
+		  endif()
+	  #endif()
 	endforeach()
 	
 	

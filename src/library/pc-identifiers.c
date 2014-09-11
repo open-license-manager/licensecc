@@ -9,17 +9,20 @@
 #include "pc-identifiers.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "base/base64.h"
+#include "base/base.h"
 #ifdef __linux__
+#include <stdbool.h>
 #include <valgrind/memcheck.h>
+#else
+#include <Windows.h>
 #endif
 
 static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers) {
 	size_t adapter_num, disk_num;
 	FUNCTION_RETURN result_adapterInfos, result_diskinfos;
-	unsigned int required_id_size, i, j, k;
+	unsigned int required_id_size, defined_identifiers, i, j, k;
 	DiskInfo * diskInfos;
 	OsAdapterInfo *adapterInfos;
 
@@ -34,7 +37,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	} else {
 		required_id_size = disk_num;
 	}
-	int defined_identifiers = *num_identifiers;
+	defined_identifiers = *num_identifiers;
 	*num_identifiers = required_id_size;
 	if (identifiers == NULL) {
 		return FUNC_RET_OK;
@@ -60,8 +63,9 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 }
 
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
-		unsigned int * num_identifiers, bool use_mac) {
+		unsigned int * num_identifiers, int use_mac) {
 	size_t adapters;
+	int defined_adapters;
 	FUNCTION_RETURN result_adapterInfos;
 	unsigned int i, j, k;
 	OsAdapterInfo *adapterInfos;
@@ -71,7 +75,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		return result_adapterInfos;
 	}
 
-	int defined_adapters = *num_identifiers;
+	defined_adapters = *num_identifiers;
 	*num_identifiers = adapters;
 	if (identifiers == NULL) {
 		return FUNC_RET_OK;
@@ -104,6 +108,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	size_t disk_num, available_disk_info=0;
 	FUNCTION_RETURN result_diskinfos;
 	unsigned int i, k, j;
+	int defined_identifiers;
 	char firstChar;
 	DiskInfo * diskInfos;
 
@@ -123,7 +128,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		available_disk_info += firstChar == 0 ? 0 : 1;
 	}
 
-	int defined_identifiers = *num_identifiers;
+	defined_identifiers = *num_identifiers;
 	*num_identifiers = available_disk_info;
 	if (identifiers == NULL) {
 		free(diskInfos);
@@ -167,6 +172,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
  * @param
  * @return
  */
+
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		unsigned int * array_size, IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
@@ -178,10 +184,10 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		result = generate_default_pc_id(identifiers, array_size);
 		break;
 	case ETHERNET:
-		result = generate_ethernet_pc_id(identifiers, array_size, true);
+		result = generate_ethernet_pc_id(identifiers, array_size, true );
 		break;
 	case IP_ADDRESS:
-		result = generate_ethernet_pc_id(identifiers, array_size, false);
+		result = generate_ethernet_pc_id(identifiers, array_size, false );
 		break;
 	case DISK_NUM:
 		result = generate_disk_pc_id(identifiers, array_size, false);
@@ -237,12 +243,13 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 		PcSignature pc_identifier_out) {
 //TODO base62 encoding, now uses base64
 	PcIdentifier concat_identifiers[2];
+	char* b64_data;
 	int b64_size = 0;
 	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
 //concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
-	char* b64_data = base64(concat_identifiers, concatIdentifiersSize,
+	b64_data = base64(concat_identifiers, concatIdentifiersSize,
 			&b64_size);
 	if (b64_size > sizeof(PcSignature)) {
 		return FUNC_RET_BUFFER_TOO_SMALL;

@@ -4,8 +4,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
-#include <unistd.h>
+
 #ifdef __unix__
+#include <unistd.h>
 #define MAX_PATH 255
 #else
 #include <windows.h>

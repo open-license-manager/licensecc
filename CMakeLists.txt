@@ -30,10 +30,17 @@ else(CMAKE_BUILD_TYPE)
 endif(CMAKE_BUILD_TYPE)
 
 if(WIN32)
+
 	SET(PLATFORM_LIBS "")
-	if(CMAKE_CL_64)
-		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64 /INCREMENTAL:NO" CACHE STRING "Linker flags")
-	endif(CMAKE_CL_64)
+	include(target_arch)
+	target_architecture( TARGET_ARCHITECTURE )
+	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
+	#force to patch an error in cmake
+	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
+		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
+		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)
+		SET(CMAKE_SHARED_LINKER_FLAGS "/machine:X64" CACHE STRING "Shared Linker flags" FORCE)
+	endif()
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
 	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
 else(WIN32)

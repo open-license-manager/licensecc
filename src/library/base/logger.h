@@ -2,6 +2,9 @@
 #define logger_INCLUDED
 
 #ifndef LOG_ENABLED
+#include <errno.h>
+#define clean_errno() (errno == 0 ? "None" : strerror(errno))
+
 #ifdef NDEBUG
 #define LOG_DEBUG(M, ...) _log("[INFO] %s (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else

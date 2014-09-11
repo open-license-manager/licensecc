@@ -11,9 +11,10 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
-
+//definition of size_t
+#include <stdlib.h>
 #ifdef __unix__
+#include <stdbool.h>
 #define DllExport
 #else
 #include <windows.h>
@@ -61,7 +62,8 @@ typedef struct {
 
 typedef struct {
 	const char *licenseFileLocation;
-	const char *environmentVariableName;bool openFileNearModule;
+	const char *environmentVariableName;
+	bool openFileNearModule;
 } LicenseLocation;
 
 typedef struct {

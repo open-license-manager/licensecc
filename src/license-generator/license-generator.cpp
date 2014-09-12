@@ -81,7 +81,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 			time_t curtime = time(NULL);
 			strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
 			begin_date.assign(curdate);
-		} catch (invalid_argument &e) {
+		} catch (const invalid_argument &e) {
 			cerr << endl << "End date not recognized: " << dt_end
 					<< " Please enter a valid date in format YYYYMMDD" << endl;
 			exit(2);
@@ -189,29 +189,24 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 }
 
 
-const std::locale formats[] = { std::locale(std::locale::classic(),
-		new bt::time_input_facet("%Y-%m-%d")), //
-std::locale(std::locale::classic(), new bt::time_input_facet("%Y/%m/%d")), //
-std::locale(std::locale::classic(), new bt::time_input_facet("%Y%m%d")) };
-const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
+const std::string formats[] = { "%4u-%2u-%2u","%4u/%2u/%2u","%4u%2u%2u" };
+const size_t formats_n = 3;
 
-string LicenseGenerator::normalize_date(const std::string& s) {
-	bt::ptime pt;
-	for (size_t i = 0; i < formats_n; ++i) {
-		std::istringstream is(s);
-		is.imbue(formats[i]);
-		is >> pt;
-		if (pt != bt::ptime()) {
-			break;
+string LicenseGenerator::normalize_date(const char * s) {
+	unsigned int year, month, day;
+	int chread;
+	bool found = false;
+	for (size_t i = 0; i < formats_n &&!found; ++i) {
+		chread = sscanf(s, formats[i].c_str(),&year, &month, &day);
+		if (chread == 3){
+			found = true;
 		}
 	}
-	if (pt == bt::ptime()) {
-		throw invalid_argument(string("Date not regognized") + s);
+	if (!found){
+		throw invalid_argument("Date not recognized.");
 	}
 	ostringstream oss;
-	bt::time_facet *facet = new bt::time_facet("%Y-%m-%d");
-	oss.imbue(locale(cout.getloc(), facet));
-	oss << pt;
+	oss << year << "-"<<setfill('0') << std::setw(2)<< month<<"-"<<day;
 	//delete (facet);
 	return oss.str();
 }

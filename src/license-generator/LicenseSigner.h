@@ -13,7 +13,12 @@
 namespace license {
 
 class LicenseSigner {
+#ifdef __unix__
 	const string privateKey;
+#else
+	HCRYPTPROV hProv;
+	HCRYPTKEY hPubKey;
+#endif
 	string signString(const string& license);
 	string Opensslb64Encode(size_t slen, unsigned char* signature);
 

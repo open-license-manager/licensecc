@@ -1,6 +1,6 @@
 #include "CryptoHelper.h"
 // The RSA public-key key exchange algorithm
-#define ENCRYPT_ALGORITHM         CALG_RSA_KEYX
+#define ENCRYPT_ALGORITHM         CALG_RSA_SIGN
 // The high order WORD 0x0200 (decimal 512)
 // determines the key length in bits.
 #define KEYLENGTH                 0x02000000
@@ -53,7 +53,7 @@ if (m_hCryptProv != NULL)
                                wszContainerName,
                                MS_ENHANCED_PROV,
                                PROV_RSA_FULL,
-    CRYPT_MACHINE_KEYSET))
+    0))
        {
          // An error occurred in acquiring the context. This could mean
          // that the key container requested does not exist. In this case,
@@ -64,7 +64,7 @@ if (m_hCryptProv != NULL)
                      if(!CryptAcquireContext(&m_hCryptProv,
                                             wszContainerName,
                                             MS_ENHANCED_PROV,   PROV_RSA_FULL,
-                                            CRYPT_MACHINE_KEYSET|CRYPT_NEWKEYSET))
+                                            CRYPT_NEWKEYSET))
                      {
                            dwErrCode = GetLastError();
                             return HRESULT_FROM_WIN32(dwErrCode);

@@ -1,4 +1,4 @@
-#include "CryptoHelper.h"
+#include "../CryptoHelper.h"
 // The RSA public-key key exchange algorithm
 #define ENCRYPT_ALGORITHM         CALG_RSA_SIGN
 // The high order WORD 0x0200 (decimal 512)

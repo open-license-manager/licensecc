@@ -2,7 +2,7 @@
  * LicenseReader.h
  *
  *  Created on: Mar 30, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef LICENSEREADER_H_

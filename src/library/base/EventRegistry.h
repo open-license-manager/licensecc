@@ -2,7 +2,7 @@
  * EventRegistry.h
  *
  *  Created on: Mar 30, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef EVENTREGISTRY_H_

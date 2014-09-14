@@ -2,7 +2,7 @@
  * LicenseSigner.cpp
  *
  *  Created on: Apr 6, 2014
- *      Author: devel
+ *      
  */
 
 #include "../LicenseSigner.h"

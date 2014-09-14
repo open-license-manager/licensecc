@@ -2,7 +2,7 @@
  * os-dependent.hpp
  *
  *  Created on: Mar 29, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef OS_DEPENDENT_CPP_

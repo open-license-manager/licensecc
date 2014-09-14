@@ -48,7 +48,7 @@ static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
 
 }
 
-FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
+FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		size_t * adapter_info_size) {
 
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
@@ -64,7 +64,7 @@ FUNCTION_RETURN getAdapterInfos(AdapterInfo * adapterInfos,
 	}
 
 	if (adapterInfos != NULL) {
-		memset(adapterInfos, 0, (*adapter_info_size) * sizeof(AdapterInfo));
+		memset(adapterInfos, 0, (*adapter_info_size) * sizeof(OsAdapterInfo));
 	}
 
 	/* count the maximum number of interfaces */

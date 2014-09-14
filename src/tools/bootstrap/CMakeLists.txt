@@ -1,29 +1,26 @@
-
-if(WIN32)
-	add_subdirectory(win)
-else(WIN32)
 add_executable(
  bootstrap
- bootstrap_linux.cpp
+ Main.cpp
 )
-ENDIF(WIN32)
+
 
 SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_START_STATIC ON)
 SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_END_STATIC OFF)
 target_link_libraries(
      bootstrap
+     tools_base
      ${EXTERNAL_LIBS}
 )
 
 # add the command to generate the source code
 add_custom_command (
-  OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/../license-generator/private-key.h" "${CMAKE_CURRENT_SOURCE_DIR}/../library/base/public-key.h"
-  COMMAND bootstrap "${CMAKE_CURRENT_SOURCE_DIR}/../license-generator/private-key.h" "${CMAKE_CURRENT_SOURCE_DIR}/../library/base/public-key.h"
+  OUTPUT "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h" "${CMAKE_BINARY_DIR}/src/library/base/public-key.h"
+  COMMAND bootstrap "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h" "${CMAKE_BINARY_DIR}/src/library/base/public-key.h"
   DEPENDS bootstrap
 )
 
-add_custom_target(private_key DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../license-generator/private-key.h")
-add_custom_target(public_key DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../library/base/public-key.h")
+add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h")
+add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/src/library/base/public-key.h")
 
 
 # add the command to generate the source code

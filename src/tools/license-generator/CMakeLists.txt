@@ -3,23 +3,15 @@ include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_directories ( ${Boost_LIBRARY_DIR} )
 
-if(WIN32)
+
 ADD_LIBRARY(
     license_generator_lib STATIC
     license-generator.cpp
-    win/LicenseSigner.cpp
 )
-else(WIN32)
-ADD_LIBRARY(
-    license_generator_lib STATIC
-    license-generator.cpp
-    linux/LicenseSigner.cpp
-)
-endif(WIN32)
 
 target_link_libraries(
      license_generator_lib
-     license++_static
+     tools_base
 	 $<$<CONFIG:Debug>:${Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG}>
      $<$<NOT:$<CONFIG:Debug>>:${Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE}>	 
 	 $<$<CONFIG:Debug>:${Boost_SYSTEM_LIBRARY_DEBUG}>

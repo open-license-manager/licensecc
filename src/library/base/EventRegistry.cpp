@@ -2,7 +2,7 @@
  * EventRegistry.cpp
  *
  *  Created on: Mar 30, 2014
- *      Author: devel
+ *      
  */
 
 #include "EventRegistry.h"

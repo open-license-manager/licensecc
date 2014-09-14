@@ -2,7 +2,7 @@
  * StringUtils.h
  *
  *  Created on: Apr 8, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef STRINGUTILS_H_

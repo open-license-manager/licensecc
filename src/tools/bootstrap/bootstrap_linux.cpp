@@ -2,7 +2,7 @@
  * boostrap.c
  *
  *  Created on: Apr 5, 2014
- *      Author: devel
+ *      
  */
 
 #include <string>
@@ -77,9 +77,9 @@ void writePrivateRSAHeader(const std::string& private_fname, RSA* rsa) {
 }
 
 void generatePk(std::string private_fname,string public_fname) {
-	RSA *rsa = RSA_generate_key(kBits, kExp, 0, 0);
 	srand(time(NULL)); /* seed random number generator */
 	int random=rand();
+	RSA *rsa = RSA_generate_key(kBits, kExp, 0, 0);
 	/* To get the C-string PEM form: */
 	//BIO bio_private* = BIO_new_file(const char *filename, "w")
 

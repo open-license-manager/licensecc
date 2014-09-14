@@ -2,7 +2,7 @@
  * pc-identifiers.c
  *
  *  Created on: Apr 16, 2014
- *      Author: devel
+ *      
  */
 
 #include "os/os.h"

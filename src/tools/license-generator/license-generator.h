@@ -2,7 +2,7 @@
  * LicenseSigner.h
  *
  *  Created on: Apr 6, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef LICENSE_GENERATOR_H_

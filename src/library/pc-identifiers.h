@@ -2,7 +2,7 @@
  * pc-identifiers.h
  *
  *  Created on: Apr 16, 2014
- *      Author: devel
+ *      
  */
 
 #ifndef PC_IDENTIFIERS_H_

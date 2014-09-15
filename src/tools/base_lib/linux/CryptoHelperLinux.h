@@ -27,7 +27,7 @@ public:
 	virtual const string exportPrivateKey() const;
 	virtual const string exportPublicKey() const;
 
-	virtual string signString(const unsigned char* privateKey, size_t pklen,
+	virtual string signString(const void* privateKey, size_t pklen,
 			const string& license) const;
 	virtual ~CryptoHelperLinux();
 };

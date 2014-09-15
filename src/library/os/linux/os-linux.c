@@ -1,4 +1,6 @@
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE     /* To get defns of NI_MAXSERV and NI_MAXHOST */
+#endif
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -20,7 +22,7 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include "../os.h"
-#include "../../base/public-key.h"
+#include "public-key.h"
 
 #include <openssl/evp.h>
 #include <openssl/bio.h>

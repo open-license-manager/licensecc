@@ -79,7 +79,7 @@ bool EventRegistry::isGood() const {
 }
 
 void EventRegistry::addError(EVENT_TYPE event) {
-	addEvent(event, SVRT_ERROR);
+	this->addEvent(event, SVRT_ERROR);
 }
 
 void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity) {

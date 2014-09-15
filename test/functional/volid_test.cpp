@@ -4,7 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include <cstring>
-#include "../../../src/license-generator/license-generator.h"
+#include "../../../src/tools/license-generator/license-generator.h"
 #include "../../../src/library/api/license++.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>

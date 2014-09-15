@@ -9,7 +9,7 @@
 #define LICENSE_GENERATOR_H_
 
 #include <boost/program_options.hpp>
-#include "../library/LicenseReader.h"
+#include "../../library/LicenseReader.h"
 
 namespace license {
 

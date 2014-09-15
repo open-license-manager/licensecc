@@ -1,6 +1,6 @@
 add_executable(
  bootstrap
- Main.cpp
+ bootstrap.cpp
 )
 
 
@@ -14,13 +14,13 @@ target_link_libraries(
 
 # add the command to generate the source code
 add_custom_command (
-  OUTPUT "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h" "${CMAKE_BINARY_DIR}/src/library/base/public-key.h"
-  COMMAND bootstrap "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h" "${CMAKE_BINARY_DIR}/src/library/base/public-key.h"
+  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+  COMMAND bootstrap "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
   DEPENDS bootstrap
 )
 
-add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/src/tools/license-generator/private-key.h")
-add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/src/library/base/public-key.h")
+add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/private-key.h")
+add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/public-key.h")
 
 
 # add the command to generate the source code

@@ -1,5 +1,0 @@
-add_executable(
- bootstrap
- CryptoHelper.cpp
- Main.cpp
-)

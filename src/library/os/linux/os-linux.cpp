@@ -1,4 +1,6 @@
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE     /* To get defns of NI_MAXSERV and NI_MAXHOST */
+#endif
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -21,7 +23,7 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include "../os-cpp.h"
-#include "../../base/public-key.h"
+#include "public-key.h"
 
 #include <openssl/evp.h>
 #include <openssl/bio.h>
@@ -57,7 +59,7 @@ bool OsFunctions::verifySignature(const char* stringToVerify,
 		const char* signatureB64) {
 	EVP_MD_CTX *mdctx = NULL;
 
-	char *pubKey = PUBLIC_KEY;
+	const char *pubKey = PUBLIC_KEY;
 
 	BIO* bio = BIO_new_mem_buf((void*) (pubKey), strlen(pubKey));
 	RSA *rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);

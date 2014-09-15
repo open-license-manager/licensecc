@@ -10,6 +10,7 @@
 #include <openssl/bio.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#include <openssl/rsa.h>
 #include <stdexcept>
 #include <string>
 #include <cstddef>
@@ -28,7 +29,6 @@ static std::string replaceAll(std::string subject, const std::string& search,
 	return subject;
 }
 
-
 CryptoHelperLinux::CryptoHelperLinux() {
 	static int initialized = 0;
 	rsa = NULL;
@@ -41,22 +41,22 @@ CryptoHelperLinux::CryptoHelperLinux() {
 
 }
 void CryptoHelperLinux::generateKeyPair() {
-	srand(time(NULL)); /* seed random number generator */
-	int random = rand();
 	rsa = RSA_generate_key(kBits, kExp, 0, 0);
 }
 
 const string CryptoHelperLinux::exportPrivateKey() const {
 	if (rsa == NULL) {
-		throw logic_error(string("Export not initialized.Call generateKeyPair first."));
+		throw logic_error(
+				string("Export not initialized.Call generateKeyPair first."));
 	}
 	BIO* bio_private = BIO_new(BIO_s_mem());
 	PEM_write_bio_RSAPrivateKey(bio_private, rsa, NULL, NULL, 0, NULL, NULL);
 	int keylen = BIO_pending(bio_private);
 	char* pem_key = (char*) (calloc(keylen + 1, 1)); /* Null-terminate */
 	BIO_read(bio_private, pem_key, keylen);
-	string dest = replaceAll(string(pem_key), string("\n"),
-			string("\\n\" \\\n\""));
+	string dest = string("\"")
+			+ replaceAll(string(pem_key), string("\n"), string("\\n\" \\\n\""))
+			+ string("\"");
 	BIO_free_all(bio_private);
 	free(pem_key);
 	return dest;
@@ -64,22 +64,24 @@ const string CryptoHelperLinux::exportPrivateKey() const {
 
 const string CryptoHelperLinux::exportPublicKey() const {
 	if (rsa == NULL) {
-		throw logic_error(string("Export not initialized.Call generateKeyPair first."));
+		throw logic_error(
+				string("Export not initialized.Call generateKeyPair first."));
 	}
-	BIO* bio_private = BIO_new(BIO_s_mem());
-	PEM_write_bio_RSAPrivateKey(bio_private, rsa, NULL, NULL, 0, NULL, NULL);
-	int keylen = BIO_pending(bio_private);
+	BIO* bio_public = BIO_new(BIO_s_mem());
+	PEM_write_bio_RSAPublicKey(bio_public, rsa);
+	int keylen = BIO_pending(bio_public);
 	char* pem_key = (char*) (calloc(keylen + 1, 1)); /* Null-terminate */
-	BIO_read(bio_private, pem_key, keylen);
-	std::string dest = replaceAll(string(pem_key), string("\n"),
-			string("\\n\" \\\n\""));
-	BIO_free_all(bio_private);
+	BIO_read(bio_public, pem_key, keylen);
+	std::string dest = string("\"")
+			+ replaceAll(string(pem_key), string("\n"), string("\\n\" \\\n\""))
+			+ string("\"");
+	BIO_free_all(bio_public);
 	free(pem_key);
 	return dest;
 }
 
-string CryptoHelperLinux::signString(const unsigned char* privateKey, size_t pklen,
-		const string& license) const {
+string CryptoHelperLinux::signString(const void* privateKey,
+		size_t pklen, const string& license) const {
 	size_t slen;
 	unsigned char* signature;
 	signature = NULL;
@@ -88,7 +90,6 @@ string CryptoHelperLinux::signString(const unsigned char* privateKey, size_t pkl
 	if (!mdctx) {
 		throw logic_error("Message digest creation context");
 	}
-
 
 	BIO* bio = BIO_new_mem_buf((void*) (privateKey), pklen);
 	EVP_PKEY *pktmp = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
@@ -99,7 +100,9 @@ string CryptoHelperLinux::signString(const unsigned char* privateKey, size_t pkl
 		EVP_MD_CTX_destroy(mdctx);
 	}
 	/* Call update with the message */
-	if (EVP_DigestSignUpdate(mdctx, (const void*) license.c_str(), (size_t) license.length()) != 1) {
+	if (EVP_DigestSignUpdate(mdctx, (const void* ) license.c_str(),
+			(size_t ) license.length())
+			!= 1) {
 		EVP_MD_CTX_destroy(mdctx);
 		throw logic_error("Message signing exception");
 	}
@@ -164,7 +167,8 @@ string CryptoHelperLinux::signString(const unsigned char* privateKey, size_t pkl
 	return signatureStr;
 }
 
-const string CryptoHelperLinux::Opensslb64Encode(size_t slen, unsigned char* signature) const{
+const string CryptoHelperLinux::Opensslb64Encode(size_t slen,
+		unsigned char* signature) const {
 	/*
 	 FILE*  stream = fmemopen(*buffer, encodedSize+1, "w");
 	 */

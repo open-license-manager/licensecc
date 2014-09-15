@@ -1,7 +1,7 @@
 #include <build_properties.h>
-#include "LicenseSigner.h"
+#include <private-key.h>
 #include "license-generator.h"
-#include "../library/base/StringUtils.h"
+#include "../base_lib/CryptoHelper.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -103,22 +103,20 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 		client_signature = vm["client_signature"].as<string>();
 		//fixme match + and /
 		/*regex e("(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}");
-		if (!regex_match(client_signature, e)) {
-			cerr << endl << "Client signature not recognized: "
-					<< client_signature
-					<< " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
-					<< endl;
-			exit(2);
-		}*/
+		 if (!regex_match(client_signature, e)) {
+		 cerr << endl << "Client signature not recognized: "
+		 << client_signature
+		 << " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
+		 << endl;
+		 exit(2);
+		 }*/
 	}
 	string extra_data = "";
 	if (vm.count("extra_data")) {
 		extra_data = vm["extra_data"].as<string>();
 	}
-	unsigned int from_sw_version = vm["start_version"].as<
-			unsigned int>();
-	unsigned int to_sw_version =
-			vm["end_version"].as<unsigned int>();
+	unsigned int from_sw_version = vm["start_version"].as<unsigned int>();
+	unsigned int to_sw_version = vm["end_version"].as<unsigned int>();
 	if (vm.count("product") == 0) {
 		cerr << endl << "Parameter [product] not found. " << endl;
 		exit(2);
@@ -140,12 +138,13 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
 		ostream& outputFile) {
 	vector<FullLicenseInfo> licenseInfo = parseLicenseInfo(vm);
-	license::LicenseSigner licSigner =
-			vm.count("private_key") == 0 ?
-					license::LicenseSigner() :
-					license::LicenseSigner(vm["private_key"].as<string>());
+	unique_ptr<CryptoHelper> helper = CryptoHelper::getInstance();
+	const char pkey[] = PRIVATE_KEY;
+	size_t len = sizeof(pkey);
 	for (auto it = licenseInfo.begin(); it != licenseInfo.end(); ++it) {
-		licSigner.signLicense(*it);
+		const string license = it->printForSign();
+		string signature = helper->signString((const void *)pkey,len,license);
+		it->license_signature = signature;
 		it->printAsIni(outputFile);
 	}
 }
@@ -188,25 +187,24 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 	return 0;
 }
 
-
-const std::string formats[] = { "%4u-%2u-%2u","%4u/%2u/%2u","%4u%2u%2u" };
+const std::string formats[] = { "%4u-%2u-%2u", "%4u/%2u/%2u", "%4u%2u%2u" };
 const size_t formats_n = 3;
 
 string LicenseGenerator::normalize_date(const char * s) {
 	unsigned int year, month, day;
 	int chread;
 	bool found = false;
-	for (size_t i = 0; i < formats_n &&!found; ++i) {
-		chread = sscanf(s, formats[i].c_str(),&year, &month, &day);
-		if (chread == 3){
+	for (size_t i = 0; i < formats_n && !found; ++i) {
+		chread = sscanf(s, formats[i].c_str(), &year, &month, &day);
+		if (chread == 3) {
 			found = true;
 		}
 	}
-	if (!found){
+	if (!found) {
 		throw invalid_argument("Date not recognized.");
 	}
 	ostringstream oss;
-	oss << year << "-"<<setfill('0') << std::setw(2)<< month<<"-"<<day;
+	oss << year << "-" << setfill('0') << std::setw(2) << month << "-" << day;
 	//delete (facet);
 	return oss.str();
 }

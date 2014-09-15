@@ -27,7 +27,7 @@ public:
 	virtual const string exportPrivateKey() const = 0;
 	virtual const string exportPublicKey() const = 0;
 
-	virtual const string signString(const unsigned char* privateKey,
+	virtual const string signString(const void* privateKey,
 			size_t pklen, const string& license) const = 0;
 	static unique_ptr<CryptoHelper> getInstance();
 	virtual ~CryptoHelper();

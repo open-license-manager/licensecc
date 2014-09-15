@@ -25,13 +25,13 @@ BOOST_AUTO_TEST_CASE( read_disk_id ) {
 }
 
 BOOST_AUTO_TEST_CASE( read_network_adapters ) {
-	AdapterInfo * adapter_info = NULL;
+	OsAdapterInfo * adapter_info = NULL;
 	size_t adapter_info_size = 0;
 	FUNCTION_RETURN result = getAdapterInfos(NULL, &adapter_info_size);
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	BOOST_CHECK_GT(adapter_info_size, 0);
-	adapter_info = (AdapterInfo*) malloc(
-			sizeof(AdapterInfo) * adapter_info_size);
+	adapter_info = (OsAdapterInfo*) malloc(
+			sizeof(OsAdapterInfo) * adapter_info_size);
 	result = getAdapterInfos(adapter_info, &adapter_info_size);
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	for (size_t i = 0; i < adapter_info_size; i++) {

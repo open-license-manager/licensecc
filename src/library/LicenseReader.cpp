@@ -21,7 +21,7 @@
 #include "pc-identifiers.h"
 #include "LicenseReader.h"
 #include "base/StringUtils.h"
-#include "base/public-key.h"
+#include "public-key.h"
 #include <build_properties.h>
 
 #include "os/os-cpp.h"

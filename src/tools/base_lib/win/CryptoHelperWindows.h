@@ -19,6 +19,14 @@ namespace license {
 class CryptoHelperWindows: public CryptoHelper {
 public:
 	CryptoHelperWindows();
+
+	virtual void generateKeyPair();
+	virtual const string exportPrivateKey() const;
+	virtual const string exportPublicKey() const;
+
+	virtual string signString(const void* privateKey, size_t pklen,
+			const string& license) const;
+
 	virtual ~CryptoHelperWindows();
 };
 

@@ -19,7 +19,7 @@ using namespace std;
 class OsFunctions {
 public:
 
-	static string getModuleName();
+	//static string getModuleName();
 	//use system dependent methods to verify signature
 	static bool verifySignature(const char * stringToVerify,
 			const char* signature);

@@ -1,17 +1,9 @@
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE     /* To get defns of NI_MAXSERV and NI_MAXHOST */
-#endif
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <ifaddrs.h>
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <linux/if_link.h>
-#include <sys/socket.h>
-#include <netpacket/packet.h>
+
 #include <valgrind/memcheck.h>
 #include <paths.h>
 
@@ -36,140 +28,6 @@
 #include <dbus-1.0/dbus/dbus.h>
 #include <sys/utsname.h>
 
-
-static int ifname_position(char *ifnames, char * ifname, int ifnames_max) {
-	int i, position;
-	position = -1;
-	for (i = 0; i < ifnames_max; i++) {
-		if (strcmp(ifname, &ifnames[i * NI_MAXHOST]) == 0) {
-			position = i;
-			break;
-		}
-	}
-	return position;
-
-}
-
-FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
-		size_t * adapter_info_size) {
-
-	FUNCTION_RETURN f_return = FUNC_RET_OK;
-	struct ifaddrs *ifaddr, *ifa;
-	int family, i, n, if_name_position;
-	unsigned int if_num, if_max;
-	//char host[NI_MAXHOST];
-	char *ifnames;
-
-	if (getifaddrs(&ifaddr) == -1) {
-		perror("getifaddrs");
-		return FUNC_RET_ERROR;
-	}
-
-	if (adapterInfos != NULL) {
-		memset(adapterInfos, 0, (*adapter_info_size) * sizeof(OsAdapterInfo));
-	}
-
-	/* count the maximum number of interfaces */
-	for (ifa = ifaddr, if_max = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
-		if (ifa->ifa_addr == NULL) {
-			continue;
-		}
-		if_max++;
-	}
-
-	/* allocate space for names */
-	ifnames = (char*) malloc(NI_MAXHOST * if_max);
-	memset(ifnames, 0, NI_MAXHOST * if_max);
-	/* Walk through linked list, maintaining head pointer so we
-	 can free list later */
-	for (ifa = ifaddr, n = 0, if_num = 0; ifa != NULL;
-			ifa = ifa->ifa_next, n++) {
-		if (ifa->ifa_addr == NULL) {
-			continue;
-		}
-		if_name_position = ifname_position(ifnames, ifa->ifa_name, if_num);
-		//interface name not seen en advance
-		if (if_name_position < 0) {
-			strncpy(&ifnames[if_num * NI_MAXHOST], ifa->ifa_name, NI_MAXHOST);
-			if (adapterInfos != NULL && if_num < *adapter_info_size) {
-				strncpy(adapterInfos[if_num].description, ifa->ifa_name,
-				NI_MAXHOST);
-			}
-			if_name_position = if_num;
-			if_num++;
-			if (adapterInfos == NULL) {
-				continue;
-			}
-		}
-		family = ifa->ifa_addr->sa_family;
-		/* Display interface name and family (including symbolic
-		 form of the latter for the common families) */
-#ifdef _DEBUG
-		printf("%-8s %s (%d)\n", ifa->ifa_name,
-				(family == AF_PACKET) ? "AF_PACKET" :
-				(family == AF_INET) ? "AF_INET" :
-				(family == AF_INET6) ? "AF_INET6" : "???", family);
-#endif
-		/* For an AF_INET* interface address, display the address
-		 * || family == AF_INET6*/
-		if (family == AF_INET) {
-			/*
-			 s = getnameinfo(ifa->ifa_addr,
-			 (family == AF_INET) ?
-			 sizeof(struct sockaddr_in) :
-			 sizeof(struct sockaddr_in6), host, NI_MAXHOST,
-			 NULL, 0, NI_NUMERICHOST);
-
-#ifdef _DEBUG
-			s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host,
-					NI_MAXHOST,
-					NULL, 0, NI_NUMERICHOST);
-			if (s != 0) {
-				printf("getnameinfo() failed: %s\n", gai_strerror(s));
-			}
-			printf("\t\taddress: <%s>\n", host);
-#endif
-*/
-			if (adapterInfos != NULL && if_name_position < *adapter_info_size) {
-				struct sockaddr_in *s1 = (struct sockaddr_in*) ifa->ifa_addr;
-				in_addr_t iaddr = s1->sin_addr.s_addr;
-				adapterInfos[if_name_position].ipv4_address[0] = (iaddr
-						& 0x000000ff);
-				adapterInfos[if_name_position].ipv4_address[1] = (iaddr
-						& 0x0000ff00) >> 8;
-				adapterInfos[if_name_position].ipv4_address[2] = (iaddr
-						& 0x00ff0000) >> 16;
-				adapterInfos[if_name_position].ipv4_address[3] = (iaddr
-						& 0xff000000) >> 24;
-			}
-		} else if (family == AF_PACKET && ifa->ifa_data != NULL) {
-			struct sockaddr_ll *s1 = (struct sockaddr_ll*) ifa->ifa_addr;
-			if (adapterInfos != NULL && if_name_position < *adapter_info_size) {
-				for (i = 0; i < 6; i++) {
-					adapterInfos[if_name_position].mac_address[i] =
-							s1->sll_addr[i];
-#ifdef _DEBUG
-					printf("%02x:", s1->sll_addr[i]);
-#endif
-				}
-#ifdef _DEBUG
-				printf("\t %s\n", ifa->ifa_name);
-#endif
-
-			}
-		}
-	}
-
-	*adapter_info_size = if_num;
-	if (adapterInfos == NULL) {
-		f_return = FUNC_RET_OK;
-	} else if (*adapter_info_size < if_num) {
-		f_return = FUNC_RET_BUFFER_TOO_SMALL;
-	}
-	freeifaddrs(ifaddr);
-	free(ifnames);
-	return f_return;
-}
 /**
  *Usually uuid are hex number separated by "-". this method read up to 8 hex
  *numbers skipping - characters.
@@ -432,4 +290,25 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 	memcpy(identifier, dbus_id, 6);
 	dbus_free(dbus_id);
 	return FUNC_RET_OK;
+}
+
+FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
+	FUNCTION_RETURN result;
+	char path[MAX_PATH] = { 0 };
+	char proc_path[MAX_PATH], pidStr[64];
+	pid_t pid = getpid();
+	sprintf(pidStr, "%d", pid);
+	strcpy(proc_path, "/proc/");
+	strcat(proc_path, pidStr);
+	strcat(proc_path, "/exe");
+
+	int ch = readlink(proc_path, path, MAX_PATH);
+	if (ch != -1) {
+		path[ch] = '\0';
+		strncpy(buffer, path, ch);
+		result = FUNC_RET_OK;
+	} else {
+		result = FUNC_RET_ERROR;
+	}
+	return result;
 }

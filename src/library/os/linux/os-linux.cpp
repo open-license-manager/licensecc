@@ -34,26 +34,6 @@ namespace license {
 
 using namespace std;
 
-string OsFunctions::getModuleName() {
-	char path[2048] = { 0 };
-	string strPath;
-	string result;
-	pid_t pid = getpid();
-	const string pidstr = to_string(((long) pid));
-	strPath = string("/proc/") + pidstr + "/exe";
-	const char * proc_path = strPath.c_str();
-	int ch = readlink(proc_path, path, 2048);
-	if (ch != -1) {
-		path[ch] = '\0';
-		result = string(path);
-	} else {
-		throw runtime_error(
-				string("Can't find: ") + strPath + " proc filesystem mounted?");
-	}
-	return result;
-}
-
-
 
 bool OsFunctions::verifySignature(const char* stringToVerify,
 		const char* signatureB64) {

@@ -21,6 +21,7 @@
 #include "pc-identifiers.h"
 #include "LicenseReader.h"
 #include "base/StringUtils.h"
+#include "base/logger.h"
 #include "public-key.h"
 #include <build_properties.h>
 
@@ -152,15 +153,16 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			string client_signature = trim_copy(
 					ini.GetValue(productNamePtr, "client_signature", ""));
 			/*client_signature.erase(
-					std::remove(client_signature.begin(), client_signature.end(), '-'),
-					client_signature.end());*/
+			 std::remove(client_signature.begin(), client_signature.end(), '-'),
+			 client_signature.end());*/
 			int from_sw_version = ini.GetLongValue(productNamePtr,
-					"from_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
+					"from_sw_version",
+					FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			int to_sw_version = ini.GetLongValue(productNamePtr,
 					"to_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			FullLicenseInfo licInfo(*it, product, license_signature,
-					(int) license_version, from_date, to_date,
-					client_signature,from_sw_version,to_sw_version);
+					(int) license_version, from_date, to_date, client_signature,
+					from_sw_version, to_sw_version);
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {
@@ -199,8 +201,7 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 				}
 			}
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
-					varName);
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN, varName);
 		}
 	}
 	return licenseFoundWithExplicitLocation;
@@ -225,19 +226,19 @@ bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 					for (auto it = existing_pos.begin();
 							it != existing_pos.end(); ++it) {
 						diskFiles.push_back(*it);
-						eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO, *it);
+						eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO,
+								*it);
 					}
 				} else {
-					eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND,
-							SVRT_WARN, env_var_value);
+					eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
+							env_var_value);
 				}
 			} else {
 				eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
 						SVRT_WARN);
 			}
 		} else {
-			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED,
-					SVRT_WARN);
+			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, SVRT_WARN);
 		}
 	}
 	return licenseFileFoundWithEnvVariable;
@@ -249,17 +250,24 @@ EventRegistry LicenseReader::getLicenseDiskFiles(vector<string>& diskFiles) {
 			diskFiles, eventRegistry);
 	bool foundNearModule = false;
 	if (licenseLocation.openFileNearModule) {
-		string temptativeLicense = OsFunctions::getModuleName() + ".lic";
-		ifstream f(temptativeLicense.c_str());
-		if (f.good()) {
-			foundNearModule = true;
-			diskFiles.push_back(temptativeLicense);
-			eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO, temptativeLicense);
+		char fname[MAX_PATH] = { 0 };
+		FUNCTION_RETURN fret = getModuleName(fname);
+		if (fret == FUNC_RET_OK) {
+			string temptativeLicense = string(fname) + ".lic";
+			ifstream f(temptativeLicense.c_str());
+			if (f.good()) {
+				foundNearModule = true;
+				diskFiles.push_back(temptativeLicense);
+				eventRegistry.addEvent(LICENSE_FILE_FOUND, SVRT_INFO,
+						temptativeLicense);
+			} else {
+				eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
+						temptativeLicense);
+			}
+			f.close();
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
-					temptativeLicense);
+			LOG_WARN("Error determining module name.");
 		}
-		f.close();
 	}
 	bool licenseFileFoundWithEnvVariable = findFileWithEnvironmentVariable(
 			diskFiles, eventRegistry);

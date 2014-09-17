@@ -15,8 +15,8 @@ namespace license {
 
 namespace po = boost::program_options;
 /**
- * This class is used to generate a new license.
- * It has no metnod main, for testing reasons.
+ * This class contains all the logic used to generate a new license.
+ * Since it has no method "main", can be easily used in unit tests.
  */
 class LicenseGenerator {
 private:
@@ -28,6 +28,17 @@ private:
 			ostream& outputFile);
 	static string normalize_date(const char * s);
 public:
+	/**
+	 * Available options:
+	 * <ul>
+	 * 	<li>-s : use Client Signature.</li>
+	 * </ul>
+	 * @param argc
+	 * 			count of arguments.
+	 * @param argv
+	 * 			char** of parameters.
+	 * @return
+	 */
 	static int generateLicense(int argc, const char** argv);
 };
 

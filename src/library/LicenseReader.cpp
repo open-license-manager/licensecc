@@ -25,8 +25,6 @@
 #include "public-key.h"
 #include <build_properties.h>
 
-#include "os/os-cpp.h"
-
 namespace license {
 
 const char *FullLicenseInfo::UNUSED_TIME = "0000-00-00";

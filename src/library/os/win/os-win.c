@@ -10,7 +10,7 @@
 #pragma comment(lib, "IPHLPAPI.lib")
 unsigned char* unbase64(const char* ascii, int len, int *flen);
 
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]){
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 	return FUNC_RET_NOT_AVAIL;
 }
 
@@ -18,9 +18,8 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
 	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL cmpName = GetComputerName(
-		buffer, &bufsize);
-	if (cmpName){
+	BOOL cmpName = GetComputerName(buffer, &bufsize);
+	if (cmpName) {
 		strncpy(identifier, buffer, 6);
 		result = FUNC_RET_OK;
 	}
@@ -52,43 +51,43 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	FUNCTION_RETURN return_value;
 	DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
 
-	if (dwResult > 0 && dwResult <= MAX_PATH)
-	{
+	if (dwResult > 0 && dwResult <= MAX_PATH) {
 		return_value = FUNC_RET_OK;
 		szSingleDrive = szLogicalDrives;
-		while (*szSingleDrive && ndrives < MAX_UNITS)
-		{
+		while (*szSingleDrive && ndrives < MAX_UNITS) {
 
 			// get the next drive
 			driveType = GetDriveType(szSingleDrive);
-			if (driveType == DRIVE_FIXED){
-				success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH, &volSerial,
-					&FileMaxLen, &FileFlags, FileSysName, MAX_PATH);
+			if (driveType == DRIVE_FIXED) {
+				success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH,
+						&volSerial, &FileMaxLen, &FileFlags, FileSysName,
+						MAX_PATH);
 				if (success) {
 					LOG_INFO("drive         : %s\n", szSingleDrive);
 					LOG_INFO("Volume Name   : %s\n", volName);
-					LOG_INFO("Volume Serial : 0x%x\n", volSerial);
-					LOG_DEBUG("Max file length : %d\n", FileMaxLen);
-					LOG_DEBUG("Filesystem      : %s\n", FileSysName);
-					if (diskInfos != NULL && * disk_info_size < ndrives){
+					LOG_INFO("Volume Serial : 0x%x\n", volSerial); LOG_DEBUG("Max file length : %d\n", FileMaxLen); LOG_DEBUG("Filesystem      : %s\n", FileSysName);
+					if (diskInfos != NULL && *disk_info_size < ndrives) {
 						strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
-						strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
+						strncpy(diskInfos[ndrives].label, FileSysName,
+								MAX_PATH);
 						diskInfos[ndrives].id = ndrives;
-						diskInfos[ndrives].preferred = (strncmp(szSingleDrive, "C", 1) != 0);
+						diskInfos[ndrives].preferred = (strncmp(szSingleDrive,
+								"C", 1) != 0);
 
 					}
 					ndrives++;
-				}
-				else {
-					LOG_WARN("Unable to retrieve information of '%s'\n", szSingleDrive);
+				} else {
+					LOG_WARN("Unable to retrieve information of '%s'\n",
+							szSingleDrive);
 				}
 			}
-			LOG_INFO("This volume is not fixed : %s, type: %d\n", szSingleDrive);
+			LOG_INFO("This volume is not fixed : %s, type: %d\n",
+					szSingleDrive);
 			szSingleDrive += strlen(szSingleDrive) + 1;
 		}
 	}
 
-	if (*disk_info_size >= ndrives){
+	if (*disk_info_size >= ndrives) {
 		return_value = FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	return return_value;
@@ -101,11 +100,10 @@ static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
 
 	str2 = ipStringIn; /* save the pointer */
 	while (*str2) {
-		if (isdigit((unsigned char)*str2)) {
+		if (isdigit((unsigned char) *str2)) {
 			ipv4[index] *= 10;
 			ipv4[index] += *str2 - '0';
-		}
-		else {
+		} else {
 			index++;
 		}
 		str2++;
@@ -115,7 +113,8 @@ static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
 
 //http://stackoverflow.com/questions/18046063/mac-address-using-c
 //TODO: count only interfaces with type (MIB_IF_TYPE_ETHERNET IF_TYPE_IEEE80211)
-FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_info_size) {
+FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
+		size_t * adapter_info_size) {
 	DWORD dwStatus;
 	unsigned int i = 0;
 	FUNCTION_RETURN result;
@@ -124,22 +123,23 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 	DWORD dwBufLen = 20; //sizeof(AdapterInfo);         // Save the memory size of buffer
 
 	i = 3;
-	do{
-		pAdapterInfo = (PIP_ADAPTER_INFO)malloc(sizeof(IP_ADAPTER_INFO)*dwBufLen);
+	do {
+		pAdapterInfo = (PIP_ADAPTER_INFO) malloc(
+				sizeof(IP_ADAPTER_INFO) * dwBufLen);
 		dwStatus = GetAdaptersInfo(               // Call GetAdapterInfo
-			pAdapterInfo, // [out] buffer to receive data
-			&dwBufLen   // [in] size of receive data buffer
-			);
+				pAdapterInfo, // [out] buffer to receive data
+				&dwBufLen   // [in] size of receive data buffer
+				);
 		dwBufLen = dwBufLen / sizeof(IP_ADAPTER_INFO);
-		if (dwStatus != NO_ERROR){
+		if (dwStatus != NO_ERROR) {
 			free(pAdapterInfo);
 		}
 	} while (dwStatus == ERROR_BUFFER_OVERFLOW && i-- > 0);
 
-	if (dwStatus != ERROR_BUFFER_OVERFLOW){
+	if (dwStatus != ERROR_BUFFER_OVERFLOW) {
 		return FUNC_RET_ERROR;
 	}
-	if (adapterInfos == NULL || *adapter_info_size == 0){
+	if (adapterInfos == NULL || *adapter_info_size == 0) {
 		*adapter_info_size = dwBufLen;
 		free(pAdapterInfo);
 		return FUNC_RET_BUFFER_TOO_SMALL;
@@ -150,13 +150,16 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 	i = 0;
 	result = FUNC_RET_OK;
 	while (pAdapter) {
-		strncpy(adapterInfos[i].description, pAdapter->Description, min(sizeof(adapterInfos->description), MAX_ADAPTER_DESCRIPTION_LENGTH));
+		strncpy(adapterInfos[i].description, pAdapter->Description,
+				min(sizeof(adapterInfos->description),
+						MAX_ADAPTER_DESCRIPTION_LENGTH));
 		memcpy(adapterInfos[i].mac_address, pAdapter->Address, 8);
-		translate(pAdapter->IpAddressList.IpAddress.String, adapterInfos[i].ipv4_address);
+		translate(pAdapter->IpAddressList.IpAddress.String,
+				adapterInfos[i].ipv4_address);
 		adapterInfos[i].type = IFACE_TYPE_ETHERNET;
 		i++;
 		pAdapter = pAdapter->Next;
-		if (i == *adapter_info_size){
+		if (i == *adapter_info_size) {
 			result = FUNC_RET_BUFFER_TOO_SMALL;
 			break;
 		}
@@ -166,37 +169,37 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 	return result;
 }
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
-	FUNCTION_RETURN result=FUNC_RET_OK;
+	FUNCTION_RETURN result = FUNC_RET_OK;
 	DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);
-	if (wres == 0){
+	if (wres == 0) {
 		result = FUNC_RET_ERROR;
 	}
 	return result;
 }
 
-static void printHash(HCRYPTHASH* hHash){
-	BYTE         *pbHash;
-	DWORD        dwHashLen;
-	DWORD        dwHashLenSize = sizeof(DWORD); 
+static void printHash(HCRYPTHASH* hHash) {
+	BYTE *pbHash;
+	DWORD dwHashLen;
+	DWORD dwHashLenSize = sizeof(DWORD);
 	char* hashStr;
 	int i;
 
-	if (CryptGetHashParam(*hHash,HP_HASHSIZE,(BYTE *)&dwHashLen, &dwHashLenSize, 0))
-	{
-		pbHash = (BYTE*)malloc(dwHashLen);
-		hashStr = (char*)malloc(dwHashLen*2 +1);
-		if (CryptGetHashParam(*hHash,HP_HASHVAL,pbHash,	&dwHashLen,	0))	{
-			for (i = 0; i < dwHashLen; i++)	{
+	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
+			&dwHashLenSize, 0)) {
+		pbHash = (BYTE*) malloc(dwHashLen);
+		hashStr = (char*) malloc(dwHashLen * 2 + 1);
+		if (CryptGetHashParam(*hHash, HP_HASHVAL, pbHash, &dwHashLen, 0)) {
+			for (i = 0; i < dwHashLen; i++) {
 				sprintf(&hashStr[i * 2], "%02x", pbHash[i]);
-			}
-			LOG_DEBUG("Hash to verify: %s", hashStr);
+			} LOG_DEBUG("Hash to verify: %s", hashStr);
 		}
 		free(pbHash);
 		free(hashStr);
 	}
 }
 
-FUNCTION_RETURN verifySignature(const char* stringToVerify,	const char* signatureB64) {
+FUNCTION_RETURN verifySignature(const char* stringToVerify,
+		const char* signatureB64) {
 	//--------------------------------------------------------------------
 	// Declare variables.
 	//
@@ -218,33 +221,20 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,	const char* signatur
 	//--------------------------------------------------------------------
 	// Acquire a handle to the CSP.
 
-	if (!CryptAcquireContext(
-		&hProv,
-		NULL,
-		MS_ENHANCED_PROV,
-		PROV_RSA_FULL,
-		CRYPT_VERIFYCONTEXT))
-	{
+	if (!CryptAcquireContext(&hProv,
+	NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		// If the key container cannot be opened, try creating a new
 		// container by specifying a container name and setting the 
 		// CRYPT_NEWKEYSET flag.
 		LOG_INFO("Error in AcquireContext 0x%08x \n", GetLastError());
-		if (NTE_BAD_KEYSET == GetLastError())
-		{
-			if (!CryptAcquireContext(
-				&hProv,
-				"license++verify",
-				MS_ENHANCED_PROV,
-				PROV_RSA_FULL,
-				CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT))
-			{
-				LOG_ERROR("Error in AcquireContext 0x%08x \n",
-					GetLastError());
+		if (NTE_BAD_KEYSET == GetLastError()) {
+			if (!CryptAcquireContext(&hProv, "license++verify",
+					MS_ENHANCED_PROV, PROV_RSA_FULL,
+					CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT)) {
+				LOG_ERROR("Error in AcquireContext 0x%08x \n", GetLastError());
 				return FUNC_RET_ERROR;
 			}
-		}
-		else
-		{
+		} else {
 			LOG_ERROR(" Error in AcquireContext 0x%08x \n", GetLastError());
 			return FUNC_RET_ERROR;
 		}
@@ -254,25 +244,20 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,	const char* signatur
 	// BYTE array into the key container. The function returns a 
 	// pointer to an HCRYPTKEY variable that contains the handle of
 	// the imported key.
-	if (!CryptImportKey(hProv, &pubKey[0], sizeof(pubKey), 0, 0, &hKey))
-	{
-		LOG_ERROR("Error 0x%08x in importing the PublicKey \n",
-			GetLastError());
+	if (!CryptImportKey(hProv, &pubKey[0], sizeof(pubKey), 0, 0, &hKey)) {
+		LOG_ERROR("Error 0x%08x in importing the PublicKey \n", GetLastError());
 		return FUNC_RET_ERROR;
 	}
 
-	if (CryptCreateHash(hProv, CALG_SHA1, 0, 0, &hHash))
-	{
+	if (CryptCreateHash(hProv, CALG_SHA1, 0, 0, &hHash)) {
 		LOG_DEBUG("Hash object created.");
-	}
-	else
-	{
+	} else {
 		LOG_ERROR("Error in hash creation 0x%08x ", GetLastError());
-		CryptReleaseContext(hProv,0);
+		CryptReleaseContext(hProv, 0);
 		return FUNC_RET_ERROR;
 	}
 
-	if (!CryptHashData(hHash, stringToVerify, strlen(stringToVerify), 0)){
+	if (!CryptHashData(hHash, stringToVerify, strlen(stringToVerify), 0)) {
 		LOG_ERROR("Error in hashing data 0x%08x ", GetLastError());
 		CryptDestroyHash(hHash);
 		CryptReleaseContext(hProv, 0);
@@ -284,8 +269,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,	const char* signatur
 #endif
 	sigBlob = unbase64(signatureB64, strlen(signatureB64), &dwSigLen);
 	LOG_DEBUG("raw signature lenght %d", dwSigLen);
-	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0))
-	{
+	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0)) {
 		LOG_ERROR("Signature not validated!  0x%08x ", GetLastError());
 		free(sigBlob);
 		CryptDestroyHash(hHash);

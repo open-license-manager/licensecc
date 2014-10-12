@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -15,6 +14,7 @@
 #include <sys/stat.h>
 #include "../os.h"
 #include "public-key.h"
+#include "../../base/logger.h"
 
 #include <openssl/evp.h>
 #include <openssl/bio.h>
@@ -117,10 +117,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 					}
 				}
 				if (drive_found == -1) {
-#ifdef _DEBUG
-					printf("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
-							mount_stat.st_ino);
-#endif
+					LOG_DEBUG("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
+							(unsigned long int)mount_stat.st_ino);
 					strcpy(tmpDrives[currentDrive].device, ent->mnt_fsname);
 					statDrives[currentDrive] = mount_stat.st_ino;
 					drive_found = currentDrive;
@@ -128,9 +126,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				}
 				if (strcmp(ent->mnt_dir, "/") == 0) {
 					strcpy(tmpDrives[drive_found].label, "root");
-#ifdef _DEBUG
-					printf("drive %s set to preferred\n", ent->mnt_fsname);
-#endif
+					LOG_DEBUG("drive %s set to preferred\n", ent->mnt_fsname);
 					tmpDrives[drive_found].preferred = true;
 				}
 			}
@@ -145,9 +141,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	} else if (*disk_info_size >= currentDrive) {
 		disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
 		if (disk_by_uuid_dir == NULL) {
-#ifdef _DEBUG
-			printf("Open /dev/disk/by-uuid fail");
-#endif
+			LOG_WARN("Open /dev/disk/by-uuid fail");
 			free(statDrives);
 			return FUNC_RET_ERROR;
 		}
@@ -164,7 +158,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 #ifdef _DEBUG
 						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
 
-						printf("uuid %d %s %02x%02x%02x%02x\n", i,
+						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i,
 								tmpDrives[i].device,
 								tmpDrives[i].disk_sn[0],
 								tmpDrives[i].disk_sn[1],
@@ -310,5 +304,79 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	} else {
 		result = FUNC_RET_ERROR;
 	}
+	return result;
+}
+
+static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
+	if (pkey) {
+		EVP_PKEY_free(pkey);
+	}
+	if (mdctx) {
+		EVP_MD_CTX_destroy(mdctx);
+	}
+}
+
+FUNCTION_RETURN verifySignature(const char* stringToVerify,
+		const char* signatureB64) {
+	EVP_MD_CTX *mdctx = NULL;
+	const char *pubKey = PUBLIC_KEY;
+	int func_ret = 0;
+
+	BIO* bio = BIO_new_mem_buf((void*) (pubKey), strlen(pubKey));
+	RSA *rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);
+	BIO_free(bio);
+	if (rsa == NULL) {
+		LOG_ERROR("Error reading public key");
+		return FUNC_RET_ERROR;
+	}
+	EVP_PKEY *pkey = EVP_PKEY_new();
+	EVP_PKEY_assign_RSA(pkey, rsa);
+
+	/*BIO* bo = BIO_new(BIO_s_mem());
+	 BIO_write(bo, pubKey, strlen(pubKey));
+	 RSA *key = 0;
+	 PEM_read_bio_RSAPublicKey(bo, &key, 0, 0);
+	 BIO_free(bo);*/
+
+//RSA* rsa = EVP_PKEY_get1_RSA( key );
+//RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
+	unsigned char buffer[512];
+	BIO* b64 = BIO_new(BIO_f_base64());
+	BIO* encoded_signature = BIO_new_mem_buf((void *) signatureB64,
+			strlen(signatureB64));
+	BIO* biosig = BIO_push(b64, encoded_signature);
+	BIO_set_flags(biosig, BIO_FLAGS_BASE64_NO_NL); //Do not use newlines to flush buffer
+	unsigned int len = BIO_read(biosig, (void *) buffer, strlen(signatureB64));
+//Can test here if len == decodeLen - if not, then return an error
+	buffer[len] = 0;
+
+	BIO_free_all(biosig);
+
+	/* Create the Message Digest Context */
+	if (!(mdctx = EVP_MD_CTX_create())) {
+		free_resources(pkey, mdctx);
+		LOG_ERROR("Error creating context");
+		return FUNC_RET_ERROR;
+	}
+	if (1 != EVP_DigestVerifyInit(mdctx, NULL, EVP_sha256(), NULL, pkey)) {
+		LOG_ERROR("Error initializing digest");
+		free_resources(pkey, mdctx);
+		return FUNC_RET_ERROR;
+	}
+	int en = strlen(stringToVerify);
+	func_ret = EVP_DigestVerifyUpdate(mdctx, stringToVerify, en);
+	if (1 != func_ret) {
+		LOG_ERROR("Error verifying digest %d", func_ret);
+		free_resources(pkey, mdctx);
+		return FUNC_RET_ERROR;
+	}
+	FUNCTION_RETURN result;
+	func_ret = EVP_DigestVerifyFinal(mdctx, buffer, len);
+	if (1 != func_ret) {
+		LOG_ERROR("Error verifying digest %d", func_ret);
+	}
+	result = (1 == func_ret ? FUNC_RET_OK : FUNC_RET_ERROR);
+
+	free_resources(pkey, mdctx);
 	return result;
 }

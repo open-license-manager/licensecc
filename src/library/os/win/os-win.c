@@ -2,6 +2,7 @@
 #include <iphlpapi.h>
 //definition of size_t
 #include <stdlib.h>
+#include <stdio.h>
 //#include "../../base/base64.h"
 #include "../../base/logger.h"
 #include"../os.h"
@@ -182,7 +183,7 @@ static void printHash(HCRYPTHASH* hHash) {
 	DWORD dwHashLen;
 	DWORD dwHashLenSize = sizeof(DWORD);
 	char* hashStr;
-	int i;
+	unsigned int i;
 
 	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
 			&dwHashLenSize, 0)) {
@@ -257,7 +258,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 		return FUNC_RET_ERROR;
 	}
 
-	if (!CryptHashData(hHash, stringToVerify, strlen(stringToVerify), 0)) {
+	if (!CryptHashData(hHash, stringToVerify, (DWORD) strlen(stringToVerify), 0)) {
 		LOG_ERROR("Error in hashing data 0x%08x ", GetLastError());
 		CryptDestroyHash(hHash);
 		CryptReleaseContext(hProv, 0);
@@ -267,7 +268,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	LOG_DEBUG("Lenght %d, hashed Data: [%s]", strlen(stringToVerify), stringToVerify);
 	printHash(&hHash);
 #endif
-	sigBlob = unbase64(signatureB64, strlen(signatureB64), &dwSigLen);
+	sigBlob = unbase64(signatureB64, (int) strlen(signatureB64), &dwSigLen);
 	LOG_DEBUG("raw signature lenght %d", dwSigLen);
 	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0)) {
 		LOG_ERROR("Signature not validated!  0x%08x ", GetLastError());

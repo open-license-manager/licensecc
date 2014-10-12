@@ -181,7 +181,7 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 	DWORD dwHashLen;
 	DWORD dwHashLenSize = sizeof(DWORD);
 	char* hashStr;
-	int i;
+	unsigned int i;
 
 	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
 			&dwHashLenSize, 0)) {
@@ -201,20 +201,18 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 const string CryptoHelperWindows::signString(const void* privateKey,
 		size_t pklen, const string& license) const {
 	BYTE *pbBuffer = (BYTE *) license.c_str();
-	DWORD dwBufferLen = strlen((char *) pbBuffer);
+	DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
 	HCRYPTHASH hHash;
 
 	HCRYPTKEY hKey;
-	BYTE *pbKeyBlob;
 	BYTE *pbSignature;
 	DWORD dwSigLen;
-	DWORD dwBlobLen;
 	DWORD strLen;
 
 	//-------------------------------------------------------------------
 	// Acquire a cryptographic provider context handle.
 
-	if (!CryptImportKey(m_hCryptProv, (const BYTE *) privateKey, pklen, 0, 0,
+	if (!CryptImportKey(m_hCryptProv, (const BYTE *) privateKey, (DWORD) pklen, 0, 0,
 			&hKey)) {
 		throw logic_error(
 				string("Error in importing the PrivateKey ")

@@ -73,6 +73,8 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 VIRTUALIZATION getVirtualization();
 void os_initialize();
 
+FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
+
 #ifdef __cplusplus
 }
 #endif

@@ -2,9 +2,13 @@
 #include <iphlpapi.h>
 //definition of size_t
 #include <stdlib.h>
+//#include "../../base/base64.h"
 #include "../../base/logger.h"
 #include"../os.h"
+#include "public-key.h"
+
 #pragma comment(lib, "IPHLPAPI.lib")
+unsigned char* unbase64(const char* ascii, int len, int *flen);
 
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]){
 	return FUNC_RET_NOT_AVAIL;
@@ -168,5 +172,129 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 		result = FUNC_RET_ERROR;
 	}
 	return result;
+}
+
+static void printHash(HCRYPTHASH* hHash){
+	BYTE         *pbHash;
+	DWORD        dwHashLen;
+	DWORD        dwHashLenSize = sizeof(DWORD); 
+	char* hashStr;
+	int i;
+
+	if (CryptGetHashParam(*hHash,HP_HASHSIZE,(BYTE *)&dwHashLen, &dwHashLenSize, 0))
+	{
+		pbHash = (BYTE*)malloc(dwHashLen);
+		hashStr = (char*)malloc(dwHashLen*2 +1);
+		if (CryptGetHashParam(*hHash,HP_HASHVAL,pbHash,	&dwHashLen,	0))	{
+			for (i = 0; i < dwHashLen; i++)	{
+				sprintf(&hashStr[i * 2], "%02x", pbHash[i]);
+			}
+			LOG_DEBUG("Hash to verify: %s", hashStr);
+		}
+		free(pbHash);
+		free(hashStr);
+	}
+}
+
+FUNCTION_RETURN verifySignature(const char* stringToVerify,	const char* signatureB64) {
+	//--------------------------------------------------------------------
+	// Declare variables.
+	//
+	// hProv:           Cryptographic service provider (CSP). This example
+	//                  uses the Microsoft Enhanced Cryptographic 
+	//                  Provider.
+	// hKey:            Key to be used. In this example, you import the 
+	//                  key as a PLAINTEXTKEYBLOB.
+	// dwBlobLen:       Length of the plaintext key.
+	// pbKeyBlob:       Pointer to the exported key.
+	BYTE pubKey[] = PUBLIC_KEY;
+
+	HCRYPTPROV hProv = 0;
+	HCRYPTKEY hKey = 0;
+	HCRYPTHASH hHash = 0;
+	DWORD dwSigLen;
+	BYTE* sigBlob;
+
+	//--------------------------------------------------------------------
+	// Acquire a handle to the CSP.
+
+	if (!CryptAcquireContext(
+		&hProv,
+		NULL,
+		MS_ENHANCED_PROV,
+		PROV_RSA_FULL,
+		CRYPT_VERIFYCONTEXT))
+	{
+		// If the key container cannot be opened, try creating a new
+		// container by specifying a container name and setting the 
+		// CRYPT_NEWKEYSET flag.
+		LOG_INFO("Error in AcquireContext 0x%08x \n", GetLastError());
+		if (NTE_BAD_KEYSET == GetLastError())
+		{
+			if (!CryptAcquireContext(
+				&hProv,
+				"license++verify",
+				MS_ENHANCED_PROV,
+				PROV_RSA_FULL,
+				CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT))
+			{
+				LOG_ERROR("Error in AcquireContext 0x%08x \n",
+					GetLastError());
+				return FUNC_RET_ERROR;
+			}
+		}
+		else
+		{
+			LOG_ERROR(" Error in AcquireContext 0x%08x \n", GetLastError());
+			return FUNC_RET_ERROR;
+		}
+	}
+
+	// Use the CryptImportKey function to import the PLAINTEXTKEYBLOB
+	// BYTE array into the key container. The function returns a 
+	// pointer to an HCRYPTKEY variable that contains the handle of
+	// the imported key.
+	if (!CryptImportKey(hProv, &pubKey[0], sizeof(pubKey), 0, 0, &hKey))
+	{
+		LOG_ERROR("Error 0x%08x in importing the PublicKey \n",
+			GetLastError());
+		return FUNC_RET_ERROR;
+	}
+
+	if (CryptCreateHash(hProv, CALG_SHA1, 0, 0, &hHash))
+	{
+		LOG_DEBUG("Hash object created.");
+	}
+	else
+	{
+		LOG_ERROR("Error in hash creation 0x%08x ", GetLastError());
+		CryptReleaseContext(hProv,0);
+		return FUNC_RET_ERROR;
+	}
+
+	if (!CryptHashData(hHash, stringToVerify, strlen(stringToVerify), 0)){
+		LOG_ERROR("Error in hashing data 0x%08x ", GetLastError());
+		CryptDestroyHash(hHash);
+		CryptReleaseContext(hProv, 0);
+		return FUNC_RET_ERROR;
+	}
+#ifdef _DEBUG
+	LOG_DEBUG("Lenght %d, hashed Data: [%s]", strlen(stringToVerify), stringToVerify);
+	printHash(&hHash);
+#endif
+	sigBlob = unbase64(signatureB64, strlen(signatureB64), &dwSigLen);
+	LOG_DEBUG("raw signature lenght %d", dwSigLen);
+	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0))
+	{
+		LOG_ERROR("Signature not validated!  0x%08x ", GetLastError());
+		free(sigBlob);
+		CryptDestroyHash(hHash);
+		CryptReleaseContext(hProv, 0);
+		return FUNC_RET_ERROR;
+	}
+	CryptDestroyHash(hHash);
+	free(sigBlob);
+	CryptReleaseContext(hProv, 0);
+	return FUNC_RET_OK;
 }
 

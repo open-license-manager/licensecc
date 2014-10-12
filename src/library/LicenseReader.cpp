@@ -52,8 +52,9 @@ FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 EventRegistry FullLicenseInfo::validate(int sw_version) {
 	EventRegistry er;
 	os_initialize();
-	bool sigVerified = OsFunctions::verifySignature(printForSign().c_str(),
+	FUNCTION_RETURN sigVer = verifySignature(printForSign().c_str(),
 			license_signature.c_str());
+	bool sigVerified = sigVer == FUNC_RET_OK;
 	if (sigVerified) {
 		er.addEvent(LICENSE_VERIFIED, SVRT_INFO);
 	} else {

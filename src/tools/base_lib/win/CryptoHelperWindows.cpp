@@ -20,16 +20,36 @@ namespace license {
 	CryptoHelperWindows::CryptoHelperWindows() {
 		m_hCryptProv = NULL;
 		m_hCryptKey = NULL;
-		if (CryptAcquireContext(
+		if (!CryptAcquireContext(
 			&m_hCryptProv,
-			"license-manager2++",
+			"license++sign",
 			MS_ENHANCED_PROV,
-			PROV_RSA_FULL, //CRYPT_NEWKEYSET
-			0))	{
-		}
-		else
+			PROV_RSA_FULL,
+			0))
 		{
-			throw exception("Error during CryptAcquireContext");
+			// If the key container cannot be opened, try creating a new
+			// container by specifying a container name and setting the 
+			// CRYPT_NEWKEYSET flag.
+			printf("Error in AcquireContext 0x%08x \n", GetLastError());
+			if (NTE_BAD_KEYSET == GetLastError())
+			{
+				if (!CryptAcquireContext(
+					&m_hCryptProv,
+					"license++sign",
+					MS_ENHANCED_PROV,
+					PROV_RSA_FULL,
+					CRYPT_NEWKEYSET))
+				{
+					printf("Error in AcquireContext 0x%08x \n",
+						GetLastError());
+					throw logic_error("");
+				}
+			}
+			else
+			{
+				printf(" Error in AcquireContext 0x%08x \n", GetLastError());
+				throw logic_error("");
+			}
 		}
 
 	}
@@ -198,10 +218,32 @@ namespace license {
 		return ss.str();
 	}
 
+	void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
+		BYTE         *pbHash;
+		DWORD        dwHashLen;
+		DWORD        dwHashLenSize = sizeof(DWORD);
+		char* hashStr;
+		int i;
+
+		if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *)&dwHashLen, &dwHashLenSize, 0))
+		{
+			pbHash = (BYTE*)malloc(dwHashLen);
+			hashStr = (char*)malloc(dwHashLen * 2 + 1);
+			if (CryptGetHashParam(*hHash, HP_HASHVAL, pbHash, &dwHashLen, 0))	{
+				for (i = 0; i < dwHashLen; i++)	{
+					sprintf(&hashStr[i * 2], "%02x", pbHash[i]);
+				}
+				printf("hash To be signed: %s \n", hashStr);
+			}
+			free(pbHash);
+			free(hashStr);
+		}
+	}
+
 	const string CryptoHelperWindows::signString(const void* privateKey, size_t pklen,
 		const string& license) const{
 		BYTE *pbBuffer = (BYTE *)license.c_str();
-		DWORD dwBufferLen = strlen((char *)pbBuffer) + 1;
+		DWORD dwBufferLen = strlen((char *)pbBuffer);
 		HCRYPTHASH hHash;
 
 		HCRYPTKEY hKey;
@@ -215,24 +257,9 @@ namespace license {
 		//-------------------------------------------------------------------
 		// Acquire a cryptographic provider context handle.
 
-
-		//-------------------------------------------------------------------
-		// Get the public at signature key. This is the public key
-		// that will be used by the receiver of the hash to verify
-		// the signature. In situations where the receiver could obtain the
-		// sender's public key from a certificate, this step would not be
-		// needed.
-
-		if (CryptGetUserKey(
-			m_hCryptProv,
-			AT_SIGNATURE,
-			&hKey))
+		if (!CryptImportKey(m_hCryptProv, (const BYTE *) privateKey, pklen, 0, 0, &hKey))
 		{
-			printf("The signature key has been acquired. \n");
-		}
-		else
-		{
-			printf("Error during CryptGetUserKey for signkey. %d", GetLastError());
+			throw logic_error(string("Error in importing the PrivateKey ") + to_string(GetLastError()));
 		}
 
 		//-------------------------------------------------------------------
@@ -249,18 +276,18 @@ namespace license {
 		}
 		else
 		{
+			CryptDestroyKey(hKey);
 			throw logic_error(string("Error during CryptCreateHash."));
 		}
 		//-------------------------------------------------------------------
 		// Compute the cryptographic hash of the buffer.
 
-		if (CryptHashData(
-			hHash,
-			pbBuffer,
-			dwBufferLen,
-			0))
+		if (CryptHashData(hHash,pbBuffer,dwBufferLen,	0))
 		{
-			printf("The data buffer has been hashed.\n");
+#ifdef _DEBUG
+			printf("Length of data to be hashed: %d \n", dwBufferLen);
+			printHash(&hHash);
+#endif 
 		}
 		else
 		{
@@ -306,7 +333,7 @@ namespace license {
 			pbSignature,
 			&dwSigLen))
 		{
-			printf("pbSignature is the hash signature.\n");
+			printf("pbSignature is the signature length. %d\n", dwSigLen);
 		}
 		else
 		{
@@ -315,11 +342,9 @@ namespace license {
 		//-------------------------------------------------------------------
 		// Destroy the hash object.
 
-		if (hHash)
-			CryptDestroyHash(hHash);
-
-		printf("The hash object has been destroyed.\n");
-		printf("The signing phase of this program is completed.\n\n");
+		
+		CryptDestroyHash(hHash);
+		CryptDestroyKey(hKey);
 
 		CryptBinaryToString(pbSignature,dwSigLen,
 			CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, NULL, &strLen);
@@ -410,20 +435,20 @@ namespace license {
 		//-------------------------------------------------------------------
 		// Free memory to be used to store signature.
 
-		if (pbSignature)
-		free(pbSignature);
+
 
 		//-------------------------------------------------------------------
 		// Destroy the hash object.
 
-		if (hHash)
-		CryptDestroyHash(hHash);*/
+
 
 		//-------------------------------------------------------------------
 		// Release the provider handle.
 
 		/*if (hProv)
 			CryptReleaseContext(hProv, 0);*/
+		if (pbSignature)
+			free(pbSignature);
 		return string(&buffer[0]);
 	}
 } /* namespace license */

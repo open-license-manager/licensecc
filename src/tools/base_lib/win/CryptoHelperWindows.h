@@ -27,6 +27,7 @@ private :
 	HCRYPTPROV m_hCryptProv;
 	//	Handle to the cryptography key.
 	HCRYPTKEY m_hCryptKey;
+	void printHash(HCRYPTHASH* hHash) const;
 public:
 	CryptoHelperWindows();
 

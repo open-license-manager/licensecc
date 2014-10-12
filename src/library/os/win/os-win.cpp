@@ -1,17 +1,10 @@
 #include <string>
 #include "../os-cpp.h"
-#include "../../base/public-key.h"
+
 
 namespace license {
 
 using namespace std;
-
-
-bool OsFunctions::verifySignature(const char* stringToVerify,
-		const char* signatureB64) {
-	return false;
-}
-
 
 
 VIRTUALIZATION getVirtualization() {

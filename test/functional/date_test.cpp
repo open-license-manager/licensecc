@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE standard_license_test
+#define BOOST_TEST_MODULE date_test
 //#define BOOST_TEST_MAIN
 //#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>

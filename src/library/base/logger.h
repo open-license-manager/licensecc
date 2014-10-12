@@ -9,8 +9,8 @@ extern "C" {
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
-#ifdef NDEBUG
-#define LOG_DEBUG(M, ...) _log("[INFO] %s (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#ifdef _DEBUG
+#define LOG_DEBUG(M, ...) _log("[DEBUG] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define LOG_DEBUG(M,...)
 #endif

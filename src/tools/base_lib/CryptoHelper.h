@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <cstddef>
+#include <string>
 
 namespace license {
 using namespace std;
@@ -20,7 +21,7 @@ using namespace std;
 class CryptoHelper {
 
 protected:
-	CryptoHelper();
+	inline CryptoHelper(){};
 
 public:
 	virtual void generateKeyPair() = 0;
@@ -30,7 +31,7 @@ public:
 	virtual const string signString(const void* privateKey,
 			size_t pklen, const string& license) const = 0;
 	static unique_ptr<CryptoHelper> getInstance();
-	virtual ~CryptoHelper();
+	inline virtual ~CryptoHelper(){};
 };
 }
 #endif

@@ -16,6 +16,7 @@ target_link_libraries(
 add_custom_command (
   OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
   COMMAND bootstrap "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   DEPENDS bootstrap
 )
 

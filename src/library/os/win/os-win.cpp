@@ -6,13 +6,6 @@ namespace license {
 
 using namespace std;
 
-string OsFunctions::getModuleName() {
-	char lpFilename[MAX_PATH];
-	DWORD result = GetModuleFileName(NULL,lpFilename,MAX_PATH);
-	return string(lpFilename);
-}
-
-
 
 bool OsFunctions::verifySignature(const char* stringToVerify,
 		const char* signatureB64) {

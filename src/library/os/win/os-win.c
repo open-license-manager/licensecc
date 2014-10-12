@@ -161,4 +161,12 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_i
 	*adapter_info_size = i;
 	return result;
 }
+FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
+	FUNCTION_RETURN result=FUNC_RET_OK;
+	DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);
+	if (wres == 0){
+		result = FUNC_RET_ERROR;
+	}
+	return result;
+}
 

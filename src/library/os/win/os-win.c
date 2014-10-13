@@ -37,6 +37,7 @@ void os_initialize() {
 //http://www.ok-soft-gmbh.com/ForStackOverflow/EnumMassStorage.c
 //http://stackoverflow.com/questions/3098696/same-code-returns-diffrent-result-on-windows7-32-bit-system
 #define MAX_UNITS 30
+//bug check return with diskinfos == null func_ret_ok
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	DWORD FileMaxLen;
 	int ndrives = 0;
@@ -64,32 +65,42 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 						&volSerial, &FileMaxLen, &FileFlags, FileSysName,
 						MAX_PATH);
 				if (success) {
-					LOG_INFO("drive         : %s\n", szSingleDrive);
-					LOG_INFO("Volume Name   : %s\n", volName);
-					LOG_INFO("Volume Serial : 0x%x\n", volSerial); LOG_DEBUG("Max file length : %d\n", FileMaxLen); LOG_DEBUG("Filesystem      : %s\n", FileSysName);
-					if (diskInfos != NULL && *disk_info_size < ndrives) {
-						strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
-						strncpy(diskInfos[ndrives].label, FileSysName,
-								MAX_PATH);
-						diskInfos[ndrives].id = ndrives;
-						diskInfos[ndrives].preferred = (strncmp(szSingleDrive,
-								"C", 1) != 0);
-
+					LOG_INFO("drive         : %s", szSingleDrive);
+					LOG_INFO("Volume Name   : %s", volName);
+					LOG_INFO("Volume Serial : 0x%x", volSerial); 
+					LOG_DEBUG("Max file length : %d", FileMaxLen); 
+					LOG_DEBUG("Filesystem      : %s", FileSysName);
+					if (diskInfos != NULL) {
+						if (ndrives < *disk_info_size) {
+							diskInfos[ndrives].id = ndrives;
+							strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
+							strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
+							memcpy(diskInfos[ndrives].disk_sn, &volSerial, sizeof(DWORD));
+							diskInfos[ndrives].preferred = (strncmp(szSingleDrive, "C", 1) != 0);
+						} else {
+							return_value = FUNC_RET_BUFFER_TOO_SMALL;
+						}
 					}
 					ndrives++;
 				} else {
-					LOG_WARN("Unable to retrieve information of '%s'\n",
-							szSingleDrive);
+					LOG_WARN("Unable to retrieve information of '%s'", szSingleDrive);
 				}
+			} else {
+				LOG_INFO("This volume is not fixed : %s, type: %d",	szSingleDrive);
 			}
-			LOG_INFO("This volume is not fixed : %s, type: %d\n",
-					szSingleDrive);
 			szSingleDrive += strlen(szSingleDrive) + 1;
 		}
 	}
-
-	if (*disk_info_size >= ndrives) {
-		return_value = FUNC_RET_BUFFER_TOO_SMALL;
+	if (diskInfos == NULL || *disk_info_size == 0) {
+		if (ndrives > 0) {
+			return_value = FUNC_RET_OK;						 
+		} else {
+			return_value = FUNC_RET_NOT_AVAIL;
+			LOG_INFO("No fixed drive was detected");
+		}
+		*disk_info_size = ndrives;
+	} else {
+		*disk_info_size = min(ndrives, *disk_info_size);
 	}
 	return return_value;
 }
@@ -121,29 +132,30 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 	FUNCTION_RETURN result;
 	PIP_ADAPTER_INFO pAdapterInfo, pAdapter = NULL;
 	//IP_ADAPTER_INFO AdapterInfo[20];              // Allocate information for up to 16 NICs
-	DWORD dwBufLen = 20; //sizeof(AdapterInfo);         // Save the memory size of buffer
+	DWORD dwBufLen = 0; //10 * sizeof(IP_ADAPTER_INFO);  // Save the memory size of buffer
 
 	i = 3;
 	do {
-		pAdapterInfo = (PIP_ADAPTER_INFO) malloc(
-				sizeof(IP_ADAPTER_INFO) * dwBufLen);
+		pAdapterInfo = (PIP_ADAPTER_INFO) malloc(dwBufLen);
 		dwStatus = GetAdaptersInfo(               // Call GetAdapterInfo
 				pAdapterInfo, // [out] buffer to receive data
 				&dwBufLen   // [in] size of receive data buffer
 				);
-		dwBufLen = dwBufLen / sizeof(IP_ADAPTER_INFO);
 		if (dwStatus != NO_ERROR) {
 			free(pAdapterInfo);
 		}
 	} while (dwStatus == ERROR_BUFFER_OVERFLOW && i-- > 0);
 
-	if (dwStatus != ERROR_BUFFER_OVERFLOW) {
+	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
 		return FUNC_RET_ERROR;
 	}
+
 	if (adapterInfos == NULL || *adapter_info_size == 0) {
-		*adapter_info_size = dwBufLen;
-		free(pAdapterInfo);
-		return FUNC_RET_BUFFER_TOO_SMALL;
+		*adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
+		if (pAdapterInfo != NULL){
+			free(pAdapterInfo);
+		}
+		return FUNC_RET_OK;
 	}
 
 	memset(adapterInfos, 0, *adapter_info_size);
@@ -169,6 +181,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 	*adapter_info_size = i;
 	return result;
 }
+
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	FUNCTION_RETURN result = FUNC_RET_OK;
 	DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);

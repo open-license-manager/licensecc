@@ -3,6 +3,7 @@
 //#undef BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <fstream>
+#include <stdio.h>
 #include <cstring>
 #include "../../../src/tools/license-generator/license-generator.h"
 #include "../../../src/library/api/license++.h"
@@ -21,6 +22,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	PcSignature identifier_out;
 
 	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
+	BOOST_CHECKPOINT("Before generate");
 	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
@@ -38,7 +40,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
 }
-
+			  
 static void generate_reference_file(const string& idfileLocation,
 		IDENTIFICATION_STRATEGY strategies[], int num_strategies) {
 	ofstream idfile(idfileLocation);
@@ -46,6 +48,11 @@ static void generate_reference_file(const string& idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
+		if (generate_ok != FUNC_RET_OK){
+			idfile.close();
+			remove(idfileLocation.c_str());
+			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << "failed with: " << generate_ok);
+		}
 		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		idfile << identifier_out << endl;
 	}
@@ -64,10 +71,21 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	if (!test_idfile_exist.good()) {
 		generate_reference_file(idfileLocation, strategies, num_strategies);
 	}
-	std::ifstream is(idfileLocation);
-	std::istream_iterator<string> start(is), end;
-	std::vector<string> reference_signatures(start, end);
-	BOOST_ASSERT(reference_signatures.size() == num_strategies);
+	//try to locate a "good" reference file.
+	int tries = 2;
+	std::vector<string> reference_signatures;
+	do{
+		std::ifstream is(idfileLocation);
+		std::istream_iterator<string> start(is), end;
+		reference_signatures = vector<string>(start, end);
+		if (reference_signatures.size() != num_strategies){
+			is.close();
+			remove(idfileLocation.c_str());
+			generate_reference_file(idfileLocation, strategies, num_strategies);
+		}
+	} while (reference_signatures.size() != num_strategies && tries-- > 0);
+	BOOST_ASSERT(tries > 0);
+
 	PcSignature generated_identifier;
 	BOOST_CHECKPOINT("Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {

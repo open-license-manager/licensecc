@@ -9,6 +9,7 @@
 #include "pc-identifiers.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "base/base64.h"
 #include "base/base.h"
 #ifdef __linux__
@@ -18,9 +19,14 @@
 #include <Windows.h>
 #endif
 
-//FIXME if adapterinfo or diskinfo fail the function fails
+static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
+		unsigned int * num_identifiers, bool use_label);
+
+static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
+		unsigned int * num_identifiers, int use_mac);
+
 static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
-											  unsigned int * num_identifiers) {
+		unsigned int * num_identifiers) {
 	size_t adapter_num, disk_num;
 	FUNCTION_RETURN result_adapterInfos, result_diskinfos, function_return;
 	unsigned int caller_identifiers, i, j, k, array_index;
@@ -30,7 +36,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 	if (identifiers == NULL || *num_identifiers == 0) {
 		result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
 		if (result_adapterInfos != FUNC_RET_OK) {
-			return generate_disk_pc_id(identifiers,	num_identifiers, false);
+			return generate_disk_pc_id(identifiers, num_identifiers, false);
 		}
 		result_diskinfos = getDiskInfos(NULL, &disk_num);
 		if (result_diskinfos != FUNC_RET_OK) {
@@ -39,17 +45,20 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		*num_identifiers = disk_num * adapter_num;
 		function_return = FUNC_RET_OK;
 	} else {
-		adapterInfoPtr = (OsAdapterInfo*)malloc((*num_identifiers) * sizeof(OsAdapterInfo));
+		adapterInfoPtr = (OsAdapterInfo*) malloc(
+				(*num_identifiers) * sizeof(OsAdapterInfo));
 		adapter_num = *num_identifiers;
 		result_adapterInfos = getAdapterInfos(adapterInfoPtr, &adapter_num);
-		if (result_adapterInfos != FUNC_RET_OK && result_adapterInfos != FUNC_RET_BUFFER_TOO_SMALL) {
-			free(diskInfoPtr);
+		if (result_adapterInfos != FUNC_RET_OK
+				&& result_adapterInfos != FUNC_RET_BUFFER_TOO_SMALL) {
+			free(adapterInfoPtr);
 			return generate_disk_pc_id(identifiers, num_identifiers, false);
 		}
-		diskInfoPtr = (DiskInfo*)malloc((*num_identifiers) * sizeof(DiskInfo));
+		diskInfoPtr = (DiskInfo*) malloc((*num_identifiers) * sizeof(DiskInfo));
 		disk_num = *num_identifiers;
-		result_diskinfos = getDiskInfos(adapterInfoPtr, &disk_num);
-		if (result_diskinfos != FUNC_RET_OK && result_diskinfos != FUNC_RET_BUFFER_TOO_SMALL) {
+		result_diskinfos = getDiskInfos(diskInfoPtr, &disk_num);
+		if (result_diskinfos != FUNC_RET_OK
+				&& result_diskinfos != FUNC_RET_BUFFER_TOO_SMALL) {
 			free(diskInfoPtr);
 			free(adapterInfoPtr);
 			return generate_ethernet_pc_id(identifiers, num_identifiers, true);
@@ -58,21 +67,20 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 
 		caller_identifiers = *num_identifiers;
 		for (i = 0; i < disk_num; i++) {
-			for (j = 0; j < adapter_num ; j++) {
+			for (j = 0; j < adapter_num; j++) {
 				array_index = i * adapter_num + j;
-				if (array_index>=caller_identifiers)	{
+				if (array_index >= caller_identifiers) {
 					function_return = FUNC_RET_BUFFER_TOO_SMALL;
 					//sweet memories...
 					goto end;
 				}
 				for (k = 0; k < 6; k++)
-					identifiers[array_index][k] =
-					diskInfoPtr[i].disk_sn[k + 2]
-					^ adapterInfoPtr[j].mac_address[k + 2];
+					identifiers[array_index][k] = diskInfoPtr[i].disk_sn[k + 2]
+							^ adapterInfoPtr[j].mac_address[k + 2];
 			}
 		}
 end:
-		*num_identifiers = min(*num_identifiers, adapter_num * disk_num);
+		*num_identifiers = cmin(*num_identifiers, adapter_num * disk_num);
 		free(diskInfoPtr);
 		free(adapterInfoPtr);
 	}
@@ -80,41 +88,43 @@ end:
 }
 
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
-											   unsigned int * num_identifiers, int use_mac) {
+		unsigned int * num_identifiers, int use_mac) {
 	FUNCTION_RETURN result_adapterInfos;
-	unsigned int i, j, k;
+	unsigned int j, k;
 	OsAdapterInfo *adapterInfos;
 	size_t defined_adapters, adapters = 0;
 
-
 	if (identifiers == NULL || *num_identifiers == 0) {
 		result_adapterInfos = getAdapterInfos(NULL, &adapters);
-		if (result_adapterInfos == FUNC_RET_OK || result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL) {
+		if (result_adapterInfos == FUNC_RET_OK
+				|| result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL) {
 			*num_identifiers = adapters;
-			result_adapterInfos=FUNC_RET_OK;
+			result_adapterInfos = FUNC_RET_OK;
 		}
 	} else {
 		defined_adapters = adapters = *num_identifiers;
-		adapterInfos = (OsAdapterInfo*)malloc(adapters * sizeof(OsAdapterInfo));
+		adapterInfos = (OsAdapterInfo*) malloc(
+				adapters * sizeof(OsAdapterInfo));
 		result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
-		if (result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL || result_adapterInfos == FUNC_RET_OK){
+		if (result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL
+				|| result_adapterInfos == FUNC_RET_OK) {
 			for (j = 0; j < adapters; j++) {
 				for (k = 0; k < 6; k++)
-				if (use_mac) {
-					identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
-				}
-				else {
-					//use ip
-					if (k < 4) {
-						identifiers[j][k] = adapterInfos[j].ipv4_address[k];
+					if (use_mac) {
+						identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
+					} else {
+						//use ip
+						if (k < 4) {
+							identifiers[j][k] = adapterInfos[j].ipv4_address[k];
+						} else {
+							//padding
+							identifiers[j][k] = 42;
+						}
 					}
-					else {
-						//padding
-						identifiers[j][k] = 42;
-					}
-				}
 			}
-			result_adapterInfos = (adapters>defined_adapters ? FUNC_RET_BUFFER_TOO_SMALL : FUNC_RET_OK);
+			result_adapterInfos = (
+					adapters > defined_adapters ?
+							FUNC_RET_BUFFER_TOO_SMALL : FUNC_RET_OK);
 		}
 		free(adapterInfos);
 	}
@@ -122,10 +132,10 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 }
 
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
-										   unsigned int * num_identifiers, bool use_label) {
+		unsigned int * num_identifiers, bool use_label) {
 	size_t disk_num, available_disk_info = 0;
 	FUNCTION_RETURN result_diskinfos;
-	unsigned int i, k, j;
+	unsigned int i, j;
 	int defined_identifiers;
 	char firstChar;
 	DiskInfo * diskInfos;
@@ -134,7 +144,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	if (result_diskinfos != FUNC_RET_OK) {
 		return result_diskinfos;
 	}
-	diskInfos = (DiskInfo*)malloc(disk_num * sizeof(DiskInfo));
+	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
 	//memset(diskInfos,0,disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK) {
@@ -151,24 +161,24 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	if (identifiers == NULL) {
 		free(diskInfos);
 		return FUNC_RET_OK;
-	}
-	else if (available_disk_info > defined_identifiers) {
+	} else if (available_disk_info > defined_identifiers) {
 		free(diskInfos);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
 	j = 0;
 	for (i = 0; i < disk_num; i++) {
-		if (use_label){
-			if (diskInfos[i].label[0] != 0){
+		if (use_label) {
+			if (diskInfos[i].label[0] != 0) {
 				memset(identifiers[j], 0, sizeof(PcIdentifier)); //!!!!!!!
-				strncpy(identifiers[j], diskInfos[i].label, sizeof(PcIdentifier));
+				strncpy(identifiers[j], diskInfos[i].label,
+						sizeof(PcIdentifier));
 				j++;
 			}
-		}
-		else{
-			if (diskInfos[i].disk_sn[0] != 0){
-				memcpy(identifiers[j], &diskInfos[i].disk_sn[2], sizeof(PcIdentifier));
+		} else {
+			if (diskInfos[i].disk_sn[0] != 0) {
+				memcpy(identifiers[j], &diskInfos[i].disk_sn[2],
+						sizeof(PcIdentifier));
 				j++;
 			}
 		}
@@ -194,7 +204,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
  */
 
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
-							   unsigned int * array_size, IDENTIFICATION_STRATEGY strategy) {
+		unsigned int * array_size, IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
 	unsigned int i, j;
 	const unsigned int original_array_size = *array_size;
@@ -260,17 +270,16 @@ char *MakeCRC(char *BitString) {
 }
 
 FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
-							 PcSignature pc_identifier_out) {
+		PcSignature pc_identifier_out) {
 	//TODO base62 encoding, now uses base64
 	PcIdentifier concat_identifiers[2];
 	char* b64_data;
 	int b64_size = 0;
-	size_t concatIdentifiersSize = sizeof(PcIdentifier)* 2;
+	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
 	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
-	b64_data = base64(concat_identifiers, concatIdentifiersSize,
-					  &b64_size);
+	b64_data = base64(concat_identifiers, concatIdentifiersSize, &b64_size);
 	if (b64_size > sizeof(PcSignature)) {
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
@@ -286,7 +295,7 @@ FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) {
 }
 
 FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
-										   IDENTIFICATION_STRATEGY strategy) {
+		IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
 	PcIdentifier* identifiers;
 	unsigned int req_buffer_size = 0;
@@ -298,8 +307,8 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 		return FUNC_RET_ERROR;
 	}
 	req_buffer_size = req_buffer_size < 2 ? 2 : req_buffer_size;
-	identifiers = (PcIdentifier *)malloc(
-		sizeof(PcIdentifier)* req_buffer_size);
+	identifiers = (PcIdentifier *) malloc(
+			sizeof(PcIdentifier) * req_buffer_size);
 	result = generate_pc_id(identifiers, &req_buffer_size, strategy);
 	if (result != FUNC_RET_OK) {
 		free(identifiers);
@@ -325,7 +334,7 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
  * @return
  */
 static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
-									PcIdentifier identifier2_out, PcSignature pc_signature_in) {
+		PcIdentifier identifier2_out, PcSignature pc_signature_in) {
 	//TODO base62 encoding, now uses base64
 
 	unsigned char * concat_identifiers;
@@ -333,20 +342,20 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 	int identifiers_size;
 
 	sscanf(pc_signature_in, "%4s-%4s-%4s-%4s", &base64ids[0], &base64ids[4],
-		   &base64ids[8], &base64ids[12]);
+			&base64ids[8], &base64ids[12]);
 	concat_identifiers = unbase64(base64ids, 16, &identifiers_size);
-	if (identifiers_size > sizeof(PcIdentifier)* 2) {
+	if (identifiers_size > sizeof(PcIdentifier) * 2) {
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	memcpy(identifier1_out, concat_identifiers, sizeof(PcIdentifier));
 	memcpy(identifier2_out, concat_identifiers + sizeof(PcIdentifier),
-		   sizeof(PcIdentifier));
+			sizeof(PcIdentifier));
 	free(concat_identifiers);
 	return FUNC_RET_OK;
 }
 
 static IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
-	return (IDENTIFICATION_STRATEGY)identifier[0] >> 5;
+	return (IDENTIFICATION_STRATEGY) identifier[0] >> 5;
 }
 
 EVENT_TYPE validate_pc_signature(PcSignature str_code) {
@@ -377,22 +386,22 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 			}
 			previous_strategy_id = current_strategy_id;
 			generate_pc_id(NULL, &calc_identifiers_size, current_strategy_id);
-			calculated_identifiers = (PcIdentifier *)malloc(
-				sizeof(PcIdentifier)* calc_identifiers_size);
+			calculated_identifiers = (PcIdentifier *) malloc(
+					sizeof(PcIdentifier) * calc_identifiers_size);
 			generate_pc_id(calculated_identifiers, &calc_identifiers_size,
-						   current_strategy_id);
+					current_strategy_id);
 		}
 		//maybe skip the byte 0
 		for (j = 0; j < calc_identifiers_size; j++) {
 #ifdef _DEBUG
 			printf("generated id: %02x%02x%02x%02x%02x%02x index %d, user_supplied id %02x%02x%02x%02x%02x%02x idx: %d\n",
-				   calculated_identifiers[j][0], calculated_identifiers[j][1], calculated_identifiers[j][2],
-				   calculated_identifiers[j][3], calculated_identifiers[j][4], calculated_identifiers[j][5], j,
-				   user_identifiers[i][0], user_identifiers[i][1], user_identifiers[i][2], user_identifiers[i][3], user_identifiers[i][4], user_identifiers[i][5], i);
+					calculated_identifiers[j][0], calculated_identifiers[j][1], calculated_identifiers[j][2],
+					calculated_identifiers[j][3], calculated_identifiers[j][4], calculated_identifiers[j][5], j,
+					user_identifiers[i][0], user_identifiers[i][1], user_identifiers[i][2], user_identifiers[i][3], user_identifiers[i][4], user_identifiers[i][5], i);
 
 #endif
 			if (!memcmp(user_identifiers[i], calculated_identifiers[j],
-				sizeof(PcIdentifier))) {
+					sizeof(PcIdentifier))) {
 				free(calculated_identifiers);
 				return LICENSE_OK;
 			}

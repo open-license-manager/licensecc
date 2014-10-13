@@ -43,7 +43,12 @@ BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 		if (string(adapter_info[i].description) == "lo") {
 			BOOST_CHECK_NE(adapter_info[i].ipv4_address[0], 0);
 		} else {
-			BOOST_CHECK_NE(adapter_info[i].mac_address[0], 0);
+			bool mac_is_0 = true;
+			for(int j=0;j<6;j++){
+				mac_is_0 = mac_is_0 && (adapter_info[i].mac_address[j]==0);
+			}
+			BOOST_CHECK_MESSAGE( !mac_is_0,
+					"Mac address for interface " << adapter_info[i].description << " is 0");
 		}
 	}
 	free(adapter_info);

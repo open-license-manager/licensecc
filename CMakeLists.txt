@@ -3,7 +3,7 @@
 #fix shared libraries activation
 
 #cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
-cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 #version variables, major and minor must be 1 character only
 SET(LICENSECC_MAJOR_VERSION 1)
@@ -139,6 +139,8 @@ add_subdirectory(test)
 message("")
 message( STATUS "C compiler: " ${CMAKE_C_COMPILER})
 message( STATUS "C compiler flags: " ${CMAKE_C_FLAGS})
+message( STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
+message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
 if(CMAKE_BUILD_TYPE)
   message( STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 endif(CMAKE_BUILD_TYPE)

@@ -2,7 +2,8 @@
 #make it compatible with find_boost (exchange lowercase to camelcase)
 #fix shared libraries activation
 
-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+#cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
 
 #version variables, major and minor must be 1 character only
 SET(LICENSECC_MAJOR_VERSION 1)

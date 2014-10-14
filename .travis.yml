@@ -1,1 +1,8 @@
 language: cpp
+
+branches:
+  only:
+    - master
+
+script:
+  - cd build/linux && cmake ../.. --build

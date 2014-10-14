@@ -115,7 +115,7 @@ function(add_boost)
 	  file(MAKE_DIRECTORY ${BoostExtractFolder})
 	  file(COPY ${ZipFilePath} DESTINATION ${BoostExtractFolder})
 	  message(STATUS "Extracting boost ${BoostVersion} to ${BoostExtractFolder}")
-	  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${BoostFolderName}.tar.bz2
+	  execute_process(COMMAND ${CMAKE_COMMAND} -E tar vxfz ${BoostFolderName}.tar.bz2
 					  WORKING_DIRECTORY ${BoostExtractFolder}
 					  RESULT_VARIABLE Result
 					  )

@@ -5,4 +5,4 @@ branches:
     - master
 
 script:
-  - cd build/linux && cmake ../.. --build
+  - cd build/linux && cmake ../..

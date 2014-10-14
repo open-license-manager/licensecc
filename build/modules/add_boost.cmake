@@ -115,7 +115,7 @@ function(add_boost)
 	  file(MAKE_DIRECTORY ${BoostExtractFolder})
 	  file(COPY ${ZipFilePath} DESTINATION ${BoostExtractFolder})
 	  message(STATUS "Extracting boost ${BoostVersion} to ${BoostExtractFolder}")
-	  execute_process(COMMAND ${CMAKE_COMMAND} -E tar vxfz ${BoostFolderName}.tar.bz2
+	  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${BoostFolderName}.tar.bz2
 					  WORKING_DIRECTORY ${BoostExtractFolder}
 					  RESULT_VARIABLE Result
 					  )
@@ -220,6 +220,7 @@ function(add_boost)
 	elseif(UNIX)
 	  list(APPEND b2Args variant=release cxxflags=-fPIC cxxflags=-std=c++11 -sNO_BZIP2=1 --layout=tagged)
 	  # Need to configure the toolset based on whatever version CMAKE_CXX_COMPILER is
+	  message(STATUS "cmake compiler version ${CMAKE_CXX_COMPILER_VERSION}")
 	  string(REGEX MATCH "[0-9]+\\.[0-9]+" ToolsetVer "${CMAKE_CXX_COMPILER_VERSION}")
 	  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 		list(APPEND b2Args toolset=clang-${ToolsetVer})

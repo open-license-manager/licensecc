@@ -80,10 +80,13 @@ if(NOT WIN32)
 	#find a static version of openssl crypto library
 	find_package(OpenSSL REQUIRED)
 	include_directories(${OPENSSL_INCLUDE_DIR})
-	#-lssl for backward compatibility with old openssl versions
-	list(APPEND EXTERNAL_LIBS ${OPENSSL_LIBRARIES})
 	list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
+	
+	#Zlib required when openssl version < 1.0.1f
+	find_package(ZLIB REQUIRED)
+	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+	
 	if(USE_DBUS_IDENTIFIER)
 	    FIND_PACKAGE(Dbus REQUIRED)
 	    add_definitions(-DUSE_DBUS)
@@ -141,8 +144,6 @@ ENDIF(BUILD_TESTING)
 add_subdirectory(test)
 
 #include(build/modules/CmakeDebugVariables.txt)
-
-message("")
 message( STATUS "C compiler: " ${CMAKE_C_COMPILER})
 message( STATUS "C compiler flags: " ${CMAKE_C_FLAGS})
 message( STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})

@@ -25,8 +25,10 @@
 #include <dirent.h>
 #include <stdio.h>
 
-#include <dbus-1.0/dbus/dbus.h>
 #include <sys/utsname.h>
+#ifdef USE_DBUS
+#include <dbus-1.0/dbus/dbus.h>
+#endif
 
 /**
  *Usually uuid are hex number separated by "-". this method read up to 8 hex
@@ -277,6 +279,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 }
 
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
+#if USE_DBUS
 	char* dbus_id = dbus_get_local_machine_id();
 	if (dbus_id == NULL) {
 		return FUNC_RET_ERROR;
@@ -284,6 +287,9 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 	memcpy(identifier, dbus_id, 6);
 	dbus_free(dbus_id);
 	return FUNC_RET_OK;
+#else
+	return FUNC_RET_NOT_AVAIL;
+#endif
 }
 
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {

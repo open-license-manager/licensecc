@@ -100,10 +100,10 @@ function(add_boost)
 	if(NOT EXISTS ${ZipFilePath})
 	  message(STATUS "Downloading boost ${BoostVersion} to ${BoostCacheDir}")
 	endif()
+    #SHOW_PROGRESS
 	file(DOWNLOAD http://sourceforge.net/projects/boost/files/boost/${BoostVersion}/${BoostFolderName}.tar.bz2/download
 		 ${ZipFilePath}
 		 STATUS Status
-		 SHOW_PROGRESS
 		 EXPECTED_HASH SHA1=${BoostSHA1}
 		 )
 
@@ -220,7 +220,6 @@ function(add_boost)
 	elseif(UNIX)
 	  list(APPEND b2Args variant=release cxxflags=-fPIC cxxflags=-std=c++11 -sNO_BZIP2=1 --layout=tagged)
 	  # Need to configure the toolset based on whatever version CMAKE_CXX_COMPILER is
-	  message(STATUS "cmake compiler version ${CMAKE_CXX_COMPILER_VERSION}")
 	  string(REGEX MATCH "[0-9]+\\.[0-9]+" ToolsetVer "${CMAKE_CXX_COMPILER_VERSION}")
 	  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 		list(APPEND b2Args toolset=clang-${ToolsetVer})

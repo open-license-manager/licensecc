@@ -1,8 +1,6 @@
 # Open License Manager
 
-<div style="float:left;position:absolute;" markdown="1">
-![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.png "Build Status")
-</div>
+<img style="float: right; position: absolute;" src="https://travis-ci.org/open-license-manager/open-license-manager.png" />
 
 A lincense manager written in C/C++ for Windows and Linux environments.
 

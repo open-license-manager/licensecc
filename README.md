@@ -1,6 +1,5 @@
+<img style="float: left;" src="https://travis-ci.org/open-license-manager/open-license-manager.png" />
 # Open License Manager
-
-<img style="float: right; position: absolute;" src="https://travis-ci.org/open-license-manager/open-license-manager.png" />
 
 A lincense manager written in C/C++ for Windows and Linux environments.
 

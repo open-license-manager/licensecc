@@ -1,6 +1,5 @@
-Open License Manager
-===================
-![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.png "Build Status")
+![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.png "Build Status"){float : left;}
+# Open License Manager
 
 A lincense manager written in C/C++ for Windows and Linux environments.
 
@@ -10,7 +9,7 @@ virtualized environments. It is an Open License Manager that helps to keep your
 software closed ;-)
 
 The software is made by 2 main sub-components:
- * a C library with no external dependencies (the part you have to integrate in your software).
+ * a C library with no (or minimal) external dependencies (the part you have to integrate in your software).
  * a license generator written in C++ (allows you to generate a license).
  
 these modules are planned....
@@ -29,6 +28,7 @@ It uses a BSD 3 clauses licensing schema.
 
 Elsewhere on Internet
 =====================
- * Wiki :
- * Project home page :
+ * Wiki main page:
+ * Install and build :
+ * Project web site :
  

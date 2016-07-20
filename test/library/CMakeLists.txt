@@ -30,6 +30,5 @@ ELSE(WIN32)
 	
 	#add_dependencies( os_linux_test )
 	#SET_TARGET_PROPERTIES(os_linux_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-	ADD_TEST(os_linux_test ${EXECUTABLE_OUTPUT_PATH}/os_linux_test)   
-	
+	ADD_TEST(os_linux_test ${EXECUTABLE_OUTPUT_PATH}/os_linux_test)
 ENDIF(WIN32)

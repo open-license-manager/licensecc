@@ -5,8 +5,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <cstring>
-#include "../../../src/tools/license-generator/license-generator.h"
-#include "../../../src/library/api/license++.h"
+#include "../../src/tools/license-generator/license-generator.h"
+#include "../../src/library/api/license++.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
 #include "../../src/library/ini/SimpleIni.h"

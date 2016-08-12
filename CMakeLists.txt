@@ -1,159 +1,87 @@
-#TODO guess address_model 64 in boost
-#make it compatible with find_boost (exchange lowercase to camelcase)
-#fix shared libraries activation
 
-#cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
-
-#version variables, major and minor must be 1 character only
-SET(LICENSECC_MAJOR_VERSION 1)
-SET(LICENSECC_MINOR_VERSION 0)
-SET(LICENSECC_PATCH_VERSION 0 CACHE STRING "License++ patch version string")
-SET(LICENSECC_INT_VERSION "${LICENSECC_MAJOR_VERSION}${LICENSECC_MINOR_VERSION}${LICENSECC_PATCH_VERSION}")
-SET(LICENSECC_VERSION "${LICENSECC_MAJOR_VERSION}.${LICENSECC_MINOR_VERSION}.${LICENSECC_PATCH_VERSION}")
-SET(LICENSECC_SHORT_LICENSE "BSD Software License")
-
-SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
-SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose")
-
-project (license++ C CXX)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
-
-include(utilities)
-if(CMAKE_BUILD_TYPE)
-	string(TOLOWER ${CMAKE_BUILD_TYPE} _CMAKE_BUILD_TYPE)
-	EVAL_CONDITION(RELEASE_BUILD ${_CMAKE_BUILD_TYPE} STREQUAL "release")
-else(CMAKE_BUILD_TYPE)
-	set(RELEASE_BUILD 0)
-endif(CMAKE_BUILD_TYPE)
-
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/ ${CMAKE_SOURCE_DIR}/cmake/Modules/)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps)
+include(FrameworkUtils)
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 if(WIN32)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories (optional)")
+    list(APPEND CMAKE_PREFIX_PATH $ENV{USER_DEVELOP}/boost/)
+else(NOT WIN32)
+    set(CMAKE_INSTALL_PREFIX "/usr/local/" CACHE PATH "Install path prefix, prepended onto install directories (optional)")
+endif()
 
-	SET(PLATFORM_LIBS "")
-	include(target_arch)
-	target_architecture( TARGET_ARCHITECTURE )
-	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
-	#force to patch an error in cmake
-	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
-		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
-		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)
-		SET(CMAKE_SHARED_LINKER_FLAGS "/machine:X64" CACHE STRING "Shared Linker flags" FORCE)
-	endif()
-	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
-	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
-else(WIN32)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fmessage-length=0 -std=c++11 -Wuninitialized -fPIC") #-Wall
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
-    #use static libraries in release to make it easier to distribute it
-    #SET(Boost_USE_STATIC_RUNTIME ${RELEASE_BUILD})
-    if(RELEASE_BUILD)
-        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
-    else()
-        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a .so) 
-    endif()
-    set (CMAKE_EXE_LINKER_FLAGS  "-pthread")
-    SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--strip-all -static-libstdc++") #-static 
-    #you need to "force" the change in cmake_install_prefix after the project keyword
-	IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
-	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-endif(WIN32)
+project(metalicensor CXX)
+set(METALICENSOR_MAJOR_VERSION 1)
+set(METALICENSOR_MINOR_VERSION 0)
+set(METALICENSOR_PATCH_VERSION 0)
+set(METALICENSOR_INT_VERSION "${METALICENSOR_MAJOR_VERSION}${METALICENSOR_MINOR_VERSION}${METALICENSOR_PATCH_VERSION}")
+set(METALICENSOR_VERSION "${METALICENSOR_MAJOR_VERSION}.${METALICENSOR_MINOR_VERSION}.${METALICENSOR_PATCH_VERSION}")
+set(METALICENSOR_SHORT_LICENSE "BSD 3-Clause Software License")
+set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Use verbose makefiles")
+set(CMAKE_DISABLE_SOURCE_CHANGES ON)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:DEBUG>)
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
-
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(HAVE_64BIT_SIZE_T 1)
-else(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(HAVE_64BIT_SIZE_T 0)
-endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+if(DEFINED CMAKE_BUILD_TYPE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
+endif()
+if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64-bit toolchain/platform
+    set(TARGET_PLATFORM_IS_x64 TRUE CACHE INTERNAL "" FORCE)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32-bit toolchain/platform
+    set(TARGET_PLATFORM_IS_x64 FALSE CACHE INTERNAL "" FORCE)
+else()
+    message(FATAL_ERROR "Could not detect x64/x86 platform identity using void pointer size (s=${CMAKE_SIZEOF_VOID_P}).")
+endif()
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost REQUIRED COMPONENTS date_time test program_options system filesystem)
-#set below in case of dynamic linking in debug.
-#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
-add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
-add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
+find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
+add_definitions(-DBOOST_ALL_NO_LIB) # use boost in header-only mode (no linking)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
-if(NOT WIN32)	
-	#find a static version of openssl crypto library
-	find_package(OpenSSL REQUIRED)
-	include_directories(${OPENSSL_INCLUDE_DIR})
-	list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
-	
-	#Zlib required when openssl version < 1.0.1f
-	find_package(ZLIB REQUIRED)
-	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
-	
-	if(USE_DBUS_IDENTIFIER)
-	    FIND_PACKAGE(Dbus REQUIRED)
-	    add_definitions(-DUSE_DBUS)
-	    include_directories(${DBUS_INCLUDE_DIR})
-	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
-	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
-	endif(USE_DBUS_IDENTIFIER)    
-	list(APPEND EXTERNAL_LIBS dl)
+if(NOT WIN32)
+    find_package(OpenSSL REQUIRED)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+    list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+    find_package(ZLIB REQUIRED) # Zlib required when openssl version < 1.0.1f
+    list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+    list(APPEND EXTERNAL_LIBS dl)
 endif(NOT WIN32)
 
-FIND_PACKAGE(Doxygen)
+if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+    add_definitions(-Wall)
+    add_definitions(-Wfatal-errors)
+    add_definitions(-Wextra)
+    add_definitions(-Wshadow)
+    add_definitions(-Werror)
+    add_definitions(-fPIC)
+    add_definitions(-Wno-unused-value)
+    add_definitions(-Wno-unused-parameter)
+    add_definitions(-Wno-sign-compare)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    add_definitions(-DUNICODE -D_UNICODE)
+    add_definitions(/fp:precise)
+    #add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+    #add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/W4)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+    message(FATAL_ERROR "Intel compiler still unsupported; please edit the main CMakeList.txt file to add proper configuration")
+else()
+    message(FATAL_ERROR "Unknown compiler; please edit the main CMakeList.txt file to add proper configuration")
+endif()
 
-IF (DOXYGEN_FOUND)
+include_directories("${CMAKE_BINARY_DIR}/keys/")
 
-	SET(DOXYGEN_INPUT ${CMAKE_BINARY_DIR}/doc/Doxyfile)
-	SET(DOXYGEN_OUTPUT ${CMAKE_BINARY_DIR}/doc/doxy_output)
-	
-	configure_file (
-	  "doc/Doxyfile.in"
-	  "doc/Doxyfile"
-	)
-	
-	ADD_CUSTOM_COMMAND(
-	  OUTPUT ${DOXYGEN_OUTPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-	  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	  DEPENDS ${DOXYGEN_INPUT})
-	
-	ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
-	
-	ADD_CUSTOM_TARGET(apidoc_forced
-	  COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-	  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-ENDIF (DOXYGEN_FOUND)
+add_subdirectory(libs)
+add_subdirectory(apps)
+include(CTest)
+add_subdirectory(tests)
 
-configure_file (
-	"src/build_properties.h.in" 
-	"${CMAKE_BINARY_DIR}/build_properties.h"
-)
-#include build directory to find build_properties.h
-include_directories(${CMAKE_BINARY_DIR})
-
-add_subdirectory(src)
-
-INCLUDE(CTest)
-ENABLE_TESTING()
-IF(BUILD_TESTING)
-  SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
-  MARK_AS_ADVANCED(BUILDNAME)
-ENDIF(BUILD_TESTING)
-add_subdirectory(test)
-
-#include(build/modules/CmakeDebugVariables.txt)
-message( STATUS "C compiler: " ${CMAKE_C_COMPILER})
-message( STATUS "C compiler flags: " ${CMAKE_C_FLAGS})
-message( STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
-message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
-if(CMAKE_BUILD_TYPE)
-  message( STATUS "Build type: " ${CMAKE_BUILD_TYPE})
-endif(CMAKE_BUILD_TYPE)
-message( STATUS "Install prefix: " ${CMAKE_INSTALL_PREFIX})
-if(DOXYGEN_FOUND)
-  message(STATUS "Doxygen: " ${DOXYGEN_EXECUTABLE})
-else(DOXYGEN_FOUND)
-  message(STATUS "Doxygen: not found.")
-endif(DOXYGEN_FOUND)

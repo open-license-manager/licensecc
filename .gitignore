@@ -1,15 +1,70 @@
-# Compiled Object files
-*.slo
-*.lo
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
 *.o
-
-# Compiled Dynamic libraries
 *.so
-*.dylib
-
-# Compiled Static libraries
-*.lai
+*.lo
+*.slo
 *.la
 *.a
-/Makefile
-/Testing
+*.ilk
+*.exe
+*.pch
+*.obj
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Test data #
+#############
+/data
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+*.opensdf
+*.sdf
+*.pdb
+ipch/**/*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# User-specific files #
+#######################
+*.suo
+*.user
+*.sln.docstates
+.idea/
+
+# Build results #
+#################
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Bb]in/
+[Oo]bj/

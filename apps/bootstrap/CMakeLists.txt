@@ -15,3 +15,10 @@ add_custom_command(
 )
 add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/keys/metalicensor/keys/private-key.h")
 add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/keys/metalicensor/keys/public-key.h")
+install(DIRECTORY "${CMAKE_BINARY_DIR}/keys/"
+    DESTINATION "include/"
+    FILES_MATCHING
+        PATTERN "*.hpp"
+        PATTERN "*.hxx"
+        PATTERN "*.h"
+)

@@ -3,7 +3,7 @@
 //#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include "metalicensor/licgen/license-generator.h"
+#include "metalicensor/generator/license-generator.h"
 #include "metalicensor/utils/build_properties.hpp"
 #include "metalicensor/api/license++.h"
 #include "metalicensor/ini/SimpleIni.h"

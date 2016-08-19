@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "metalicensor/os/os.h"
-#include "metalicensor/mlic/pc-identifiers.h"
+#include "metalicensor/reader/pc-identifiers.h"
 #include "metalicensor/base/base64.h"
 #include "metalicensor/base/base.h"
 #ifdef __linux__

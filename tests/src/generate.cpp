@@ -7,10 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include "metalicensor/licgen/license-generator.h"
+#include "metalicensor/generator/license-generator.h"
 #include "metalicensor/utils/build_properties.hpp"
 #include "metalicensor/ini/SimpleIni.h"
-//#include "metalicensor/licgen/generate-license.h"
 
 namespace fs = boost::filesystem;
 using namespace license;

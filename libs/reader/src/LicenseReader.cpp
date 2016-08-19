@@ -12,8 +12,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
-#include "metalicensor/mlic/pc-identifiers.h"
-#include "metalicensor/mlic/LicenseReader.h"
+#include "metalicensor/reader/pc-identifiers.h"
+#include "metalicensor/reader/LicenseReader.h"
 #include "metalicensor/base/StringUtils.h"
 #include "metalicensor/base/logger.h"
 #include "metalicensor/keys/public-key.h"

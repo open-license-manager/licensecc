@@ -3,7 +3,7 @@
 #define LICENSE_GENERATOR_H_
 
 #include <boost/program_options.hpp>
-#include "metalicensor/mlic/LicenseReader.h"
+#include "metalicensor/reader/LicenseReader.h"
 
 namespace license {
 

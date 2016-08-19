@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include "metalicensor/api/license++.h"
-#include "metalicensor/mlic/LicenseReader.h"
+#include "metalicensor/reader/LicenseReader.h"
 
 using namespace std;
 DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {

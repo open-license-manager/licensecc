@@ -3,7 +3,7 @@
 //#define BOOST_TEST_DYN_LINK
 #include <stdlib.h>
 #include <boost/test/unit_test.hpp>
-#include "metalicensor/mlic/LicenseReader.h"
+#include "metalicensor/reader/LicenseReader.h"
 #include "metalicensor/utils/build_properties.hpp"
 
 using namespace license;

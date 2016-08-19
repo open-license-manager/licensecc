@@ -6,10 +6,10 @@
 #include <cstring>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include "metalicensor/licgen/license-generator.h"
+#include "metalicensor/generator/license-generator.h"
 #include "metalicensor/api/license++.h"
 #include "metalicensor/utils/build_properties.hpp"
-#include "metalicensor/mlic/pc-identifiers.h"
+#include "metalicensor/reader/pc-identifiers.h"
 #include "metalicensor/ini/SimpleIni.h"
 #include "generate.h"
 

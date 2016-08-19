@@ -13,7 +13,7 @@
 #include <regex>
 #include <boost/filesystem.hpp>
 #include "metalicensor/utils/build_properties.hpp"
-#include "metalicensor/licgen/license-generator.h"
+#include "metalicensor/generator/license-generator.h"
 #include "metalicensor/crypto/CryptoHelper.h"
 #include "metalicensor/keys/private-key.h"
 

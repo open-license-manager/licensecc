@@ -14,21 +14,18 @@ add_files(INCLUDE_FILES
     "include/metalicensor/api/license++.h"
     "include/metalicensor/api/Licensepp-features.h"
 )
-add_library(metalic_utils STATIC
+add_library(metalic_utils OBJECT
     "src/empty.cpp"
     ${INCLUDE_FILES}
 )
 target_include_directories(metalic_utils
-    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>"
-    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>"
-    INTERFACE "$<INSTALL_INTERFACE:include/>"
+    PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>"
+    INTERFACE
+        "$<INSTALL_INTERFACE:include/>"
 )
 set_target_properties(metalic_utils PROPERTIES FOLDER "libs")
-install(TARGETS metalic_utils
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
 install(DIRECTORY "include/"
     DESTINATION "include/"
     FILES_MATCHING

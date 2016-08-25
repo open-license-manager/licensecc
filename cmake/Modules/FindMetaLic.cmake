@@ -3,8 +3,8 @@
 #
 # This module defines the following variables:
 #   MetaLic_INCLUDE_DIRS
-#   MetaLic_GENERATOR_LIBRARY
-#   MetaLic_READER_LIBRARY
+#   MetaLic_GENERATOR_LIBRARIES
+#   MetaLic_READER_LIBRARIES
 #   MetaLic_FOUND
 #
 # You can help it find the required paths/files by pre-setting
@@ -79,6 +79,10 @@ mark_as_advanced(
     MetaLic_GENERATOR_LIBRARY
     MetaLic_READER_LIBRARY
 )
+if(NOT WIN32)
+    find_package(OpenSSL REQUIRED)
+    find_package(ZLIB REQUIRED) # Zlib required when openssl version < 1.0.1f
+endif(NOT WIN32)
 set(MetaLic_DIR_old ${MetaLic_DIR})
 set(MetaLic_DIR "MetaLic_DIR-NOTFOUND" CACHE PATH "The directory to the MetaLicensor installation, i.e. where include and lib directories can be found." FORCE)
 find_package_handle_standard_args(MetaLic
@@ -89,6 +93,8 @@ find_package_handle_standard_args(MetaLic
 )
 if(MetaLic_FOUND)
     set(MetaLic_DIR "${MetaLic_DIR_old}" CACHE PATH "The directory to the MetaLicensor installation, i.e. where include and lib directories can be found." FORCE)
-    set(MetaLic_INCLUDE_DIRS ${MetaLic_INCLUDE_DIR})
-    mark_as_advanced(MetaLic_INCLUDE_DIRS)
+    set(MetaLic_INCLUDE_DIRS ${MetaLic_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
+    set(MetaLic_GENERATOR_LIBRARIES ${MetaLic_GENERATOR_LIBRARY})
+    set(MetaLic_READER_LIBRARIES ${MetaLic_READER_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${ZLIB_LIBRARIES} dl)
+    mark_as_advanced(MetaLic_INCLUDE_DIRS MetaLic_GENERATOR_LIBRARIES MetaLic_READER_LIBRARIES)
 endif()

@@ -20,7 +20,7 @@ private:
 	static vector<FullLicenseInfo> parseLicenseInfo(po::variables_map vm);
 	static void generateAndOutputLicenses(const po::variables_map& vm,
 			ostream& outputFile);
-	static string normalize_date(const char * s);
+	static string normalize_date(const std::string& sDate);
 public:
 	/**
 	 * Available options:

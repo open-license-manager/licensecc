@@ -77,7 +77,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
     if (vm.count("expire_date")) {
         const std::string dt_end = vm["expire_date"].as<string>();
         try {
-            end_date = normalize_date(dt_end.c_str());
+            end_date = normalize_date(dt_end);
             char curdate[20];
             time_t curtime = time(NULL);
             strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
@@ -91,7 +91,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
     if (vm.count("begin_date")) {
         const std::string begin_date_str = vm["begin_date"].as<string>();
         try {
-            begin_date = normalize_date(begin_date_str.c_str());
+            begin_date = normalize_date(begin_date_str);
         } catch (invalid_argument &e) {
             cerr << endl << "Begin date not recognized: " << begin_date_str
                     << " Please enter a valid date in format YYYYMMDD" << endl;
@@ -188,25 +188,27 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
     return 0;
 }
 
-const std::string formats[] = { "%4u-%2u-%2u", "%4u/%2u/%2u", "%4u%2u%2u" };
-const size_t formats_n = 3;
-
-string LicenseGenerator::normalize_date(const char * s) {
+string LicenseGenerator::normalize_date(const std::string& sDate) {
+    static const std::vector<std::string> s_vsDateFormats = {
+        "%4u-%2u-%2u",
+        "%4u/%2u/%2u",
+        "%4u%2u%2u"
+    };
+    if(sDate.size()<8)
+        throw invalid_argument("Date string too small for known formats");
     unsigned int year, month, day;
-    int chread;
     bool found = false;
-    for (size_t i = 0; i < formats_n && !found; ++i) {
-        chread = sscanf(s, formats[i].c_str(), &year, &month, &day);
-        if (chread == 3) {
+    for(const std::string& sFormat : s_vsDateFormats) {
+        const int chread = sscanf(sDate.c_str(),sFormat.c_str(),&year,&month,&day);
+        if(chread==3) {
             found = true;
+            break;
         }
     }
-    if (!found) {
-        throw invalid_argument("Date not recognized.");
-    }
+    if(!found)
+        throw invalid_argument("Date string did not match a known format");
     ostringstream oss;
-    oss << year << "-" << setfill('0') << std::setw(2) << month << "-" << day;
-    //delete (facet);
+    oss << year << "-" << setfill('0') << std::setw(2) << month << "-" << setfill('0') << std::setw(2) << day;
     return oss.str();
 }
 }

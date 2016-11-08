@@ -145,9 +145,9 @@ unsigned char* unbase64(const char* ascii, int len, int *flen) {
 		int C = unb64[safeAsciiPtr[charNo + 2]];
 		int D = unb64[safeAsciiPtr[charNo + 3]];
 
-		bin[cb++] = (A << 2) | (B >> 4);
-		bin[cb++] = (B << 4) | (C >> 2);
-		bin[cb++] = (C << 6) | (D);
+		bin[cb++] = (unsigned char)((A << 2) | (B >> 4));
+		bin[cb++] = (unsigned char)((B << 4) | (C >> 2));
+		bin[cb++] = (unsigned char)((C << 6) | (D));
 	}
 
 	if (pad == 1) {
@@ -155,13 +155,13 @@ unsigned char* unbase64(const char* ascii, int len, int *flen) {
 		int B = unb64[safeAsciiPtr[charNo + 1]];
 		int C = unb64[safeAsciiPtr[charNo + 2]];
 
-		bin[cb++] = (A << 2) | (B >> 4);
-		bin[cb++] = (B << 4) | (C >> 2);
+		bin[cb++] = (unsigned char)((A << 2) | (B >> 4));
+		bin[cb++] = (unsigned char)((B << 4) | (C >> 2));
 	} else if (pad == 2) {
 		int A = unb64[safeAsciiPtr[charNo]];
 		int B = unb64[safeAsciiPtr[charNo + 1]];
 
-		bin[cb++] = (A << 2) | (B >> 4);
+		bin[cb++] = (unsigned char)((A << 2) | (B >> 4));
 	}
 
 	return bin;

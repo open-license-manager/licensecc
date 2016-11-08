@@ -82,7 +82,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
             time_t curtime = time(NULL);
             strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
             begin_date.assign(curdate);
-        } catch (const invalid_argument &e) {
+        } catch (const invalid_argument&) {
             cerr << endl << "End date not recognized: " << dt_end
                     << " Please enter a valid date in format YYYYMMDD" << endl;
             exit(2);
@@ -92,7 +92,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
         const std::string begin_date_str = vm["begin_date"].as<string>();
         try {
             begin_date = normalize_date(begin_date_str);
-        } catch (invalid_argument &e) {
+        } catch (const invalid_argument&) {
             cerr << endl << "Begin date not recognized: " << begin_date_str
                     << " Please enter a valid date in format YYYYMMDD" << endl;
             //print_usage(vm);
@@ -140,7 +140,7 @@ void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
         ostream& outputFile) {
     vector<FullLicenseInfo> licenseInfo = parseLicenseInfo(vm);
     unique_ptr<CryptoHelper> helper = CryptoHelper::getInstance();
-    const char pkey[] = PRIVATE_KEY;
+    const unsigned char pkey[] = PRIVATE_KEY;
     size_t len = sizeof(pkey);
     for (auto it = licenseInfo.begin(); it != licenseInfo.end(); ++it) {
         const string license = it->printForSign();
@@ -196,7 +196,7 @@ string LicenseGenerator::normalize_date(const std::string& sDate) {
     };
     if(sDate.size()<8)
         throw invalid_argument("Date string too small for known formats");
-    unsigned int year, month, day;
+    unsigned int year=0, month=0, day=0;
     bool found = false;
     for(const std::string& sFormat : s_vsDateFormats) {
         const int chread = sscanf(sDate.c_str(),sFormat.c_str(),&year,&month,&day);

@@ -6,13 +6,13 @@ add_files(INCLUDE_FILES
 )
 if(WIN32)
     add_library(metalic_os OBJECT
-        "src/os-win.c"
+        "src/os-win.cpp"
         ${INCLUDE_FILES}
     )
 else()
     add_library(metalic_os OBJECT
-        "src/os-linux.c"
-        "src/network_id.c"
+        "src/os-linux.cpp"
+        "src/network_id.cpp"
         ${INCLUDE_FILES}
     )
 endif()

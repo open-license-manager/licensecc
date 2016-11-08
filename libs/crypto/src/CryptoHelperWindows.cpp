@@ -1,6 +1,9 @@
 
 #include <sstream>
 #include <vector>
+#include <locale>
+#include <codecvt>
+#include <string>
 #include "metalicensor/crypto/CryptoHelperWindows.h"
 
 // The RSA public-key key exchange algorithm
@@ -15,24 +18,19 @@ namespace license {
 CryptoHelperWindows::CryptoHelperWindows() {
     m_hCryptProv = NULL;
     m_hCryptKey = NULL;
-    if (!CryptAcquireContext(&m_hCryptProv, "license++sign", MS_ENHANCED_PROV,
-            PROV_RSA_FULL, 0)) {
-        // If the key container cannot be opened, try creating a new
-        // container by specifying a container name and setting the
-        // CRYPT_NEWKEYSET flag.
-        printf("Error in AcquireContext 0x%08x \n", GetLastError());
+    if (!CryptAcquireContext(&m_hCryptProv, L"license++sign", MS_ENHANCED_PROV, PROV_RSA_FULL, 0)) {
+        // If the key container cannot be opened, try creating a new container by specifying a container name and setting the CRYPT_NEWKEYSET flag.
+        printf("Error in AcquireContext (A) 0x%08x \n", GetLastError());
         if (NTE_BAD_KEYSET == GetLastError()) {
-            if (!CryptAcquireContext(&m_hCryptProv, "license++sign",
-                    MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-                printf("Error in AcquireContext 0x%08x \n", GetLastError());
+            if (!CryptAcquireContext(&m_hCryptProv, L"license++sign", MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+                printf("Error in AcquireContext (B) 0x%08x \n", GetLastError());
                 throw logic_error("");
             }
         } else {
-            printf(" Error in AcquireContext 0x%08x \n", GetLastError());
+            printf(" Error in AcquireContext (C) 0x%08x \n", GetLastError());
             throw logic_error("");
         }
     }
-
 }
 
 /**
@@ -42,7 +40,6 @@ CryptoHelperWindows::CryptoHelperWindows() {
  key exchange algorithm using Microsoft Enhanced Cryptographic Provider.
  */
 void CryptoHelperWindows::generateKeyPair() {
-    HRESULT hr = S_OK;
     DWORD dwErrCode;
     // If the handle to key container is NULL, fail.
     if (m_hCryptProv == NULL)
@@ -65,7 +62,6 @@ void CryptoHelperWindows::generateKeyPair() {
  in a string suitable for C source inclusion.
  */
 const string CryptoHelperWindows::exportPublicKey() const {
-    HRESULT hr = S_OK;
     DWORD dwErrCode;
     DWORD dwBlobLen;
     BYTE *pbKeyBlob = NULL;
@@ -125,7 +121,6 @@ CryptoHelperWindows::~CryptoHelperWindows() {
 // of this is returned to the caller. The caller is responsible for releasing // this memory using a delete call.
 //--------------------------------------------------------------------
 const string CryptoHelperWindows::exportPrivateKey() const {
-    HRESULT hr = S_OK;
     DWORD dwErrCode;
     DWORD dwBlobLen;
     BYTE *pbKeyBlob;
@@ -193,8 +188,7 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
     }
 }
 
-const string CryptoHelperWindows::signString(const void* privateKey,
-        size_t pklen, const string& license) const {
+const string CryptoHelperWindows::signString(const void* privateKey, size_t pklen, const string& license) const {
     BYTE *pbBuffer = (BYTE *) license.c_str();
     DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
     HCRYPTHASH hHash;
@@ -246,7 +240,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
     //-------------------------------------------------------------------
     // Allocate memory for the signature buffer.
 
-    if (pbSignature = (BYTE *) malloc(dwSigLen)) {
+    if ((pbSignature = (BYTE *) malloc(dwSigLen))!=0) {
         printf("Memory allocated for the signature.\n");
     } else {
         throw logic_error(string("Out of memory."));
@@ -266,11 +260,9 @@ const string CryptoHelperWindows::signString(const void* privateKey,
     CryptDestroyHash(hHash);
     CryptDestroyKey(hKey);
 
-    CryptBinaryToString(pbSignature, dwSigLen,
-            CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, NULL, &strLen);
-    vector<char> buffer(strLen);
-    CryptBinaryToString(pbSignature, dwSigLen,
-            CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &buffer[0], &strLen);
+    CryptBinaryToString(pbSignature, dwSigLen, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, NULL, &strLen);
+    vector<wchar_t> buffer(strLen);
+    CryptBinaryToString(pbSignature, dwSigLen, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &buffer[0], &strLen);
 
     //-------------------------------------------------------------------
     // In the second phase, the hash signature is verified.
@@ -370,6 +362,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
     if (pbSignature) {
         free(pbSignature);
     }
-    return string(&buffer[0]);
+
+    return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(&buffer[0]);
 }
 } /* namespace license */

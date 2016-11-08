@@ -11,7 +11,7 @@ add_files(INCLUDE_FILES
 add_library(metalic_base OBJECT
     "src/EventRegistry.cpp"
     "src/StringUtils.cpp"
-    "src/logger.c"
+    "src/logger.cpp"
     ${INCLUDE_FILES}
 )
 target_include_directories(metalic_base

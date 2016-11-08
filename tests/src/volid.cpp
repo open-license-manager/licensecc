@@ -17,15 +17,17 @@ namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
+#define UNUSED(x) (void)(x)
+
 BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	const string licLocation(METALICENSOR_TEST_OUT_DIR "/volid_license.lic");
 	PcSignature identifier_out;
 
 	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
-	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
-			strategy);
+	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,strategy);
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
+    UNUSED(generate_ok);
 	cout << "Identifier:" << identifier_out << endl;
 	vector<string> extraArgs = { "-s", identifier_out };
 	generate_license(licLocation, extraArgs);
@@ -46,8 +48,7 @@ static void generate_reference_file(const string& idfileLocation,
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;
 	for (int i = 0; i < num_strategies; i++) {
-		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
-				strategies[i]);
+		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,strategies[i]);
 		if (generate_ok != FUNC_RET_OK){
 			idfile.close();
 			remove(idfileLocation.c_str());
@@ -61,20 +62,15 @@ static void generate_reference_file(const string& idfileLocation,
 
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(METALICENSOR_TEST_OUT_DIR "/identifiers_file");
-	IDENTIFICATION_STRATEGY strategies[] =
-			{ DEFAULT,
-					DISK_LABEL,
-					DISK_NUM,
-					ETHERNET };
+	IDENTIFICATION_STRATEGY strategies[] = {DEFAULT,DISK_LABEL,DISK_NUM,ETHERNET};
 	const int num_strategies = sizeof(strategies) / sizeof(strategies[0]);
 	std::ifstream test_idfile_exist(idfileLocation);
-	if (!test_idfile_exist.good()) {
+	if(!test_idfile_exist.good())
 		generate_reference_file(idfileLocation, strategies, num_strategies);
-	}
 	//try to locate a "good" reference file.
 	int tries = 2;
 	std::vector<string> reference_signatures;
-	do{
+	do {
 		std::ifstream is(idfileLocation);
 		std::istream_iterator<string> start(is), end;
 		reference_signatures = vector<string>(start, end);
@@ -89,9 +85,9 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	PcSignature generated_identifier;
 	BOOST_TEST_CHECKPOINT("Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {
-		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
-				generated_identifier, strategies[i]);
+		FUNCTION_RETURN generate_ok = generate_user_pc_signature(generated_identifier, strategies[i]);
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
+        UNUSED(generate_ok);
 		if (reference_signatures[i] != generated_identifier) {
 			string message = string("pc signature compare fail: strategy:")
 					+ to_string((long double) strategies[i]) + " generated: ["

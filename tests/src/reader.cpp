@@ -10,7 +10,6 @@ using namespace license;
 
 BOOST_AUTO_TEST_CASE( read_single_file ) {
 	const char * licLocation = METALICENSOR_TEST_SRC_DIR "/test_reader.ini";
-printf("@@@ %s\n",licLocation);
 	const LicenseLocation location = { licLocation, NULL, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
@@ -67,12 +66,15 @@ BOOST_AUTO_TEST_CASE( env_var_not_defined ) {
 BOOST_AUTO_TEST_CASE( read_env_var ) {
 	char str[MAX_PATH];
 	strcpy(str,"LIC_VAR=" METALICENSOR_TEST_SRC_DIR "/test_reader.ini");
+#ifdef __unix__
 	putenv(str);
+#else //windows
+    _putenv(str);
+#endif //windows
 	const LicenseLocation location = { NULL, "LIC_VAR", false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PrODUCT",
-			licenseInfos);
+	EventRegistry registry = licenseReader.readLicenses("PrODUCT",licenseInfos);
 	BOOST_CHECK(registry.isGood());
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
 }

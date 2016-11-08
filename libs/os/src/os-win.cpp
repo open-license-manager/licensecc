@@ -1,33 +1,37 @@
+
 #include <Windows.h>
 #include <iphlpapi.h>
-//definition of size_t
 #include <stdlib.h>
 #include <stdio.h>
-//#include "../../base/base64.h"
-#include "../../base/logger.h"
-#include"../os.h"
-#include "public-key.h"
-
+#include <locale>
+#include <codecvt>
+#include <string>
+#include "metalicensor/os/os.h"
+#include "metalicensor/keys/public-key.h"
+//#include "metalicensor/base/base64.h"
+#include "metalicensor/base/logger.h"
 #pragma comment(lib, "IPHLPAPI.lib")
+
 unsigned char* unbase64(const char* ascii, int len, int *flen);
 
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char /*identifier*/[6]) {
 	return FUNC_RET_NOT_AVAIL;
 }
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
-	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
-	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL cmpName = GetComputerName(buffer, &bufsize);
+	wchar_t buffer[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD bufsize = MAX_COMPUTERNAME_LENGTH + 1;
+	BOOL cmpName = GetComputerName(buffer,&bufsize);
 	if (cmpName) {
-		strncpy(identifier, buffer, 6);
+        const std::string sIdent = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(buffer);
+		strncpy((char*)identifier,sIdent.c_str(),min((int)sIdent.size(),6));
 		result = FUNC_RET_OK;
 	}
 	return result;
 }
 
-FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
+FUNCTION_RETURN getCpuId(unsigned char /*identifier*/[6]) {
 	return FUNC_RET_NOT_AVAIL;
 }
 
@@ -42,15 +46,15 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	DWORD FileMaxLen;
 	int ndrives = 0;
 	DWORD FileFlags;
-	char volName[_MAX_FNAME], FileSysName[_MAX_FNAME];
-	char* szSingleDrive;
+	wchar_t volName[MAX_PATH],FileSysName[MAX_PATH];
+	wchar_t* szSingleDrive;
 	DWORD volSerial = 0;
 	BOOL success;
 	UINT driveType;
 	DWORD dwSize = MAX_PATH;
-	char szLogicalDrives[MAX_PATH] = { 0 };
+	wchar_t szLogicalDrives[MAX_PATH] = { 0 };
 
-	FUNCTION_RETURN return_value;
+	FUNCTION_RETURN return_value = FUNC_RET_ERROR;
 	DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
 
 	if (dwResult > 0 && dwResult <= MAX_PATH) {
@@ -62,33 +66,34 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 			driveType = GetDriveType(szSingleDrive);
 			if (driveType == DRIVE_FIXED) {
 				success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH,
-						&volSerial, &FileMaxLen, &FileFlags, FileSysName,
-						MAX_PATH);
+						&volSerial, &FileMaxLen, &FileFlags, FileSysName, MAX_PATH);
 				if (success) {
-					LOG_INFO("drive         : %s", szSingleDrive);
-					LOG_INFO("Volume Name   : %s", volName);
+					LOG_INFO("drive         : %ls", szSingleDrive);
+					LOG_INFO("Volume Name   : %ls", volName);
 					LOG_INFO("Volume Serial : 0x%x", volSerial); 
 					LOG_DEBUG("Max file length : %d", FileMaxLen); 
-					LOG_DEBUG("Filesystem      : %s", FileSysName);
+					LOG_DEBUG("Filesystem      : %ls", FileSysName);
 					if (diskInfos != NULL) {
 						if (ndrives < *disk_info_size) {
 							diskInfos[ndrives].id = ndrives;
-							strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
-							strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
-							memcpy(diskInfos[ndrives].disk_sn, &volSerial, sizeof(DWORD));
-							diskInfos[ndrives].preferred = (strncmp(szSingleDrive, "C", 1) != 0);
-						} else {
-							return_value = FUNC_RET_BUFFER_TOO_SMALL;
+                            const std::string sVolName = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(volName);
+							strncpy(diskInfos[ndrives].device,sVolName.c_str(),255);
+                            const std::string sFileSysName = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(FileSysName);
+							strncpy(diskInfos[ndrives].label,sFileSysName.c_str(),255);
+							memcpy(diskInfos[ndrives].disk_sn,&volSerial,min(sizeof(DWORD),8));
+							diskInfos[ndrives].preferred = (wcsncmp(szSingleDrive,L"C",1)!=0);
 						}
+                        else
+							return_value = FUNC_RET_BUFFER_TOO_SMALL;
 					}
 					ndrives++;
 				} else {
-					LOG_WARN("Unable to retrieve information of '%s'", szSingleDrive);
+					LOG_WARN("Unable to retrieve information of '%ls'", szSingleDrive);
 				}
 			} else {
-				LOG_INFO("This volume is not fixed : %s, type: %d",	szSingleDrive);
+				LOG_INFO("This volume is not fixed : %ls, type: %d",	szSingleDrive);
 			}
-			szSingleDrive += strlen(szSingleDrive) + 1;
+			szSingleDrive += wcslen(szSingleDrive) + 1;
 		}
 	}
 	if (diskInfos == NULL || *disk_info_size == 0) {
@@ -125,8 +130,7 @@ static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
 
 //http://stackoverflow.com/questions/18046063/mac-address-using-c
 //TODO: count only interfaces with type (MIB_IF_TYPE_ETHERNET IF_TYPE_IEEE80211)
-FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
-		size_t * adapter_info_size) {
+FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos, size_t * adapter_info_size) {
 	DWORD dwStatus;
 	unsigned int i = 0;
 	FUNCTION_RETURN result;
@@ -184,14 +188,18 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	FUNCTION_RETURN result = FUNC_RET_OK;
-	DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);
-	if (wres == 0) {
+    wchar_t wbuffer[MAX_PATH];
+	DWORD wres = GetModuleFileName(NULL,wbuffer,MAX_PATH);
+	if(wres==0)
 		result = FUNC_RET_ERROR;
-	}
+    else {
+        const std::string sModuleFileName = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wbuffer);
+        strncpy(buffer,sModuleFileName.c_str(),MAX_PATH);
+    }
 	return result;
 }
 
-static void printHash(HCRYPTHASH* hHash) {
+void printHash(HCRYPTHASH* hHash) {
 	BYTE *pbHash;
 	DWORD dwHashLen;
 	DWORD dwHashLenSize = sizeof(DWORD);
@@ -212,8 +220,7 @@ static void printHash(HCRYPTHASH* hHash) {
 	}
 }
 
-FUNCTION_RETURN verifySignature(const char* stringToVerify,
-		const char* signatureB64) {
+FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64) {
 	//--------------------------------------------------------------------
 	// Declare variables.
 	//
@@ -229,27 +236,23 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	HCRYPTPROV hProv = 0;
 	HCRYPTKEY hKey = 0;
 	HCRYPTHASH hHash = 0;
-	DWORD dwSigLen;
 	BYTE* sigBlob;
 
 	//--------------------------------------------------------------------
 	// Acquire a handle to the CSP.
 
-	if (!CryptAcquireContext(&hProv,
-	NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+	if (!CryptAcquireContext(&hProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		// If the key container cannot be opened, try creating a new
 		// container by specifying a container name and setting the 
 		// CRYPT_NEWKEYSET flag.
-		LOG_INFO("Error in AcquireContext 0x%08x \n", GetLastError());
+		LOG_INFO("Error in AcquireContext (D) 0x%08x \n", GetLastError());
 		if (NTE_BAD_KEYSET == GetLastError()) {
-			if (!CryptAcquireContext(&hProv, "license++verify",
-					MS_ENHANCED_PROV, PROV_RSA_FULL,
-					CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT)) {
-				LOG_ERROR("Error in AcquireContext 0x%08x \n", GetLastError());
+			if (!CryptAcquireContext(&hProv, L"license++verify", MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT)) {
+				LOG_ERROR("Error in AcquireContext (E) 0x%08x \n", GetLastError());
 				return FUNC_RET_ERROR;
 			}
 		} else {
-			LOG_ERROR(" Error in AcquireContext 0x%08x \n", GetLastError());
+			LOG_ERROR(" Error in AcquireContext (F) 0x%08x \n", GetLastError());
 			return FUNC_RET_ERROR;
 		}
 	}
@@ -271,7 +274,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 		return FUNC_RET_ERROR;
 	}
 
-	if (!CryptHashData(hHash, stringToVerify, (DWORD) strlen(stringToVerify), 0)) {
+	if (!CryptHashData(hHash,(const BYTE*)stringToVerify,(DWORD)strlen(stringToVerify),0)) {
 		LOG_ERROR("Error in hashing data 0x%08x ", GetLastError());
 		CryptDestroyHash(hHash);
 		CryptReleaseContext(hProv, 0);
@@ -281,7 +284,8 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	LOG_DEBUG("Lenght %d, hashed Data: [%s]", strlen(stringToVerify), stringToVerify);
 	printHash(&hHash);
 #endif
-	sigBlob = unbase64(signatureB64, (int) strlen(signatureB64), &dwSigLen);
+    int dwSigLen;
+	sigBlob = unbase64(signatureB64,(int)strlen(signatureB64),&dwSigLen);
 	LOG_DEBUG("raw signature lenght %d", dwSigLen);
 	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0)) {
 		LOG_ERROR("Signature not validated!  0x%08x ", GetLastError());

@@ -8,7 +8,7 @@ add_files(INCLUDE_FILES
 add_library(metalic_reader STATIC
     "src/license++.cpp"
     "src/LicenseReader.cpp"
-    "src/pc-identifiers.c"
+    "src/pc-identifiers.cpp"
     ${INCLUDE_FILES}
     $<TARGET_OBJECTS:metalic_ini>
     $<TARGET_OBJECTS:metalic_os>

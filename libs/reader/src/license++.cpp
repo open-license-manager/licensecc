@@ -7,16 +7,16 @@
 #include "metalicensor/reader/LicenseReader.h"
 
 using namespace std;
-DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {
+
+DllExport void print_error(char /*out_buffer*/[256], LicenseInfo* /*licenseInfo*/) {
 
 }
 
-DllExport void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFIER_SIZE + 1]) {
+DllExport void identify_pc(IDENTIFICATION_STRATEGY /*pc_id_method*/, char /*chbuffer*/[PC_IDENTIFIER_SIZE + 1]) {
 
 }
 
-static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
-		LicenseInfo* license) {
+static void mergeLicenses(vector<license::FullLicenseInfo> licenses, LicenseInfo* license) {
 	if (license != NULL) {
 		time_t curLicense_exp = 0;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
@@ -32,8 +32,7 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 	}
 }
 
-EVENT_TYPE acquire_license(const char * product,
-		LicenseLocation licenseLocation, LicenseInfo* license) {
+EVENT_TYPE acquire_license(const char * product, LicenseLocation licenseLocation, LicenseInfo* license) {
 	license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	license::EventRegistry er = lr.readLicenses(string(product), licenses);
@@ -68,12 +67,10 @@ EVENT_TYPE acquire_license(const char * product,
 	return result;
 }
 
-DllExport EVENT_TYPE confirm_license(char * product,
-		LicenseLocation licenseLocation) {
+DllExport EVENT_TYPE confirm_license(char* /*product*/, LicenseLocation /*licenseLocation*/) {
 	return LICENSE_OK;
 }
 
-DllExport EVENT_TYPE release_license(char * product,
-		LicenseLocation licenseLocation) {
+DllExport EVENT_TYPE release_license(char* /*product*/, LicenseLocation /*licenseLocation*/) {
 	return LICENSE_OK;
 }

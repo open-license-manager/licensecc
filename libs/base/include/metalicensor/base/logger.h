@@ -3,9 +3,6 @@
 
 #ifndef LOG_ENABLED
 #include <errno.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
@@ -28,7 +25,4 @@ extern "C" {
 void _log(const char* format, ...);
 void _shutdown_log();
 
-#ifdef __cplusplus
-}
-#endif
 #endif

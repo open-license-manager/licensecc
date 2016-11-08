@@ -36,7 +36,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		if (result_diskinfos != FUNC_RET_OK) {
 			return generate_ethernet_pc_id(identifiers, num_identifiers, true);
 		}
-		*num_identifiers = disk_num * adapter_num;
+		*num_identifiers = (unsigned int)(disk_num * adapter_num);
 		function_return = FUNC_RET_OK;
 	} else {
 		adapterInfoPtr = (OsAdapterInfo*) malloc(
@@ -62,7 +62,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		caller_identifiers = *num_identifiers;
 		for (i = 0; i < disk_num; i++) {
 			for (j = 0; j < adapter_num; j++) {
-				array_index = i * adapter_num + j;
+				array_index = (unsigned int)(i * adapter_num + j);
 				if (array_index >= caller_identifiers) {
 					function_return = FUNC_RET_BUFFER_TOO_SMALL;
 					//sweet memories...
@@ -74,7 +74,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 			}
 		}
 end:
-		*num_identifiers = cmin(*num_identifiers, adapter_num * disk_num);
+		*num_identifiers = min(*num_identifiers, (unsigned int)(adapter_num * disk_num));
 		free(diskInfoPtr);
 		free(adapterInfoPtr);
 	}
@@ -92,7 +92,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		result_adapterInfos = getAdapterInfos(NULL, &adapters);
 		if (result_adapterInfos == FUNC_RET_OK
 				|| result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL) {
-			*num_identifiers = adapters;
+			*num_identifiers = (unsigned int)adapters;
 			result_adapterInfos = FUNC_RET_OK;
 		}
 	} else {
@@ -151,7 +151,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	}
 
 	defined_identifiers = *num_identifiers;
-	*num_identifiers = available_disk_info;
+	*num_identifiers = (unsigned int)available_disk_info;
 	if (identifiers == NULL) {
 		free(diskInfos);
 		return FUNC_RET_OK;
@@ -224,7 +224,7 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 	}
 
 	if (result == FUNC_RET_OK && identifiers != NULL) {
-		strategy_num = strategy << 5;
+		strategy_num = (unsigned char)(strategy << 5);
 		for (i = 0; i < *array_size; i++) {
 			//encode strategy in the first three bits of the pc_identifier
 			identifiers[i][0] = (identifiers[i][0] & 15) | strategy_num;
@@ -273,7 +273,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
-	b64_data = base64(concat_identifiers, concatIdentifiersSize, &b64_size);
+	b64_data = base64(concat_identifiers, (int)concatIdentifiersSize, &b64_size);
 	if (b64_size > sizeof(PcSignature)) {
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
@@ -284,12 +284,11 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	return FUNC_RET_OK;
 }
 
-FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) {
+FUNCTION_RETURN parity_check_id(PcSignature /*pc_identifier*/) {
 	return FUNC_RET_OK;
 }
 
-FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
-		IDENTIFICATION_STRATEGY strategy) {
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
 	PcIdentifier* identifiers;
 	unsigned int req_buffer_size = 0;
@@ -349,7 +348,7 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 }
 
 static IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
-	return (IDENTIFICATION_STRATEGY) identifier[0] >> 5;
+	return (IDENTIFICATION_STRATEGY)(identifier[0] >> 5);
 }
 
 EVENT_TYPE validate_pc_signature(PcSignature str_code) {
@@ -358,18 +357,17 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
 	PcIdentifier* calculated_identifiers = NULL;
 	unsigned int calc_identifiers_size = 0;
-	int i = 0, j = 0;
 	//bool found;
 #ifdef _DEBUG
 	printf("Comparing pc identifiers: \n");
 #endif
 	result = decode_pc_id(user_identifiers[0], user_identifiers[1], str_code);
 	if (result != FUNC_RET_OK) {
-		return result;
+		return ENVIRONMENT_VARIABLE_NOT_DEFINED; // guess
 	}
 	previous_strategy_id = STRATEGY_UNKNOWN;
 	//found = false;
-	for (i = 0; i < 2; i++) {
+	for (int i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
 		if (current_strategy_id == STRATEGY_UNKNOWN) {
 			return LICENSE_MALFORMED;
@@ -386,7 +384,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 					current_strategy_id);
 		}
 		//maybe skip the byte 0
-		for (j = 0; j < calc_identifiers_size; j++) {
+		for (unsigned int j = 0; j < calc_identifiers_size; j++) {
 #ifdef _DEBUG
 			printf("generated id: %02x%02x%02x%02x%02x%02x index %d, user_supplied id %02x%02x%02x%02x%02x%02x idx: %d\n",
 					calculated_identifiers[j][0], calculated_identifiers[j][1], calculated_identifiers[j][2],

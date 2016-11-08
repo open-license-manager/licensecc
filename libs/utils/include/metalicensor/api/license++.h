@@ -1,16 +1,6 @@
 #ifndef LICENSEPP_H_
 #define LICENSEPP_H_
 
-/*
- * This include file is the public api di License++
- * You should include this file if your software don't plan to use
- * the part of the library dealing with features.
- * Otherwise licensepp-features.h should be included.
- */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifdef __unix__
 #define DllExport
 #ifndef MAX_PATH
@@ -21,7 +11,7 @@ extern "C" {
 #define DllExport  __declspec( dllexport )
 #endif
 
-#include "datatypes.h"
+#include "metalicensor/api/datatypes.h"
 
 /*
  * Method used to convert the LicenseInfo into a human readable
@@ -60,9 +50,5 @@ DllExport EVENT_TYPE confirm_license(char * productName,
  */
 DllExport EVENT_TYPE release_license(char * productName,
 		LicenseLocation licenseLocation);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

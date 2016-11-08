@@ -4,7 +4,7 @@ project(metalic_generator)
 add_files(INCLUDE_FILES
     "include/metalicensor/generator/license-generator.h"
 )
-add_library(metalic_generator SHARED
+add_library(metalic_generator STATIC
     "src/license-generator.cpp"
     ${INCLUDE_FILES}
     $<TARGET_OBJECTS:metalic_crypto>

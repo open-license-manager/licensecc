@@ -12,7 +12,6 @@ add_files(INCLUDE_FILES
     "include/metalicensor/utils/build_properties.hpp"
     "include/metalicensor/api/datatypes.h"
     "include/metalicensor/api/license++.h"
-    "include/metalicensor/api/Licensepp-features.h"
 )
 add_library(metalic_utils OBJECT
     "src/empty.cpp"

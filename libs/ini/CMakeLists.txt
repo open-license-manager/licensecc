@@ -6,7 +6,7 @@ add_files(INCLUDE_FILES
     "include/metalicensor/ini/SimpleIni.h"
 )
 add_library(metalic_ini OBJECT
-    "src/ConvertUTF.c"
+    "src/ConvertUTF.cpp"
     ${INCLUDE_FILES}
 )
 target_include_directories(metalic_ini

@@ -1,17 +1,6 @@
 #ifndef DATATYPES_H_
 #define DATATYPES_H_
 
-/*
- * This include file is the public api di License++
- * You should include this file if your software don't plan to use
- * the part of the library dealing with features.
- * Otherwise licensepp-features.h should be included.
- */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-//definition of size_t
 #include <stdlib.h>
 #ifdef __unix__
 #include <stdbool.h>
@@ -28,7 +17,7 @@ extern "C" {
 #define LICENESE_INT_VERSION 100
 #define LICENSEPP_VERSION "1.0.0"
 
-typedef enum {
+enum EVENT_TYPE {
 	LICENSE_OK = 0, 						//OK
 	LICENSE_FILE_NOT_FOUND = 1, 		//license file not found
 	LICENSE_SERVER_NOT_FOUND = 2, 		//license server can't be contacted
@@ -43,30 +32,33 @@ typedef enum {
 	LICENSE_FILE_FOUND = 100,
 	LICENSE_VERIFIED = 101
 
-} EVENT_TYPE;
+};
 
-typedef enum {
-	LOCAL, REMOTE //remote licenses are not supported now.
-} LICENSE_TYPE;
+enum LICENSE_TYPE {
+	LOCAL,
+    REMOTE //remote licenses are not supported now.
+};
 
-typedef enum {
-	SVRT_INFO, SVRT_WARN, SVRT_ERROR
-} SEVERITY;
+enum SEVERITY{
+	SVRT_INFO,
+    SVRT_WARN,
+    SVRT_ERROR
+};
 
-typedef struct {
+struct AuditEvent {
 	SEVERITY severity;
 	EVENT_TYPE event_type;
 	char param1[256];
 	char param2[256];
-} AuditEvent;
+};
 
-typedef struct {
+struct LicenseLocation {
 	const char *licenseFileLocation;
 	const char *environmentVariableName;
 	bool openFileNearModule;
-} LicenseLocation;
+};
 
-typedef struct {
+struct LicenseInfo {
 	/**
 	 * Detailed reason of success/failure. Reasons for a failure can be
 	 * multiple (for instance, license expired and signature not verified).
@@ -85,13 +77,13 @@ typedef struct {
 	 * '\0' if the application didn't specify one */
 	char proprietary_data[PROPRIETARY_DATA_SIZE + 1];
 	int license_version; //license file version
-} LicenseInfo;
+};
 
 /**
  * Enum to select a specific pc identification_strategy. DEFAULT Should be used
  * in most cases.
  */
-typedef enum {
+enum IDENTIFICATION_STRATEGY {
 	DEFAULT,
 	ETHERNET,
 	IP_ADDRESS,
@@ -99,10 +91,6 @@ typedef enum {
 	DISK_LABEL,
 	PLATFORM_SPECIFIC,
 	STRATEGY_UNKNOWN
-} IDENTIFICATION_STRATEGY;
-
-#ifdef __cplusplus
-}
-#endif
+};
 
 #endif

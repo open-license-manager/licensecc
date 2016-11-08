@@ -4,12 +4,17 @@
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
+#include <locale>
+#include <codecvt>
+#include <string>
 #ifdef __unix__
 #include <unistd.h>
 #define MAX_PATH 255
-#else
+#else //windows
 #include <windows.h>
-#endif
+#include <process.h>
+#define getpid _getpid
+#endif //windows
 #include "metalicensor/base/logger.h"
 
 static FILE *logFile = NULL;
@@ -24,30 +29,29 @@ static void timenow(char * buffer) {
     strftime(buffer, 64, "%Y-%m-%d %H:%M:%S", timeinfo);
 }
 
-static void getLogFname(char* logpath) {
+static std::string getLogFileName() {
 #ifdef __unix__
-    char const *folder = getenv("TMPDIR");
-    if (folder == 0) {
+    char const* folder = getenv("TMPDIR");
+    if(folder==0)
         folder = "/tmp";
-    }
-    strcpy(logpath, folder);
-    strcat(logpath, "/open-license.log");
+    return std::string(folder)+"/open-license.log";
 #else
-    int plen=GetTempPath(MAX_PATH,logpath);
-    if(plen == 0) {
-        fprintf(stderr, "Error getting temporary directory path");
+    wchar_t acBuffer[MAX_PATH];
+    int plen = GetTempPath(MAX_PATH,acBuffer);
+    if(plen==0) {
+        fprintf(stderr,"Error getting temporary directory path");
+        return std::string("open-license.log");
     }
-    strcat(logpath,"open-license.log");
+    const std::string sPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(acBuffer);
+    return sPath+"/open-license.log";
 #endif
 }
 
 void _log(const char* format, ...) {
-    char logpath[MAX_PATH];
     va_list args;
     char * buffer;
     if (logFile == NULL) {
-        getLogFname(logpath);
-        logFile = fopen(logpath, "a");
+        logFile = fopen(getLogFileName().c_str(), "a");
         if (logFile == NULL) {
             //what shall we do here?
             return;

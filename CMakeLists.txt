@@ -29,7 +29,7 @@ else(CMAKE_BUILD_TYPE)
 	set(RELEASE_BUILD 0)
 endif(CMAKE_BUILD_TYPE)
 
-if(WIN32)
+if(MSVC)
 
 	SET(PLATFORM_LIBS "")
 	include(target_arch)
@@ -43,7 +43,7 @@ if(WIN32)
 	endif()
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
 	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
-else(WIN32)
+else(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fmessage-length=0 -std=c++11 -Wuninitialized -fPIC") #-Wall
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
     #use static libraries in release to make it easier to distribute it
@@ -59,7 +59,7 @@ else(WIN32)
 	IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
 	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-endif(WIN32)
+endif(MSVC)
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 
 
@@ -75,12 +75,17 @@ find_package(Boost 1.55.0 COMPONENTS date_time unit_test_framework program_optio
 add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
 add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
 
-if(NOT WIN32)	
+if(NOT MSVC)	
 	#find a static version of openssl crypto library
 	find_package(OpenSSL REQUIRED)
 	include_directories(${OPENSSL_INCLUDE_DIR})
-	list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
+    if(MINGW)
+        list(APPEND EXTERNAL_LIBS "-lcrypto -liphlpapi")
+    else(MINGW)
+        list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+    endif(MINGW)
+	
+	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
 	
 	#Zlib required when openssl version < 1.0.1f
 	find_package(ZLIB REQUIRED)
@@ -94,7 +99,7 @@ if(NOT WIN32)
 	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
 	endif(USE_DBUS_IDENTIFIER)    
 	list(APPEND EXTERNAL_LIBS dl)
-endif(NOT WIN32)
+endif(NOT MSVC)
 
 FIND_PACKAGE(Doxygen)
 

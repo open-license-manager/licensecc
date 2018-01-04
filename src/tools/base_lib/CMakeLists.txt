@@ -1,17 +1,17 @@
 
-if(WIN32)
+if(MSVC)
 ADD_LIBRARY(
     tools_base STATIC
     CryptoHelper.cpp
     win/CryptoHelperWindows.cpp
 )
-else(WIN32)
+else(MSVC)
 ADD_LIBRARY(
     tools_base STATIC
     CryptoHelper.cpp
     linux/CryptoHelperLinux.cpp
 )
-ENDIF(WIN32)
+ENDIF(MSVC)
 
 target_link_libraries(
      tools_base

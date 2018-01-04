@@ -16,7 +16,11 @@
 #include <stdbool.h>
 #include <valgrind/memcheck.h>
 #else
+#ifdef __MINGW32__
+#include <windows.h>
+#else
 #include <Windows.h>
+#endif
 #endif
 
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,

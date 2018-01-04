@@ -11,8 +11,9 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <stdexcept>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <time.h> //mktime under windows
 #endif
 

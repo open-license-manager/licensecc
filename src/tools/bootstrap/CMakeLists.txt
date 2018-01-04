@@ -13,12 +13,21 @@ target_link_libraries(
 )
 
 # add the command to generate the source code
+
+if(MINGW)
+add_custom_command (
+  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+  COMMAND ./bootstrap.exe "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  DEPENDS bootstrap)
+else(MINGW)
 add_custom_command (
   OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
   COMMAND bootstrap "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  DEPENDS bootstrap
-)
+  DEPENDS bootstrap)
+endif(MINGW)
+
 
 add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/private-key.h")
 add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/public-key.h")

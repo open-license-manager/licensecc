@@ -1,4 +1,8 @@
+#ifdef __MINGW32__
+#include <windows.h>
+#else
 #include <Windows.h>
+#endif
 #include <iphlpapi.h>
 //definition of size_t
 #include <stdlib.h>

@@ -2,7 +2,7 @@
 //#define BOOST_TEST_MAIN
 //#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
-#include "../../../src/tools/license-generator/license-generator.h"
+#include "../../src/tools/license-generator/license-generator.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
 #include "../../src/library/ini/SimpleIni.h"

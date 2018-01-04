@@ -69,8 +69,7 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 0)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-include(add_boost)
-add_boost(STATIC MODULES date_time test program_options system filesystem) 
+find_package(Boost 1.55.0 COMPONENTS date_time unit_test_framework program_options system filesystem)
 #set below in case of dynamic linking in debug.
 #set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
 add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake

@@ -5,8 +5,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <cstring>
-#include "../../../src/tools/license-generator/license-generator.h"
-#include "../../../src/library/api/license++.h"
+#include "../../src/tools/license-generator/license-generator.h"
+#include "../../src/library/api/license++.h"
 #include <build_properties.h>
 #include <boost/filesystem.hpp>
 #include "../../src/library/ini/SimpleIni.h"
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	PcSignature identifier_out;
 
 	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
-	BOOST_CHECKPOINT("Before generate");
+	BOOST_TEST_CHECKPOINT("Before generate");
 	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	BOOST_ASSERT(tries > 0);
 
 	PcSignature generated_identifier;
-	BOOST_CHECKPOINT("Generating current signatures and comparing with past");
+	BOOST_TEST_CHECKPOINT("Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 		}
 	}
 
-	BOOST_CHECKPOINT("Verifying signatures");
+	BOOST_TEST_CHECKPOINT("Verifying signatures");
 	for (int j = 0; j < 100; j++) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
 			PcSignature pcsig;
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 			string message = string("pc signature verification strategy:")
 					+ to_string(i) + " generated: [" + generated_identifier
 					+ "] reference: [" + reference_signatures[i] + "]";
-			BOOST_CHECKPOINT("Verifying signature: ");
+			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);
 		}
 	}

@@ -62,7 +62,7 @@ void CryptoHelperWindows::generateKeyPair() {
 	KEYLENGTH | CRYPT_EXPORTABLE, &m_hCryptKey)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error generating keys ") + to_string(dwErrCode));
+				string("Error generating keys ") + to_string(static_cast<long long>(dwErrCode)));
 	}
 }
 
@@ -86,7 +86,7 @@ const string CryptoHelperWindows::exportPublicKey() const {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of public key ")
-						+ to_string(dwErrCode));
+						+ to_string(static_cast<long long>(dwErrCode)));
 	}
 	// Allocate memory for the pbKeyBlob.
 	if ((pbKeyBlob = new BYTE[dwBlobLen]) == NULL) {
@@ -98,7 +98,7 @@ const string CryptoHelperWindows::exportPublicKey() const {
 		delete pbKeyBlob;
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error exporting public key ") + to_string(dwErrCode));
+				string("Error exporting public key ") + to_string(static_cast<long long>(dwErrCode)));
 	} else {
 		ss << "\t";
 		for (unsigned int i = 0; i < dwBlobLen; i++) {
@@ -108,7 +108,7 @@ const string CryptoHelperWindows::exportPublicKey() const {
 					ss << "\\" << endl << "\t";
 				}
 			}
-			ss << to_string(pbKeyBlob[i]);
+			ss << to_string(static_cast<long long>(pbKeyBlob[i]));
 		}
 		delete pbKeyBlob;
 	}
@@ -146,7 +146,7 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of private key ")
-						+ to_string(dwErrCode));
+						+ to_string(static_cast<long long>(dwErrCode)));
 	}
 	// Allocate memory for the pbKeyBlob.
 	if ((pbKeyBlob = new BYTE[dwBlobLen]) == NULL) {
@@ -159,7 +159,7 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 		delete pbKeyBlob;
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error exporting private key ") + to_string(dwErrCode));
+				string("Error exporting private key ") + to_string(static_cast<long long>(dwErrCode)));
 	} else {
 		ss << "\t";
 		for (unsigned int i = 0; i < dwBlobLen; i++) {
@@ -169,7 +169,7 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 					ss << "\\" << endl << "\t";
 				}
 			}
-			ss << to_string(pbKeyBlob[i]);
+			ss << to_string(static_cast<long long>(pbKeyBlob[i]));
 		}
 		delete pbKeyBlob;
 	}
@@ -216,7 +216,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 			&hKey)) {
 		throw logic_error(
 				string("Error in importing the PrivateKey ")
-						+ to_string(GetLastError()));
+						+ to_string(static_cast<long long>(GetLastError())));
 	}
 
 	//-------------------------------------------------------------------

@@ -84,7 +84,11 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 			}
 		}
 end:
-		*num_identifiers = cmin(*num_identifiers, adapter_num * disk_num);
+#ifdef _MSC_VER
+        *num_identifiers = min(*num_identifiers, adapter_num * disk_num);
+#else
+        *num_identifiers = cmin(*num_identifiers, adapter_num * disk_num);
+#endif
 		free(diskInfoPtr);
 		free(adapterInfoPtr);
 	}

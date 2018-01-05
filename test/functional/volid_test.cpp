@@ -27,7 +27,9 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 			strategy);
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 	cout << "Identifier:" << identifier_out << endl;
-	vector<string> extraArgs = { "-s", identifier_out };
+	vector<string> extraArgs;
+    extraArgs.push_back("-s");
+    extraArgs.push_back(identifier_out);
 	generate_license(licLocation, extraArgs);
 
 	LicenseInfo license;
@@ -109,7 +111,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 					sizeof(PcSignature));
 			EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			string message = string("pc signature verification strategy:")
-					+ to_string(i) + " generated: [" + generated_identifier
+					+ to_string(static_cast<long long>(i)) + " generated: [" + generated_identifier
 					+ "] reference: [" + reference_signatures[i] + "]";
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);

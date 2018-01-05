@@ -13,3 +13,7 @@
 *.a
 /Makefile
 /Testing
+
+# Cmake generated files
+build
+

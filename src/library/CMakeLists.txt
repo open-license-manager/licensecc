@@ -18,3 +18,7 @@ target_link_libraries(
      os
 )
 
+install(TARGETS license++_static ARCHIVE DESTINATION lib)
+install(FILES api/datatypes.h api/license++.h DESTINATION include/api)
+install(FILES base/base.h DESTINATION include/base)
+install(FILES pc-identifiers.h DESTINATION include/)

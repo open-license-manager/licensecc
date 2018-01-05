@@ -1,5 +1,4 @@
 #TODO guess address_model 64 in boost
-#make it compatible with find_boost (exchange lowercase to camelcase)
 #fix shared libraries activation
 
 #cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
@@ -19,7 +18,7 @@ SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
 
 project (license++ C CXX)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules/")
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules/")
 
 include(utilities)
 if(CMAKE_BUILD_TYPE)
@@ -101,35 +100,6 @@ if(NOT MSVC)
 	list(APPEND EXTERNAL_LIBS dl)
 endif(NOT MSVC)
 
-FIND_PACKAGE(Doxygen)
-
-IF (DOXYGEN_FOUND)
-
-	SET(DOXYGEN_INPUT ${CMAKE_BINARY_DIR}/doc/Doxyfile)
-	SET(DOXYGEN_OUTPUT ${CMAKE_BINARY_DIR}/doc/doxy_output)
-	
-	configure_file (
-	  "doc/Doxyfile.in"
-	  "doc/Doxyfile"
-	)
-	
-	ADD_CUSTOM_COMMAND(
-	  OUTPUT ${DOXYGEN_OUTPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-	  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	  DEPENDS ${DOXYGEN_INPUT})
-	
-	ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
-	
-	ADD_CUSTOM_TARGET(apidoc_forced
-	  COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-	  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-	  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-ENDIF (DOXYGEN_FOUND)
-
 configure_file (
 	"src/build_properties.h.in" 
 	"${CMAKE_BINARY_DIR}/build_properties.h"
@@ -147,7 +117,6 @@ IF(BUILD_TESTING)
 ENDIF(BUILD_TESTING)
 add_subdirectory(test)
 
-#include(build/modules/CmakeDebugVariables.txt)
 message( STATUS "C compiler: " ${CMAKE_C_COMPILER})
 message( STATUS "C compiler flags: " ${CMAKE_C_FLAGS})
 message( STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})

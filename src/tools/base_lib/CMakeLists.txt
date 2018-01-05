@@ -17,3 +17,5 @@ target_link_libraries(
      tools_base
      ${EXTERNAL_LIBS}
 )
+
+install(TARGETS tools_base ARCHIVE DESTINATION lib)

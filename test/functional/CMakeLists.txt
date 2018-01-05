@@ -54,3 +54,4 @@ ADD_TEST(standard_license_test ${EXECUTABLE_OUTPUT_PATH}/standard_license_test)
 ADD_TEST(date_test ${EXECUTABLE_OUTPUT_PATH}/date_test)
 ADD_TEST(volid_test ${EXECUTABLE_OUTPUT_PATH}/volid_test)
 
+install(TARGETS standard_license_test date_test volid_test RUNTIME DESTINATION bin)

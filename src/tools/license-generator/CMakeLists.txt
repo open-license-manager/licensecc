@@ -31,5 +31,7 @@ target_link_libraries(
 )
 add_dependencies( license_generator private_key )
 
+install(TARGETS license_generator RUNTIME DESTINATION bin)
+
 #SET_TARGET_PROPERTIES(license_generator PROPERTIES LINK_SEARCH_START_STATIC ON)
 #SET_TARGET_PROPERTIES(license_generator PROPERTIES LINK_SEARCH_END_STATIC ON)

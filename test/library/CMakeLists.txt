@@ -33,3 +33,5 @@ ELSE(WIN32)
 	ADD_TEST(os_linux_test ${EXECUTABLE_OUTPUT_PATH}/os_linux_test)   
 	
 ENDIF(WIN32)
+
+install(TARGETS license_reader_test RUNTIME DESTINATION bin)

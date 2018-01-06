@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "../os.h"
+#include "os.h"
 
 /**
  *

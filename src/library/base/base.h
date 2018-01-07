@@ -18,9 +18,13 @@ extern "C" {
 #define DllExport  __declspec( dllexport )
 
 #ifndef __cplusplus
+#ifndef _MSC_VER
+#include <stdbool.h>
+#else
 typedef int bool;
 #define false 0
 #define true -1
+#endif
 #endif
 
 #endif

@@ -13,8 +13,11 @@ extern "C" {
 
 //definition of size_t
 #include <stdlib.h>
-#ifdef __unix__
+#ifndef _MSC_VER
 #include <stdbool.h>
+#endif
+
+#ifdef __unix__
 #define DllExport
 #else
 #include <windows.h>

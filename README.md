@@ -47,7 +47,7 @@ cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
 
-# on Windows with MSVC
+# on Windows with MSVC 2010
 
 cmake .. -G "Visual Studio 10 2010 Win64" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install

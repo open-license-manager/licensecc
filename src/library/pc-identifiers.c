@@ -153,7 +153,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		return result_diskinfos;
 	}
 	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
-	//memset(diskInfos,0,disk_num * sizeof(DiskInfo));
+	memset(diskInfos,0,disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK) {
 		free(diskInfos);

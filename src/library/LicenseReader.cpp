@@ -90,8 +90,9 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			license->days_left = 999999;
 		} else {
 			strncpy(license->expiry_date, to_date.c_str(), 11);
-			double secs = difftime(time(NULL),
-					seconds_from_epoch(to_date.c_str()));
+			double secs = difftime(
+				seconds_from_epoch(to_date.c_str()),
+				time(NULL));
 			license->days_left = (int) secs / 60 * 60 * 24;
 		}
 	}

@@ -31,7 +31,7 @@ typedef enum {
 typedef struct {
 	int id;
 	char description[1024];
-	unsigned char mac_address[6];
+	unsigned char mac_address[8];
 	unsigned char ipv4_address[4];
 	IFACE_TYPE type;
 } OsAdapterInfo;

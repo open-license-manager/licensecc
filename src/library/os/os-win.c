@@ -140,6 +140,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 				);
 		if (dwStatus != NO_ERROR) {
 			free(pAdapterInfo);
+            pAdapterInfo = NULL;
 		}
 	} while (dwStatus == ERROR_BUFFER_OVERFLOW && i-- > 0);
 

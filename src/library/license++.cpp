@@ -13,11 +13,11 @@
 #include "LicenseReader.h"
 
 using namespace std;
-DllExport void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {
+void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {
 
 }
 
-DllExport void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFIER_SIZE + 1]) {
+void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFIER_SIZE + 1]) {
 
 }
 
@@ -74,12 +74,12 @@ EVENT_TYPE acquire_license(const char * product,
 	return result;
 }
 
-DllExport EVENT_TYPE confirm_license(char * product,
+EVENT_TYPE confirm_license(char * product,
 		LicenseLocation licenseLocation) {
 	return LICENSE_OK;
 }
 
-DllExport EVENT_TYPE release_license(char * product,
+EVENT_TYPE release_license(char * product,
 		LicenseLocation licenseLocation) {
 	return LICENSE_OK;
 }

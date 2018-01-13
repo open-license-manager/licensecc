@@ -50,8 +50,7 @@ target_link_libraries(
 #SET_TARGET_PROPERTIES(volid_test PROPERTIES LINK_SEARCH_START_STATIC ON)
 #add_dependencies( volid_test boost_test boost_filesystem )
 
-ADD_TEST(standard_license_test ${EXECUTABLE_OUTPUT_PATH}/standard_license_test)
-ADD_TEST(date_test ${EXECUTABLE_OUTPUT_PATH}/date_test)
-ADD_TEST(volid_test ${EXECUTABLE_OUTPUT_PATH}/volid_test)
+ADD_TEST(NAME standard_license_test COMMAND standard_license_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME date_test COMMAND date_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME volid_test COMMAND volid_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-install(TARGETS standard_license_test date_test volid_test RUNTIME DESTINATION bin)

@@ -65,3 +65,16 @@ x86_64-w64-mingw32.static-cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
 ```
+
+How to test
+===========
+
+## on Linux :
+```
+make test
+```
+
+## on Windows :
+```
+ctest -C Release
+```

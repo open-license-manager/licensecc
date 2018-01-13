@@ -12,6 +12,4 @@ target_link_libraries(
 
 #add_dependencies( license_generator_test boost_test boost_filesystem )
 #SET_TARGET_PROPERTIES(license_generator_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-ADD_TEST(license_generator_test ${EXECUTABLE_OUTPUT_PATH}/license_generator_test)
-
-install(TARGETS license_generator_test RUNTIME DESTINATION bin)
+ADD_TEST(NAME license_generator_test COMMAND license_generator_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

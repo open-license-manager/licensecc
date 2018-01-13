@@ -12,7 +12,7 @@ target_link_libraries(
 
 #SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_START_STATIC ON)
 #SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_END_STATIC OFF)
-ADD_TEST(license_reader_test ${EXECUTABLE_OUTPUT_PATH}/license_reader_test)
+ADD_TEST(NAME license_reader_test COMMAND license_reader_test)
 
 IF(WIN32)
 #test windows
@@ -30,8 +30,6 @@ ELSE(WIN32)
 	
 	#add_dependencies( os_linux_test )
 	#SET_TARGET_PROPERTIES(os_linux_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-	ADD_TEST(os_linux_test ${EXECUTABLE_OUTPUT_PATH}/os_linux_test)   
+	ADD_TEST(NAME os_linux_test COMMAND os_linux_test)
 	
 ENDIF(WIN32)
-
-install(TARGETS license_reader_test RUNTIME DESTINATION bin)

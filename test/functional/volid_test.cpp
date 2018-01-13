@@ -50,13 +50,13 @@ static void generate_reference_file(const string& idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
+        BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		if (generate_ok != FUNC_RET_OK){
-			idfile.close();
-			remove(idfileLocation.c_str());
-			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << "failed with: " << generate_ok);
+			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
+            idfile << "0000-0000-0000-0000" << endl;
 		}
-		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
-		idfile << identifier_out << endl;
+        else
+            idfile << identifier_out << endl;
 	}
 	idfile.close();
 }
@@ -70,49 +70,47 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 					ETHERNET };
 	const int num_strategies = sizeof(strategies) / sizeof(strategies[0]);
 	std::ifstream test_idfile_exist(idfileLocation);
-	if (!test_idfile_exist.good()) {
-		generate_reference_file(idfileLocation, strategies, num_strategies);
-	}
-	//try to locate a "good" reference file.
-	int tries = 2;
-	std::vector<string> reference_signatures;
-	do{
-		std::ifstream is(idfileLocation);
-		std::istream_iterator<string> start(is), end;
-		reference_signatures = vector<string>(start, end);
-		if (reference_signatures.size() != num_strategies){
-			is.close();
-			remove(idfileLocation.c_str());
-			generate_reference_file(idfileLocation, strategies, num_strategies);
-		}
-	} while (reference_signatures.size() != num_strategies && tries-- > 0);
-	BOOST_ASSERT(tries > 0);
-
-	PcSignature generated_identifier;
+    if (!test_idfile_exist.good()){
+        generate_reference_file(idfileLocation, strategies, num_strategies);
+    }
+    else{
+        std::istream_iterator<string> start(test_idfile_exist), end;
+        std::vector<string> reference_signatures(start, end);
+        test_idfile_exist.close();
+        if (reference_signatures.size() != num_strategies ||
+            std::find(reference_signatures.begin(), reference_signatures.end(), "0000-0000-0000-0000") != reference_signatures.end())
+            generate_reference_file(idfileLocation, strategies, num_strategies);
+    }
+    std::ifstream is(idfileLocation);
+    std::istream_iterator<string> start(is), end;
+    std::vector<string> reference_signatures(start, end);
 	BOOST_TEST_CHECKPOINT("Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {
+        PcSignature generated_identifier;
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
+        if (generate_ok != FUNC_RET_OK){
+			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
+            continue;
+        }
 		if (reference_signatures[i] != generated_identifier) {
-			string message = string("pc signature compare fail: strategy:")
-					+ to_string((long double) strategies[i]) + " generated: ["
+			string message = string("pc signature compare fail: strategy: ")
+					+ to_string(static_cast<long long>(strategies[i])) + " generated: ["
 					+ generated_identifier + "] reference: ["
 					+ reference_signatures[i] + "]";
-			BOOST_FAIL(message);
+			BOOST_ERROR(message);
 		}
 	}
-
 	BOOST_TEST_CHECKPOINT("Verifying signatures");
 	for (int j = 0; j < 100; j++) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
+            if (reference_signatures[i] == "0000-0000-0000-0000")
+                continue;
 			PcSignature pcsig;
 			strncpy(pcsig, reference_signatures[i].c_str(),
 					sizeof(PcSignature));
 			EVENT_TYPE val_result = validate_pc_signature(pcsig);
-			string message = string("pc signature verification strategy:")
-					+ to_string(static_cast<long long>(i)) + " generated: [" + generated_identifier
-					+ "] reference: [" + reference_signatures[i] + "]";
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);
 		}

@@ -46,6 +46,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	UINT driveType;
 	DWORD dwSize = MAX_PATH;
 	char szLogicalDrives[MAX_PATH] = { 0 };
+    unsigned char buf[8] = "";
 
 	FUNCTION_RETURN return_value;
 	DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
@@ -72,6 +73,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 							diskInfos[ndrives].id = ndrives;
 							strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
 							strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
+                            memcpy(diskInfos[ndrives].disk_sn, &buf, sizeof(buf));
 							memcpy(diskInfos[ndrives].disk_sn, &volSerial, sizeof(DWORD));
 							diskInfos[ndrives].preferred = (strncmp(szSingleDrive, "C", 1) != 0);
 						} else {

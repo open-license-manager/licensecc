@@ -26,15 +26,12 @@ Licensing
 The project comes out with a very large freedom of use for everyone (and it will always be). 
 It uses a BSD 3 clauses licensing schema. 
 
-Elsewhere on Internet
-=====================
- * Wiki main page:
- * Install and build :
- * Project web site :
-
-
 How to build
 ============
+
+## prerequisites
+GCC (Linux), MINGW or MSVC (Windows)
+cmake, boost, openssl (Linux/MINGW)
 
 ```
 git clone https://github.com/open-license-manager/open-license-manager.git
@@ -43,8 +40,7 @@ mkdir build
 cd build
 ```
 
-## on Linux :
-
+## on Linux
 ```
 cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
@@ -52,14 +48,12 @@ make install
 ```
 
 ## on Windows (with MSVC 2010)
-
 ```
 cmake .. -G "Visual Studio 10 2010 Win64" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install --config Release
 ```
 
 ## cross compile with MINGW on Linux
-
 ```
 x86_64-w64-mingw32.static-cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
@@ -69,12 +63,31 @@ make install
 How to test
 ===========
 
-## on Linux :
+## on Linux
 ```
 make test
 ```
 
-## on Windows :
+## on Windows (MSVC)
 ```
 ctest -C Release
+```
+
+How to use
+==========
+
+This simple example shows how to integrate open-licence-manager into your project
+
+```
+$ cd example
+$ cmake .
+$ make
+$ ./example
+license ERROR :
+    license file not found
+the pc signature is :
+    Jaaa-aaaa-MG9F-ZhBB
+$ ../install/bin/license_generator example -s Jaaa-aaaa-MG9F-ZhBB -o example.lic 
+$ ./example
+licence OK
 ```

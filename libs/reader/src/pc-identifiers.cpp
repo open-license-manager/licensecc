@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <algorithm>
 #include "metalicensor/os/os.h"
 #include "metalicensor/reader/pc-identifiers.h"
 #include "metalicensor/base/base64.h"
@@ -74,7 +75,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 			}
 		}
 end:
-		*num_identifiers = min(*num_identifiers, (unsigned int)(adapter_num * disk_num));
+		*num_identifiers = std::min(*num_identifiers, (unsigned int)(adapter_num * disk_num));
 		free(diskInfoPtr);
 		free(adapterInfoPtr);
 	}

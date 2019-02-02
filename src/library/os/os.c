@@ -88,6 +88,8 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 #include <Windows.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
+unsigned char* unbase64(const char* ascii, int len, int *flen);
+
 static void printHash(HCRYPTHASH* hHash) {
 	BYTE *pbHash;
 	DWORD dwHashLen;

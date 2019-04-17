@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 	string public_fname(argv[2]);
 
 	if (file_exists(private_fname) || file_exists(public_fname)) {
-		printf("Key file exist, skipping key generation. Do 'make clean' to generate new keys.\n");
+		printf("Key files exist, skipping key generation. Do 'make clean' to generate new keys.\n");
 		exit(0);
 	}
 

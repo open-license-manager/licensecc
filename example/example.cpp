@@ -2,7 +2,7 @@
 #include <map>
 #include "api/license++.h"
 #include "pc-identifiers.h"
-#include "../../src/library/ini/SimpleIni.h"
+#include "ini/SimpleIni.h"
 
 using namespace std;
 

@@ -109,7 +109,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				if (drive_found == -1) {
 					LOG_DEBUG("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
 							(unsigned long int)mount_stat.st_ino);
-					strcpy(tmpDrives[currentDrive].device, ent->mnt_fsname);
+					strncpy(tmpDrives[currentDrive].device, ent->mnt_fsname, 255-1);
 					statDrives[currentDrive] = mount_stat.st_ino;
 					drive_found = currentDrive;
 					currentDrive++;
@@ -169,7 +169,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				if (stat(cur_dir, &sym_stat) == 0) {
 					for (i = 0; i < currentDrive; i++) {
 						if (sym_stat.st_ino == statDrives[i]) {
-							strncpy(tmpDrives[i].label, dir->d_name, 255);
+							strncpy(tmpDrives[i].label, dir->d_name, 255-1);
 							printf("label %d %s %s\n", i, tmpDrives[i].label,
 									tmpDrives[i].device);
 						}
@@ -290,7 +290,7 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	strcat(proc_path, pidStr);
 	strcat(proc_path, "/exe");
 
-	int ch = readlink(proc_path, path, MAX_PATH);
+	int ch = readlink(proc_path, path, MAX_PATH-1);
 	if (ch != -1) {
 		path[ch] = '\0';
 		strncpy(buffer, path, ch);

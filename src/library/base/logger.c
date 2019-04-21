@@ -30,14 +30,14 @@ static void getLogFname(char* logpath) {
 	if (folder == 0) {
 		folder = "/tmp";
 	}
-	strcpy(logpath, folder);
-	strcat(logpath, "/open-license.log");
+	strncpy(logpath, folder, MAX_PATH);
+	strncat(logpath, "/open-license.log", MAX_PATH - strlen(logpath));
 #else
-	int plen=GetTempPath(MAX_PATH,logpath);
+	int plen = GetTempPath(MAX_PATH, logpath);
 	if(plen == 0) {
 		fprintf(stderr, "Error getting temporary directory path");
 	}
-	strcat(logpath,"open-license.log");
+	strncat(logpath, "open-license.log", MAX_PATH - strlen(logpath));
 #endif
 }
 

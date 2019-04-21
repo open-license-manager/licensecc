@@ -96,7 +96,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 			strncpy(&ifnames[if_num * NI_MAXHOST], ifa->ifa_name, NI_MAXHOST);
 			if (adapterInfos != NULL && if_num < *adapter_info_size) {
 				strncpy(adapterInfos[if_num].description, ifa->ifa_name,
-				NI_MAXHOST);
+				NI_MAXHOST-1);
 			}
 			if_name_position = if_num;
 			if_num++;

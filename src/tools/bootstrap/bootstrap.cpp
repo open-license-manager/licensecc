@@ -3,6 +3,7 @@
 #include <string>
 #include <stdlib.h>
 #include <iostream> 
+#include <sys/stat.h>
 
 using namespace std;
 namespace license {
@@ -73,6 +74,12 @@ void generatePk(string private_include, string public_include) {
 }
 }
 
+bool file_exists (const std::string & name)
+{
+  struct stat buffer;
+  return (stat (name.c_str(), &buffer) == 0);
+}
+
 int main(int argc, char** argv) {
 
 	if (argc != 3) {
@@ -86,6 +93,11 @@ int main(int argc, char** argv) {
 	}
 	string private_fname = string(argv[1]);
 	string public_fname(argv[2]);
+
+	if (file_exists(private_fname) || file_exists(public_fname)) {
+		printf("Key files exist, skipping key generation. Do 'make clean' to generate new keys.\n");
+		exit(0);
+	}
 
 	license::generatePk(private_fname, public_fname);
 	return 0;

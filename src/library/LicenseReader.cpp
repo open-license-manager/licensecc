@@ -69,7 +69,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	}
 	if (has_client_sig) {
 		PcSignature str_code;
-		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
+		strncpy(str_code, client_signature.c_str(), sizeof(str_code)-1);
 		EVENT_TYPE event = validate_pc_signature(str_code);
 		if (event != LICENSE_OK) {
 			er.addEvent(event, SVRT_ERROR);
@@ -89,7 +89,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			license->expiry_date[0] = '\0';
 			license->days_left = 999999;
 		} else {
-			strncpy(license->expiry_date, to_date.c_str(), 11);
+			strncpy(license->expiry_date, to_date.c_str(), 11-1);
 			double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));

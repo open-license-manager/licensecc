@@ -153,7 +153,7 @@ void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
 int LicenseGenerator::generateLicense(int argc, const char **argv) {
 
 	po::options_description visibleOptions = configureProgramOptions();
-	//positional options must be addedd to standard options
+	//positional options must be added to standard options
 	po::options_description allOptions;
 	allOptions.add(visibleOptions).add_options()("product",
 			po::value<vector<string>>(), "product names");

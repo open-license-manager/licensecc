@@ -65,11 +65,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	struct mntent *ent;
 
 	int maxDrives, currentDrive, i, drive_found;
-	__ino64_t *statDrives;
-	DiskInfo *tmpDrives;
-	FILE *aFile;
-	DIR *disk_by_uuid_dir, *disk_by_label;
-	struct dirent *dir;
+	__ino64_t *statDrives = NULL;
+	DiskInfo *tmpDrives = NULL;
+	FILE *aFile = NULL;
+	DIR *disk_by_uuid_dir = NULL, *disk_by_label = NULL;
+	struct dirent *dir = NULL;
 	FUNCTION_RETURN result;
 
 	if (diskInfos != NULL) {
@@ -87,6 +87,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
 		/*proc not mounted*/
+		free(tmpDrives);
+		free(statDrives);
 		return FUNC_RET_ERROR;
 	}
 

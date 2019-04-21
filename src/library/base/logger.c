@@ -41,7 +41,7 @@ static void getLogFname(char* logpath) {
 #endif
 }
 
-void _log(char* format, ...) {
+void _log(const char* format, ...) {
 	char logpath[MAX_PATH];
 	va_list args;
 	char * buffer;

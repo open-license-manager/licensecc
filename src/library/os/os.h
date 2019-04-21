@@ -14,6 +14,10 @@ extern "C" {
 
 #include "../base/base.h"
 #include <stddef.h>
+#include <string.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <unistd.h>
 //definition of size_t
 #include <stdlib.h>
 #ifdef __unix__

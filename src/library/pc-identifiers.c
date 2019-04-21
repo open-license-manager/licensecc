@@ -179,7 +179,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		if (use_label) {
 			if (diskInfos[i].label[0] != 0) {
 				memset(identifiers[j], 0, sizeof(PcIdentifier)); //!!!!!!!
-				strncpy(identifiers[j], diskInfos[i].label,
+				strncpy((char*)identifiers[j], diskInfos[i].label,
 						sizeof(PcIdentifier));
 				j++;
 			}

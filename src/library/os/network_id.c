@@ -58,7 +58,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	struct ifaddrs *ifaddr, *ifa;
-	int family, i, n, if_name_position;
+	int family, n = 0, if_name_position;
 	unsigned int if_num, if_max;
 	//char host[NI_MAXHOST];
 	char *ifnames;
@@ -148,7 +148,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		} else if (family == AF_PACKET && ifa->ifa_data != NULL) {
 			struct sockaddr_ll *s1 = (struct sockaddr_ll*) ifa->ifa_addr;
 			if (adapterInfos != NULL && if_name_position < *adapter_info_size) {
-				for (i = 0; i < 6; i++) {
+				for (int i = 0; i < 6; i++) {
 					adapterInfos[if_name_position].mac_address[i] =
 							s1->sll_addr[i];
 #ifdef _DEBUG

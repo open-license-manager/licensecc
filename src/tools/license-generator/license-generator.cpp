@@ -71,7 +71,7 @@ po::options_description LicenseGenerator::configureProgramOptions() {
 }
 
 vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
-		po::variables_map vm) {
+		const po::variables_map& vm) {
 	string begin_date = FullLicenseInfo::UNUSED_TIME;
 	string end_date = FullLicenseInfo::UNUSED_TIME;
 	if (vm.count("expire_date")) {

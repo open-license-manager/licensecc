@@ -102,15 +102,14 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	string client_signature = "";
 	if (vm.count("client_signature")) {
 		client_signature = vm["client_signature"].as<string>();
-		//fixme match + and /
-		/*regex e("(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}");
-		 if (!regex_match(client_signature, e)) {
-		 cerr << endl << "Client signature not recognized: "
-		 << client_signature
-		 << " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
-		 << endl;
-		 exit(2);
-		 }*/
+		regex e("[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}");
+		if (!regex_match(client_signature, e)) {
+			cerr << endl << "Client signature not recognized: "
+				<< client_signature
+				<< " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
+				<< endl;
+			exit(2);
+		}
 	}
 	string extra_data = "";
 	if (vm.count("extra_data")) {

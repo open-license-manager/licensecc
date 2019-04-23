@@ -98,6 +98,7 @@ if(NOT MSVC)
 	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
 	endif(USE_DBUS_IDENTIFIER)    
 	list(APPEND EXTERNAL_LIBS dl)
+	list(APPEND EXTERNAL_LIBS "-Wl,-Bdynamic")
 endif(NOT MSVC)
 
 configure_file (

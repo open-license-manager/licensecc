@@ -89,7 +89,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			license->expiry_date[0] = '\0';
 			license->days_left = 999999;
 		} else {
-			strncpy(license->expiry_date, to_date.c_str(), 11-1);
+			strncpy(license->expiry_date, to_date.c_str(), 11);
 			double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));
@@ -160,9 +160,11 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 					FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			int to_sw_version = ini.GetLongValue(productNamePtr,
 					"to_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
+			string extra_data = trim_copy(
+					ini.GetValue(productNamePtr, "extra_data", ""));
 			FullLicenseInfo licInfo(*it, product, license_signature,
 					(int) license_version, from_date, to_date, client_signature,
-					from_sw_version, to_sw_version);
+					from_sw_version, to_sw_version, extra_data);
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {

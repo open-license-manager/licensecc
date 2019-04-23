@@ -40,31 +40,36 @@ void LicenseGenerator::printHelp(const char* prog_name,
 
 po::options_description LicenseGenerator::configureProgramOptions() {
 	po::options_description common("General options");
-	common.add_options()("help,h", "print help message and exit.") //
-	("verbose,v", "print more information.") //
-	("output,o", po::value<string>(), "Output file name. If not specified the "
-			"license will be printed in standard output"); //
+	common.add_options()
+		("help,h", "print help message and exit.")
+		("verbose,v", "print more information.")
+		("output,o", po::value<string>(), "Output file name. If not specified the "
+			"license will be printed in standard output")
+		;
 	po::options_description licenseGeneration("License Generation");
-	licenseGeneration.add_options()("private_key,p", po::value<string>(),
+	licenseGeneration.add_options()
+		("private_key,p", po::value<string>(),
 			"Specify an alternate file for the primary key to be used. "
-					"If not specified the internal primary key will be used.") //
-	("begin_date,b", po::value<string>(),
+					"If not specified the internal primary key will be used.")
+		("begin_date,b", po::value<string>(),
 			"Specify the start of the validity for this license. "
-					" Format YYYYMMDD. If not specified defaults to today") //
-	("expire_date,e", po::value<string>(),
+					" Format YYYYMMDD. If not specified defaults to today")
+		("expire_date,e", po::value<string>(),
 			"Specify the expire date for this license. "
-					" Format YYYYMMDD. If not specified the license won't expire") //
-	("client_signature,s", po::value<string>(),
+					" Format YYYYMMDD. If not specified the license won't expire")
+		("client_signature,s", po::value<string>(),
 			"The signature of the pc that requires the license. "
 					"It should be in the format XXXX-XXXX-XXXX-XXXX."
 					" If not specified the license "
-					"won't be linked to a specific pc.") //
-	("start_version,t", po::value<unsigned int>()->default_value(0
-	/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
-			"Specify the first version of the software this license apply to.") //
-	("end_version,n", po::value<unsigned int>()->default_value(0
-	/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
-			"Specify the last version of the software this license apply to."); //
+					"won't be linked to a specific pc.")
+		("start_version,t", po::value<unsigned int>()->default_value(0
+			/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
+			"Specify the first version of the software this license apply to.")
+		("end_version,n", po::value<unsigned int>()->default_value(0
+			/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
+			"Specify the last version of the software this license apply to.")
+		("extra_data,x", po::value<string>(), "Specify extra data to be included into the license")
+		;
 	po::options_description visibleOptions;
 	visibleOptions.add(common).add(licenseGeneration);
 	return visibleOptions;

@@ -18,6 +18,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include <math.h>
 #include "pc-identifiers.h"
 #include "LicenseReader.h"
 #include "base/StringUtils.h"
@@ -93,7 +94,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));
-			license->days_left = (int) secs / 60 * 60 * 24;
+			license->days_left = round(secs / (60 * 60 * 24));
 		}
 	}
 }

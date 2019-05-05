@@ -19,7 +19,7 @@ void generate_license(const string& prod_name, const string& fname) {
 	argv[2] = fname.c_str();
 	argv[3] = "test";
 	int retCode = LicenseGenerator::generateLicense(argc, argv);
-	delete (argv);
+	delete[] (argv);
 	BOOST_CHECK_EQUAL(retCode, 0);
 	BOOST_ASSERT(fs::exists(fname));
 	CSimpleIniA ini;

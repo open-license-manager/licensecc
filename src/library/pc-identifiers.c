@@ -179,7 +179,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		if (use_label) {
 			if (diskInfos[i].label[0] != 0) {
 				memset(identifiers[j], 0, sizeof(PcIdentifier)); //!!!!!!!
-				strncpy(identifiers[j], diskInfos[i].label,
+				strncpy((char*)identifiers[j], diskInfos[i].label,
 						sizeof(PcIdentifier));
 				j++;
 			}
@@ -281,7 +281,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 		PcSignature pc_identifier_out) {
 	//TODO base62 encoding, now uses base64
 	PcIdentifier concat_identifiers[2];
-	char* b64_data;
+	char* b64_data = NULL;
 	int b64_size = 0;
 	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
 	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
@@ -289,6 +289,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
 	b64_data = base64(concat_identifiers, concatIdentifiersSize, &b64_size);
 	if (b64_size > sizeof(PcSignature)) {
+		free(b64_data);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	sprintf(pc_identifier_out, "%.4s-%.4s-%.4s-%.4s", &b64_data[0],
@@ -345,7 +346,7 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 		PcIdentifier identifier2_out, PcSignature pc_signature_in) {
 	//TODO base62 encoding, now uses base64
 
-	unsigned char * concat_identifiers;
+	unsigned char * concat_identifiers = NULL;
 	char base64ids[17];
 	int identifiers_size;
 
@@ -353,6 +354,7 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 			&base64ids[8], &base64ids[12]);
 	concat_identifiers = unbase64(base64ids, 16, &identifiers_size);
 	if (identifiers_size > sizeof(PcIdentifier) * 2) {
+		free(concat_identifiers);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	memcpy(identifier1_out, concat_identifiers, sizeof(PcIdentifier));
@@ -386,6 +388,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	for (i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
 		if (current_strategy_id == STRATEGY_UNKNOWN) {
+			free(calculated_identifiers);
 			return LICENSE_MALFORMED;
 		}
 		if (current_strategy_id != previous_strategy_id) {

@@ -25,7 +25,7 @@ extern "C" {
 #define LOG_ERROR(M, ...)
 #endif
 
-void _log(char* format, ...);
+void _log(const char* format, ...);
 void _shutdown_log();
 
 #ifdef __cplusplus

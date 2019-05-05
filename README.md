@@ -47,9 +47,9 @@ make
 make install
 ```
 
-## on Windows (with MSVC 2010)
+## on Windows (with MSVC 2015)
 ```
-cmake .. -G "Visual Studio 10 2010 Win64" -DCMAKE_INSTALL_PREFIX=../install
+cmake .. -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install --config Release
 ```
 

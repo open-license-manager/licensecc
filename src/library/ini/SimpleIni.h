@@ -1912,7 +1912,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         if (pComment) {
             DeleteString(a_pComment);
             a_pComment = pComment;
-            CopyString(a_pComment);
+            (void)CopyString(a_pComment);
         }
         Delete(a_pSection, a_pKey);
         iKey = keyval.end();

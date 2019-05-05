@@ -40,38 +40,43 @@ void LicenseGenerator::printHelp(const char* prog_name,
 
 po::options_description LicenseGenerator::configureProgramOptions() {
 	po::options_description common("General options");
-	common.add_options()("help,h", "print help message and exit.") //
-	("verbose,v", "print more information.") //
-	("output,o", po::value<string>(), "Output file name. If not specified the "
-			"license will be printed in standard output"); //
+	common.add_options()
+		("help,h", "print help message and exit.")
+		("verbose,v", "print more information.")
+		("output,o", po::value<string>(), "Output file name. If not specified the "
+			"license will be printed in standard output")
+		;
 	po::options_description licenseGeneration("License Generation");
-	licenseGeneration.add_options()("private_key,p", po::value<string>(),
+	licenseGeneration.add_options()
+		("private_key,p", po::value<string>(),
 			"Specify an alternate file for the primary key to be used. "
-					"If not specified the internal primary key will be used.") //
-	("begin_date,b", po::value<string>(),
+					"If not specified the internal primary key will be used.")
+		("begin_date,b", po::value<string>(),
 			"Specify the start of the validity for this license. "
-					" Format YYYYMMDD. If not specified defaults to today") //
-	("expire_date,e", po::value<string>(),
+					" Format YYYYMMDD. If not specified defaults to today")
+		("expire_date,e", po::value<string>(),
 			"Specify the expire date for this license. "
-					" Format YYYYMMDD. If not specified the license won't expire") //
-	("client_signature,s", po::value<string>(),
+					" Format YYYYMMDD. If not specified the license won't expire")
+		("client_signature,s", po::value<string>(),
 			"The signature of the pc that requires the license. "
 					"It should be in the format XXXX-XXXX-XXXX-XXXX."
 					" If not specified the license "
-					"won't be linked to a specific pc.") //
-	("start_version,t", po::value<unsigned int>()->default_value(0
-	/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
-			"Specify the first version of the software this license apply to.") //
-	("end_version,n", po::value<unsigned int>()->default_value(0
-	/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
-			"Specify the last version of the software this license apply to."); //
+					"won't be linked to a specific pc.")
+		("start_version,t", po::value<unsigned int>()->default_value(0
+			/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
+			"Specify the first version of the software this license apply to.")
+		("end_version,n", po::value<unsigned int>()->default_value(0
+			/*FullLicenseInfo.UNUSED_SOFTWARE_VERSION*/, "All Versions"),
+			"Specify the last version of the software this license apply to.")
+		("extra_data,x", po::value<string>(), "Specify extra data to be included into the license")
+		;
 	po::options_description visibleOptions;
 	visibleOptions.add(common).add(licenseGeneration);
 	return visibleOptions;
 }
 
 vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
-		po::variables_map vm) {
+		const po::variables_map& vm) {
 	string begin_date = FullLicenseInfo::UNUSED_TIME;
 	string end_date = FullLicenseInfo::UNUSED_TIME;
 	if (vm.count("expire_date")) {
@@ -102,15 +107,14 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	string client_signature = "";
 	if (vm.count("client_signature")) {
 		client_signature = vm["client_signature"].as<string>();
-		//fixme match + and /
-		/*regex e("(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}-(A-Za-z0-9){4}");
-		 if (!regex_match(client_signature, e)) {
-		 cerr << endl << "Client signature not recognized: "
-		 << client_signature
-		 << " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
-		 << endl;
-		 exit(2);
-		 }*/
+		regex e("[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}-[A-Za-z0-9\\+/]{4}");
+		if (!regex_match(client_signature, e)) {
+			cerr << endl << "Client signature not recognized: "
+				<< client_signature
+				<< " Please enter a valid signature in format XXXX-XXXX-XXXX-XXXX"
+				<< endl;
+			exit(2);
+		}
 	}
 	string extra_data = "";
 	if (vm.count("extra_data")) {

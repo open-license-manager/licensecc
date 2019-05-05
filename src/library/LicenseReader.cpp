@@ -18,6 +18,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include <math.h>
 #include "pc-identifiers.h"
 #include "LicenseReader.h"
 #include "base/StringUtils.h"
@@ -69,7 +70,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	}
 	if (has_client_sig) {
 		PcSignature str_code;
-		strncpy(str_code, client_signature.c_str(), sizeof(str_code));
+		strncpy(str_code, client_signature.c_str(), sizeof(str_code)-1);
 		EVENT_TYPE event = validate_pc_signature(str_code);
 		if (event != LICENSE_OK) {
 			er.addEvent(event, SVRT_ERROR);
@@ -93,7 +94,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));
-			license->days_left = (int) secs / 60 * 60 * 24;
+			license->days_left = round(secs / (60 * 60 * 24));
 		}
 	}
 }
@@ -160,9 +161,11 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 					FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			int to_sw_version = ini.GetLongValue(productNamePtr,
 					"to_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
+			string extra_data = trim_copy(
+					ini.GetValue(productNamePtr, "extra_data", ""));
 			FullLicenseInfo licInfo(*it, product, license_signature,
 					(int) license_version, from_date, to_date, client_signature,
-					from_sw_version, to_sw_version);
+					from_sw_version, to_sw_version, extra_data);
 			licenseInfoOut.push_back(licInfo);
 			atLeastOneLicenseComplete = true;
 		} else {

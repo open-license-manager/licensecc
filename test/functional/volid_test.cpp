@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
                 continue;
 			PcSignature pcsig;
 			strncpy(pcsig, reference_signatures[i].c_str(),
-					sizeof(PcSignature));
+					sizeof(PcSignature)-1);
 			EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);

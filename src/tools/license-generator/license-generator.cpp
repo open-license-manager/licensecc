@@ -178,7 +178,7 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 	if (vm.count("output")) {
 		const std::string fname = vm["output"].as<string>();
 
-		fstream ofstream(fname, std::ios::out | std::ios::trunc);
+		fstream ofstream(fname, std::ios::out | std::ios::app);
 		if (!ofstream.is_open()) {
 			cerr << "can't open file [" << fname << "] for output." << endl
 					<< " error: " << strerror( errno);

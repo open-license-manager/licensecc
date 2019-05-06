@@ -2488,6 +2488,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         bNeedNewLine = true;
     }
+    
+    // Append new empty line
+    a_oOutput.Write(SI_NEWLINE_A);
 
     return SI_OK;
 }

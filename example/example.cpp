@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     licenseLocation.environmentVariableName = "";
     EVENT_TYPE result = acquire_license("example", licenseLocation, &licenseInfo);
     PcSignature signature;
-    FUNCTION_RETURN generate_ok = generate_user_pc_signature(signature, ETHERNET);
+    FUNCTION_RETURN generate_ok = generate_user_pc_signature(signature, DEFAULT);
 
 	if (result == LICENSE_OK && licenseInfo.linked_to_pc) {
         CSimpleIniA ini;

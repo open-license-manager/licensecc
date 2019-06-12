@@ -1,7 +1,7 @@
 #ifndef logger_INCLUDED
 #define logger_INCLUDED
 
-#ifndef LOG_ENABLED
+#ifndef LOG_DISABLED
 #include <errno.h>
 #ifdef __cplusplus
 extern "C" {

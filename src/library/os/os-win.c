@@ -131,7 +131,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 	FUNCTION_RETURN result;
 	PIP_ADAPTER_INFO pAdapterInfo, pAdapter = NULL;
 	//IP_ADAPTER_INFO AdapterInfo[20];              // Allocate information for up to 16 NICs
-	DWORD dwBufLen = 0; //10 * sizeof(IP_ADAPTER_INFO);  // Save the memory size of buffer
+	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO); //10 * sizeof(IP_ADAPTER_INFO);  // Save the memory size of buffer
 
 	i = 3;
 	do {
@@ -158,7 +158,8 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		return FUNC_RET_OK;
 	}
 
-	memset(adapterInfos, 0, *adapter_info_size);
+  *adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
+	memset(adapterInfos, 0, dwBufLen);
 	pAdapter = pAdapterInfo;
 	i = 0;
 	result = FUNC_RET_OK;
@@ -178,7 +179,6 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		}
 	}
 	free(pAdapterInfo);
-	*adapter_info_size = i;
 	return result;
 }
 

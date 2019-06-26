@@ -318,6 +318,7 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 	req_buffer_size = req_buffer_size < 2 ? 2 : req_buffer_size;
 	identifiers = (PcIdentifier *) malloc(
 			sizeof(PcIdentifier) * req_buffer_size);
+	memset(identifiers, 0, sizeof(PcIdentifier) * req_buffer_size);
 	result = generate_pc_id(identifiers, &req_buffer_size, strategy);
 	if (result != FUNC_RET_OK) {
 		free(identifiers);
@@ -399,6 +400,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 			generate_pc_id(NULL, &calc_identifiers_size, current_strategy_id);
 			calculated_identifiers = (PcIdentifier *) malloc(
 					sizeof(PcIdentifier) * calc_identifiers_size);
+			memset(calculated_identifiers, 0, sizeof(PcIdentifier) * calc_identifiers_size);
 			generate_pc_id(calculated_identifiers, &calc_identifiers_size,
 					current_strategy_id);
 		}

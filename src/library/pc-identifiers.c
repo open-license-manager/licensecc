@@ -39,11 +39,11 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 
 	if (identifiers == NULL || *num_identifiers == 0) {
 		result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
-		if (result_adapterInfos != FUNC_RET_OK) {
+		if ((result_adapterInfos != FUNC_RET_OK) || (adapter_num == 0)) {
 			return generate_disk_pc_id(identifiers, num_identifiers, false);
 		}
 		result_diskinfos = getDiskInfos(NULL, &disk_num);
-		if (result_diskinfos != FUNC_RET_OK) {
+		if ((result_diskinfos != FUNC_RET_OK) || (disk_num == 0)) {
 			return generate_ethernet_pc_id(identifiers, num_identifiers, true);
 		}
 		*num_identifiers = disk_num * adapter_num;

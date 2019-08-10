@@ -84,7 +84,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 		try {
 			end_date = normalize_date(dt_end);
 			char curdate[20];
-			time_t curtime = time(NULL);
+			time_t curtime = time(nullptr);
 			strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
 			begin_date.assign(curdate);
 		} catch (const invalid_argument &e) {

@@ -1,9 +1,10 @@
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
-#include <iphlpapi.h>
 #include "../base/logger.h"
 #include "os.h"
+#include <iphlpapi.h>
+#include <stdio.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
 unsigned char* unbase64(const char* ascii, int len, int *flen);
@@ -16,9 +17,9 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
 	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL cmpName = GetComputerName(buffer, &bufsize);
+	BOOL cmpName = GetComputerName(buffer, (unsigned long*)&bufsize);
 	if (cmpName) {
-		strncpy(identifier, buffer, 6);
+		strncpy((char*)identifier, buffer, 6);
 		result = FUNC_RET_OK;
 	}
 	return result;
@@ -40,10 +41,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	int ndrives = 0;
 	DWORD FileFlags;
 	char volName[_MAX_FNAME], FileSysName[_MAX_FNAME];
-	char* szSingleDrive;
 	DWORD volSerial = 0;
-	BOOL success;
-	UINT driveType;
 	DWORD dwSize = MAX_PATH;
 	char szLogicalDrives[MAX_PATH] = { 0 };
     unsigned char buf[8] = "";
@@ -53,23 +51,23 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 
 	if (dwResult > 0 && dwResult <= MAX_PATH) {
 		return_value = FUNC_RET_OK;
-		szSingleDrive = szLogicalDrives;
+		char* szSingleDrive = szLogicalDrives;
 		while (*szSingleDrive && ndrives < MAX_UNITS) {
 
 			// get the next drive
-			driveType = GetDriveType(szSingleDrive);
+			UINT driveType = GetDriveType(szSingleDrive);
 			if (driveType == DRIVE_FIXED) {
-				success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH,
-						&volSerial, &FileMaxLen, &FileFlags, FileSysName,
-						MAX_PATH);
+				BOOL success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH,
+				                                    &volSerial, &FileMaxLen, &FileFlags, FileSysName,
+				                                    MAX_PATH);
 				if (success) {
 					LOG_INFO("drive         : %s", szSingleDrive);
 					LOG_INFO("Volume Name   : %s", volName);
-					LOG_INFO("Volume Serial : 0x%x", volSerial); 
-					LOG_DEBUG("Max file length : %d", FileMaxLen); 
+					LOG_INFO("Volume Serial : 0x%x", volSerial);
+					LOG_DEBUG("Max file length : %d", FileMaxLen);
 					LOG_DEBUG("Filesystem      : %s", FileSysName);
 					if (diskInfos != NULL) {
-						if (ndrives < *disk_info_size) {
+						if (ndrives < (int)*disk_info_size) {
 							diskInfos[ndrives].id = ndrives;
 							strncpy(diskInfos[ndrives].device, volName, MAX_PATH);
 							strncpy(diskInfos[ndrives].label, FileSysName, MAX_PATH);
@@ -92,7 +90,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	}
 	if (diskInfos == NULL || *disk_info_size == 0) {
 		if (ndrives > 0) {
-			return_value = FUNC_RET_OK;						 
+			return_value = FUNC_RET_OK;
 		} else {
 			return_value = FUNC_RET_NOT_AVAIL;
 			LOG_INFO("No fixed drive was detected");
@@ -105,11 +103,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 }
 
 static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
-	char *str2;
-
 	size_t index = 0;
 
-	str2 = ipStringIn; /* save the pointer */
+	char* str2 = ipStringIn; /* save the pointer */
 	while (*str2) {
 		if (isdigit((unsigned char) *str2)) {
 			ipv4[index] *= 10;
@@ -127,13 +123,11 @@ static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
 FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		size_t * adapter_info_size) {
 	DWORD dwStatus;
-	unsigned int i = 0;
-	FUNCTION_RETURN result;
-	PIP_ADAPTER_INFO pAdapterInfo, pAdapter = NULL;
+	PIP_ADAPTER_INFO pAdapterInfo;
 	//IP_ADAPTER_INFO AdapterInfo[20];              // Allocate information for up to 16 NICs
 	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO); //10 * sizeof(IP_ADAPTER_INFO);  // Save the memory size of buffer
 
-	i = 3;
+	unsigned int i = 3;
 	do {
 		pAdapterInfo = (PIP_ADAPTER_INFO) malloc(dwBufLen);
 		dwStatus = GetAdaptersInfo(               // Call GetAdapterInfo
@@ -158,11 +152,11 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 		return FUNC_RET_OK;
 	}
 
-  *adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
+	*adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
 	memset(adapterInfos, 0, dwBufLen);
-	pAdapter = pAdapterInfo;
+	PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
 	i = 0;
-	result = FUNC_RET_OK;
+	FUNCTION_RETURN result = FUNC_RET_OK;
 	while (pAdapter) {
 		strncpy(adapterInfos[i].description, pAdapter->Description,
 				min(sizeof(adapterInfos->description),
@@ -191,19 +185,17 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	return result;
 }
 
+// TODO: remove unused
 static void printHash(HCRYPTHASH* hHash) {
-	BYTE *pbHash;
 	DWORD dwHashLen;
 	DWORD dwHashLenSize = sizeof(DWORD);
-	char* hashStr;
-	unsigned int i;
 
 	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
 			&dwHashLenSize, 0)) {
-		pbHash = (BYTE*) malloc(dwHashLen);
-		hashStr = (char*) malloc(dwHashLen * 2 + 1);
+		BYTE* pbHash = (BYTE*)malloc(dwHashLen);
+		char* hashStr = (char*)malloc(dwHashLen * 2 + 1);
 		if (CryptGetHashParam(*hHash, HP_HASHVAL, pbHash, &dwHashLen, 0)) {
-			for (i = 0; i < dwHashLen; i++) {
+			for (unsigned int i = 0; i < dwHashLen; i++) {
 				sprintf(&hashStr[i * 2], "%02x", pbHash[i]);
 			} LOG_DEBUG("Hash to verify: %s", hashStr);
 		}

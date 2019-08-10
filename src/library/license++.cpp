@@ -1,14 +1,10 @@
 //============================================================================
 // Name        : license-manager-cpp.cpp
-// Author      : 
+// Author      :
 // Version     :
 // Copyright   : BSD
 //============================================================================
 
-#include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <cstring>
 #include "api/license++.h"
 #include "LicenseReader.h"
 

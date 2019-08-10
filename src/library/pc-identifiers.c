@@ -33,24 +33,21 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers) {
 	size_t adapter_num, disk_num;
 	FUNCTION_RETURN result_adapterInfos, result_diskinfos, function_return;
-	unsigned int caller_identifiers, i, j, k, array_index;
-	DiskInfo * diskInfoPtr;
-	OsAdapterInfo *adapterInfoPtr;
 
 	if (identifiers == NULL || *num_identifiers == 0) {
 		result_adapterInfos = getAdapterInfos(NULL, &adapter_num);
-		if ((result_adapterInfos != FUNC_RET_OK) || (adapter_num == 0)) {
+		if (result_adapterInfos != FUNC_RET_OK || adapter_num == 0) {
 			return generate_disk_pc_id(identifiers, num_identifiers, false);
 		}
 		result_diskinfos = getDiskInfos(NULL, &disk_num);
-		if ((result_diskinfos != FUNC_RET_OK) || (disk_num == 0)) {
+		if (result_diskinfos != FUNC_RET_OK || disk_num == 0) {
 			return generate_ethernet_pc_id(identifiers, num_identifiers, true);
 		}
 		*num_identifiers = disk_num * adapter_num;
 		function_return = FUNC_RET_OK;
 	} else {
-		adapterInfoPtr = (OsAdapterInfo*) malloc(
-				(*num_identifiers) * sizeof(OsAdapterInfo));
+		OsAdapterInfo* adapterInfoPtr = (OsAdapterInfo*)malloc(
+			*num_identifiers * sizeof(OsAdapterInfo));
 		adapter_num = *num_identifiers;
 		result_adapterInfos = getAdapterInfos(adapterInfoPtr, &adapter_num);
 		if (result_adapterInfos != FUNC_RET_OK
@@ -58,7 +55,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 			free(adapterInfoPtr);
 			return generate_disk_pc_id(identifiers, num_identifiers, false);
 		}
-		diskInfoPtr = (DiskInfo*) malloc((*num_identifiers) * sizeof(DiskInfo));
+		DiskInfo* diskInfoPtr = (DiskInfo*)malloc(*num_identifiers * sizeof(DiskInfo));
 		disk_num = *num_identifiers;
 		result_diskinfos = getDiskInfos(diskInfoPtr, &disk_num);
 		if (result_diskinfos != FUNC_RET_OK
@@ -69,16 +66,16 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		}
 		function_return = FUNC_RET_OK;
 
-		caller_identifiers = *num_identifiers;
-		for (i = 0; i < disk_num; i++) {
-			for (j = 0; j < adapter_num; j++) {
-				array_index = i * adapter_num + j;
+		unsigned int caller_identifiers = *num_identifiers;
+		for (unsigned int i = 0; i < disk_num; i++) {
+			for (unsigned int j = 0; j < adapter_num; j++) {
+				unsigned int array_index = i * adapter_num + j;
 				if (array_index >= caller_identifiers) {
 					function_return = FUNC_RET_BUFFER_TOO_SMALL;
 					//sweet memories...
 					goto end;
 				}
-				for (k = 0; k < 6; k++)
+				for (unsigned int k = 0; k < 6; k++)
 					identifiers[array_index][k] = diskInfoPtr[i].disk_sn[k + 2]
 							^ adapterInfoPtr[j].mac_address[k + 2];
 			}
@@ -98,9 +95,7 @@ end:
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, int use_mac) {
 	FUNCTION_RETURN result_adapterInfos;
-	unsigned int j, k;
-	OsAdapterInfo *adapterInfos;
-	size_t defined_adapters, adapters = 0;
+	size_t adapters = 0;
 
 	if (identifiers == NULL || *num_identifiers == 0) {
 		result_adapterInfos = getAdapterInfos(NULL, &adapters);
@@ -110,14 +105,14 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 			result_adapterInfos = FUNC_RET_OK;
 		}
 	} else {
-		defined_adapters = adapters = *num_identifiers;
-		adapterInfos = (OsAdapterInfo*) malloc(
-				adapters * sizeof(OsAdapterInfo));
+		size_t defined_adapters = adapters = *num_identifiers;
+		OsAdapterInfo* adapterInfos = (OsAdapterInfo*)malloc(
+			adapters * sizeof(OsAdapterInfo));
 		result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
 		if (result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL
 				|| result_adapterInfos == FUNC_RET_OK) {
-			for (j = 0; j < adapters; j++) {
-				for (k = 0; k < 6; k++)
+			for (unsigned int j = 0; j < adapters; j++) {
+				for (unsigned int k = 0; k < 6; k++)
 					if (use_mac) {
 						identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
 					} else {
@@ -130,9 +125,8 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 						}
 					}
 			}
-			result_adapterInfos = (
-					adapters > defined_adapters ?
-							FUNC_RET_BUFFER_TOO_SMALL : FUNC_RET_OK);
+			result_adapterInfos = adapters > defined_adapters ?
+				                      FUNC_RET_BUFFER_TOO_SMALL : FUNC_RET_OK;
 		}
 		free(adapterInfos);
 	}
@@ -142,17 +136,13 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		unsigned int * num_identifiers, bool use_label) {
 	size_t disk_num, available_disk_info = 0;
-	FUNCTION_RETURN result_diskinfos;
-	unsigned int i, j;
-	int defined_identifiers;
-	char firstChar;
-	DiskInfo * diskInfos;
+	unsigned int i;
 
-	result_diskinfos = getDiskInfos(NULL, &disk_num);
+	FUNCTION_RETURN result_diskinfos = getDiskInfos(NULL, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK) {
 		return result_diskinfos;
 	}
-	diskInfos = (DiskInfo*) malloc(disk_num * sizeof(DiskInfo));
+	DiskInfo* diskInfos = (DiskInfo*)malloc(disk_num * sizeof(DiskInfo));
 	memset(diskInfos,0,disk_num * sizeof(DiskInfo));
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK) {
@@ -160,21 +150,21 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 		return result_diskinfos;
 	}
 	for (i = 0; i < disk_num; i++) {
-		firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
+		char firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
 		available_disk_info += firstChar == 0 ? 0 : 1;
 	}
 
-	defined_identifiers = *num_identifiers;
+	int defined_identifiers = (int)*num_identifiers;
 	*num_identifiers = available_disk_info;
 	if (identifiers == NULL) {
 		free(diskInfos);
 		return FUNC_RET_OK;
-	} else if (available_disk_info > defined_identifiers) {
+	} else if (available_disk_info > (size_t)defined_identifiers) {
 		free(diskInfos);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 
-	j = 0;
+	unsigned int j = 0;
 	for (i = 0; i < disk_num; i++) {
 		if (use_label) {
 			if (diskInfos[i].label[0] != 0) {
@@ -214,9 +204,8 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 		unsigned int * array_size, IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
-	unsigned int i, j;
+	unsigned int i;
 	const unsigned int original_array_size = *array_size;
-	unsigned char strategy_num;
 	switch (strategy) {
 	case DEFAULT:
 		result = generate_default_pc_id(identifiers, array_size);
@@ -238,15 +227,15 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers,
 	}
 
 	if (result == FUNC_RET_OK && identifiers != NULL) {
-		strategy_num = strategy << 5;
+		unsigned char strategy_num = strategy << 5;
 		for (i = 0; i < *array_size; i++) {
 			//encode strategy in the first three bits of the pc_identifier
-			identifiers[i][0] = (identifiers[i][0] & 15) | strategy_num;
+			identifiers[i][0] = identifiers[i][0] & 15 | strategy_num;
 		}
 		//fill array if larger
 		for (i = *array_size; i < original_array_size; i++) {
 			identifiers[i][0] = STRATEGY_UNKNOWN << 5;
-			for (j = 1; j < sizeof(PcIdentifier); j++) {
+			for (unsigned int j = 1; j < sizeof(PcIdentifier); j++) {
 				identifiers[i][j] = 42; //padding
 			}
 		}
@@ -258,13 +247,12 @@ char *MakeCRC(char *BitString) {
 	static char Res[3];                                 // CRC Result
 	char CRC[2];
 	int i;
-	char DoInvert;
 
 	for (i = 0; i < 2; ++i)
 		CRC[i] = 0;                    // Init before calculation
 
-	for (i = 0; i < strlen(BitString); ++i) {
-		DoInvert = ('1' == BitString[i]) ^ CRC[1];         // XOR required?
+	for (i = 0; i < (int)strlen(BitString); ++i) {
+		char DoInvert = '1' == BitString[i] ^ CRC[1];         // XOR required?
 
 		CRC[1] = CRC[0];
 		CRC[0] = DoInvert;
@@ -274,7 +262,7 @@ char *MakeCRC(char *BitString) {
 		Res[1 - i] = CRC[i] ? '1' : '0'; // Convert binary to ASCII
 	Res[2] = 0;                                         // Set string terminator
 
-	return (Res);
+	return Res;
 }
 
 FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
@@ -288,7 +276,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
 	b64_data = base64(concat_identifiers, concatIdentifiersSize, &b64_size);
-	if (b64_size > sizeof(PcSignature)) {
+	if (b64_size > (int)sizeof(PcSignature)) {
 		free(b64_data);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
@@ -305,10 +293,8 @@ FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) {
 
 FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 		IDENTIFICATION_STRATEGY strategy) {
-	FUNCTION_RETURN result;
-	PcIdentifier* identifiers;
 	unsigned int req_buffer_size = 0;
-	result = generate_pc_id(NULL, &req_buffer_size, strategy);
+	FUNCTION_RETURN result = generate_pc_id(NULL, &req_buffer_size, strategy);
 	if (result != FUNC_RET_OK) {
 		return result;
 	}
@@ -316,8 +302,8 @@ FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
 		return FUNC_RET_ERROR;
 	}
 	req_buffer_size = req_buffer_size < 2 ? 2 : req_buffer_size;
-	identifiers = (PcIdentifier *) malloc(
-			sizeof(PcIdentifier) * req_buffer_size);
+	PcIdentifier* identifiers = (PcIdentifier *)malloc(
+		sizeof(PcIdentifier) * req_buffer_size);
 	memset(identifiers, 0, sizeof(PcIdentifier) * req_buffer_size);
 	result = generate_pc_id(identifiers, &req_buffer_size, strategy);
 	if (result != FUNC_RET_OK) {
@@ -354,7 +340,7 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out,
 	sscanf(pc_signature_in, "%4s-%4s-%4s-%4s", &base64ids[0], &base64ids[4],
 			&base64ids[8], &base64ids[12]);
 	concat_identifiers = unbase64(base64ids, 16, &identifiers_size);
-	if (identifiers_size > sizeof(PcIdentifier) * 2) {
+	if (identifiers_size > (int)sizeof(PcIdentifier) * 2) {
 		free(concat_identifiers);
 		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
@@ -375,7 +361,6 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
 	PcIdentifier* calculated_identifiers = NULL;
 	unsigned int calc_identifiers_size = 0;
-	int i = 0, j = 0;
 	//bool found;
 #ifdef _DEBUG
 	printf("Comparing pc identifiers: \n");
@@ -386,7 +371,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	}
 	previous_strategy_id = STRATEGY_UNKNOWN;
 	//found = false;
-	for (i = 0; i < 2; i++) {
+	for (int i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
 		if (current_strategy_id == STRATEGY_UNKNOWN) {
 			free(calculated_identifiers);
@@ -405,7 +390,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 					current_strategy_id);
 		}
 		//maybe skip the byte 0
-		for (j = 0; j < calc_identifiers_size; j++) {
+		for (int j = 0; j < (int)calc_identifiers_size; j++) {
 #ifdef _DEBUG
 			printf("generated id: %02x%02x%02x%02x%02x%02x index %d, user_supplied id %02x%02x%02x%02x%02x%02x idx: %d\n",
 					calculated_identifiers[j][0], calculated_identifiers[j][1], calculated_identifiers[j][2],

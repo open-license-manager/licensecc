@@ -21,14 +21,14 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 		LicenseInfo* license) {
 	if (license != NULL) {
 		time_t curLicense_exp = 0;
-		for (auto it = licenses.begin(); it != licenses.end(); it++) {
+		for (auto & it : licenses) {
 			//choose the license that expires later...
-			if (!it->has_expiry) {
-				it->toLicenseInfo(license);
+			if (!it.has_expiry) {
+				it.toLicenseInfo(license);
 				break;
-			} else if (curLicense_exp < it->expires_on()) {
-				curLicense_exp = it->expires_on();
-				it->toLicenseInfo(license);
+			} else if (curLicense_exp < it.expires_on()) {
+				curLicense_exp = it.expires_on();
+				it.toLicenseInfo(license);
 			}
 		}
 	}
@@ -40,19 +40,19 @@ EVENT_TYPE acquire_license(const char * product,
 	vector<license::FullLicenseInfo> licenses;
 	license::EventRegistry er = lr.readLicenses(string(product), licenses);
 	EVENT_TYPE result;
-	if (licenses.size() > 0) {
+	if (!licenses.empty()) {
 		vector<license::FullLicenseInfo> licenses_with_errors;
 		vector<license::FullLicenseInfo> licenses_ok;
-		for (auto it = licenses.begin(); it != licenses.end(); it++) {
-			license::EventRegistry validation_er = it->validate(0);
+		for (auto & license : licenses) {
+			license::EventRegistry validation_er = license.validate(0);
 			if (validation_er.isGood()) {
-				licenses_ok.push_back(*it);
+				licenses_ok.push_back(license);
 			} else {
-				licenses_with_errors.push_back(*it);
+				licenses_with_errors.push_back(license);
 			}
 			er.append(validation_er);
 		}
-		if (licenses_ok.size() > 0) {
+		if (!licenses_ok.empty()) {
 			er.turnErrosIntoWarnings();
 			result = LICENSE_OK;
 			mergeLicenses(licenses_ok, license);

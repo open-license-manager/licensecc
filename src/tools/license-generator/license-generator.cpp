@@ -143,12 +143,12 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
 		ostream& outputFile) {
 	vector<FullLicenseInfo> licenseInfo = parseLicenseInfo(vm);
-	unique_ptr<CryptoHelper> helper = CryptoHelper::getInstance();
+	const unique_ptr<CryptoHelper> helper = CryptoHelper::getInstance();
 	const char pkey[] = PRIVATE_KEY;
-	size_t len = sizeof(pkey);
+	const size_t len = sizeof(pkey);
 	for (auto it = licenseInfo.begin(); it != licenseInfo.end(); ++it) {
 		const string license = it->printForSign();
-		string signature = helper->signString((const void *)pkey,len,license);
+		const string signature = helper->signString((const void *)pkey,len,license);
 		it->license_signature = signature;
 		it->printAsIni(outputFile);
 	}

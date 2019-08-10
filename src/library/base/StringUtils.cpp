@@ -42,14 +42,14 @@ time_t seconds_from_epoch(const char* timeString) {
 	int year, month, day;
 	tm tm;
 	if (strlen(timeString) == 8) {
-		int nfield = sscanf(timeString, "%4d%2d%2d", &year, &month, &day);
+		const int nfield = sscanf(timeString, "%4d%2d%2d", &year, &month, &day);
 		if (nfield != 3) {
 			throw invalid_argument("Date not recognized");
 		}
 	} else if (strlen(timeString) == 10) {
-		int nfield = sscanf(timeString, "%4d-%2d-%2d", &year, &month, &day);
+		const int nfield = sscanf(timeString, "%4d-%2d-%2d", &year, &month, &day);
 		if (nfield != 3) {
-			int nfield = sscanf(timeString, "%4d/%2d/%2d", &year, &month, &day);
+			const int nfield = sscanf(timeString, "%4d/%2d/%2d", &year, &month, &day);
 			if (nfield != 3) {
 				throw invalid_argument("Date not recognized");
 			}

@@ -47,7 +47,7 @@ CryptoHelperWindows::CryptoHelperWindows() {
  key exchange algorithm using Microsoft Enhanced Cryptographic Provider.
  */
 void CryptoHelperWindows::generateKeyPair() {
-	HRESULT hr = S_OK;
+	auto hr = S_OK;
 	DWORD dwErrCode;
 	// If the handle to key container is NULL, fail.
 	if (m_hCryptProv == NULL)
@@ -70,7 +70,7 @@ void CryptoHelperWindows::generateKeyPair() {
  in a string suitable for C source inclusion.
  */
 const string CryptoHelperWindows::exportPublicKey() const {
-	HRESULT hr = S_OK;
+	auto hr = S_OK;
 	DWORD dwErrCode;
 	DWORD dwBlobLen;
 	BYTE *pbKeyBlob = NULL;
@@ -130,7 +130,7 @@ CryptoHelperWindows::~CryptoHelperWindows() {
 // of this is returned to the caller. The caller is responsible for releasing // this memory using a delete call.
 //--------------------------------------------------------------------
 const string CryptoHelperWindows::exportPrivateKey() const {
-	HRESULT hr = S_OK;
+	auto hr = S_OK;
 	DWORD dwErrCode;
 	DWORD dwBlobLen;
 	BYTE *pbKeyBlob;
@@ -200,8 +200,8 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 
 const string CryptoHelperWindows::signString(const void* privateKey,
 		size_t pklen, const string& license) const {
-	BYTE *pbBuffer = (BYTE *) license.c_str();
-	DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
+	auto pbBuffer = (BYTE *) license.c_str();
+	auto dwBufferLen = (DWORD)strlen((char *)pbBuffer);
 	HCRYPTHASH hHash;
 
 	HCRYPTKEY hKey;

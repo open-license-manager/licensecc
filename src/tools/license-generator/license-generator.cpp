@@ -80,11 +80,11 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	string begin_date = FullLicenseInfo::UNUSED_TIME;
 	string end_date = FullLicenseInfo::UNUSED_TIME;
 	if (vm.count("expire_date")) {
-		const std::string dt_end = vm["expire_date"].as<string>();
+		const auto dt_end = vm["expire_date"].as<string>();
 		try {
 			end_date = normalize_date(dt_end);
 			char curdate[20];
-			time_t curtime = time(NULL);
+			auto curtime = time(NULL);
 			strftime(curdate, 20, "%Y-%m-%d", localtime(&curtime));
 			begin_date.assign(curdate);
 		} catch (const invalid_argument &e) {
@@ -94,7 +94,7 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 		}
 	}
 	if (vm.count("begin_date")) {
-		const std::string begin_date_str = vm["begin_date"].as<string>();
+		const auto begin_date_str = vm["begin_date"].as<string>();
 		try {
 			begin_date = normalize_date(begin_date_str);
 		} catch (invalid_argument &e) {
@@ -120,13 +120,13 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 	if (vm.count("extra_data")) {
 		extra_data = vm["extra_data"].as<string>();
 	}
-	unsigned int from_sw_version = vm["start_version"].as<unsigned int>();
-	unsigned int to_sw_version = vm["end_version"].as<unsigned int>();
+	auto from_sw_version = vm["start_version"].as<unsigned int>();
+	auto to_sw_version = vm["end_version"].as<unsigned int>();
 	if (vm.count("product") == 0) {
 		cerr << endl << "Parameter [product] not found. " << endl;
 		exit(2);
 	}
-	vector<string> products = vm["product"].as<vector<string>>();
+	auto products = vm["product"].as<vector<string>>();
 	vector<FullLicenseInfo> licInfo;
 	licInfo.reserve(products.size());
 	for (auto it = products.begin(); it != products.end(); it++) {
@@ -142,21 +142,20 @@ vector<FullLicenseInfo> LicenseGenerator::parseLicenseInfo(
 
 void LicenseGenerator::generateAndOutputLicenses(const po::variables_map& vm,
 		ostream& outputFile) {
-	vector<FullLicenseInfo> licenseInfo = parseLicenseInfo(vm);
-	unique_ptr<CryptoHelper> helper = CryptoHelper::getInstance();
+	auto licenseInfo = parseLicenseInfo(vm);
+	auto helper = CryptoHelper::getInstance();
 	const char pkey[] = PRIVATE_KEY;
-	size_t len = sizeof(pkey);
+	auto len = sizeof(pkey);
 	for (auto it = licenseInfo.begin(); it != licenseInfo.end(); ++it) {
-		const string license = it->printForSign();
-		string signature = helper->signString((const void *)pkey,len,license);
+		const auto license = it->printForSign();
+		auto signature = helper->signString((const void *)pkey,len,license);
 		it->license_signature = signature;
 		it->printAsIni(outputFile);
 	}
 }
 
 int LicenseGenerator::generateLicense(int argc, const char **argv) {
-
-	po::options_description visibleOptions = configureProgramOptions();
+	auto visibleOptions = configureProgramOptions();
 	//positional options must be added to standard options
 	po::options_description allOptions;
 	allOptions.add(visibleOptions).add_options()("product",
@@ -176,7 +175,7 @@ int LicenseGenerator::generateLicense(int argc, const char **argv) {
 	}
 
 	if (vm.count("output")) {
-		const std::string fname = vm["output"].as<string>();
+		const auto fname = vm["output"].as<string>();
 
 		fstream ofstream(fname, std::ios::out | std::ios::app);
 		if (!ofstream.is_open()) {
@@ -199,9 +198,9 @@ string LicenseGenerator::normalize_date(const std::string& sDate) {
 	if(sDate.size()<8)
 		throw invalid_argument("Date string too small for known formats");
 	unsigned int year, month, day;
-	bool found = false;
+	auto found = false;
 	for (size_t i = 0; i < formats_n && !found; ++i) {
-		const int chread = sscanf(sDate.c_str(),formats[i].c_str(),&year,&month,&day);
+		const auto chread = sscanf(sDate.c_str(),formats[i].c_str(),&year,&month,&day);
 		if(chread==3) {
 			found = true;
 			break;

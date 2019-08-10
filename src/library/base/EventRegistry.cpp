@@ -40,7 +40,7 @@ void EventRegistry::turnLastEventIntoError() {
 }
 
 bool EventRegistry::turnEventIntoError(EVENT_TYPE event) {
-	bool eventFound = false;
+	auto eventFound = false;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
 		if (it->event_type == event) {
 			it->severity = SVRT_ERROR;
@@ -68,7 +68,7 @@ AuditEvent const * EventRegistry::getLastFailure() const {
 }
 
 bool EventRegistry::isGood() const {
-	bool isGood = true;
+	auto isGood = true;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
 		if (it->severity == SVRT_ERROR) {
 			isGood = false;
@@ -102,7 +102,7 @@ void EventRegistry::addEvent(EVENT_TYPE event, SEVERITY severity,
 }
 
 bool EventRegistry::turnErrosIntoWarnings() {
-	bool eventFound = false;
+	auto eventFound = false;
 	for (auto it = logs.begin(); it != logs.end(); ++it) {
 		if (it->severity == SVRT_ERROR) {
 			it->severity = SVRT_WARN;
@@ -113,7 +113,7 @@ bool EventRegistry::turnErrosIntoWarnings() {
 }
 
 void EventRegistry::exportLastEvents(AuditEvent* auditEvents, int nlogs) {
-	int sizeToCopy = min(nlogs, (int) logs.size());
+	auto sizeToCopy = min(nlogs, (int) logs.size());
 	std::copy(logs.begin(), logs.begin() + sizeToCopy, auditEvents);
 }
 }

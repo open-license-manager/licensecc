@@ -2,7 +2,7 @@
  * LicenseReader.cpp
  *
  *  Created on: Mar 30, 2014
- *      
+ *
  */
 
 #ifdef _WIN32
@@ -94,7 +94,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));
-			license->days_left = round(secs / (60 * 60 * 24));
+			license->days_left = (unsigned int)(round(secs / (60 * 60 * 24)));
 		}
 	}
 }

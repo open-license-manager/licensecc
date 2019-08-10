@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
 }
-			  
+
 static void generate_reference_file(const string& idfileLocation,
 		IDENTIFICATION_STRATEGY strategies[], int num_strategies) {
 	ofstream idfile(idfileLocation);

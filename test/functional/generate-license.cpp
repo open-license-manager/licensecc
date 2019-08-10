@@ -2,7 +2,7 @@
  * generate-license.c
  *
  *  Created on: Apr 13, 2014
- *      
+ *
  */
 
 #include <boost/test/unit_test.hpp>
@@ -17,7 +17,7 @@ using namespace license;
 using namespace std;
 
 void generate_license(const string& fname, const vector<string>& other_args) {
-	int argc = 4+other_args.size();
+	int argc = static_cast<int>(4 + other_args.size());
 	const char** argv = new const char*[argc + 1];
 	unsigned int i=0;
 	argv[i++] = "lic-generator";

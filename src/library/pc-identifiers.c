@@ -43,7 +43,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		if (result_diskinfos != FUNC_RET_OK || disk_num == 0) {
 			return generate_ethernet_pc_id(identifiers, num_identifiers, true);
 		}
-		*num_identifiers = disk_num * adapter_num;
+		*num_identifiers = (unsigned int)(disk_num * adapter_num);
 		function_return = FUNC_RET_OK;
 	} else {
 		OsAdapterInfo* adapterInfoPtr = (OsAdapterInfo*)malloc(
@@ -69,7 +69,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		unsigned int caller_identifiers = *num_identifiers;
 		for (unsigned int i = 0; i < disk_num; i++) {
 			for (unsigned int j = 0; j < adapter_num; j++) {
-				unsigned int array_index = i * adapter_num + j;
+				unsigned int array_index = (unsigned int)(i * adapter_num + j);
 				if (array_index >= caller_identifiers) {
 					function_return = FUNC_RET_BUFFER_TOO_SMALL;
 					//sweet memories...
@@ -82,7 +82,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier * identifiers,
 		}
 end:
 #ifdef _MSC_VER
-        *num_identifiers = min(*num_identifiers, adapter_num * disk_num);
+        *num_identifiers = (unsigned int)(min(*num_identifiers, adapter_num * disk_num));
 #else
         *num_identifiers = cmin(*num_identifiers, adapter_num * disk_num);
 #endif
@@ -101,7 +101,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier * identifiers,
 		result_adapterInfos = getAdapterInfos(NULL, &adapters);
 		if (result_adapterInfos == FUNC_RET_OK
 				|| result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL) {
-			*num_identifiers = adapters;
+			*num_identifiers = (unsigned int)adapters;
 			result_adapterInfos = FUNC_RET_OK;
 		}
 	} else {
@@ -155,7 +155,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier * identifiers,
 	}
 
 	int defined_identifiers = (int)*num_identifiers;
-	*num_identifiers = available_disk_info;
+	*num_identifiers = (unsigned int)available_disk_info;
 	if (identifiers == NULL) {
 		free(diskInfos);
 		return FUNC_RET_OK;
@@ -252,7 +252,7 @@ char *MakeCRC(char *BitString) {
 		CRC[i] = 0;                    // Init before calculation
 
 	for (i = 0; i < (int)strlen(BitString); ++i) {
-		char DoInvert = '1' == BitString[i] ^ CRC[1];         // XOR required?
+		char DoInvert = ('1' == BitString[i]) ^ CRC[1];         // XOR required?
 
 		CRC[1] = CRC[0];
 		CRC[0] = DoInvert;
@@ -275,7 +275,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));
-	b64_data = base64(concat_identifiers, concatIdentifiersSize, &b64_size);
+	b64_data = base64(concat_identifiers, (int)concatIdentifiersSize, &b64_size);
 	if (b64_size > (int)sizeof(PcSignature)) {
 		free(b64_data);
 		return FUNC_RET_BUFFER_TOO_SMALL;

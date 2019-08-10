@@ -7,12 +7,9 @@
 #include <iostream>
 #include <string.h>
 #include <iostream>
-#include <string.h>
 #include <boost/date_time.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/unordered_map.hpp>
-#include <boost/assign.hpp>
 #include <fstream>
 #include <regex>
 #include <boost/filesystem.hpp>

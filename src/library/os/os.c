@@ -117,9 +117,9 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	// Declare variables.
 	//
 	// hProv:           Cryptographic service provider (CSP). This example
-	//                  uses the Microsoft Enhanced Cryptographic 
+	//                  uses the Microsoft Enhanced Cryptographic
 	//                  Provider.
-	// hKey:            Key to be used. In this example, you import the 
+	// hKey:            Key to be used. In this example, you import the
 	//                  key as a PLAINTEXTKEYBLOB.
 	// dwBlobLen:       Length of the plaintext key.
 	// pbKeyBlob:       Pointer to the exported key.
@@ -137,7 +137,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	if (!CryptAcquireContext(&hProv,
 	NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		// If the key container cannot be opened, try creating a new
-		// container by specifying a container name and setting the 
+		// container by specifying a container name and setting the
 		// CRYPT_NEWKEYSET flag.
 		LOG_INFO("Error in AcquireContext 0x%08x \n", GetLastError());
 		if (NTE_BAD_KEYSET == GetLastError()) {
@@ -154,7 +154,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	}
 
 	// Use the CryptImportKey function to import the PLAINTEXTKEYBLOB
-	// BYTE array into the key container. The function returns a 
+	// BYTE array into the key container. The function returns a
 	// pointer to an HCRYPTKEY variable that contains the handle of
 	// the imported key.
 	if (!CryptImportKey(hProv, &pubKey[0], sizeof(pubKey), 0, 0, &hKey)) {

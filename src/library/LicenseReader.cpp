@@ -2,7 +2,7 @@
  * LicenseReader.cpp
  *
  *  Created on: Mar 30, 2014
- *      
+ *
  */
 
 #ifdef _WIN32

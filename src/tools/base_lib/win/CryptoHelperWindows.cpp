@@ -6,7 +6,7 @@
  */
 
 #include "CryptoHelperWindows.h"
-#include <sstream> 
+#include <sstream>
 #include <vector>
 // The RSA public-key key exchange algorithm
 #define ENCRYPT_ALGORITHM         CALG_RSA_SIGN
@@ -235,7 +235,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 #ifdef _DEBUG
 		printf("Length of data to be hashed: %d \n", dwBufferLen);
 		printHash(&hHash);
-#endif 
+#endif
 	} else {
 		throw logic_error(string("Error during CryptHashData."));
 	}

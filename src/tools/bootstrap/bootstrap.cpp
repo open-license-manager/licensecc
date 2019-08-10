@@ -2,7 +2,7 @@
 #include "../base_lib/CryptoHelper.h"
 #include <string>
 #include <stdlib.h>
-#include <iostream> 
+#include <iostream>
 #include <sys/stat.h>
 
 using namespace std;

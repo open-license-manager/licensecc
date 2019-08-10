@@ -65,8 +65,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 				if (success) {
 					LOG_INFO("drive         : %s", szSingleDrive);
 					LOG_INFO("Volume Name   : %s", volName);
-					LOG_INFO("Volume Serial : 0x%x", volSerial); 
-					LOG_DEBUG("Max file length : %d", FileMaxLen); 
+					LOG_INFO("Volume Serial : 0x%x", volSerial);
+					LOG_DEBUG("Max file length : %d", FileMaxLen);
 					LOG_DEBUG("Filesystem      : %s", FileSysName);
 					if (diskInfos != NULL) {
 						if (ndrives < *disk_info_size) {
@@ -92,7 +92,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	}
 	if (diskInfos == NULL || *disk_info_size == 0) {
 		if (ndrives > 0) {
-			return_value = FUNC_RET_OK;						 
+			return_value = FUNC_RET_OK;
 		} else {
 			return_value = FUNC_RET_NOT_AVAIL;
 			LOG_INFO("No fixed drive was detected");

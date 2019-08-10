@@ -9,7 +9,7 @@ using namespace std;
 namespace license {
 
 void write_pubkey_file(const string& public_fname, const string& pbPublicKey) {
-	FILE* fp = fopen(public_fname.c_str(), "w");
+	auto fp = fopen(public_fname.c_str(), "w");
 	if (fp == NULL) {
 		throw ios_base::failure(string("can't create :") + public_fname);
 	}
@@ -18,14 +18,14 @@ void write_pubkey_file(const string& public_fname, const string& pbPublicKey) {
 	fprintf(fp, "#define PUBLIC_KEY { \\\n");
 	fprintf(fp, "%s", pbPublicKey.c_str());
 	fprintf(fp, "}\n\n");
-	int random = rand() % 1000;
+	auto random = rand() % 1000;
 	fprintf(fp, "#define SHARED_RANDOM %d;\n", random);
 	fprintf(fp, "#endif\n");
 	fclose(fp);
 }
 
 void write_privkey_file(const string& private_fname, const string& privateKey) {
-	FILE* fp = fopen(private_fname.c_str(), "w");
+	auto fp = fopen(private_fname.c_str(), "w");
 	if (fp == NULL) {
 		throw ios_base::failure(string("can't create :") + private_fname);
 	}
@@ -39,7 +39,7 @@ void write_privkey_file(const string& private_fname, const string& privateKey) {
 }
 
 void generatePk(string private_include, string public_include) {
-	unique_ptr<CryptoHelper> cryptoHlpr = CryptoHelper::getInstance();
+	auto cryptoHlpr = CryptoHelper::getInstance();
 
 	try {
 		cryptoHlpr->generateKeyPair();
@@ -50,7 +50,7 @@ void generatePk(string private_include, string public_include) {
 	}
 
 	try {
-		const string pubKey = cryptoHlpr->exportPublicKey();
+		const auto pubKey = cryptoHlpr->exportPublicKey();
 		write_pubkey_file(public_include, pubKey);
 		// Print out the public key to console as a
 		// hexadecimal string.
@@ -62,7 +62,7 @@ void generatePk(string private_include, string public_include) {
 	}
 
 	try {
-		const string privKey = cryptoHlpr->exportPrivateKey();
+		const auto privKey = cryptoHlpr->exportPrivateKey();
 		write_privkey_file(private_include, privKey);
 	} catch (exception &e) {
 		cerr << endl << "Error exporting private key: " << e.what() << endl
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 		printf("********************************************\n");
 
 	}
-	string private_fname = string(argv[1]);
+	auto private_fname = string(argv[1]);
 	string public_fname(argv[2]);
 
 	if (file_exists(private_fname) || file_exists(public_fname)) {

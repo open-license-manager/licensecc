@@ -21,9 +21,9 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/volid_license.lic");
 	PcSignature identifier_out;
 
-	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
+	auto strategy = IDENTIFICATION_STRATEGY::ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
-	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
+	auto generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 	cout << "Identifier:" << identifier_out << endl;
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.environmentVariableName = "";
-	EVENT_TYPE result = acquire_license("TEST", licenseLocation, &license);
+	auto result = acquire_license("TEST", licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
@@ -47,8 +47,8 @@ static void generate_reference_file(const string& idfileLocation,
 		IDENTIFICATION_STRATEGY strategies[], int num_strategies) {
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;
-	for (int i = 0; i < num_strategies; i++) {
-		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
+	for (auto i = 0; i < num_strategies; i++) {
+		auto generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
         BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		if (generate_ok != FUNC_RET_OK){
@@ -85,9 +85,9 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
     std::istream_iterator<string> start(is), end;
     std::vector<string> reference_signatures(start, end);
 	BOOST_TEST_CHECKPOINT("Generating current signatures and comparing with past");
-	for (int i = 0; i < num_strategies; i++) {
+	for (auto i = 0; i < num_strategies; i++) {
         PcSignature generated_identifier;
-		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
+        auto generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
         if (generate_ok != FUNC_RET_OK){
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
             continue;
         }
 		if (reference_signatures[i] != generated_identifier) {
-			string message = string("pc signature compare fail: strategy: ")
+			auto message = string("pc signature compare fail: strategy: ")
 					+ to_string(static_cast<long long>(strategies[i])) + " generated: ["
 					+ generated_identifier + "] reference: ["
 					+ reference_signatures[i] + "]";
@@ -103,14 +103,14 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 		}
 	}
 	BOOST_TEST_CHECKPOINT("Verifying signatures");
-	for (int j = 0; j < 100; j++) {
+	for (auto j = 0; j < 100; j++) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
             if (reference_signatures[i] == "0000-0000-0000-0000")
                 continue;
 			PcSignature pcsig;
 			strncpy(pcsig, reference_signatures[i].c_str(),
 					sizeof(PcSignature)-1);
-			EVENT_TYPE val_result = validate_pc_signature(pcsig);
+            auto val_result = validate_pc_signature(pcsig);
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);
 		}

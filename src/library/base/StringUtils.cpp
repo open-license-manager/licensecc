@@ -21,11 +21,11 @@ namespace license {
 using namespace std;
 
 string trim_copy(const string& string_to_trim) {
-	std::string::const_iterator it = string_to_trim.begin();
+	auto it = string_to_trim.begin();
 	while (it != string_to_trim.end() && isspace(*it))
 		it++;
 
-	std::string::const_reverse_iterator rit = string_to_trim.rbegin();
+	auto rit = string_to_trim.rbegin();
 	while (rit.base() != it && isspace(*rit))
 		rit++;
 
@@ -33,7 +33,7 @@ string trim_copy(const string& string_to_trim) {
 }
 
 string toupper_copy(const string& lowercase) {
-	string cp(lowercase);
+	auto cp(lowercase);
 	std::transform(cp.begin(), cp.end(), cp.begin(), (int (*)(int))toupper);
 	return cp;
 }
@@ -42,14 +42,14 @@ time_t seconds_from_epoch(const char* timeString) {
 	int year, month, day;
 	tm tm;
 	if (strlen(timeString) == 8) {
-		int nfield = sscanf(timeString, "%4d%2d%2d", &year, &month, &day);
+		auto nfield = sscanf(timeString, "%4d%2d%2d", &year, &month, &day);
 		if (nfield != 3) {
 			throw invalid_argument("Date not recognized");
 		}
 	} else if (strlen(timeString) == 10) {
-		int nfield = sscanf(timeString, "%4d-%2d-%2d", &year, &month, &day);
+		auto nfield = sscanf(timeString, "%4d-%2d-%2d", &year, &month, &day);
 		if (nfield != 3) {
-			int nfield = sscanf(timeString, "%4d/%2d/%2d", &year, &month, &day);
+			auto nfield = sscanf(timeString, "%4d/%2d/%2d", &year, &month, &day);
 			if (nfield != 3) {
 				throw invalid_argument("Date not recognized");
 			}

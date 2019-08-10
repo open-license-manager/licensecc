@@ -40,15 +40,15 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 
 EVENT_TYPE acquire_license(const char * product,
 		LicenseLocation licenseLocation, LicenseInfo* license) {
-	license::LicenseReader lr = license::LicenseReader(licenseLocation);
+	auto lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
-	license::EventRegistry er = lr.readLicenses(string(product), licenses);
+	auto er = lr.readLicenses(string(product), licenses);
 	EVENT_TYPE result;
 	if (licenses.size() > 0) {
 		vector<license::FullLicenseInfo> licenses_with_errors;
 		vector<license::FullLicenseInfo> licenses_ok;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
-			license::EventRegistry validation_er = it->validate(0);
+			auto validation_er = it->validate(0);
 			if (validation_er.isGood()) {
 				licenses_ok.push_back(*it);
 			} else {

@@ -1,17 +1,37 @@
 language: cpp
 
-branches:
-  only:
-    - master
-
-before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - echo "yes" | sudo add-apt-repository ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install cmake valgrind > /dev/null
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; echo "+++GCC4.8"; fi
+matrix:
+   include:
+   - os: linux
+     dist: bionic
+     addons:
+        apt:
+          packages:
+             - cmake
+             - valgrind
+             - libssl-dev
+             - zlib1g-dev
+             - libboost-test-dev
+             - libboost-filesystem-dev
+             - libboost-iostreams-dev
+             - libboost-program-options-dev
+             - libboost-system-dev
+             - libboost-thread-dev
+   - os: linux
+     dist: xenial
+     addons:
+        apt:
+          packages:
+             - cmake
+             - valgrind
+             - libssl-dev
+             - zlib1g-dev
+             - libboost-test-dev
+             - libboost-filesystem-dev
+             - libboost-iostreams-dev
+             - libboost-program-options-dev
+             - libboost-system-dev
+             - libboost-thread-dev
  
 before_script:
   - mkdir build

@@ -17,3 +17,7 @@
 # Cmake generated files
 build
 
+#eclipse files
+.cproject
+.settings
+.project

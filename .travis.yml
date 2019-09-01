@@ -45,8 +45,7 @@ before_script:
   - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 script: 
-  - make
-    make install
+  - make && make install
 
 #jobs:
 #  include:

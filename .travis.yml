@@ -17,6 +17,7 @@ matrix:
              - libboost-program-options-dev
              - libboost-system-dev
              - libboost-thread-dev
+             - libboost-date-time-dev
    - os: linux
      dist: xenial
      addons:
@@ -32,7 +33,8 @@ matrix:
              - libboost-program-options-dev
              - libboost-system-dev
              - libboost-thread-dev
- 
+             - libboost-date-time-dev
+             
 before_script:
   - mkdir build
   - cd build && cmake ..

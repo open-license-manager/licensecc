@@ -36,22 +36,16 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
-#stages:
-#  - compile
-#  - test
+stages:
+  - compile
+  - test
   
-before_script:
-  - mkdir build
-  - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
-
-script: 
-  - make && make install
-
-#jobs:
-#  include:
-#      - stage: compile
-#        script: 
-#          - make
-#            make install
-#      - stage: test
-#        script: make test
+jobs:
+  include:
+      - stage: compile
+        before_script:
+            - mkdir build
+            - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
+        script: make && make install
+      - stage: test
+        script: make test

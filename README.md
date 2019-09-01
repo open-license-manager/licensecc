@@ -31,7 +31,7 @@ How to build
 
 ## prerequisites
 GCC (Linux), MINGW or MSVC (Windows)
-cmake, boost, openssl (Linux/MINGW)
+cmake, boost, openssl (Linux/MINGW), you can find detailed instruction for each [supported environment](https://github.com/open-license-manager/open-license-manager/wiki/Build-and-install---Linux) in the wiki. Below an overview of the basic build procedure:
 
 ```
 git clone https://github.com/open-license-manager/open-license-manager.git

@@ -11,12 +11,14 @@ matrix:
              - valgrind
              - libssl-dev
              - zlib1g-dev
+             - libboost-dev
              - libboost-test-dev
              - libboost-filesystem-dev
              - libboost-iostreams-dev
              - libboost-program-options-dev
              - libboost-system-dev
              - libboost-thread-dev
+             - libboost-date-time-dev
    - os: linux
      dist: xenial
      addons:
@@ -26,15 +28,20 @@ matrix:
              - valgrind
              - libssl-dev
              - zlib1g-dev
+             - libboost-dev
              - libboost-test-dev
              - libboost-filesystem-dev
              - libboost-iostreams-dev
              - libboost-program-options-dev
              - libboost-system-dev
              - libboost-thread-dev
- 
+             - libboost-date-time-dev
+
 before_script:
-  - mkdir build
-  - cd build && cmake ..
-script:
-  - make
+    - mkdir build
+    - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
+
+script: 
+    - make 
+    - make install
+    - make test

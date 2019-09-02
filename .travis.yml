@@ -43,11 +43,12 @@ matrix:
      before_script:
         - ls
         - pwd
-        - docker run --name centos7_dev -v /home/travis/build/open-license-manager/open-license-manager:/root/open-license-manager centos:centos7 /bin/bash -c "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static && cd /root/open-license-manager && ls && mkdir build && cd build && cmake .."
-        - docker commit centos7_dev centos7_configured
-        - pwd
-     script: pwd
-
+        - docker run --name centos7_tocnf -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
+            "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static && cd /root/open-license-manager && ls && mkdir build && cd build && cmake .."
+        - docker commit centos7_tocnf centos7_configured
+     script: 
+        - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
+            "cd /root/open-license-manager/build && make && make install && make test"
 before_script:
     - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..

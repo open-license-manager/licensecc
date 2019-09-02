@@ -42,8 +42,8 @@ matrix:
      dist: bionic
      before_script:
         - pwd
-        - docker run -name centos7 -v ./open-license-manager:/root/open-license-manager centos:centos7 /bin/bash -c "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static && cd /root/open-license-manager && mkdir build && cd build && cmake .."
-        - docker commit centos7 centos7_configured
+        - docker run --name centos7_dev -v ./open-license-manager:/root/open-license-manager centos:centos7 /bin/bash -c "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static && cd /root/open-license-manager && mkdir build && cd build && cmake .."
+        - docker commit centos7_dev centos7_configured
         - pwd
      script: pwd
 

@@ -54,14 +54,14 @@ matrix:
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64"
      cache:
-       directories:
-         - "/C/local/boost_1_68_0"
+         directories:
+             - "/C/local/boost_1_68_0"
      before_script:
          - if ( -not (Test-Path 'C:\local\boost_1_68_0' -PathType Container) ) { wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z; 7z x boost_1_68_0.7z -o/C/local; cd "/C/local/boost_1_68_0"; ./bootstrap.bat; ./b2.exe --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static install }
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost_1_68_0" -DCMAKE_INSTALL_PREFIX=../../install ..
-    script:
+     script:
          - dir
          - MSBuild *.sln
           

@@ -2,7 +2,7 @@
 if not exist "C:/local/boost_1_68_0/build" ( 
         echo "Boost not cached, compiling it"
 		wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
-		7z x boost_1_68_0.7z -o/C/local
+		7z x boost_1_68_0.7z -o "C:/local"
 		cd "C:/local/boost_1_68_0"
 		dir 
 		C:/local/boost_1_68_0/bootstrap.bat 

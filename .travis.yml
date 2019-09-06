@@ -55,7 +55,7 @@ matrix:
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64"
      cache:
          directories:
-             - "/C/local/boost_1_68_0"
+             - "/C/local"
      before_script:
          - ./windows_travis.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"

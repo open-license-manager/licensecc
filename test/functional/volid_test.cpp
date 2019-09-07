@@ -25,11 +25,13 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	BOOST_TEST_CHECKPOINT("Before generate");
 	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
+	BOOST_TEST_CHECKPOINT("After generate signature");
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 	cout << "Identifier:" << identifier_out << endl;
 	vector<string> extraArgs;
 	extraArgs.push_back("-s");
 	extraArgs.push_back(identifier_out);
+	BOOST_TEST_CHECKPOINT("Before generate license");
 	generate_license(licLocation, extraArgs);
 
 	LicenseInfo license;

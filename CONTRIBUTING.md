@@ -58,7 +58,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 
 ### Your First Code Contribution
 
-Unsure where to begin contributing to Open License Manager? You can start by looking through the [good first issue](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`help-wanted`](https://github.com/open-license-manager/open-license-manager/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issues. 
+Unsure where to begin contributing to Open License Manager? You can start by looking through the [`good first issue`](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`help-wanted`](https://github.com/open-license-manager/open-license-manager/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issues. 
 
 You can have a look to the project upcoming milestones to see what's going to be implemented soon and what is the project direction. If you decide to contribute on an issue scheduled in the current milestone, comment on the issue first. If the issue is marked as "assigned" there may be already some work done for it. Commenting on the issue will ensure we don't duplicate our work. Also have a look to the branches:  there may be a feature branch corresponding to the issue with some work already done.   
 

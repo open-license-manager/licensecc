@@ -59,7 +59,7 @@ matrix:
          directories:
              - "/C/local/boost"
      before_script:
-         - ./windows_travis.bat
+         - ./windows_travis_build_boost.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install ..

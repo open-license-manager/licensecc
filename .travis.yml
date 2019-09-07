@@ -65,7 +65,7 @@ matrix:
 #         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
 #         - MSBuild.exe "license++.sln"
 #         - ctest
-         - cmake -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install --build .. --target RUN_TESTS --config release
+         - cmake -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install --build .. --target RUN_TESTS
          
 before_script:
     - mkdir build

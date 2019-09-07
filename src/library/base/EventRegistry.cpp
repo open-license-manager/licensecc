@@ -51,7 +51,7 @@ bool EventRegistry::turnEventIntoError(EVENT_TYPE event) {
 }
 
 AuditEvent const * EventRegistry::getLastFailure() const {
-	const AuditEvent* result = NULL;
+	const AuditEvent* result = nullptr;
 	if (logs.size() == 0) {
 		return result;
 	}
@@ -113,7 +113,7 @@ bool EventRegistry::turnErrosIntoWarnings() {
 }
 
 void EventRegistry::exportLastEvents(AuditEvent* auditEvents, int nlogs) {
-	int sizeToCopy = min(nlogs, (int) logs.size());
+	const int sizeToCopy = min(nlogs, (int) logs.size());
 	std::copy(logs.begin(), logs.begin() + sizeToCopy, auditEvents);
 }
 }

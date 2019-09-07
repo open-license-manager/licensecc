@@ -283,7 +283,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 	PcIdentifier concat_identifiers[2];
 	char* b64_data = NULL;
 	int b64_size = 0;
-	size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
+	const size_t concatIdentifiersSize = sizeof(PcIdentifier) * 2;
 	//concat_identifiers = (PcIdentifier *) malloc(concatIdentifiersSize);
 	memcpy(&concat_identifiers[0], identifier1, sizeof(PcIdentifier));
 	memcpy(&concat_identifiers[1], identifier2, sizeof(PcIdentifier));

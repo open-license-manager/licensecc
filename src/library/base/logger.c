@@ -33,7 +33,7 @@ static void getLogFname(char* logpath) {
 	strncpy(logpath, folder, MAX_PATH);
 	strncat(logpath, "/open-license.log", MAX_PATH - strlen(logpath));
 #else
-	int plen = GetTempPath(MAX_PATH, logpath);
+	const int plen = GetTempPath(MAX_PATH, logpath);
 	if(plen == 0) {
 		fprintf(stderr, "Error getting temporary directory path");
 	}

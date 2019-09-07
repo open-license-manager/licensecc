@@ -3,7 +3,7 @@ if not exist "C:/local/boost/include" (
         echo "Boost not cached, compiling it"
 		wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
 		echo "Boost downloaded"
-		7z x boost_1_68_0.7z -bb1 -oC:/local
+		7z x boost_1_68_0.7z -bb1 -oC:/local | C:\Windows\System32\findstr.exe /r /c:”cpp”
 		cd "C:/local/boost_1_68_0"
 		dir 
 		C:/local/boost_1_68_0/bootstrap.bat 

@@ -211,3 +211,11 @@ static void printHash(HCRYPTHASH* hHash) {
 		free(hashStr);
 	}
 }
+
+/**
+ * Not implemented yet.
+ */
+VIRTUALIZATION getVirtualization() {
+	return NONE;
+}
+

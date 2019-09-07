@@ -62,11 +62,13 @@ matrix:
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install ..
      script:
-         - PATH="C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":%PATH%
+         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
          - dir "/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin" 
+         - echo %PATH%
          - dir
+         - /C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/MSBuild.exe "license++.sln"
          - MSBuild.exe "license++.sln"
-         - ctest
+#         - ctest
          
 before_script:
     - mkdir build

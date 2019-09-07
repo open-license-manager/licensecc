@@ -51,7 +51,7 @@ bool EventRegistry::turnEventIntoError(EVENT_TYPE event) {
 }
 
 AuditEvent const * EventRegistry::getLastFailure() const {
-	const AuditEvent* result = NULL;
+	const AuditEvent* result = nullptr;
 	if (logs.size() == 0) {
 		return result;
 	}

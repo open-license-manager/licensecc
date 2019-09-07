@@ -18,7 +18,7 @@ void write_pubkey_file(const string& public_fname, const string& pbPublicKey) {
 	fprintf(fp, "#define PUBLIC_KEY { \\\n");
 	fprintf(fp, "%s", pbPublicKey.c_str());
 	fprintf(fp, "}\n\n");
-	int random = rand() % 1000;
+	const int random = rand() % 1000;
 	fprintf(fp, "#define SHARED_RANDOM %d;\n", random);
 	fprintf(fp, "#endif\n");
 	fclose(fp);
@@ -91,8 +91,8 @@ int main(int argc, char** argv) {
 		printf("********************************************\n");
 
 	}
-	string private_fname = string(argv[1]);
-	string public_fname(argv[2]);
+	const string private_fname = string(argv[1]);
+	const string public_fname(argv[2]);
 
 	if (file_exists(private_fname) || file_exists(public_fname)) {
 		printf("Key files exist, skipping key generation. Do 'make clean' to generate new keys.\n");

@@ -16,7 +16,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
 	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
-	BOOL cmpName = GetComputerName(buffer, &bufsize);
+	const BOOL cmpName = GetComputerName(buffer, &bufsize);
 	if (cmpName) {
 		strncpy(identifier, buffer, 6);
 		result = FUNC_RET_OK;
@@ -44,12 +44,12 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	DWORD volSerial = 0;
 	BOOL success;
 	UINT driveType;
-	DWORD dwSize = MAX_PATH;
+	const DWORD dwSize = MAX_PATH;
 	char szLogicalDrives[MAX_PATH] = { 0 };
     unsigned char buf[8] = "";
 
 	FUNCTION_RETURN return_value;
-	DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
+	const DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
 
 	if (dwResult > 0 && dwResult <= MAX_PATH) {
 		return_value = FUNC_RET_OK;
@@ -184,7 +184,7 @@ FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
 
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	FUNCTION_RETURN result = FUNC_RET_OK;
-	DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);
+	const DWORD wres = GetModuleFileName(NULL, buffer, MAX_PATH);
 	if (wres == 0) {
 		result = FUNC_RET_ERROR;
 	}

@@ -201,7 +201,7 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 const string CryptoHelperWindows::signString(const void* privateKey,
 		size_t pklen, const string& license) const {
 	BYTE *pbBuffer = (BYTE *) license.c_str();
-	DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
+	const DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
 	HCRYPTHASH hHash;
 
 	HCRYPTKEY hKey;

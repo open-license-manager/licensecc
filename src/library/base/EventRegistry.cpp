@@ -113,7 +113,7 @@ bool EventRegistry::turnErrosIntoWarnings() {
 }
 
 void EventRegistry::exportLastEvents(AuditEvent* auditEvents, int nlogs) {
-	int sizeToCopy = min(nlogs, (int) logs.size());
+	const int sizeToCopy = min(nlogs, (int) logs.size());
 	std::copy(logs.begin(), logs.begin() + sizeToCopy, auditEvents);
 }
 }

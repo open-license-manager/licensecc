@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_CASE( read_single_file ) {
 	const LicenseLocation location = { licLocation, nullptr, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PrODUCT",
+	const EventRegistry registry = licenseReader.readLicenses("PrODUCT",
 			licenseInfos);
 	BOOST_CHECK(registry.isGood());
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( product_not_licensed ) {
 	const LicenseLocation location = { licLocation, nullptr, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PRODUCT-NOT",
+	const EventRegistry registry = licenseReader.readLicenses("PRODUCT-NOT",
 			licenseInfos);
 	BOOST_CHECK(!registry.isGood());
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( file_not_found ) {
 	const LicenseLocation location = { licLocation, nullptr, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PRODUCT",
+	const EventRegistry registry = licenseReader.readLicenses("PRODUCT",
 			licenseInfos);
 	BOOST_CHECK(!registry.isGood());
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE( env_var_not_defined ) {
 	const LicenseLocation location = {nullptr, envName, false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PRODUCT",
+	const EventRegistry registry = licenseReader.readLicenses("PRODUCT",
 			licenseInfos);
 	BOOST_CHECK(!registry.isGood());
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE( read_env_var ) {
 	const LicenseLocation location = {nullptr, "LIC_VAR", false };
 	LicenseReader licenseReader(location);
 	vector<FullLicenseInfo> licenseInfos;
-	EventRegistry registry = licenseReader.readLicenses("PrODUCT",
+	const EventRegistry registry = licenseReader.readLicenses("PrODUCT",
 			licenseInfos);
 	BOOST_CHECK(registry.isGood());
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());

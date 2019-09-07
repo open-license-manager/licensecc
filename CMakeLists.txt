@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 #version variables, major and minor must be 1 character only
 SET(LICENSECC_MAJOR_VERSION 1)
-SET(LICENSECC_MINOR_VERSION 0)
+SET(LICENSECC_MINOR_VERSION 1)
 SET(LICENSECC_PATCH_VERSION 0 CACHE STRING "License++ patch version string")
 SET(LICENSECC_INT_VERSION "${LICENSECC_MAJOR_VERSION}${LICENSECC_MINOR_VERSION}${LICENSECC_PATCH_VERSION}")
 SET(LICENSECC_VERSION "${LICENSECC_MAJOR_VERSION}.${LICENSECC_MINOR_VERSION}.${LICENSECC_PATCH_VERSION}")
@@ -68,7 +68,7 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
 set( Boost_USE_STATIC_LIBS ON )
-find_package(Boost 1.55.0 COMPONENTS date_time unit_test_framework program_options system filesystem)
+find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
 #set below in case of dynamic linking in debug.
 #set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
 add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake

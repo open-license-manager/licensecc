@@ -60,15 +60,12 @@ matrix:
          - ./windows_travis.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install ..
+#         - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install ..
      script:
-         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
-         - dir "/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin" 
-         - echo %PATH%
-         - dir
-         - /C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/MSBuild.exe "license++.sln"
-         - MSBuild.exe "license++.sln"
+#         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
+#         - MSBuild.exe "license++.sln"
 #         - ctest
+         - cmake -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install --build .. --target RUN_TESTS --config release
          
 before_script:
     - mkdir build

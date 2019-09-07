@@ -21,9 +21,9 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/volid_license.lic");
 	PcSignature identifier_out;
 
-	IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
+	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
-	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
+	const FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
 	BOOST_TEST_CHECKPOINT("After generate signature");
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.environmentVariableName = "";
-	EVENT_TYPE result = acquire_license("TEST", licenseLocation, &license);
+	const EVENT_TYPE result = acquire_license("TEST", licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);

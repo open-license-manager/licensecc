@@ -25,11 +25,13 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	BOOST_TEST_CHECKPOINT("Before generate");
 	FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
+	BOOST_TEST_CHECKPOINT("After generate signature");
 	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
 	cout << "Identifier:" << identifier_out << endl;
 	vector<string> extraArgs;
-    extraArgs.push_back("-s");
-    extraArgs.push_back(identifier_out);
+	extraArgs.push_back("-s");
+	extraArgs.push_back(identifier_out);
+	BOOST_TEST_CHECKPOINT("Before generate license");
 	generate_license(licLocation, extraArgs);
 
 	LicenseInfo license;
@@ -42,62 +44,67 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
 }
-			  
-static void generate_reference_file(const string& idfileLocation,
+
+static void generate_reference_file(const string &idfileLocation,
 		IDENTIFICATION_STRATEGY strategies[], int num_strategies) {
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
-        BOOST_ASSERT(generate_ok == FUNC_RET_OK);
-		if (generate_ok != FUNC_RET_OK){
-			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
-            idfile << "0000-0000-0000-0000" << endl;
-		}
-        else
-            idfile << identifier_out << endl;
+		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
+		if (generate_ok != FUNC_RET_OK) {
+			BOOST_ERROR(
+					"Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
+			idfile << "0000-0000-0000-0000" << endl;
+		} else
+			idfile << identifier_out << endl;
 	}
 	idfile.close();
 }
 
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(PROJECT_TEST_TEMP_DIR "/identifiers_file");
-	IDENTIFICATION_STRATEGY strategies[] =
-			{ DEFAULT,
-					DISK_LABEL,
-					DISK_NUM,
-					ETHERNET };
-	const int num_strategies = sizeof(strategies) / sizeof(strategies[0]);
+	std::vector<IDENTIFICATION_STRATEGY> strategies;
+	if (getVirtualization() != CONTAINER) {
+		strategies = { DEFAULT, DISK_LABEL, DISK_NUM, ETHERNET };
+	} else {
+		strategies = { DEFAULT, ETHERNET };
+	}
+	int num_strategies = strategies.size();
 	std::ifstream test_idfile_exist(idfileLocation);
-    if (!test_idfile_exist.good()){
-        generate_reference_file(idfileLocation, strategies, num_strategies);
-    }
-    else{
-        std::istream_iterator<string> start(test_idfile_exist), end;
-        std::vector<string> reference_signatures(start, end);
-        test_idfile_exist.close();
-        if (reference_signatures.size() != num_strategies ||
-            std::find(reference_signatures.begin(), reference_signatures.end(), "0000-0000-0000-0000") != reference_signatures.end())
-            generate_reference_file(idfileLocation, strategies, num_strategies);
-    }
-    std::ifstream is(idfileLocation);
-    std::istream_iterator<string> start(is), end;
-    std::vector<string> reference_signatures(start, end);
-	BOOST_TEST_CHECKPOINT("Generating current signatures and comparing with past");
+	if (!test_idfile_exist.good()) {
+		generate_reference_file(idfileLocation, strategies.data(),
+				strategies.size());
+	} else {
+		std::istream_iterator<string> start(test_idfile_exist), end;
+		std::vector<string> reference_signatures(start, end);
+		test_idfile_exist.close();
+		if (reference_signatures.size() != num_strategies
+				|| std::find(reference_signatures.begin(),
+						reference_signatures.end(), "0000-0000-0000-0000")
+						!= reference_signatures.end())
+			generate_reference_file(idfileLocation, strategies.data(), num_strategies);
+	}
+	std::ifstream is(idfileLocation);
+	std::istream_iterator<string> start(is), end;
+	std::vector<string> reference_signatures(start, end);
+	BOOST_TEST_CHECKPOINT(
+			"Generating current signatures and comparing with past");
 	for (int i = 0; i < num_strategies; i++) {
-        PcSignature generated_identifier;
+		PcSignature generated_identifier;
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(
 				generated_identifier, strategies[i]);
 		BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
-        if (generate_ok != FUNC_RET_OK){
-			BOOST_ERROR("Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
-            continue;
-        }
+		if (generate_ok != FUNC_RET_OK) {
+			BOOST_ERROR(
+					"Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
+			continue;
+		}
 		if (reference_signatures[i] != generated_identifier) {
 			string message = string("pc signature compare fail: strategy: ")
-					+ to_string(static_cast<long long>(strategies[i])) + " generated: ["
-					+ generated_identifier + "] reference: ["
+					+ to_string(static_cast<long long>(strategies[i]))
+					+ " generated: [" + generated_identifier + "] reference: ["
 					+ reference_signatures[i] + "]";
 			BOOST_ERROR(message);
 		}
@@ -105,11 +112,11 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	BOOST_TEST_CHECKPOINT("Verifying signatures");
 	for (int j = 0; j < 100; j++) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
-            if (reference_signatures[i] == "0000-0000-0000-0000")
-                continue;
+			if (reference_signatures[i] == "0000-0000-0000-0000")
+				continue;
 			PcSignature pcsig;
 			strncpy(pcsig, reference_signatures[i].c_str(),
-					sizeof(PcSignature)-1);
+					sizeof(PcSignature) - 1);
 			EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);

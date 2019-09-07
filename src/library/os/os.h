@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 typedef enum {
-	NONE, VMWARE
+	NONE, CONTAINER, VM
 } VIRTUALIZATION;
 
 typedef enum {

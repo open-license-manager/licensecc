@@ -23,7 +23,7 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFI
 
 static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 		LicenseInfo* license) {
-	if (license != NULL) {
+	if (license != nullptr) {
 		time_t curLicense_exp = 0;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
 			//choose the license that expires later...
@@ -68,7 +68,7 @@ EVENT_TYPE acquire_license(const char * product,
 	} else {
 		result = er.getLastFailure()->event_type;
 	}
-	if (license != NULL) {
+	if (license != nullptr) {
 		er.exportLastEvents(license->status, 5);
 	}
 	return result;

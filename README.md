@@ -1,7 +1,8 @@
 # Open License Manager
-![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.png "Build Status")
+[![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=master)](https://travis-ci.org/open-license-manager/open-license-manager)
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-A license manager written in C/C++ for Windows and Linux environments.
+A copy protection, licensing software written in C/C++ for Windows and Linux.
 
 It allows to protect the software you develop from unauthorized copies,
 limit the usage in time, to a specific set of machines, or prevent the usage in 
@@ -31,7 +32,7 @@ How to build
 
 ## prerequisites
 GCC (Linux), MINGW or MSVC (Windows)
-cmake, boost, openssl (Linux/MINGW)
+cmake, boost, openssl (Linux/MINGW), you can find detailed instruction for each [supported environment](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) in the wiki. Below an overview of the basic build procedure:
 
 ```
 git clone https://github.com/open-license-manager/open-license-manager.git

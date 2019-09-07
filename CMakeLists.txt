@@ -1,12 +1,11 @@
 #TODO guess address_model 64 in boost
 #fix shared libraries activation
 
-#cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 #version variables, major and minor must be 1 character only
 SET(LICENSECC_MAJOR_VERSION 1)
-SET(LICENSECC_MINOR_VERSION 0)
+SET(LICENSECC_MINOR_VERSION 1)
 SET(LICENSECC_PATCH_VERSION 0 CACHE STRING "License++ patch version string")
 SET(LICENSECC_INT_VERSION "${LICENSECC_MAJOR_VERSION}${LICENSECC_MINOR_VERSION}${LICENSECC_PATCH_VERSION}")
 SET(LICENSECC_VERSION "${LICENSECC_MAJOR_VERSION}.${LICENSECC_MINOR_VERSION}.${LICENSECC_PATCH_VERSION}")
@@ -14,7 +13,7 @@ SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
+SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose")
 
 project (license++ C CXX)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
@@ -68,7 +67,7 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
 set( Boost_USE_STATIC_LIBS ON )
-find_package(Boost 1.55.0 COMPONENTS date_time unit_test_framework program_options system filesystem)
+find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
 #set below in case of dynamic linking in debug.
 #set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
 add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
@@ -97,7 +96,9 @@ if(NOT MSVC)
 	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
 	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
 	endif(USE_DBUS_IDENTIFIER)    
-	list(APPEND EXTERNAL_LIBS dl)
+	if(NOT MINGW)
+	    list(APPEND EXTERNAL_LIBS dl)
+	endif(NOT MINGW)
 	list(APPEND EXTERNAL_LIBS "-Wl,-Bdynamic")
 endif(NOT MSVC)
 

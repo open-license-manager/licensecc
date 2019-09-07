@@ -16,7 +16,7 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/standard_license.lic");
-	vector<string> extraArgs;
+	const vector<string> extraArgs;
 	generate_license(licLocation, extraArgs);
 	/* */
 	LicenseInfo license;
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	licenseLocation.openFileNearModule=false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.environmentVariableName = "";
-	EVENT_TYPE result = acquire_license("TEST",
+	const EVENT_TYPE result = acquire_license("TEST",
 			licenseLocation, & license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);

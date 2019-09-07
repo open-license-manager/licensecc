@@ -73,7 +73,7 @@ const string CryptoHelperWindows::exportPublicKey() const {
 	HRESULT hr = S_OK;
 	DWORD dwErrCode;
 	DWORD dwBlobLen;
-	BYTE *pbKeyBlob = NULL;
+	BYTE *pbKeyBlob = nullptr;
 	stringstream ss;
 	// If the handle to key container is NULL, fail.
 	if (m_hCryptKey == NULL)
@@ -82,14 +82,14 @@ const string CryptoHelperWindows::exportPublicKey() const {
 	// blob.
 	if (!CryptExportKey(m_hCryptKey,
 	NULL, PUBLICKEYBLOB, 0,
-	NULL, &dwBlobLen)) {
+	nullptr, &dwBlobLen)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of public key ")
 						+ to_string(static_cast<long long>(dwErrCode)));
 	}
 	// Allocate memory for the pbKeyBlob.
-	if ((pbKeyBlob = new BYTE[dwBlobLen]) == NULL) {
+	if ((pbKeyBlob = new BYTE[dwBlobLen]) == nullptr) {
 		throw logic_error(string("Out of memory exporting public key "));
 	}
 	// Do the actual exporting into the key BLOB.
@@ -142,14 +142,14 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 	// blob.
 	if (!CryptExportKey(m_hCryptKey,
 	NULL, PRIVATEKEYBLOB, 0,
-	NULL, &dwBlobLen)) {
+	nullptr, &dwBlobLen)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of private key ")
 						+ to_string(static_cast<long long>(dwErrCode)));
 	}
 	// Allocate memory for the pbKeyBlob.
-	if ((pbKeyBlob = new BYTE[dwBlobLen]) == NULL) {
+	if ((pbKeyBlob = new BYTE[dwBlobLen]) == nullptr) {
 		throw logic_error(string("Out of memory exporting private key "));
 	}
 
@@ -201,7 +201,7 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 const string CryptoHelperWindows::signString(const void* privateKey,
 		size_t pklen, const string& license) const {
 	BYTE *pbBuffer = (BYTE *) license.c_str();
-	DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
+	const DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
 	HCRYPTHASH hHash;
 
 	HCRYPTKEY hKey;
@@ -243,7 +243,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	// Determine the size of the signature and allocate memory.
 
 	dwSigLen = 0;
-	if (CryptSignHash(hHash, AT_SIGNATURE, NULL, 0, NULL, &dwSigLen)) {
+	if (CryptSignHash(hHash, AT_SIGNATURE, nullptr, 0, nullptr, &dwSigLen)) {
 		printf("Signature length %d found.\n", dwSigLen);
 	} else {
 		throw logic_error(string("Error during CryptSignHash."));
@@ -260,7 +260,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	// Sign the hash object.
 
 	if (CryptSignHash(hHash, AT_SIGNATURE,
-	NULL, 0, pbSignature, &dwSigLen)) {
+	nullptr, 0, pbSignature, &dwSigLen)) {
 		printf("pbSignature is the signature length. %d\n", dwSigLen);
 	} else {
 		throw logic_error(string("Error during CryptSignHash."));
@@ -272,7 +272,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	CryptDestroyKey(hKey);
 
 	CryptBinaryToString(pbSignature, dwSigLen,
-			CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, NULL, &strLen);
+			CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &strLen);
 	vector<char> buffer(strLen);
 	CryptBinaryToString(pbSignature, dwSigLen,
 			CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &buffer[0], &strLen);

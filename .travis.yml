@@ -70,12 +70,13 @@ matrix:
          
 before_script:
     - mkdir build
-    - cd build && cmake -DCTEST_OUTPUT_ON_FAILURE=TRUE -DCMAKE_INSTALL_PREFIX=../../install ..
+    - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 
 script: 
     - make 
     - make install
-    - CTEST_OUTPUT_ON_FAILURE=1 make test
+#    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    - export CTEST_OUTPUT_ON_FAILURE=1
     - ctest -V
     

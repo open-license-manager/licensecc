@@ -51,16 +51,16 @@ FullLicenseInfo::FullLicenseInfo(const string& source, const string& product,
 EventRegistry FullLicenseInfo::validate(int sw_version) {
 	EventRegistry er;
 	os_initialize();
-	FUNCTION_RETURN sigVer = verifySignature(printForSign().c_str(),
+	const FUNCTION_RETURN sigVer = verifySignature(printForSign().c_str(),
 			license_signature.c_str());
-	bool sigVerified = sigVer == FUNC_RET_OK;
+	const bool sigVerified = sigVer == FUNC_RET_OK;
 	if (sigVerified) {
 		er.addEvent(LICENSE_VERIFIED, SVRT_INFO);
 	} else {
 		er.addEvent(LICENSE_CORRUPTED, SVRT_ERROR);
 	}
 	if (has_expiry) {
-		time_t now = time(NULL);
+		const time_t now = time(NULL);
 		if (expires_on() < now) {
 			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR, "");
 		}
@@ -71,7 +71,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 	if (has_client_sig) {
 		PcSignature str_code;
 		strncpy(str_code, client_signature.c_str(), sizeof(str_code)-1);
-		EVENT_TYPE event = validate_pc_signature(str_code);
+		const EVENT_TYPE event = validate_pc_signature(str_code);
 		if (event != LICENSE_OK) {
 			er.addEvent(event, SVRT_ERROR);
 		}
@@ -91,7 +91,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			license->days_left = 999999;
 		} else {
 			strncpy(license->expiry_date, to_date.c_str(), 11);
-			double secs = difftime(
+			const double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
 				time(NULL));
 			license->days_left = round(secs / (60 * 60 * 24));
@@ -116,7 +116,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 	CSimpleIniA ini;
 	for (auto it = diskFiles.begin(); it != diskFiles.end(); it++) {
 		ini.Reset();
-		SI_Error rc = ini.LoadFile((*it).c_str());
+		const SI_Error rc = ini.LoadFile((*it).c_str());
 		if (rc < 0) {
 			result.addEvent(FILE_FORMAT_NOT_RECOGNIZED, SVRT_WARN, *it);
 			continue;
@@ -124,7 +124,7 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			loadAtLeastOneFile = true;
 		}
 		const char* productNamePtr = product.c_str();
-		int sectionSize = ini.GetSectionSize(productNamePtr);
+		const int sectionSize = ini.GetSectionSize(productNamePtr);
 		if (sectionSize <= 0) {
 			result.addEvent(PRODUCT_NOT_LICENSED, SVRT_WARN, *it);
 			continue;
@@ -142,13 +142,13 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		 */
 		const char * license_signature = ini.GetValue(productNamePtr,
 				"license_signature", NULL);
-		long license_version = ini.GetLongValue(productNamePtr,
+		const long license_version = ini.GetLongValue(productNamePtr,
 				"license_version", -1);
 		if (license_signature != NULL && license_version > 0) {
-			string from_date = trim_copy(
+			const string from_date = trim_copy(
 					ini.GetValue(productNamePtr, "from_date",
 							FullLicenseInfo::UNUSED_TIME));
-			string to_date = trim_copy(
+			const string to_date = trim_copy(
 					ini.GetValue(productNamePtr, "to_date",
 							FullLicenseInfo::UNUSED_TIME));
 			string client_signature = trim_copy(
@@ -156,10 +156,10 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 			/*client_signature.erase(
 			 std::remove(client_signature.begin(), client_signature.end(), '-'),
 			 client_signature.end());*/
-			int from_sw_version = ini.GetLongValue(productNamePtr,
+			const int from_sw_version = ini.GetLongValue(productNamePtr,
 					"from_sw_version",
 					FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
-			int to_sw_version = ini.GetLongValue(productNamePtr,
+			const int to_sw_version = ini.GetLongValue(productNamePtr,
 					"to_sw_version", FullLicenseInfo::UNUSED_SOFTWARE_VERSION);
 			string extra_data = trim_copy(
 					ini.GetValue(productNamePtr, "extra_data", ""));
@@ -191,8 +191,8 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 	if (licenseLocation.licenseFileLocation != NULL
 			&& licenseLocation.licenseFileLocation[0] != '\0') {
 		//hasFileLocation = true;
-		string varName(licenseLocation.licenseFileLocation);
-		vector<string> declared_positions = splitLicensePositions(varName);
+		const string varName(licenseLocation.licenseFileLocation);
+		const vector<string> declared_positions = splitLicensePositions(varName);
 		vector<string> existing_pos = filterExistingFiles(declared_positions);
 		if (existing_pos.size() > 0) {
 			if (existing_pos.size() > 0) {
@@ -215,12 +215,12 @@ bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 	bool licenseFileFoundWithEnvVariable = false;
 	if (licenseLocation.environmentVariableName != NULL
 			&& licenseLocation.environmentVariableName[0] != '\0') {
-		string varName(licenseLocation.environmentVariableName);
+		const string varName(licenseLocation.environmentVariableName);
 		if (varName.length() > 0) {
 			//var name is passed in by the calling application.
 			char* env_var_value = getenv(varName.c_str());
 			if (env_var_value != NULL && env_var_value[0] != '\0') {
-				vector<string> declared_positions = splitLicensePositions(
+				const vector<string> declared_positions = splitLicensePositions(
 						string(env_var_value));
 				vector<string> existing_pos = filterExistingFiles(
 						declared_positions);
@@ -249,14 +249,14 @@ bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 
 EventRegistry LicenseReader::getLicenseDiskFiles(vector<string>& diskFiles) {
 	EventRegistry eventRegistry;
-	bool licenseFoundWithExplicitLocation = findLicenseWithExplicitLocation(
+	const bool licenseFoundWithExplicitLocation = findLicenseWithExplicitLocation(
 			diskFiles, eventRegistry);
 	bool foundNearModule = false;
 	if (licenseLocation.openFileNearModule) {
 		char fname[MAX_PATH] = { 0 };
-		FUNCTION_RETURN fret = getModuleName(fname);
+		const FUNCTION_RETURN fret = getModuleName(fname);
 		if (fret == FUNC_RET_OK) {
-			string temptativeLicense = string(fname) + ".lic";
+			const string temptativeLicense = string(fname) + ".lic";
 			ifstream f(temptativeLicense.c_str());
 			if (f.good()) {
 				foundNearModule = true;
@@ -272,7 +272,7 @@ EventRegistry LicenseReader::getLicenseDiskFiles(vector<string>& diskFiles) {
 			LOG_WARN("Error determining module name.");
 		}
 	}
-	bool licenseFileFoundWithEnvVariable = findFileWithEnvironmentVariable(
+	const bool licenseFileFoundWithEnvVariable = findFileWithEnvironmentVariable(
 			diskFiles, eventRegistry);
 
 	if (!foundNearModule && !licenseFoundWithExplicitLocation
@@ -339,7 +339,7 @@ string FullLicenseInfo::printForSign() const {
 void FullLicenseInfo::printAsIni(ostream & a_ostream) const {
 	CSimpleIniA ini;
 	string result;
-	string product = toupper_copy(trim_copy(this->product));
+	const string product = toupper_copy(trim_copy(this->product));
 	CSimpleIniA::StreamWriter sw(a_ostream);
 	ini.SetLongValue(product.c_str(), "license_version",
 	PROJECT_INT_VERSION);

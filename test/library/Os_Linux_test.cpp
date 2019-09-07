@@ -10,18 +10,27 @@
 using namespace std;
 
 BOOST_AUTO_TEST_CASE( read_disk_id ) {
-	DiskInfo * diskInfos = NULL;
-	size_t disk_info_size = 0;
-	FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
-	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
-	BOOST_CHECK_GT(disk_info_size, 0);
-	diskInfos = (DiskInfo*) malloc(sizeof(DiskInfo) * disk_info_size);
-	result = getDiskInfos(diskInfos, &disk_info_size);
-	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
-	BOOST_CHECK_GT(strlen(diskInfos[0].device), 0);
-	BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
-	BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
-	free(diskInfos);
+	VIRTUALIZATION virt = getVirtualization();
+	if(virt == NONE || virt == VM) {
+		DiskInfo * diskInfos = NULL;
+		size_t disk_info_size = 0;
+		FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
+		BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
+		BOOST_CHECK_GT(disk_info_size, 0);
+		diskInfos = (DiskInfo*) malloc(sizeof(DiskInfo) * disk_info_size);
+		result = getDiskInfos(diskInfos, &disk_info_size);
+		BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
+		BOOST_CHECK_GT(strlen(diskInfos[0].device), 0);
+		BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
+		BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
+		free(diskInfos);
+	} else if(virt == CONTAINER){
+		//docker or lxc diskInfo is not meaningful
+		DiskInfo * diskInfos = NULL;
+		size_t disk_info_size = 0;
+		FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
+		BOOST_CHECK_EQUAL(result, FUNC_RET_NOT_AVAIL);
+	}
 }
 
 BOOST_AUTO_TEST_CASE( read_network_adapters ) {
@@ -53,3 +62,27 @@ BOOST_AUTO_TEST_CASE( read_network_adapters ) {
 	}
 	free(adapter_info);
 }
+
+BOOST_AUTO_TEST_CASE( get_cpuid ) {
+	BOOST_CHECK_EQUAL(1, 1);
+}
+
+//To test if virtualization is detected correctly define an env variable VIRT_ENV
+//otherwise the test is skipped
+BOOST_AUTO_TEST_CASE( test_virtualization ) {
+	const char *env = getenv("VIRT_ENV");
+	if (env != NULL) {
+		if (strcmp(env, "CONTAINER") == 0) {
+			VIRTUALIZATION virt = getVirtualization();
+			BOOST_CHECK_EQUAL(virt, CONTAINER);
+		} else if (strcmp(env, "VM") == 0) {
+			BOOST_FAIL("check for vm not implemented");
+		} else if (strcmp(env, "NONE") == 0) {
+			VIRTUALIZATION virt = getVirtualization();
+			BOOST_CHECK_EQUAL(virt, NONE);
+		} else {
+			BOOST_FAIL(string("value ") + env + " not supported: VM,CONTAINER,NONE");
+		}
+	}
+}
+

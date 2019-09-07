@@ -1,7 +1,6 @@
 #TODO guess address_model 64 in boost
 #fix shared libraries activation
 
-#cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 #version variables, major and minor must be 1 character only
@@ -14,7 +13,7 @@ SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose" FORCE)
+SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose")
 
 project (license++ C CXX)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)

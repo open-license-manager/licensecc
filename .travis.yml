@@ -1,9 +1,11 @@
 language: cpp
+services: docker
 
 matrix:
    include:
    - os: linux
      dist: bionic
+     name: "Ubuntu 18.04 - Travis CI VM"
      addons:
         apt:
           packages:
@@ -21,6 +23,7 @@ matrix:
              - libboost-date-time-dev
    - os: linux
      dist: xenial
+     name: "Ubuntu 16.04 - Travis CI VM"
      addons:
         apt:
           packages:
@@ -37,11 +40,43 @@ matrix:
              - libboost-thread-dev
              - libboost-date-time-dev
 
+   - os: linux
+     dist: bionic
+     name: "CentOS-7 Docker"
+     before_script: 
+        - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
+            "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static centos-release-scl-rh && 
+              yum -y install devtoolset-3-gcc devtoolset-3-gcc-c++ && cd /root/open-license-manager && mkdir build && cd build && 
+              CC=/opt/rh/devtoolset-3/root/usr/bin/gcc XX=/opt/rh/devtoolset-3/root/usr/bin/g++ cmake .."
+        - docker commit centos7_toconfigure centos7_configured
+     script: 
+        - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
+            "cd /root/open-license-manager/build && make && make install && CTEST_OUTPUT_ON_FAILURE=1 VIRT_ENV=CONTAINER make test"
+            
+   - os: windows
+     name: "Widnows server 1803 - Visual Studio 15 2017 Win64"
+     cache:
+         directories:
+             - "/C/local/boost"
+     before_script:
+         - ./windows_travis.bat
+         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - mkdir build
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install ..
+     script:
+          - true
+#         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
+#         - MSBuild.exe "license++.sln"
+#         - ctest
+#         - cmake -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install --build .. --target RUN_TESTS
+         
 before_script:
     - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
+
 script: 
     - make 
     - make install
-    - make test
+    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    

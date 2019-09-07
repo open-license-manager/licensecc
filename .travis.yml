@@ -39,7 +39,7 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
-             
+
    - os: linux
      dist: bionic
      name: "CentOS-7 Docker"
@@ -71,6 +71,7 @@ matrix:
 before_script:
     - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
+
 
 script: 
     - make 

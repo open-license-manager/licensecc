@@ -60,7 +60,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 		er.addEvent(LICENSE_CORRUPTED, SVRT_ERROR);
 	}
 	if (has_expiry) {
-		const time_t now = time(NULL);
+		const time_t now = time(nullptr);
 		if (expires_on() < now) {
 			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR, "");
 		}
@@ -80,7 +80,7 @@ EventRegistry FullLicenseInfo::validate(int sw_version) {
 }
 
 void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
-	if (license != NULL) {
+	if (license != nullptr) {
 		strncpy(license->proprietary_data, extra_data.c_str(),
 		PROPRIETARY_DATA_SIZE);
 
@@ -93,7 +93,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo* license) const {
 			strncpy(license->expiry_date, to_date.c_str(), 11);
 			const double secs = difftime(
 				seconds_from_epoch(to_date.c_str()),
-				time(NULL));
+				time(nullptr));
 			license->days_left = round(secs / (60 * 60 * 24));
 		}
 	}
@@ -141,10 +141,10 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		 *  application_data = xxxxxxxxx (optional string 16)
 		 */
 		const char * license_signature = ini.GetValue(productNamePtr,
-				"license_signature", NULL);
-		const long license_version = ini.GetLongValue(productNamePtr,
+				"license_signature", nullptr);
+		long license_version = ini.GetLongValue(productNamePtr,
 				"license_version", -1);
-		if (license_signature != NULL && license_version > 0) {
+		if (license_signature != nullptr && license_version > 0) {
 			const string from_date = trim_copy(
 					ini.GetValue(productNamePtr, "from_date",
 							FullLicenseInfo::UNUSED_TIME));
@@ -188,7 +188,7 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 		EventRegistry& eventRegistry) {
 //bool hasFileLocation = false;
 	bool licenseFoundWithExplicitLocation = false;
-	if (licenseLocation.licenseFileLocation != NULL
+	if (licenseLocation.licenseFileLocation != nullptr
 			&& licenseLocation.licenseFileLocation[0] != '\0') {
 		//hasFileLocation = true;
 		const string varName(licenseLocation.licenseFileLocation);
@@ -213,13 +213,13 @@ bool LicenseReader::findLicenseWithExplicitLocation(vector<string>& diskFiles,
 bool LicenseReader::findFileWithEnvironmentVariable(vector<string>& diskFiles,
 		EventRegistry& eventRegistry) {
 	bool licenseFileFoundWithEnvVariable = false;
-	if (licenseLocation.environmentVariableName != NULL
+	if (licenseLocation.environmentVariableName != nullptr
 			&& licenseLocation.environmentVariableName[0] != '\0') {
 		const string varName(licenseLocation.environmentVariableName);
 		if (varName.length() > 0) {
 			//var name is passed in by the calling application.
 			char* env_var_value = getenv(varName.c_str());
-			if (env_var_value != NULL && env_var_value[0] != '\0') {
+			if (env_var_value != nullptr && env_var_value[0] != '\0') {
 				const vector<string> declared_positions = splitLicensePositions(
 						string(env_var_value));
 				vector<string> existing_pos = filterExistingFiles(

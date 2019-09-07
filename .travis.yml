@@ -49,7 +49,7 @@ matrix:
         - docker commit centos7_toconfigure centos7_configured
      script: 
         - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
-            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=DOCKER make test"
+            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
             
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64"

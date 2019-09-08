@@ -28,13 +28,9 @@ CryptoHelperWindows::CryptoHelperWindows() {
 		// CRYPT_NEWKEYSET flag.
 		DWORD lastError = GetLastError();
 		printf("Error in CryptAcquireContext (1) 0x%08x \n", lastError);
-		//if (lastError == NTE_PROV_TYPE_NOT_DEF) {
-		//	printf("Check service if CryptSvc is running. \n");
-		//	throw logic_error("");
-		//} else 
 		if (NTE_BAD_KEYSET == lastError) {
 			if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-				printf("Error in CryptAcquireContext: acquiring new keyset failed 0x%08x \n", GetLastError());
+				printf("Warn in CryptAcquireContext: acquiring new user keyset failed 0x%08x, trying less secure mackine keyset \n", GetLastError());
 				//maybe access to protected storage disabled. Try with machine keys (less secure)
 				if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET|CRYPT_MACHINE_KEYSET)) {
 					printf("Error in CryptAcquireContext (2): acquiring new keyset(machine) failed 0x%08x \n", GetLastError());

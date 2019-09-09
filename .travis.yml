@@ -62,7 +62,7 @@ matrix:
          - ./windows_travis_build_boost.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBOOST_ROOT="C:/local/boost" ..
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -D -DBOOST_LIBRARYDIR="C:/local/boost" ..
      script:
           - cmake --build . --target install --config Release
 #         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH

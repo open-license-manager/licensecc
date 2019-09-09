@@ -32,17 +32,26 @@ if(MSVC)
 	include(target_arch)
 	target_architecture( TARGET_ARCHITECTURE )
 	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
-	if(RELEASE_BUILD)
-		SET(MSVC_RUNTIME_LIBRARY "MultiThreaded") # /MT
-	else(RELEASE_BUILD)
-		SET(MSVC_RUNTIME_LIBRARY "MultiThreadedDebug") # /MTd
-	endif(RELEASE_BUILD)
+	
+	#Boost < 3.15
+	string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+	string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+	string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+	string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+	
+#	Below lines for Boost 3.15
+#	if(RELEASE_BUILD)
+#		SET(MSVC_RUNTIME_LIBRARY "MultiThreaded") # /MT
+#	else(RELEASE_BUILD)
+#		SET(MSVC_RUNTIME_LIBRARY "MultiThreadedDebug") # /MTd
+#	endif(RELEASE_BULD)
+
 	#force to patch an error in cmake
-	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
-		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
-		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)
-		SET(CMAKE_SHARED_LINKER_FLAGS "/machine:X64" CACHE STRING "Shared Linker flags" FORCE)
-	endif()
+#	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
+#		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
+#		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)
+#		SET(CMAKE_SHARED_LINKER_FLAGS "/machine:X64" CACHE STRING "Shared Linker flags" FORCE)
+#	endif()
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
 	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
 else(MSVC)
@@ -111,6 +120,19 @@ configure_file (
 	"src/build_properties.h.in" 
 	"${CMAKE_BINARY_DIR}/build_properties.h"
 )
+
+message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
+message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
+message( STATUS "CXX compiler      : " ${CMAKE_CXX_COMPILER})
+message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
+if(MSVC_RUNTIME_LIBRARY)
+  message( STATUS "MSVC Runtime      : " ${MSVC_RUNTIME_LIBRARY})
+endif(MSVC_RUNTIME_LIBRARY)
+if(CMAKE_BUILD_TYPE)
+  message( STATUS "Build type        : " ${CMAKE_BUILD_TYPE})
+endif(CMAKE_BUILD_TYPE)
+message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
+
 #include build directory to find build_properties.h
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -124,14 +146,4 @@ IF(BUILD_TESTING)
 ENDIF(BUILD_TESTING)
 add_subdirectory(test)
 
-message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
-message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
-message( STATUS "CXX compiler      : " ${CMAKE_CXX_COMPILER})
-message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
-if(MSVC_RUNTIME_LIBRARY)
-  message( STATUS "MSVC Runtime      : " ${MSVC_RUNTIME_LIBRARY})
-endif(MSVC_RUNTIME_LIBRARY)
-if(CMAKE_BUILD_TYPE)
-  message( STATUS "Build type        : " ${CMAKE_BUILD_TYPE})
-endif(CMAKE_BUILD_TYPE)
-message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
+

@@ -51,10 +51,10 @@ matrix:
         - docker commit centos7_toconfigure centos7_configured
      script: 
         - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
-            "cd /root/open-license-manager/build && make && make install && CTEST_OUTPUT_ON_FAILURE=1 VIRT_ENV=CONTAINER make test"
+            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
             
    - os: windows
-     name: "Widnows server 1803 - Visual Studio 15 2017 Win64"
+     name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - Release"
      cache:
          directories:
              - "/C/local/boost"
@@ -65,15 +65,13 @@ matrix:
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBOOST_ROOT="C:/local/boost" ..
      script:
           - cmake --build . --target install --config Release
-#         - PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin":$PATH
-#         - MSBuild.exe "license++.sln"
-#         - ctest
-#         - cmake -T "host=x64" -DBOOST_ROOT="C:/local/boost" -DCMAKE_INSTALL_PREFIX=../../install --build .. --target RUN_TESTS
-         
+          - ctest -C Release
+          
+env:
+    - CTEST_OUTPUT_ON_FAILURE=1      
 before_script:
     - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
-
 
 script: 
     - make 

@@ -33,20 +33,13 @@ if(MSVC)
 	target_architecture( TARGET_ARCHITECTURE )
 	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
 	
-	#Boost < 3.15
+	#Boost < 3.15 or Visual Studio 2019 handle the /MD flag more nicely than this
 	string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 	string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 	string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 	string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-	
-#	Below lines for Boost 3.15
-#	if(RELEASE_BUILD)
-#		SET(MSVC_RUNTIME_LIBRARY "MultiThreaded") # /MT
-#	else(RELEASE_BUILD)
-#		SET(MSVC_RUNTIME_LIBRARY "MultiThreadedDebug") # /MTd
-#	endif(RELEASE_BULD)
 
-	#force to patch an error in cmake
+#force to patch an error in cmake
 #	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
 #		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
 #		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)

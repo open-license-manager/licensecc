@@ -78,7 +78,7 @@ matrix:
          directories:
              - "/C/local/boost"
      before_script:
-         - Regsvr32.exe "C:\Widnows\System32\rsaenh.dll"
+         #- Regsvr32.exe "C:\Widnows\System32\rsaenh.dll"
          - travis_wait 30 ./windows_download_boost.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
@@ -96,5 +96,5 @@ before_script:
 script: 
     - make 
     - make install
-    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    - make test
     

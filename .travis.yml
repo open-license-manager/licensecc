@@ -54,19 +54,29 @@ matrix:
             "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
             
    - os: windows
-     name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - Release"
-     cache:
-         directories:
-             - "/C/local/boost"
+     name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
-         - ./windows_travis_build_boost.bat
+         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+         - boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBOOST_ROOT="C:/local/boost" ..
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
      script:
           - cmake --build . --target install --config Release
           - ctest -C Release
-          
+
+   - os: windows
+     name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
+     before_script:
+         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+         - boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
+         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - mkdir build
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
+     script:
+          - cmake --build . --target install --config Release
+          - ctest -C Release
+           
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
 before_script:

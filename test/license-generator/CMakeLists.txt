@@ -7,7 +7,7 @@ add_executable(
 target_link_libraries(
  license_generator_test
  license_generator_lib
-  ${Boost_LIBRARIES}
+ ${Boost_LIBRARIES}
 )
 
 #add_dependencies( license_generator_test boost_test boost_filesystem )

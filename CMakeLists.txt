@@ -32,19 +32,21 @@ if(MSVC)
 	include(target_arch)
 	target_architecture( TARGET_ARCHITECTURE )
 	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
-	#force to patch an error in cmake
-	if(TARGET_ARCHITECTURE STREQUAL "x86_64")
-		SET(CMAKE_EXE_LINKER_FLAGS "/machine:X64" CACHE STRING "Linker flags" FORCE)
-		SET(CMAKE_MODULE_LINKER_FLAGS "/machine:X64" CACHE STRING "Module Linker flags" FORCE)
-		SET(CMAKE_SHARED_LINKER_FLAGS "/machine:X64" CACHE STRING "Shared Linker flags" FORCE)
-	endif()
-	SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
-	add_definitions("/D_CRT_SECURE_NO_WARNINGS")
+	
+	#Boost > 3.15 handle the /MD flag more nicely than this
+	if(${STATIC_RUNTIME})
+		string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+		string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+		string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+		string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+		SET(Boost_USE_STATIC_RUNTIME ON)
+	endif(${STATIC_RUNTIME})
+
+	#SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
+	add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 else(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fmessage-length=0 -std=c++11 -Wuninitialized -fPIC") #-Wall
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
-    #use static libraries in release to make it easier to distribute it
-    #SET(Boost_USE_STATIC_RUNTIME ${RELEASE_BUILD})
     if(RELEASE_BUILD)
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
     else()
@@ -56,25 +58,7 @@ else(MSVC)
 	IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
 	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-endif(MSVC)
-set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
-
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(HAVE_64BIT_SIZE_T 1)
-else(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(HAVE_64BIT_SIZE_T 0)
-endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
-
-set( Boost_USE_STATIC_LIBS ON )
-find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
-#set below in case of dynamic linking in debug.
-#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
-add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
-add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
-
-if(NOT MSVC)	
-	#find a static version of openssl crypto library
+		#find a static version of openssl crypto library
 	find_package(OpenSSL REQUIRED)
 	include_directories(${OPENSSL_INCLUDE_DIR})
     if(MINGW)
@@ -82,7 +66,6 @@ if(NOT MSVC)
     else(MINGW)
         list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
     endif(MINGW)
-	
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
 	
 	#Zlib required when openssl version < 1.0.1f
@@ -100,12 +83,40 @@ if(NOT MSVC)
 	    list(APPEND EXTERNAL_LIBS dl)
 	endif(NOT MINGW)
 	list(APPEND EXTERNAL_LIBS "-Wl,-Bdynamic")
-endif(NOT MSVC)
+endif(MSVC)
+
+set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
+
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  SET(HAVE_64BIT_SIZE_T 1)
+else(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  SET(HAVE_64BIT_SIZE_T 0)
+endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+set( Boost_USE_STATIC_LIBS ON )
+find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
+#set below in case of dynamic linking in debug.
+#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
+add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
+add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
 
 configure_file (
 	"src/build_properties.h.in" 
 	"${CMAKE_BINARY_DIR}/build_properties.h"
 )
+
+message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
+message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
+message( STATUS "CXX compiler      : " ${CMAKE_CXX_COMPILER})
+message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
+message( STATUS "CXX compiler flags debug : " ${CMAKE_CXX_FLAGS_DEBUG})
+message( STATUS "CXX compiler flags release: " ${CMAKE_CXX_FLAGS_RELEASE})
+if(CMAKE_BUILD_TYPE)
+  message( STATUS "Build type        : " ${CMAKE_BUILD_TYPE})
+endif(CMAKE_BUILD_TYPE)
+message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
+
 #include build directory to find build_properties.h
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -119,11 +130,4 @@ IF(BUILD_TESTING)
 ENDIF(BUILD_TESTING)
 add_subdirectory(test)
 
-message( STATUS "C compiler: " ${CMAKE_C_COMPILER})
-message( STATUS "C compiler flags: " ${CMAKE_C_FLAGS})
-message( STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
-message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
-if(CMAKE_BUILD_TYPE)
-  message( STATUS "Build type: " ${CMAKE_BUILD_TYPE})
-endif(CMAKE_BUILD_TYPE)
-message( STATUS "Install prefix: " ${CMAKE_INSTALL_PREFIX})
+

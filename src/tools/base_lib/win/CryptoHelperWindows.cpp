@@ -5,9 +5,10 @@
  *
  */
 
-#include "CryptoHelperWindows.h"
 #include <sstream> 
 #include <vector>
+#include <string>
+#include "CryptoHelperWindows.h"
 // The RSA public-key key exchange algorithm
 #define ENCRYPT_ALGORITHM         CALG_RSA_SIGN
 // The high order WORD 0x0200 (decimal 512)
@@ -20,20 +21,26 @@ namespace license {
 CryptoHelperWindows::CryptoHelperWindows() {
 	m_hCryptProv = NULL;
 	m_hCryptKey = NULL;
-	if (!CryptAcquireContext(&m_hCryptProv, "license++sign", MS_ENHANCED_PROV,
-			PROV_RSA_FULL, 0)) {
+	if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, 0)) {
 		// If the key container cannot be opened, try creating a new
 		// container by specifying a container name and setting the
 		// CRYPT_NEWKEYSET flag.
-		printf("Error in AcquireContext 0x%08x \n", GetLastError());
-		if (NTE_BAD_KEYSET == GetLastError()) {
-			if (!CryptAcquireContext(&m_hCryptProv, "license++sign",
-					MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-				printf("Error in AcquireContext 0x%08x \n", GetLastError());
-				throw logic_error("");
+		DWORD lastError = GetLastError();
+		printf("Error in CryptAcquireContext (1) 0x%08x \n", lastError);
+		if (NTE_BAD_KEYSET == lastError) {
+			if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+				printf("Warn in CryptAcquireContext: acquiring new user keyset failed 0x%08x, trying less secure mackine keyset \n", GetLastError());
+				//maybe access to protected storage disabled. Try with machine keys (less secure)
+				if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET)) {
+					printf("Error in CryptAcquireContext (2) 0x%08x \n", GetLastError());
+					if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET|CRYPT_MACHINE_KEYSET)) {
+						printf("Error in CryptAcquireContext (3): acquiring new keyset(machine) failed 0x%08x \n", GetLastError());
+						throw logic_error("");
+					}
+				}
 			}
 		} else {
-			printf(" Error in AcquireContext 0x%08x \n", GetLastError());
+			printf(" Error in CryptAcquireContext (4) 0x%08x \n", lastError);
 			throw logic_error("");
 		}
 	}
@@ -57,12 +64,12 @@ void CryptoHelperWindows::generateKeyPair() {
 		m_hCryptKey = NULL;
 	// Call the CryptGenKey method to get a handle
 	// to a new exportable key-pair.
-	if (!CryptGenKey(m_hCryptProv,
-	ENCRYPT_ALGORITHM,
+	if (!CryptGenKey(m_hCryptProv, ENCRYPT_ALGORITHM,
 	KEYLENGTH | CRYPT_EXPORTABLE, &m_hCryptKey)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error generating keys ") + to_string(static_cast<long long>(dwErrCode)));
+				string("Error generating keys ")
+						+ to_string(static_cast<long long>(dwErrCode)));
 	}
 }
 
@@ -81,8 +88,7 @@ const string CryptoHelperWindows::exportPublicKey() const {
 	// This call here determines the length of the key
 	// blob.
 	if (!CryptExportKey(m_hCryptKey,
-	NULL, PUBLICKEYBLOB, 0,
-	nullptr, &dwBlobLen)) {
+	NULL, PUBLICKEYBLOB, 0, nullptr, &dwBlobLen)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of public key ")
@@ -98,7 +104,8 @@ const string CryptoHelperWindows::exportPublicKey() const {
 		delete pbKeyBlob;
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error exporting public key ") + to_string(static_cast<long long>(dwErrCode)));
+				string("Error exporting public key ")
+						+ to_string(static_cast<long long>(dwErrCode)));
 	} else {
 		ss << "\t";
 		for (unsigned int i = 0; i < dwBlobLen; i++) {
@@ -141,8 +148,7 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 	// This call here determines the length of the key
 	// blob.
 	if (!CryptExportKey(m_hCryptKey,
-	NULL, PRIVATEKEYBLOB, 0,
-	nullptr, &dwBlobLen)) {
+	NULL, PRIVATEKEYBLOB, 0, nullptr, &dwBlobLen)) {
 		dwErrCode = GetLastError();
 		throw logic_error(
 				string("Error calculating size of private key ")
@@ -159,7 +165,8 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 		delete pbKeyBlob;
 		dwErrCode = GetLastError();
 		throw logic_error(
-				string("Error exporting private key ") + to_string(static_cast<long long>(dwErrCode)));
+				string("Error exporting private key ")
+						+ to_string(static_cast<long long>(dwErrCode)));
 	} else {
 		ss << "\t";
 		for (unsigned int i = 0; i < dwBlobLen; i++) {
@@ -176,14 +183,14 @@ const string CryptoHelperWindows::exportPrivateKey() const {
 	return ss.str();
 }
 
-void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
+void CryptoHelperWindows::printHash(HCRYPTHASH *hHash) const {
 	BYTE *pbHash;
 	DWORD dwHashLen;
 	DWORD dwHashLenSize = sizeof(DWORD);
-	char* hashStr;
+	char *hashStr;
 	unsigned int i;
 
-	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
+	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE*) &dwHashLen,
 			&dwHashLenSize, 0)) {
 		pbHash = (BYTE*) malloc(dwHashLen);
 		hashStr = (char*) malloc(dwHashLen * 2 + 1);
@@ -198,10 +205,10 @@ void CryptoHelperWindows::printHash(HCRYPTHASH* hHash) const {
 	}
 }
 
-const string CryptoHelperWindows::signString(const void* privateKey,
-		size_t pklen, const string& license) const {
-	BYTE *pbBuffer = (BYTE *) license.c_str();
-	const DWORD dwBufferLen = (DWORD)strlen((char *)pbBuffer);
+const string CryptoHelperWindows::signString(const void *privateKey,
+		size_t pklen, const string &license) const {
+	BYTE *pbBuffer = (BYTE*) license.c_str();
+	const DWORD dwBufferLen = (DWORD) strlen((char*) pbBuffer);
 	HCRYPTHASH hHash;
 
 	HCRYPTKEY hKey;
@@ -212,8 +219,8 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	//-------------------------------------------------------------------
 	// Acquire a cryptographic provider context handle.
 
-	if (!CryptImportKey(m_hCryptProv, (const BYTE *) privateKey, (DWORD) pklen, 0, 0,
-			&hKey)) {
+	if (!CryptImportKey(m_hCryptProv, (const BYTE*) privateKey, (DWORD) pklen,
+			0, 0, &hKey)) {
 		throw logic_error(
 				string("Error in importing the PrivateKey ")
 						+ to_string(static_cast<long long>(GetLastError())));
@@ -251,7 +258,7 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	//-------------------------------------------------------------------
 	// Allocate memory for the signature buffer.
 
-	if (pbSignature = (BYTE *) malloc(dwSigLen)) {
+	if (pbSignature = (BYTE*) malloc(dwSigLen)) {
 		printf("Memory allocated for the signature.\n");
 	} else {
 		throw logic_error(string("Out of memory."));
@@ -259,8 +266,8 @@ const string CryptoHelperWindows::signString(const void* privateKey,
 	//-------------------------------------------------------------------
 	// Sign the hash object.
 
-	if (CryptSignHash(hHash, AT_SIGNATURE,
-	nullptr, 0, pbSignature, &dwSigLen)) {
+	if (CryptSignHash(hHash, AT_SIGNATURE, nullptr, 0, pbSignature,
+			&dwSigLen)) {
 		printf("pbSignature is the signature length. %d\n", dwSigLen);
 	} else {
 		throw logic_error(string("Error during CryptSignHash."));

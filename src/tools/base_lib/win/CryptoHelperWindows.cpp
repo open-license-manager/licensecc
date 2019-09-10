@@ -21,8 +21,7 @@ namespace license {
 CryptoHelperWindows::CryptoHelperWindows() {
 	m_hCryptProv = NULL;
 	m_hCryptKey = NULL;
-	if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL,
-		PROV_RSA_FULL, 0)) {
+	if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, 0)) {
 		// If the key container cannot be opened, try creating a new
 		// container by specifying a container name and setting the
 		// CRYPT_NEWKEYSET flag.
@@ -32,13 +31,16 @@ CryptoHelperWindows::CryptoHelperWindows() {
 			if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
 				printf("Warn in CryptAcquireContext: acquiring new user keyset failed 0x%08x, trying less secure mackine keyset \n", GetLastError());
 				//maybe access to protected storage disabled. Try with machine keys (less secure)
-				if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET|CRYPT_MACHINE_KEYSET)) {
-					printf("Error in CryptAcquireContext (2): acquiring new keyset(machine) failed 0x%08x \n", GetLastError());
-					throw logic_error("");
+				if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET)) {
+					printf("Error in CryptAcquireContext (2) 0x%08x \n", GetLastError());
+					if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET|CRYPT_MACHINE_KEYSET)) {
+						printf("Error in CryptAcquireContext (3): acquiring new keyset(machine) failed 0x%08x \n", GetLastError());
+						throw logic_error("");
+					}
 				}
 			}
 		} else {
-			printf(" Error in CryptAcquireContext (3) 0x%08x \n", lastError);
+			printf(" Error in CryptAcquireContext (4) 0x%08x \n", lastError);
 			throw logic_error("");
 		}
 	}

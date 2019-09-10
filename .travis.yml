@@ -57,7 +57,7 @@ matrix:
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
          - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-         - boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
+         - ./boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
@@ -69,7 +69,7 @@ matrix:
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      before_script:
          - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-         - boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
+         - ./boost.exe /SILENT /DIR="C:\local\boost" && echo "Boost installed"
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..

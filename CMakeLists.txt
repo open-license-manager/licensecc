@@ -1,5 +1,3 @@
-#TODO guess address_model 64 in boost
-#fix shared libraries activation
 
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
@@ -15,7 +13,7 @@ SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "CMake verbose")
 
-project (license++ C CXX)
+project (license++ C CXX )
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules/")
 

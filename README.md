@@ -1,6 +1,6 @@
 # Open License Manager
-[![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=master)](https://travis-ci.org/open-license-manager/open-license-manager)
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+[![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop)](https://travis-ci.org/open-license-manager/open-license-manager)
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 A copy protection, licensing software written in C/C++ for Windows and Linux.
 
@@ -15,7 +15,6 @@ It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensin
 
 
 ## Project Structure
-
 The software is made by 2 main sub-components:
  * a C library with no (or minimal) external dependencies (the part you have to integrate in your software).
  * a license generator written in C++ (allows you to generate a license).
@@ -29,8 +28,7 @@ You can notice 2 more sub-projects:
  * bootstrap: allows to generate private keys and modify the library on the fly after the downloading.
  * testing  : runs the tests (and publish the results on cdash)
 
-How to build
-============
+#How to build
 
 Below an overview of the basic build procedure, you can find detailed instructions for each [supported environment](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) in the wiki. 
 

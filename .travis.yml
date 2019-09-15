@@ -61,7 +61,7 @@ matrix:
         - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
         - cd boost_1_71_0
         - ./bootstrap.sh
-        - ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
+        - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
         - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
    - os: linux
@@ -85,11 +85,16 @@ matrix:
          directories:
              - "/C/local/boost"
      before_script:
-         #- Regsvr32.exe "C:\Widnows\System32\rsaenh.dll"
-         #Not sure this is necessary let's leave it here for some time, see if there are 
-         #differences with the build (/MT)
-         - sc stop CryptSvc
-         - travis_wait 30 ./windows_download_boost.bat
+         - | 
+           if [ -d "/C/local/boost/libs" ]; then
+               echo "Boost already installed"
+           else
+               echo "Boost not cached, compiling it"
+               wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+               echo "Boost downloaded"
+               boost.exe /SILENT /DIR=C:\local\boost 
+               echo "Boost installed"
+           fi
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..

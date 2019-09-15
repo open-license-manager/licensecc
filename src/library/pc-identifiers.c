@@ -388,9 +388,12 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	//found = false;
 	for (i = 0; i < 2; i++) {
 		current_strategy_id = strategy_from_pc_id(user_identifiers[i]);
-		if (current_strategy_id == STRATEGY_UNKNOWN) {
+		if (current_strategy_id == STRATEGY_UNKNOWN && previous_strategy_id == STRATEGY_UNKNOWN && i==1) {
 			free(calculated_identifiers);
+			printf("Comparing pc identifiers: %d %d %d %s\n",current_strategy_id,previous_strategy_id,i, str_code);
 			return LICENSE_MALFORMED;
+		} else if (current_strategy_id == STRATEGY_UNKNOWN ){
+			continue;
 		}
 		if (current_strategy_id != previous_strategy_id) {
 			if (calculated_identifiers != NULL) {

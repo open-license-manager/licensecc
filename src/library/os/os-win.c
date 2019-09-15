@@ -95,7 +95,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 			return_value = FUNC_RET_OK;						 
 		} else {
 			return_value = FUNC_RET_NOT_AVAIL;
-			LOG_INFO("No fixed drive was detected");
+			if(dwResult == 0 ){
+				LOG_INFO("No drive was detected");
+			} else {
+				LOG_INFO("Only removable drives detected %d", dwResult);
+			}
 		}
 		*disk_info_size = ndrives;
 	} else {

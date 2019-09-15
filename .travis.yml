@@ -63,7 +63,7 @@ matrix:
         - ./bootstrap.sh
         - ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
-        - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DBOOST_ROOT=./boost_1_71_0/dist  ..
+        - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
    - os: linux
      dist: bionic
      name: "CentOS-7 Docker"

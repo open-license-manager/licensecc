@@ -52,11 +52,11 @@ static void generate_reference_file(const string &idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
-		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		if (generate_ok != FUNC_RET_OK) {
 			BOOST_ERROR(
 					"Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
 			idfile << "0000-0000-0000-0000" << endl;
+			BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		} else
 			idfile << identifier_out << endl;
 	}

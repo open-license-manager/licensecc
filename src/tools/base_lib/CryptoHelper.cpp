@@ -1,8 +1,8 @@
 #include <memory>
 #include "CryptoHelper.h"
-#ifndef _MSC_VER
+#ifdef __linux__
 #include"linux/CryptoHelperLinux.h"
-#else
+#elif _WIN32
 #include"win/CryptoHelperWindows.h"
 #endif
 
@@ -10,11 +10,12 @@ using namespace std;
 namespace license {
 
 unique_ptr<CryptoHelper> CryptoHelper::getInstance() {
-#ifndef _MSC_VER
+#ifdef __linux__ 
 	unique_ptr<CryptoHelper> ptr((CryptoHelper*) new CryptoHelperLinux());
-#else
-	unique_ptr<CryptoHelper> ptr((CryptoHelper*) new CryptoHelperWindows());
+#elif _WIN32
+	unique_ptr<CryptoHelper> ptr((CryptoHelper*) new CryptoHelperWindows());	
 #endif
 	return ptr;
 }
 }
+

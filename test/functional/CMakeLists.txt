@@ -18,8 +18,6 @@ target_link_libraries(
  license_generator_snippet
  ${Boost_LIBRARIES}
 )
-#SET_TARGET_PROPERTIES(standard_license_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-#add_dependencies( standard_license_test boost_test boost_filesystem )
 
 add_executable(
  date_test
@@ -32,8 +30,6 @@ target_link_libraries(
  license_generator_snippet
  ${Boost_LIBRARIES}
 )
-#SET_TARGET_PROPERTIES(date_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-#add_dependencies( date_test boost_test boost_filesystem )
 
 add_executable(
  volid_test
@@ -47,10 +43,16 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-#SET_TARGET_PROPERTIES(volid_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-#add_dependencies( volid_test boost_test boost_filesystem )
 
-ADD_TEST(NAME standard_license_test COMMAND standard_license_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-ADD_TEST(NAME date_test COMMAND date_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-ADD_TEST(NAME volid_test COMMAND volid_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+#binfmt_misc doesn't work in my system :(
+	ADD_TEST(NAME standard_license_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/standard_license_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	ADD_TEST(NAME date_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/date_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	ADD_TEST(NAME volid_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/volid_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ELSE()
+	ADD_TEST(NAME standard_license_test COMMAND standard_license_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	ADD_TEST(NAME date_test COMMAND date_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	ADD_TEST(NAME volid_test COMMAND volid_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ENDIF()
+
 

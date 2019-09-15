@@ -2,7 +2,6 @@ add_executable(
  license_reader_test
  LicenseReader_test.cpp
 )
-#add_dependencies( license_reader_test boost_filesystem )
 
 target_link_libraries(
  license_reader_test
@@ -10,9 +9,12 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-#SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-#SET_TARGET_PROPERTIES(license_reader_test PROPERTIES LINK_SEARCH_END_STATIC OFF)
-ADD_TEST(NAME license_reader_test COMMAND license_reader_test)
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+#binfmt_misc doesn't work in my system :(
+	ADD_TEST(NAME license_reader_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/license_reader_test)
+ELSE()
+	ADD_TEST(NAME license_reader_test COMMAND license_reader_test)
+ENDIF()
 
 IF(WIN32)
 #test windows
@@ -27,9 +29,6 @@ ELSE(WIN32)
  		os
  		${Boost_LIBRARIES}
 	)
-	
-	#add_dependencies( os_linux_test )
-	#SET_TARGET_PROPERTIES(os_linux_test PROPERTIES LINK_SEARCH_START_STATIC ON)
+
 	ADD_TEST(NAME os_linux_test COMMAND os_linux_test)
-	
 ENDIF(WIN32)

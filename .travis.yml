@@ -42,6 +42,30 @@ matrix:
 
    - os: linux
      dist: bionic
+     name: "Ubuntu 18.04 - cross-compile for Windows x64"
+     addons:
+        apt:
+          packages:
+             - cmake 
+             - valgrind 
+             - binutils-mingw-w64 
+             - mingw-w64 
+             - mingw-w64-tools 
+             - mingw-w64-x86-64-dev 
+             - wine-stable
+     before-script:
+        - mkdir build
+        - cd build
+        - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
+        - tar xjf boost_1_71_0.tar.bz2
+        - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
+        - cd boost_1_71_0
+        - ./bootstrap.sh
+        - ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
+        - cd ..
+        - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DBOOST_ROOT=./boost_1_71_0/dist  ..
+   - os: linux
+     dist: bionic
      name: "CentOS-7 Docker"
      before_script: 
         - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
@@ -81,7 +105,16 @@ matrix:
          directories:
              - "/C/local/boost"
      before_script:
-         - travis_wait 30 ./windows_download_boost.bat
+         - | 
+           if [ -n "C:/local/boost/libs" ]; then
+               echo "Boost not cached, compiling it"
+               wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+               echo "Boost downloaded"
+               boost.exe /SILENT /DIR=C:\local\boost 
+               echo "Boost installed"
+           else
+               echo "Boost already installed"
+           fi
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..

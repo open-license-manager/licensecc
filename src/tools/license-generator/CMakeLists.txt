@@ -1,8 +1,6 @@
-
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_directories ( ${Boost_LIBRARY_DIR} )
-
 
 ADD_LIBRARY(
     license_generator_lib STATIC
@@ -33,5 +31,3 @@ add_dependencies( license_generator private_key )
 
 install(TARGETS license_generator RUNTIME DESTINATION bin)
 
-#SET_TARGET_PROPERTIES(license_generator PROPERTIES LINK_SEARCH_START_STATIC ON)
-#SET_TARGET_PROPERTIES(license_generator PROPERTIES LINK_SEARCH_END_STATIC ON)

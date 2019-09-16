@@ -14,7 +14,7 @@ add_executable(
 
 target_link_libraries(
  standard_license_test
- license++_static
+ licensepp_static
  license_generator_snippet
  ${Boost_LIBRARIES}
 )
@@ -26,7 +26,7 @@ add_executable(
 
 target_link_libraries(
  date_test
- license++_static
+ licensepp_static
  license_generator_snippet
  ${Boost_LIBRARIES}
 )
@@ -38,7 +38,7 @@ add_executable(
 
 target_link_libraries(
  volid_test
- license++_static
+ licensepp_static
  license_generator_snippet
  ${Boost_LIBRARIES}
 )

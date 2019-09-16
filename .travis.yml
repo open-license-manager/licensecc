@@ -116,7 +116,7 @@ matrix:
            if [ -d "/C/local/boost/libs" ]; then
                echo "Boost already installed"
            else
-               echo "Boost not cached, compiling it"
+               echo "Boost not cached, downloading it"
                wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
                echo "Boost downloaded"
                travis_wait 30 ./boost.exe /SILENT /DIR=C:\local\boost 
@@ -138,7 +138,7 @@ matrix:
            if [ -d "/C/local/boost/libs" ]; then
                echo "Boost already installed"
            else
-               echo "Boost not cached, compiling it"
+               echo "Boost not cached, downloading it"
                wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
                echo "Boost downloaded"
                travis_wait 30 ./boost.exe /SILENT /DIR=C:\local\boost 

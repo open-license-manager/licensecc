@@ -122,9 +122,9 @@ matrix:
                boost.exe /SILENT /DIR=C:\local\boost 
                echo "Boost installed"
            fi
-         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
-         - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
+           cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+           mkdir build
+           cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
@@ -145,9 +145,9 @@ matrix:
                boost.exe /SILENT /DIR=C:\local\boost 
                echo "Boost installed"
            fi
-         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
-         - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
+           cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+           mkdir build
+           cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
            
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

@@ -109,19 +109,11 @@ matrix:
      env:
         - CACHE_NAME=boost
      cache:
+         name: boost
          directories:
              - "/C/local/boost"
      before_script:
-         - | 
-           if [ -d "/C/local/boost/libs" ]; then
-               echo "Boost already installed"
-           else
-               echo "Boost not cached, downloading it"
-               wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-               echo "Boost downloaded"
-               travis_wait 60 ./boost.exe /SILENT /DIR="C:\local\boost" 
-               echo "Boost installed"
-           fi
+         - travis_wait 50 ./windows_download_boost.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
@@ -131,23 +123,32 @@ matrix:
      env:
         - CACHE_NAME=boost
      cache:
+         name: boost
          directories:
              - "/C/local/boost"
      before_script:
-         - | 
-           if [ -d "/C/local/boost/libs" ]; then
-               echo "Boost already installed"
-           else
-               echo "Boost not cached, downloading it"
-               wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-               echo "Boost downloaded"
-               travis_wait 50 ./boost.exe /SILENT /DIR=C:\\local\\boost 
-               echo "Boost installed"
-           fi
+         - travis_wait 50 ./windows_download_boost.bat
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
-           
+          
+   - os: windows
+     name: "Widnows server 1803 - MinGW Win64"
+     before_script:
+         - wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7
+         - echo "Boost downloaded"
+         - travis_wait 20 7z x boost_1_68_0.7z -oC:/local
+         - cd "C:/local/boost_1_68_0"
+         - dir 
+         - ./bootstrap.bat mingw 
+         - travis_wait 30 ./b2.exe --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
+         - cd C:/local/boost
+         - dir
+         - echo ${TRAVIS_HOME}
+         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - mkdir build
+         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" 
+         
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
     

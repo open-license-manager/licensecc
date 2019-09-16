@@ -23,7 +23,7 @@ matrix:
              - libboost-date-time-dev
      script: 
          - cmake --build . --target install
-         - ctest -V
+         - ctest
          - ctest -T memcheck        
    - os: linux
      dist: xenial
@@ -66,7 +66,7 @@ matrix:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
      script: 
          - cmake --build . --target install
-         - ctest -V
+         - ctest
          - ctest -T memcheck
          
    - os: linux
@@ -119,18 +119,17 @@ matrix:
                echo "Boost not cached, compiling it"
                wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
                echo "Boost downloaded"
-               boost.exe /SILENT /DIR=C:\local\boost 
+               ./boost.exe /SILENT /DIR=C:\local\boost 
                echo "Boost installed"
            fi
-           cd "/C/Users/travis/build/open-license-manager/open-license-manager"
-           mkdir build
-           cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
+         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - mkdir build
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      env:
         - CACHE_NAME=boost
-        - CTEST_OPTIONS=""
      cache:
          directories:
              - "/C/local/boost"
@@ -142,12 +141,12 @@ matrix:
                echo "Boost not cached, compiling it"
                wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
                echo "Boost downloaded"
-               boost.exe /SILENT /DIR=C:\local\boost 
+               ./boost.exe /SILENT /DIR=C:\local\boost 
                echo "Boost installed"
            fi
-           cd "/C/Users/travis/build/open-license-manager/open-license-manager"
-           mkdir build
-           cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
+         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - mkdir build
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
            
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

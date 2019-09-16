@@ -83,7 +83,7 @@ matrix:
             "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
    - os: linux
      dist: bionic
-     name: "Ubuntu 18.04 - cross-compile for Windows x64"
+     name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
      addons:
         apt:
           packages:
@@ -135,7 +135,7 @@ matrix:
    - os: windows
      name: "Widnows server 1803 - MinGW Win64"
      before_script:
-         - wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7
+         - wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
          - echo "Boost downloaded"
          - travis_wait 20 7z x boost_1_68_0.7z -oC:/local
          - cd "C:/local/boost_1_68_0"

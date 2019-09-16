@@ -222,4 +222,3 @@ static void printHash(HCRYPTHASH* hHash) {
 VIRTUALIZATION getVirtualization() {
 	return NONE;
 }
-

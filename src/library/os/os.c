@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include "../base/logger.h"
 #include "os.h"
+#include "../base/logger.h"
 #include "public-key.h"
+#include <stdio.h>
 
 #ifdef __linux__
 
@@ -116,9 +116,9 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	// Declare variables.
 	//
 	// hProv:           Cryptographic service provider (CSP). This example
-	//                  uses the Microsoft Enhanced Cryptographic 
+	//                  uses the Microsoft Enhanced Cryptographic
 	//                  Provider.
-	// hKey:            Key to be used. In this example, you import the 
+	// hKey:            Key to be used. In this example, you import the
 	//                  key as a PLAINTEXTKEYBLOB.
 	// dwBlobLen:       Length of the plaintext key.
 	// pbKeyBlob:       Pointer to the exported key.
@@ -136,10 +136,10 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	if (!CryptAcquireContext(&hProv,
 	NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		// If the key container cannot be opened, try creating a new
-		// container by specifying a container name and setting the 
+		// container by specifying a container name and setting the
 		// CRYPT_NEWKEYSET flag.
 		LOG_INFO("Error in AcquireContext 0x%08x \n", GetLastError());
-		if (NTE_BAD_KEYSET == GetLastError()) {
+		if (NTE_BAD_KEYSET == (long)GetLastError()) {
 			if (!CryptAcquireContext(&hProv, "license++verify",
 					MS_ENHANCED_PROV, PROV_RSA_FULL,
 					CRYPT_NEWKEYSET | CRYPT_VERIFYCONTEXT)) {
@@ -153,7 +153,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	}
 
 	// Use the CryptImportKey function to import the PLAINTEXTKEYBLOB
-	// BYTE array into the key container. The function returns a 
+	// BYTE array into the key container. The function returns a
 	// pointer to an HCRYPTKEY variable that contains the handle of
 	// the imported key.
 	if (!CryptImportKey(hProv, &pubKey[0], sizeof(pubKey), 0, 0, &hKey)) {
@@ -169,7 +169,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 		return FUNC_RET_ERROR;
 	}
 
-	if (!CryptHashData(hHash, stringToVerify, (DWORD) strlen(stringToVerify), 0)) {
+	if (!CryptHashData(hHash, (const BYTE*)stringToVerify, (DWORD) strlen(stringToVerify), 0)) {
 		LOG_ERROR("Error in hashing data 0x%08x ", GetLastError());
 		CryptDestroyHash(hHash);
 		CryptReleaseContext(hProv, 0);
@@ -179,7 +179,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	LOG_DEBUG("Lenght %d, hashed Data: [%s]", strlen(stringToVerify), stringToVerify);
 	printHash(&hHash);
 #endif
-	sigBlob = unbase64(signatureB64, (int) strlen(signatureB64), &dwSigLen);
+	sigBlob = unbase64(signatureB64, (int) strlen(signatureB64), (int*)&dwSigLen);
 	LOG_DEBUG("raw signature lenght %d", dwSigLen);
 	if (!CryptVerifySignature(hHash, sigBlob, dwSigLen, hKey, NULL, 0)) {
 		LOG_ERROR("Signature not validated!  0x%08x ", GetLastError());

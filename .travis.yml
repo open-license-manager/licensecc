@@ -21,6 +21,10 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
+     script: 
+         - cmake --build . --target install
+         - ctest -V
+         - ctest -T memcheck        
    - os: linux
      dist: xenial
      name: "Ubuntu 16.04 - Travis CI VM"
@@ -39,7 +43,44 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
-
+   - os: linux
+     dist: bionic
+     name: "Ubuntu 18.04 - Travis CI VM - Debug build"
+     addons:
+        apt:
+          packages:
+             - cmake
+             - valgrind
+             - libssl-dev
+             - zlib1g-dev
+             - libboost-dev
+             - libboost-test-dev
+             - libboost-filesystem-dev
+             - libboost-iostreams-dev
+             - libboost-program-options-dev
+             - libboost-system-dev
+             - libboost-thread-dev
+             - libboost-date-time-dev
+     before_script:
+         - mkdir build
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
+     script: 
+         - cmake --build . --target install
+         - ctest -V
+         - ctest -T memcheck
+         
+   - os: linux
+     dist: bionic
+     name: "CentOS-7 Docker"
+     before_script: 
+        - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
+            "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static centos-release-scl-rh && 
+              yum -y install devtoolset-3-gcc devtoolset-3-gcc-c++ && cd /root/open-license-manager && mkdir build && cd build && 
+              CC=/opt/rh/devtoolset-3/root/usr/bin/gcc XX=/opt/rh/devtoolset-3/root/usr/bin/g++ cmake .."
+        - docker commit centos7_toconfigure centos7_configured
+     script: 
+        - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
+            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - cross-compile for Windows x64"
@@ -47,7 +88,6 @@ matrix:
         apt:
           packages:
              - cmake 
-             - valgrind 
              - binutils-mingw-w64 
              - mingw-w64 
              - mingw-w64-tools 
@@ -64,19 +104,6 @@ matrix:
         - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
         - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
-   - os: linux
-     dist: bionic
-     name: "CentOS-7 Docker"
-     before_script: 
-        - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
-            "yum -y update && yum -y install cmake boost boost-devel boost-static openssl openssl-devel gcc-c++ valgrind valgrind-devel glibc-static centos-release-scl-rh && 
-              yum -y install devtoolset-3-gcc devtoolset-3-gcc-c++ && cd /root/open-license-manager && mkdir build && cd build && 
-              CC=/opt/rh/devtoolset-3/root/usr/bin/gcc XX=/opt/rh/devtoolset-3/root/usr/bin/g++ cmake .."
-        - docker commit centos7_toconfigure centos7_configured
-     script: 
-        - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
-            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
-            
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      env:
@@ -98,14 +125,12 @@ matrix:
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
-     script:
-         - cmake --build . --target install --config Release
-         - ctest -C Release
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      env:
         - CACHE_NAME=boost
+        - CTEST_OPTIONS=""
      cache:
          directories:
              - "/C/local/boost"
@@ -123,18 +148,15 @@ matrix:
          - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
-     script:
-         - cmake --build . --target install --config Release
-         - ctest -C Release
            
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
+    
 before_script:
     - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 script: 
-    - make 
-    - make install
-    - make test
+    - cmake --build . --target install --config Release
+    - ctest -C Release
     

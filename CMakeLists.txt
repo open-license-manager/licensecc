@@ -74,12 +74,15 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling
     list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
 	#Zlib required when openssl version < 1.0.1f
+	SET ( ZLIB_USE_STATIC_LIBS ON )
 	find_package(ZLIB REQUIRED)
 	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
 	MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
 	if(NOT MINGW)
  		list(APPEND EXTERNAL_LIBS "-ldl") 
 	endif(NOT MINGW)
+	find_program( MEMORYCHECK_COMMAND valgrind )
+	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
 endif(UNIX)
 
 SET_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)

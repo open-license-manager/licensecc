@@ -129,20 +129,24 @@ matrix:
          directories:
              - "/C/local/boost"
      before_script:
-         - wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
-         - echo "Boost downloaded"
-         - travis_wait 20 7z x boost_1_68_0.7z -oC:/local
-         - cd "C:/local/boost_1_68_0"
-         - dir 
-         - ./bootstrap.bat gcc 
-         - travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
-         - cd /C/local/boost
-         - dir 
-         - cd /C/local/boost/lib
-         - dir 
+         - | 
+           if [ -d "/C/local/boost/lib" ]; then
+               echo "Boost already installed"
+           else
+               echo "Boost not cached, compiling it"
+               wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
+               echo "Boost downloaded"
+               travis_wait 20 7z x boost_1_68_0.7z -oC:/local
+               cd "C:/local/boost_1_68_0"
+               ./bootstrap.bat gcc 
+               travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
+               echo "Boost installed"
+               cd /C/local/boost/lib
+               dir 
+           fi
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
-         - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+         - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

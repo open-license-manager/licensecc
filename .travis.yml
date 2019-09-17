@@ -107,8 +107,7 @@ matrix:
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
-         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-         - ./boost.exe /VERYSILENT /DIR="C:/local/boost" 
+         - travis_wait 40 ./windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
@@ -116,8 +115,7 @@ matrix:
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      before_script:
-         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
-         - travis_wait 30 ./boost.exe /VERYSILENT /NOCANCEL /DIR="C:/local/boost" 
+         - travis_wait 40 ./windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
@@ -144,7 +142,7 @@ matrix:
          - dir 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
-         - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -Boost_ARCHITECTURE="-x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+         - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

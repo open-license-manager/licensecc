@@ -114,7 +114,7 @@ matrix:
              - "/C/local/boost"
      before_script:
          - travis_wait 50 ./windows_download_boost.bat
-         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
@@ -128,7 +128,7 @@ matrix:
              - "/C/local/boost"
      before_script:
          - travis_wait 50 ./windows_download_boost.bat
-         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
           
@@ -141,13 +141,10 @@ matrix:
          - cd "C:/local/boost_1_68_0"
          - dir 
          - ./bootstrap.bat gcc 
-         - travis_wait 30 ./b2.exe --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
-         - cd C:/local/boost
-         - dir
-         - echo ${TRAVIS_HOME}
-         - cd "/C/Users/travis/build/open-license-manager/open-license-manager"
+         - travis_wait 30 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install 
+         - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
-         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" 
+         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" ..
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

@@ -142,7 +142,9 @@ matrix:
          - dir 
          - ./bootstrap.bat gcc 
          - travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
-         - cd C:/local/boost/libs
+         - cd /C/local/boost
+         - dir 
+         - cd /C/local/boost/libs
          - dir 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build

@@ -141,10 +141,12 @@ matrix:
          - cd "C:/local/boost_1_68_0"
          - dir 
          - ./bootstrap.bat gcc 
-         - travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install 
+         - travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
+         - cd C:/local/boost/libs
+         - dir 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
-         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" -Boost_ARCHITECTURE="-x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

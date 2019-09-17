@@ -93,6 +93,17 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 0)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
+#bug in cmake win32 - can't find boost compiled with mingw 
+if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
+    message(WARNING "WIN32 compiler does not specify CMAKE_CXX_COMPILER_ARCHITECTURE_ID -- filling in manually")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x64")
+    else()
+        set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x86")
+    endif()
+    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+endif()
+
 SET( Boost_USE_STATIC_LIBS ON )
 find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
 #set below in case of dynamic linking in debug.

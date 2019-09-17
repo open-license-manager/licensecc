@@ -106,34 +106,30 @@ matrix:
         - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
-     env:
-        - CACHE_NAME=boost
-     cache:
-         name: boost
-         directories:
-             - "/C/local/boost"
      before_script:
-         - travis_wait 50 ./windows_download_boost.bat
+         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+         - travis_wait 30 ./boost.exe /SILENT /DIR="C:/local/boost" 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
-     env:
-        - CACHE_NAME=boost
-     cache:
-         name: boost
-         directories:
-             - "/C/local/boost"
      before_script:
-         - travis_wait 50 ./windows_download_boost.bat
+         - wget -q -O boost.exe https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.1-64.exe
+         - travis_wait 30 ./boost.exe /SILENT /DIR="C:/local/boost" 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
           
    - os: windows
      name: "Widnows server 1803 - MinGW Win64"
+     env:
+        - CACHE_NAME=boost-mingw
+     cache:
+         name: boost-mingw
+         directories:
+             - "/C/local/boost"
      before_script:
          - wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
          - echo "Boost downloaded"
@@ -144,7 +140,7 @@ matrix:
          - travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
          - cd /C/local/boost
          - dir 
-         - cd /C/local/boost/libs
+         - cd /C/local/boost/lib
          - dir 
          - cd "${TRAVIS_BUILD_DIR}"
          - mkdir build

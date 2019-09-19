@@ -22,7 +22,7 @@ if(CMAKE_BUILD_TYPE)
 	string(TOLOWER ${CMAKE_BUILD_TYPE} _CMAKE_BUILD_TYPE)
 	EVAL_CONDITION(RELEASE_BUILD ${_CMAKE_BUILD_TYPE} STREQUAL "release")
 else(CMAKE_BUILD_TYPE)
-	set(RELEASE_BUILD 0)
+	SET(RELEASE_BUILD 0)
 endif(CMAKE_BUILD_TYPE)
 
 if(MSVC)
@@ -43,32 +43,19 @@ if(MSVC)
 	#SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib ) #${CMAKE_FIND_LIBRARY_SUFFIXES}
 	add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 else(MSVC)
+	#GCC or Mingw
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fmessage-length=0 -std=c++11 -Wuninitialized -fPIC") #-Wall
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fmessage-length=0 -Wall -Wuninitialized -fPIC") 
-    if(RELEASE_BUILD)
-        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a) #.so for dynamic libraries
-    else()
-        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a .so) 
-    endif()
-    set (CMAKE_EXE_LINKER_FLAGS  "-pthread")
+    SET(CMAKE_EXE_LINKER_FLAGS  "-pthread -static-libstdc++")
     SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--strip-all -static-libstdc++") #-static 
     #you need to "force" the change in cmake_install_prefix after the project keyword
 	IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install path prefix" FORCE)
 	ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-		#find a static version of openssl crypto library
-	find_package(OpenSSL REQUIRED)
-	include_directories(${OPENSSL_INCLUDE_DIR})
     if(MINGW)
-        list(APPEND EXTERNAL_LIBS "-lcrypto -liphlpapi")
-    else(MINGW)
-        list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lws2_32 -liphlpapi")
+        SET(CMAKE_EXE_LINKER_FLAGS "-static")
     endif(MINGW)
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
-	
-	#Zlib required when openssl version < 1.0.1f
-	find_package(ZLIB REQUIRED)
-	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
 	
 	if(USE_DBUS_IDENTIFIER)
 	    FIND_PACKAGE(Dbus REQUIRED)
@@ -77,14 +64,28 @@ else(MSVC)
 	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
 	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
 	endif(USE_DBUS_IDENTIFIER)    
-	if(NOT MINGW)
-	    list(APPEND EXTERNAL_LIBS dl)
-	endif(NOT MINGW)
-	list(APPEND EXTERNAL_LIBS "-Wl,-Bdynamic")
 endif(MSVC)
 
-set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
+if(UNIX) #this is true for all the linux systems but not for cross compiling
+	#find a static version of openssl crypto library
+	SET ( OPENSSL_USE_STATIC_LIBS ON )
+	find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+	include_directories(${OPENSSL_INCLUDE_DIR})
+    list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
+	#Zlib required when openssl version < 1.0.1f
+	SET ( ZLIB_USE_STATIC_LIBS ON )
+	find_package(ZLIB REQUIRED)
+	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+	MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
+	if(NOT MINGW)
+ 		list(APPEND EXTERNAL_LIBS "-ldl") 
+	endif(NOT MINGW)
+	find_program( MEMORYCHECK_COMMAND valgrind )
+	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+endif(UNIX)
 
+SET_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 1)
@@ -92,7 +93,18 @@ else(CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET(HAVE_64BIT_SIZE_T 0)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-set( Boost_USE_STATIC_LIBS ON )
+#bug in cmake win32 - can't find boost compiled with mingw 
+if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
+    message(WARNING "WIN32 compiler does not specify CMAKE_CXX_COMPILER_ARCHITECTURE_ID -- filling in manually")
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x64")
+    else()
+        set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x86")
+    endif()
+    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+endif()
+
+SET( Boost_USE_STATIC_LIBS ON )
 find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
 #set below in case of dynamic linking in debug.
 #set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)

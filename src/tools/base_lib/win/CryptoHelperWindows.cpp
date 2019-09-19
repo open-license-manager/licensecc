@@ -21,14 +21,14 @@ namespace license {
 CryptoHelperWindows::CryptoHelperWindows() {
 	m_hCryptProv = NULL;
 	m_hCryptKey = NULL;
-	if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, 0)) {
+	if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL , PROV_RSA_FULL, 0)) {
 		// If the key container cannot be opened, try creating a new
 		// container by specifying a container name and setting the
 		// CRYPT_NEWKEYSET flag.
 		DWORD lastError = GetLastError();
 		printf("Error in CryptAcquireContext (1) 0x%08x \n", lastError);
 		if (NTE_BAD_KEYSET == lastError) {
-			if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+			if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL , PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
 				printf("Warn in CryptAcquireContext: acquiring new user keyset failed 0x%08x, trying less secure mackine keyset \n", GetLastError());
 				//maybe access to protected storage disabled. Try with machine keys (less secure)
 				if (!CryptAcquireContext(&m_hCryptProv, "license_sign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET)) {
@@ -71,6 +71,13 @@ void CryptoHelperWindows::generateKeyPair() {
 				string("Error generating keys ")
 						+ to_string(static_cast<long long>(dwErrCode)));
 	}
+	//double check the key is really generated
+	if(m_hCryptKey == NULL) {
+		dwErrCode = GetLastError();
+		throw logic_error(
+				string("Error generating keys (2)")
+						+ to_string(static_cast<long long>(dwErrCode)));
+    }
 }
 
 /* This method calls the CryptExportKey function to get the Public key

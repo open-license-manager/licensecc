@@ -3,7 +3,7 @@
 #include "public-key.h"
 #include <stdio.h>
 
-#ifndef _MSC_VER
+#ifdef __linux__
 
 #include <openssl/pem.h>
 
@@ -84,7 +84,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 #else
 
 #include <iphlpapi.h>
-#include <Windows.h>
+#include <windows.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
 unsigned char* unbase64(const char* ascii, int len, int *flen);

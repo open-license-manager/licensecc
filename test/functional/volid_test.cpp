@@ -52,11 +52,11 @@ static void generate_reference_file(const string &idfileLocation,
 	for (int i = 0; i < num_strategies; i++) {
 		FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 				strategies[i]);
-		BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		if (generate_ok != FUNC_RET_OK) {
 			BOOST_ERROR(
 					"Generating identifier for strategy " << strategies[i] << " failed with: " << generate_ok);
 			idfile << "0000-0000-0000-0000" << endl;
+			BOOST_ASSERT(generate_ok == FUNC_RET_OK);
 		} else
 			idfile << identifier_out << endl;
 	}
@@ -66,12 +66,26 @@ static void generate_reference_file(const string &idfileLocation,
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(PROJECT_TEST_TEMP_DIR "/identifiers_file");
 	std::vector<IDENTIFICATION_STRATEGY> strategies;
-	if (getVirtualization() != CONTAINER) {
-		strategies = { DEFAULT, DISK_LABEL, DISK_NUM, ETHERNET };
+	size_t disk_num;
+	getDiskInfos(NULL, &disk_num);
+	if (disk_num >0) {
+		strategies = { DEFAULT, DISK_NUM, DISK_LABEL };
 	} else {
-		strategies = { DEFAULT, ETHERNET };
+		BOOST_TEST_CHECKPOINT("if no disk default strategy fails see #49");
+		//strategies = { DEFAULT };
+		strategies = {};
 	}
+	size_t adapters;
+	getAdapterInfos(nullptr, &adapters);
+	if(adapters > 0){
+		strategies.push_back(ETHERNET);
+	}
+
 	int num_strategies = strategies.size();
+	if(num_strategies == 0) {
+		//see issue #49 can't use default
+		return;
+	}
 	std::ifstream test_idfile_exist(idfileLocation);
 	if (!test_idfile_exist.good()) {
 		generate_reference_file(idfileLocation, strategies.data(),

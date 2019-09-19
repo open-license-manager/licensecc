@@ -10,6 +10,8 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-#add_dependencies( license_generator_test boost_test boost_filesystem )
-#SET_TARGET_PROPERTIES(license_generator_test PROPERTIES LINK_SEARCH_START_STATIC ON)
-ADD_TEST(NAME license_generator_test COMMAND license_generator_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+	ADD_TEST(NAME license_generator_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/license_generator_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ELSE()
+	ADD_TEST(NAME license_generator_test COMMAND license_generator_test WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ENDIF()

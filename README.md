@@ -11,7 +11,7 @@ software closed :smirk: . A comprehensive [list of features](https://github.com/
 
 ## License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
-It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows the inclusion in commercial software. 
+It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows free modification and inclusion in commercial software. 
 
 
 ## Project Structure
@@ -28,13 +28,13 @@ You can notice 2 more sub-projects:
  * bootstrap: allows to generate private keys and modify the library on the fly after the downloading.
  * testing  : runs the tests (and publish the results on cdash)
 
-#How to build
+# How to build
 
 Below an overview of the basic build procedure, you can find detailed instructions for each [supported environment](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) in the wiki. 
 
 ## prerequisites
- * compilsers: GCC (Linux), MINGW or MSVC (Windows) 
- * tools/libs: cmake, boost, openssl (Linux/MINGW).
+ * compilsers: GCC (Linux) MINGW (Linux cross compile for Windows), MINGW or MSVC (Windows) 
+ * tools/libs: cmake, boost. If target is linux openssl is necessary.
 
 ```
 git clone https://github.com/open-license-manager/open-license-manager.git
@@ -94,3 +94,7 @@ $ ../install/bin/license_generator example -s Jaaa-aaaa-MG9F-ZhBB -o example.lic
 $ ./example
 licence OK
 ```
+
+# How to contribute
+The project is not dead but we take our time to answer. The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](blob/develop/CONTRIBUTING.md)
+We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

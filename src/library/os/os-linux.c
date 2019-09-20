@@ -2,16 +2,16 @@
 #include <sys/stat.h>
 #include "os.h"
 #include "../base/logger.h"
-
-//#include <openssl/evp.h>
-//#include <openssl/bio.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
 
 #include <mntent.h>
 #include <dirent.h>
-
 #include <sys/utsname.h>
+#ifdef _DEBUG
+#include <valgrind/memcheck.h>
+#endif
+
 #ifdef USE_DBUS
 #include <dbus-1.0/dbus/dbus.h>
 #endif

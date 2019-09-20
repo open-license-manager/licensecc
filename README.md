@@ -33,8 +33,8 @@ You can notice 2 more sub-projects:
 Below an overview of the basic build procedure, you can find detailed instructions for each [supported environment](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) in the wiki. 
 
 ## prerequisites
- * compilsers: GCC (Linux), MINGW or MSVC (Windows) 
- * tools/libs: cmake, boost, openssl (Linux/MINGW).
+ * compilsers: GCC (Linux) MINGW (Linux cross compile for Windows), MINGW or MSVC (Windows) 
+ * tools/libs: cmake, boost. If target is linux openssl is necessary.
 
 ```
 git clone https://github.com/open-license-manager/open-license-manager.git

@@ -3,8 +3,7 @@ add_executable(
  bootstrap.cpp
 )
 
-
-SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_START_STATIC ON)
+#SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_START_STATIC ON)
 SET_TARGET_PROPERTIES(bootstrap PROPERTIES LINK_SEARCH_END_STATIC OFF)
 target_link_libraries(
      bootstrap
@@ -12,22 +11,29 @@ target_link_libraries(
      ${EXTERNAL_LIBS}
 )
 
-# add the command to generate the source code
-
 if(MINGW)
-add_custom_command (
-  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
-  COMMAND ./bootstrap.exe "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  DEPENDS bootstrap)
+	#Cross compiling from linux host to windows
+	IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+		#this is to avoid to install binfmt_misc (for builds in docker, or LXC)
+		add_custom_command (
+		  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+		  COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/bootstrap.exe "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+		  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		  DEPENDS bootstrap)
+	ELSE()
+		add_custom_command (
+		  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+		  COMMAND ./bootstrap.exe "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+		  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		  DEPENDS bootstrap)
+	ENDIF()
 else(MINGW)
-add_custom_command (
-  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
-  COMMAND bootstrap "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  DEPENDS bootstrap)
+	add_custom_command (
+	  OUTPUT "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+	  COMMAND bootstrap "${CMAKE_BINARY_DIR}/private-key.h" "${CMAKE_BINARY_DIR}/public-key.h"
+	  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+	  DEPENDS bootstrap)
 endif(MINGW)
-
 
 add_custom_target(private_key DEPENDS "${CMAKE_BINARY_DIR}/private-key.h")
 add_custom_target(public_key DEPENDS "${CMAKE_BINARY_DIR}/public-key.h")

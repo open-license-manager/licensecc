@@ -1,6 +1,7 @@
 ADD_LIBRARY(base STATIC
     EventRegistry.cpp
     StringUtils.cpp
+    FileUtils.cpp
     logger.c
 )
 

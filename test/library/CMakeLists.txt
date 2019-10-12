@@ -5,7 +5,7 @@ add_executable(
 
 target_link_libraries(
  license_reader_test
- licensepp_static
+ licensecc_static
  ${Boost_LIBRARIES}
 )
 
@@ -32,3 +32,23 @@ ELSE(WIN32)
 
 	ADD_TEST(NAME os_linux_test COMMAND os_linux_test)
 ENDIF(WIN32)
+
+
+### LicenseLocator tests
+add_executable(
+ license_locator_test
+ LicenseLocator_test.cpp
+)
+
+target_link_libraries(
+ license_locator_test
+ locators
+ ${Boost_LIBRARIES}
+)
+
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+#binfmt_misc doesn't work in my system :(
+	ADD_TEST(NAME license_locator_test COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/license_locator_test)
+ELSE()
+	ADD_TEST(NAME license_locator_test COMMAND license_locator_test)
+ENDIF()

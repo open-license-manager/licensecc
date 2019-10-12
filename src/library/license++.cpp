@@ -9,8 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+
 #include "api/license++.h"
-#include "LicenseReader.h"
+
+#include "LicenseReader.hpp"
 
 using namespace std;
 void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {

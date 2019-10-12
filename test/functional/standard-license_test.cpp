@@ -13,6 +13,7 @@ namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
+namespace test {
 
 BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/standard_license.lic");
@@ -21,14 +22,30 @@ BOOST_AUTO_TEST_CASE( standard_lic_file ) {
 	/* */
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
-	licenseLocation.openFileNearModule=false;
+	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.environmentVariableName = "";
-	const EVENT_TYPE result = acquire_license("TEST",
-			licenseLocation, & license);
+	const EVENT_TYPE result = acquire_license("TEST", licenseLocation,
+			&license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 }
 
+BOOST_AUTO_TEST_CASE( pc_identifier ) {
+	const string licLocation(PROJECT_TEST_TEMP_DIR "/pc_identifier.lic");
+	const vector<string> extraArgs = { "-s", "Jaaa-aaaa-MG9F-ZhB1" };
+	generate_license(licLocation, extraArgs);
 
+	LicenseInfo license;
+	LicenseLocation licenseLocation;
+	licenseLocation.openFileNearModule = false;
+	licenseLocation.licenseFileLocation = licLocation.c_str();
+	licenseLocation.environmentVariableName = "";
+	const EVENT_TYPE result = acquire_license("TEST", licenseLocation,
+			&license);
+	BOOST_CHECK_EQUAL(result, IDENTIFIERS_MISMATCH);
+	BOOST_CHECK_EQUAL(license.has_expiry, false);
+	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
+}
+}

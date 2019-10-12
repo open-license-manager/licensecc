@@ -11,6 +11,7 @@
 #include "api/datatypes.h"
 #include "base/EventRegistry.h"
 #include "os/os.h"
+#include "locate/LocatorStrategy.hpp"
 #define SI_SUPPORT_IOSTREAMS
 #include "ini/SimpleIni.h"
 #include <string>
@@ -53,6 +54,7 @@ public:
 	time_t expires_on() const;
 	time_t valid_from() const;
 };
+
 /**
  * This class it is responsible to read the licenses from the disk
  * (in future from network) examining all the possible LicenseLocation
@@ -74,14 +76,6 @@ public:
 class LicenseReader {
 private:
 	const LicenseLocation licenseLocation;
-	EventRegistry getLicenseDiskFiles(vector<string>& diskFiles);
-	vector<string> filterExistingFiles(vector<string> licensePositions);
-	vector<string> splitLicensePositions(string licensePositions);
-	bool findLicenseWithExplicitLocation(vector<string>& diskFiles,
-			EventRegistry& eventRegistry);
-	bool findFileWithEnvironmentVariable(vector<string>& diskFiles,
-			EventRegistry& eventRegistry);
-
 public:
 	LicenseReader(const LicenseLocation& licenseLocation);
 	EventRegistry readLicenses(const string &product,

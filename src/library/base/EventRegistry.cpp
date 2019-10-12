@@ -10,9 +10,9 @@
 #include <string.h>
 #include <algorithm>
 
+namespace license {
 using namespace std;
 
-namespace license {
 EventRegistry::EventRegistry() {
 }
 

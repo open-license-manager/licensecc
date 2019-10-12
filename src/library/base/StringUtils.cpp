@@ -9,6 +9,7 @@
 #include "StringUtils.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <cstring>
 #include <algorithm>
 #include <stdexcept>
@@ -68,4 +69,17 @@ time_t seconds_from_epoch(const char* timeString) {
 	tm.tm_wday = -1;
 	return mktime(&tm);
 }
+
+
+const vector<string> split_string(const string& licensePositions,char splitchar) {
+	std::stringstream streamToSplit(licensePositions);
+	std::string segment;
+	std::vector<string> seglist;
+
+	while (std::getline(streamToSplit, segment, splitchar)) {
+		seglist.push_back(segment);
+	}
+	return seglist;
+}
+
 } /* namespace license */

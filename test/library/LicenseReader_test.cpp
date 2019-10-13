@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE "license_reader_test"
+#define BOOST_TEST_MODULE "test_license_reader"
 
 #include <boost/test/unit_test.hpp>
 #include <stdlib.h>

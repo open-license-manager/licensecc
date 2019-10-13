@@ -50,15 +50,15 @@ BOOST_AUTO_TEST_CASE( read_license_near_module ) {
 	exeFileFound = exeLocation.has_value();
 	if (exeFileFound) {
 		referenceExeFileName = exeLocation.get().string();
-		referenceLicenseFileName = referenceExeFileName.replace(referenceExeFileName.find(BOOST_TEST_MODULE ".exe"), 
+		referenceLicenseFileName = referenceExeFileName.replace(referenceExeFileName.find(BOOST_TEST_MODULE ".exe"),
 			string(BOOST_TEST_MODULE ".exe").size(), BOOST_TEST_MODULE ".lic");
 	}
 #else
-	const string referenceExeFileName = testExeFolder + "/" + BOOST_TEST_MODULE;
-	ifstream f(referenceExeFileName.c_str());
+	referenceExeFileName = testExeFolder + "/" + BOOST_TEST_MODULE;
+	std::ifstream f(referenceExeFileName.c_str());
 	exeFileFound = f.good();
 	referenceLicenseFileName = testExeFolder + "/" + BOOST_TEST_MODULE ".lic";
-#endif	
+#endif
 	BOOST_WARN_MESSAGE(!exeFileFound, "File [" + referenceExeFileName + "] NOT found");
 	if (exeFileFound) {
 		//copy test license near module
@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE( environment_var_location ) {
 #else
 	unsetenv(LICENSE_LOCATION_ENV_VAR);
 #endif
-	
+
 }
 
 /**

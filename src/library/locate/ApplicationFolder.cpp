@@ -23,6 +23,8 @@ namespace license {
 namespace locate {
 using namespace std;
 
+
+
 ApplicationFolder::ApplicationFolder() :
 		LocatorStrategy("ApplicationFolder") {
 
@@ -36,10 +38,9 @@ const vector<string> ApplicationFolder::licenseLocations(
 	vector<string> diskFiles;
 	char fname[MAX_PATH] = { 0 };
 	const FUNCTION_RETURN fret = getModuleName(fname);
-	cout << string(fname) << endl;
-	cout << fret << endl;
 	if (fret == FUNC_RET_OK) {
-		const string temptativeLicense = string(fname) + ".lic";
+		const string module_name = remove_extension(fname);
+		const string temptativeLicense = string(module_name) + ".lic";
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
 			diskFiles.push_back(temptativeLicense);

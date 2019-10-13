@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE "license_locator_test"
+#define BOOST_TEST_MODULE "test_license_locator"
 
 #include <iostream>
 #include <iterator>
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE( environment_var_location_not_defined ) {
 #ifdef _WIN32
 	_putenv_s(LICENSE_LOCATION_ENV_VAR, "");
 #else
-	setenv(LICENSE_LOCATION_ENV_VAR, environment_variable_value, 1);
+	unsetenv(LICENSE_LOCATION_ENV_VAR);
 #endif
 	license::EventRegistry registry;
 	EnvironmentVarLocation environmentVarLocation;

@@ -1,6 +1,5 @@
-#define BOOST_TEST_MODULE standard_license_test
-//#define BOOST_TEST_MAIN
-//#undef BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE test_volid
+
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include <stdio.h>

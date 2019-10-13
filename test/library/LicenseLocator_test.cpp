@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
 #include <stdlib.h>
 #include <cstdio>
@@ -22,51 +24,66 @@
 namespace test {
 using namespace license::locate;
 using namespace std;
+using namespace boost::filesystem;
+
+static boost::optional<path> find_file(const path& dir_path, const path& file_name) {
+	const recursive_directory_iterator end;
+	const auto it = find_if(recursive_directory_iterator(dir_path), end,
+		[&file_name](const directory_entry& e) {
+			return e.path().filename() == file_name;
+		});
+	return it == end ? boost::optional<path>() : it->path();
+}
+
 
 /*****************************************************************************
  * Application Folder tests
  *****************************************************************************/
 BOOST_AUTO_TEST_CASE( read_license_near_module ) {
-#ifdef _WIN32
-#ifdef _DEBUG
-	const string testExeFolder = PROJECT_BINARY_DIR "/test/library/Debug";
-#else
-	const string testExeFolder = PROJECT_BINARY_DIR "/test/library/Release";
-#endif
-	const string testExe = testExeFolder + "/" + BOOST_TEST_MODULE ".exe";
-#else
 	const string testExeFolder = PROJECT_BINARY_DIR "/test/library";
-	const string testExe = testExeFolder + "/" + BOOST_TEST_MODULE;
+	bool exeFileFound = false;
+	string referenceExeFileName;
+	string referenceLicenseFileName;
+	//Verify we're pointing the correct executable, in windows isn't clear where it's built
+#ifdef _WIN32
+	boost::optional<path> exeLocation(find_file(path(testExeFolder), path(BOOST_TEST_MODULE ".exe")));
+	exeFileFound = exeLocation.has_value();
+	if (exeFileFound) {
+		referenceExeFileName = exeLocation.get().string();
+		referenceLicenseFileName = referenceExeFileName.replace(referenceExeFileName.find(BOOST_TEST_MODULE ".exe"), 
+			string(BOOST_TEST_MODULE ".exe").size(), BOOST_TEST_MODULE ".lic");
+	}
+#else
+	const string referenceExeFileName = testExeFolder + "/" + BOOST_TEST_MODULE;
+	ifstream f(referenceExeFileName.c_str());
+	exeFileFound = f.good();
+	referenceLicenseFileName = testExeFolder + "/" + BOOST_TEST_MODULE ".lic";
 #endif	
-	const string referenceLicenseFileName = testExeFolder + "/"
-			+ BOOST_TEST_MODULE ".lic";
+	BOOST_WARN_MESSAGE(!exeFileFound, "File [" + referenceExeFileName + "] NOT found");
+	if (exeFileFound) {
+		//copy test license near module
+		std::ifstream src(MOCK_LICENSE, std::ios::binary);
+		std::ofstream dst(referenceLicenseFileName, std::ios::binary);
+		dst << src.rdbuf();
+		dst.close();
 
-	//Verify we're pointing the correct executable
-	ifstream f(testExe.c_str());
-	BOOST_REQUIRE_MESSAGE(f.good(), "File [" + testExe + "] NOT found");
-
-	//copy test license near module
-	std::ifstream src(MOCK_LICENSE, std::ios::binary);
-	std::ofstream dst(referenceLicenseFileName, std::ios::binary);
-	dst << src.rdbuf();
-	dst.close();
-
-	license::EventRegistry registry;
-	ApplicationFolder applicationFolder;
-	vector<string> licenseInfos = applicationFolder.licenseLocations(registry);
-	BOOST_CHECK(registry.isGood());
-	BOOST_REQUIRE_EQUAL(1, licenseInfos.size());
-	string currentLocation = licenseInfos[0];
-	BOOST_CHECK_MESSAGE(referenceLicenseFileName.compare(currentLocation) == 0,
-			"file found at expected location");
-	string licenseRealContent = applicationFolder.retrieveLicense(
+		license::EventRegistry registry;
+		ApplicationFolder applicationFolder;
+		vector<string> licenseInfos = applicationFolder.licenseLocations(registry);
+		BOOST_CHECK(registry.isGood());
+		BOOST_REQUIRE_EQUAL(1, licenseInfos.size());
+		string currentLocation = licenseInfos[0];
+		BOOST_CHECK_MESSAGE(equivalent(path(referenceLicenseFileName),path(currentLocation)),
+			"file " +currentLocation + "found at expected location");
+		string licenseRealContent = applicationFolder.retrieveLicense(
 			currentLocation);
-	src.seekg(0, ios::beg);
-	std::string referenceContent((std::istreambuf_iterator<char>(src)),
+		src.seekg(0, ios::beg);
+		std::string referenceContent((std::istreambuf_iterator<char>(src)),
 			std::istreambuf_iterator<char>());
-	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0,
+		BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0,
 			"File content is same");
-	remove(referenceLicenseFileName.c_str());
+		remove(referenceLicenseFileName.c_str());
+	}
 }
 
 /*****************************************************************************

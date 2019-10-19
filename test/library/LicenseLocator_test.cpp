@@ -2,16 +2,14 @@
 
 #include <iostream>
 #include <iterator>
-
+#include <cstdio>
 #include <fstream>
 #include <string>
 #include <vector>
-
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
 #include <stdlib.h>
-#include <cstdio>
 
 #include <build_properties.h>
 

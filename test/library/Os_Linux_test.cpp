@@ -1,6 +1,4 @@
 #define BOOST_TEST_MODULE os_linux_test
-//#define BOOST_TEST_MAIN
-//#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include "../../src/library/os/os.h"
 #include <build_properties.h>

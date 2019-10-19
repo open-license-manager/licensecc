@@ -31,7 +31,7 @@ private:
 	 * For every license keep track of the events who progressed most
 	 * in the validation process
 	 */
-	std::map<std::string,int> mostAdvancedLogIdx_by_LicenseId;
+	std::map<std::string,size_t> mostAdvancedLogIdx_by_LicenseId;
 	int current_validation_step;
 
 public:

@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE( external_definition ) {
 	std::string referenceContent((std::istreambuf_iterator<char>(src)),
 			std::istreambuf_iterator<char>());
 	license::EventRegistry registry;
-	const LicenseLocation licLocation({applicationDefinedString,nullptr});
+	const LicenseLocation licLocation={applicationDefinedString,nullptr};
 	ExternalDefinition externalDefinition(&licLocation);
 	vector<string> licenseInfos = externalDefinition.license_locations(registry);
 	BOOST_CHECK(registry.isGood());
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE( external_definition ) {
 BOOST_AUTO_TEST_CASE( external_definition_not_found ) {
 	const char *applicationDefinedString = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
 	license::EventRegistry registry;
-	const LicenseLocation licLocation({applicationDefinedString,nullptr});
+	const LicenseLocation licLocation = { applicationDefinedString,nullptr };
 	ExternalDefinition externalDefinition(&licLocation);
 	vector<string> licenseInfos = externalDefinition.license_locations(registry);
 

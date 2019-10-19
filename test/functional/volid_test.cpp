@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 		strategies.push_back(ETHERNET);
 	}
 
-	int num_strategies = strategies.size();
+	size_t num_strategies = strategies.size();
 	if(num_strategies == 0) {
 		//see issue #49 can't use default
 		return;

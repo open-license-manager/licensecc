@@ -2,12 +2,15 @@
  * StringUtils.h
  *
  *  Created on: Apr 8, 2014
- *      
+ *
  */
 
 #ifndef STRINGUTILS_H_
 #define STRINGUTILS_H_
+
+#include <bits/types/time_t.h>
 #include <string>
+#include <vector>
 
 namespace license {
 using namespace std;
@@ -23,6 +26,20 @@ string trim_copy(const string& string_to_trim);
 string toupper_copy(const string& lowercase);
 
 time_t seconds_from_epoch(const char* s);
-} /* namespace license */
+
+/**
+ * Split a string on a given character
+ */
+const vector<string> split_string(const string& stringToBeSplit, const char splitchar);
+
+typedef enum {
+	INI, BASE64, UNKNOWN
+} FILE_FORMAT;
+
+FILE_FORMAT identify_format(const string& license);
+
+}
+
+/* namespace license */
 
 #endif /* STRINGUTILS_H_ */

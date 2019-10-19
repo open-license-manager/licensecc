@@ -2,7 +2,7 @@
  * os-dependent.hpp
  *
  *  Created on: Mar 29, 2014
- *      
+ *
  */
 
 #ifndef OS_DEPENDENT_HPP_
@@ -78,6 +78,14 @@ VIRTUALIZATION getVirtualization();
 void os_initialize();
 
 FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
+
+#ifdef _WIN32
+#define SETENV(VAR,VAL) _putenv_s(VAR, VAL);
+#define	UNSETENV(P) _putenv_s(P, "");
+#else
+#define SETENV(VAR,VAL) setenv(VAR, VAL, 1);
+#define	UNSETENV(P)	unsetenv(P);
+#endif
 
 #ifdef __cplusplus
 }

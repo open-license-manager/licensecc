@@ -1,17 +1,15 @@
 #define BOOST_TEST_MODULE "test_license_reader"
-#include <boost/assert.hpp>
-#include <boost/test/tools/old/interface.hpp>
-#include <boost/test/unit_test_suite.hpp>
+
+#include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 
 #include "../../src/library/api/datatypes.h"
 #include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/os/os.h"
 
 
-#include <boost/test/unit_test.hpp>
-#include <stdlib.h>
 
 #include <build_properties.h>
 #include "../../src/library/LicenseReader.hpp"

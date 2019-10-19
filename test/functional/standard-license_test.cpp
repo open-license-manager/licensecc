@@ -1,10 +1,11 @@
 #define BOOST_TEST_MODULE test_standard_license
 
 #include <boost/test/unit_test.hpp>
+#include <boost/filesystem.hpp>
+
 #include "../../src/tools/license-generator/license-generator.h"
 #include "../../src/library/api/license++.h"
 #include <build_properties.h>
-#include <boost/filesystem.hpp>
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 #include "../../src/library/base/FileUtils.hpp"

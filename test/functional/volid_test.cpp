@@ -35,10 +35,9 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
-	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.environmentVariableName = "";
-	const EVENT_TYPE result = acquire_license("TEST", licenseLocation, &license);
+	licenseLocation.licenseData = "";
+	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);

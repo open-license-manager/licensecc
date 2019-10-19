@@ -31,18 +31,26 @@ public:
 	virtual const std::string get_strategy_name() const {
 		return m_strategy_name;
 	}
-
-	virtual const std::vector<std::string> licenseLocations(
-			EventRegistry &eventRegistry) const = 0;
+	/**
+	 * Try to find licenses
+	 * @param eventRegistry
+	 * @return
+	 * A list of identifiers for call retrieve_license_content.
+	 */
+	virtual const std::vector<std::string> license_locations(
+			EventRegistry &eventRegistry) = 0;
 
 	/**
 	 * Default implementation is to retrieve the license from file.
 	 * Subclasses may override it.
-	 * @param licenseLocation
+	 * @param licenseLocationId
+	 * 	String that identifies the license. It is usually the file name
+	 * 	but can be whatever is understood by the class
 	 * @return
+	 * 	a string containing the license data in INI format.
 	 */
-	virtual const std::string retrieveLicense(
-			const std::string &licenseLocation) const;
+	virtual const std::string retrieve_license_content(
+			const std::string &licenseLocationId) const;
 	inline virtual ~LocatorStrategy() {
 	}
 };

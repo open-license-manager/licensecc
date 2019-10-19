@@ -2,55 +2,53 @@
  * LicenseReader.h
  *
  *  Created on: Mar 30, 2014
- *      
+ *
  */
 
 #ifndef LICENSEREADER_H_
 #define LICENSEREADER_H_
+#include <string>
+#include <ctime>
 
+#define SI_SUPPORT_IOSTREAMS
 #include "api/datatypes.h"
 #include "base/EventRegistry.h"
 #include "os/os.h"
-#include "locate/LocatorStrategy.hpp"
-#define SI_SUPPORT_IOSTREAMS
 #include "ini/SimpleIni.h"
-#include <string>
-#include <ctime>
-namespace license {
 
-using namespace std;
+namespace license {
 
 class FullLicenseInfo {
 public:
-	string source;
-	string product;
-	string license_signature;
+	std::string source;
+	std::string product;
+	std::string license_signature;
 	int license_version;
-	string from_date;
-	string to_date;
+	std::string from_date;
+	std::string to_date;
 	bool has_expiry;
 	unsigned int from_sw_version;
 	unsigned int to_sw_version;
 	bool has_versions;
-	string client_signature;
+	std::string client_signature;
 	bool has_client_sig;
-	string extra_data;
+	std::string extra_data;
 
 	static const char* UNUSED_TIME;
 	static const unsigned int UNUSED_SOFTWARE_VERSION = 0;
 
-	FullLicenseInfo(const string& source, const string& product,
-			const string& license_signature, int licenseVersion,
-			string from_date = UNUSED_TIME,
-			string to_date = UNUSED_TIME, //
-			const string& client_signature = "", //
+	FullLicenseInfo(const std::string& source, const std::string& product,
+			const std::string& license_signature, int licenseVersion,
+			std::string from_date = UNUSED_TIME,
+			std::string to_date = UNUSED_TIME, //
+			const std::string& client_signature = "", //
 			unsigned int from_sw_version = UNUSED_SOFTWARE_VERSION,
 			unsigned int to_sw_version = UNUSED_SOFTWARE_VERSION,
-			const string& extra_data = "");
-	string printForSign() const;
-	void printAsIni(ostream & a_ostream) const;
+			const std::string& extra_data = "");
+	std::string printForSign() const;
+	void printAsIni(std::ostream & a_ostream) const;
 	void toLicenseInfo(LicenseInfo* license) const;
-	EventRegistry validate(int sw_version);
+	bool validate(int sw_version, EventRegistry& eventRegistryOut);
 	time_t expires_on() const;
 	time_t valid_from() const;
 };
@@ -67,19 +65,19 @@ public:
  *  sw_version_to = (optional int)
  *  from_date = YYYY-MM-DD (optional)
  *  to_date  = YYYY-MM-DD (optional)
- *  client_signature = XXXXXXXX (optional string 16)
+ *  client_signature = XXXXXXXX (optional std::string 16)
  *  license_signature = XXXXXXXXXX (mandatory, 1024)
- *  application_data = xxxxxxxxx (optional string 16)
+ *  application_data = xxxxxxxxx (optional std::string 16)
  *	license_version = 100 (mandatory int)
  *  </pre>
  */
 class LicenseReader {
 private:
-	const LicenseLocation licenseLocation;
+	const LicenseLocation* licenseLocation;
 public:
-	LicenseReader(const LicenseLocation& licenseLocation);
-	EventRegistry readLicenses(const string &product,
-			vector<FullLicenseInfo>& licenseInfoOut);
+	LicenseReader(const LicenseLocation* licenseLocation);
+	EventRegistry readLicenses(const std::string &product,
+			std::vector<FullLicenseInfo>& licenseInfoOut);
 	virtual ~LicenseReader();
 };
 }

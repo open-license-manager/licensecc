@@ -15,6 +15,7 @@ target_link_libraries(
      ini
      locators
      os
+     base
 )
 
 install(TARGETS licensecc_static ARCHIVE DESTINATION lib)

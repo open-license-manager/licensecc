@@ -52,35 +52,42 @@ FullLicenseInfo::FullLicenseInfo(const string &source, const string &product,
 		extra_data(extra_data) {
 }
 
-EventRegistry FullLicenseInfo::validate(int sw_version) {
-	EventRegistry er;
+bool FullLicenseInfo::validate(int sw_version,
+		EventRegistry &eventRegistryOut) {
 	os_initialize();
 	const FUNCTION_RETURN sigVer = verifySignature(printForSign().c_str(),
 			license_signature.c_str());
-	const bool sigVerified = sigVer == FUNC_RET_OK;
-	if (sigVerified) {
-		er.addEvent(LICENSE_VERIFIED, SVRT_INFO);
+	bool is_valid = (sigVer == FUNC_RET_OK);
+	if (is_valid) {
+		eventRegistryOut.addEvent(SIGNATURE_VERIFIED, source);
 	} else {
-		er.addEvent(LICENSE_CORRUPTED, SVRT_ERROR);
+		eventRegistryOut.addEvent(LICENSE_CORRUPTED, source);
 	}
 	if (has_expiry) {
+		cout<<source<<endl;
 		const time_t now = time(nullptr);
 		if (expires_on() < now) {
-			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR, "");
+/*
+			eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
+					string("Expired on: " + this->to_date).c_str());*/
+			eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),nullptr);
+			is_valid = false;
 		}
 		if (valid_from() > now) {
-			er.addEvent(PRODUCT_EXPIRED, SVRT_ERROR);
+			/*eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
+					string("Valid from " + this->from_date).c_str());*/
+			eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),nullptr);
+			is_valid = false;
 		}
 	}
 	if (has_client_sig) {
 		PcSignature str_code;
 		strncpy(str_code, client_signature.c_str(), sizeof(str_code) - 1);
 		const EVENT_TYPE event = validate_pc_signature(str_code);
-		if (event != LICENSE_OK) {
-			er.addEvent(event, SVRT_ERROR);
-		}
+		eventRegistryOut.addEvent(event, source);
+		is_valid = is_valid && (event == LICENSE_OK);
 	}
-	return er;
+	return is_valid;
 }
 
 void FullLicenseInfo::toLicenseInfo(LicenseInfo *license) const {
@@ -102,7 +109,7 @@ void FullLicenseInfo::toLicenseInfo(LicenseInfo *license) const {
 	}
 }
 
-LicenseReader::LicenseReader(const LicenseLocation &licenseLocation) :
+LicenseReader::LicenseReader(const LicenseLocation* licenseLocation) :
 		licenseLocation(licenseLocation) {
 }
 
@@ -110,48 +117,39 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 		vector<FullLicenseInfo> &licenseInfoOut) {
 	vector<string> diskFiles;
 	vector<unique_ptr<locate::LocatorStrategy>> locator_strategies;
-	FUNCTION_RETURN ret = locate::LocatorFactory::getActiveStrategies(
-			locator_strategies, licenseLocation.licenseFileLocation);
+	FUNCTION_RETURN ret = locate::LocatorFactory::get_active_strategies(
+			locator_strategies, licenseLocation);
 	EventRegistry eventRegistry;
 	if (ret != FUNC_RET_OK) {
-		eventRegistry.addError(LICENSE_FILE_NOT_FOUND);
+		eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND);
+		eventRegistry.turnWarningsIntoErrors();
 		return eventRegistry;
 	}
 
-	if (!eventRegistry.isGood()) {
-		return eventRegistry;
-	}
-	bool atLeastOneFileFound = false;
-	bool atLeastOneFileRecognized = false;
-	bool atLeastOneProductLicensed = false;
 	bool atLeastOneLicenseComplete = false;
-	for (unique_ptr<locate::LocatorStrategy>& locator : locator_strategies) {
-		vector<string> licenseLocations = locator->licenseLocations(
+	for (unique_ptr<locate::LocatorStrategy> &locator : locator_strategies) {
+		vector<string> licenseLocations = locator->license_locations(
 				eventRegistry);
 		if (licenseLocations.size() == 0) {
 			continue;
 		}
-		atLeastOneFileFound = true;
 		CSimpleIniA ini;
 		for (auto it = licenseLocations.begin(); it != licenseLocations.end();
 				it++) {
 			ini.Reset();
-			string license = locator->retrieveLicense((*it).c_str());
+			string license = locator->retrieve_license_content((*it).c_str());
 			const SI_Error rc = ini.LoadData(license.c_str(), license.size());
 			if (rc < 0) {
-				eventRegistry.addEvent(FILE_FORMAT_NOT_RECOGNIZED, SVRT_WARN,
-						*it);
+				eventRegistry.addEvent(FILE_FORMAT_NOT_RECOGNIZED, 	*it);
 				continue;
-			} else {
-				atLeastOneFileRecognized = true;
 			}
 			const char *productNamePtr = product.c_str();
 			const int sectionSize = ini.GetSectionSize(productNamePtr);
 			if (sectionSize <= 0) {
-				eventRegistry.addEvent(PRODUCT_NOT_LICENSED, SVRT_WARN, *it);
+				eventRegistry.addEvent(PRODUCT_NOT_LICENSED, *it);
 				continue;
 			} else {
-				atLeastOneProductLicensed = true;
+				eventRegistry.addEvent(PRODUCT_FOUND, 	*it);
 			}
 			/*
 			 *  sw_version_from = (optional int)
@@ -193,19 +191,12 @@ EventRegistry LicenseReader::readLicenses(const string &product,
 				licenseInfoOut.push_back(licInfo);
 				atLeastOneLicenseComplete = true;
 			} else {
-				eventRegistry.addEvent(LICENSE_MALFORMED, SVRT_WARN, *it);
+				eventRegistry.addEvent(LICENSE_MALFORMED, *it);
 			}
 		}
 	}
-	if (!atLeastOneFileFound) {
-		eventRegistry.turnEventIntoError(ENVIRONMENT_VARIABLE_NOT_DEFINED);
-		eventRegistry.turnEventIntoError(LICENSE_FILE_NOT_FOUND);
-	} else if (!atLeastOneFileRecognized) {
-		eventRegistry.turnEventIntoError(FILE_FORMAT_NOT_RECOGNIZED);
-	} else if (!atLeastOneProductLicensed) {
-		eventRegistry.turnEventIntoError(PRODUCT_NOT_LICENSED);
-	} else	if (!atLeastOneLicenseComplete) {
-		eventRegistry.turnEventIntoError(LICENSE_MALFORMED);
+	if (!atLeastOneLicenseComplete) {
+		eventRegistry.turnWarningsIntoErrors();
 	}
 	return eventRegistry;
 }

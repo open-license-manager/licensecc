@@ -17,7 +17,7 @@ class EnvironmentVarLocation: public LocatorStrategy {
 
 public:
 	EnvironmentVarLocation();
-	virtual const std::vector<std::string> licenseLocations(EventRegistry& eventRegistry) const;
+	virtual const std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	virtual ~EnvironmentVarLocation();
 };
 

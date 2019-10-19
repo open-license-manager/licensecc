@@ -24,10 +24,9 @@ BOOST_AUTO_TEST_CASE( license_not_expired ) {
 	/* */
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
-	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.environmentVariableName = "";
-	const EVENT_TYPE result = acquire_license("TEST", licenseLocation,
+	licenseLocation.licenseData = "";
+	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
 			&license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
@@ -44,10 +43,10 @@ BOOST_AUTO_TEST_CASE( license_expired ) {
 	/* */
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
-	licenseLocation.openFileNearModule = false;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.environmentVariableName = "";
-	const EVENT_TYPE result = acquire_license("TEST", licenseLocation,
+	licenseLocation.licenseData = nullptr;
+	BOOST_TEST_MESSAGE("before acquire license");
+	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
 			&license);
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);

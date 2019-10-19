@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../base/base.h"
+#include "../api/datatypes.h"
 #include "LocatorStrategy.hpp"
 
 namespace license {
@@ -19,9 +20,9 @@ private:
 	}
 public:
 
-	static FUNCTION_RETURN getActiveStrategies(
+	static FUNCTION_RETURN get_active_strategies(
 			std::vector<std::unique_ptr<LocatorStrategy>> &strategiesOut,
-			const char *locationHint);
+			const LicenseLocation *locationHint);
 
 };
 

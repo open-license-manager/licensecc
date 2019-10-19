@@ -8,7 +8,6 @@
 #ifndef STRINGUTILS_H_
 #define STRINGUTILS_H_
 
-#include <bits/types/time_t.h>
 #include <string>
 #include <vector>
 

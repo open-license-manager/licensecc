@@ -7,6 +7,9 @@
 *.so
 *.dylib
 
+#Visual studio files
+.vs
+
 # Compiled Static libraries
 *.lai
 *.la
@@ -22,3 +25,4 @@ build
 .settings
 .project
 *.out
+/Default/

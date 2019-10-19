@@ -9,19 +9,24 @@
 #include <string>
 #include <cerrno>
 #include <iostream>
-#include <algorithm> 
+#include <algorithm>
 
 #include "FileUtils.hpp"
 
 namespace license {
 using namespace std;
 
-vector<string> filter_existing_files(const vector<string> &fileList) {
+vector<string> filter_existing_files(const vector<string> &fileList,
+		EventRegistry& registry,const char* extraData) {
 	vector<string> existingFiles;
 	for (auto it = fileList.begin(); it != fileList.end(); it++) {
+		registry.addEvent(LICENSE_SPECIFIED,it->c_str(), extraData);
 		ifstream f(it->c_str());
 		if (f.good()) {
 			existingFiles.push_back(*it);
+			registry.addEvent(LICENSE_FOUND,it->c_str(),extraData);
+		} else {
+			registry.addEvent(LICENSE_FILE_NOT_FOUND,it->c_str(), extraData);
 		}
 		f.close();
 	}
@@ -57,7 +62,7 @@ string remove_extension(const string& path) {
 		return (dotpos == 0 ? path : path.substr(0, dotpos));
 	} else if(pathsep_pos >= dotpos +1) {
 		return path;
-	} 
+	}
 	return path.substr(0, dotpos);
 }
 

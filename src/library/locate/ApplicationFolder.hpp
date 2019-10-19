@@ -18,7 +18,7 @@ namespace locate {
 class ApplicationFolder: public LocatorStrategy {
 public:
 	ApplicationFolder();
-	virtual const std::vector<std::string> licenseLocations(EventRegistry& eventRegistry) const;
+	virtual const std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	virtual ~ApplicationFolder();
 };
 

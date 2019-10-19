@@ -52,3 +52,21 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
 ELSE()
 	ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
 ENDIF()
+
+### LicenseLocator tests
+add_executable(
+ test_event_registry
+ EventRegistry_test.cpp
+)
+
+target_link_libraries(
+ test_event_registry
+ base
+ ${Boost_LIBRARIES}
+)
+
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
+	ADD_TEST(NAME test_event_registry COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_event_registry)
+ELSE()
+	ADD_TEST(NAME test_event_registry COMMAND test_event_registry)
+ENDIF()

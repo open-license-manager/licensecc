@@ -10,6 +10,7 @@ ADD_LIBRARY(
 target_link_libraries(
      license_generator_lib
      tools_base
+     base
      licensecc_static
 	 $<$<CONFIG:Debug>:${Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG}>
      $<$<NOT:$<CONFIG:Debug>>:${Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE}>	 

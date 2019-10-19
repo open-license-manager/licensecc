@@ -15,10 +15,12 @@ namespace locate {
 
 class ExternalDefinition: public LocatorStrategy {
 private:
-	const std::string m_location;
+	const LicenseLocation* m_location;
+	bool licenseDataIsBase64 = false;
 public:
-	ExternalDefinition(const char* location);
-	virtual const std::vector<std::string> licenseLocations(EventRegistry& eventRegistry) const;
+	ExternalDefinition(const LicenseLocation* location);
+	virtual const std::vector<std::string> license_locations(EventRegistry& eventRegistry);
+	virtual const std::string retrieve_license_content(const std::string &licenseLocation) const;
 	virtual ~ExternalDefinition();
 };
 

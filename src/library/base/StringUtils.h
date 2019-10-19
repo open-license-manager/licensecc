@@ -2,11 +2,13 @@
  * StringUtils.h
  *
  *  Created on: Apr 8, 2014
- *      
+ *
  */
 
 #ifndef STRINGUTILS_H_
 #define STRINGUTILS_H_
+
+#include <bits/types/time_t.h>
 #include <string>
 #include <vector>
 
@@ -28,7 +30,14 @@ time_t seconds_from_epoch(const char* s);
 /**
  * Split a string on a given character
  */
-const vector<string> split_string(const string& licensePositions, const char splitchar);
+const vector<string> split_string(const string& stringToBeSplit, const char splitchar);
+
+typedef enum {
+	INI, BASE64, UNKNOWN
+} FILE_FORMAT;
+
+FILE_FORMAT identify_format(const string& license);
+
 }
 
 /* namespace license */

@@ -2,7 +2,7 @@
  * EventRegistry.h
  *
  *  Created on: Mar 30, 2014
- *      
+ *
  */
 
 #ifndef EVENTREGISTRY_H_
@@ -10,43 +10,51 @@
 
 #include "../api/datatypes.h"
 #include <vector>
+#include <map>
+#include <set>
 #include <string>
 
 namespace license {
 
-/*
- AuditEvent error_event_builder(EVENT_TYPE event);
- AuditEvent audit_event_builder(EVENT_TYPE event, SEVERITY severity);
- AuditEvent audit_event_builder(EVENT_TYPE event, SEVERITY severity,
- const string& eventParameter);*/
-
+/**
+ * Tracks the events relative to a license and provide explanation regarding
+ * failures to verify licenses.
+ */
 class EventRegistry {
 private:
 	friend EventRegistry& operator<<(EventRegistry&, AuditEvent&);
 	friend EventRegistry& operator<<(EventRegistry&, EventRegistry&);
-	//TODO change into map
+	friend std::ostream & operator << (std::ostream &out, const EventRegistry &er);
+
 	std::vector<AuditEvent> logs;
-	//Forbid copy
-	//EventRegistry(const EventRegistry& that) = delete;
+	/**
+	 * For every license keep track of the events who progressed most
+	 * in the validation process
+	 */
+	std::map<std::string,int> mostAdvancedLogIdx_by_LicenseId;
+	int current_validation_step;
+
 public:
 	EventRegistry();
 	//operator <<
 	void append(const EventRegistry &eventRegistry);
-	void turnLastEventIntoError();
-	bool turnEventIntoError(EVENT_TYPE event);
-	bool turnErrosIntoWarnings();
 	/**
+	 * Turn the event warning for the license with the most advanced status
+	 * into an error.
+	 */
+	bool turnWarningsIntoErrors();
+	bool turnErrorsIntoWarnings();
+	bool isGood() const;
+	/**
+	 * Return the last failure (event with warn or error status)
+	 * for the license with the most advanced status.
 	 * @return NULL if no failures are found.
 	 */
 	AuditEvent const* getLastFailure() const;
-	bool isGood() const;
-
-	void addError(EVENT_TYPE event);
-	void addEvent(EVENT_TYPE event, SEVERITY severity);
-	void addEvent(EVENT_TYPE event, SEVERITY severity,
-			const std::string &eventParameter);
+	void addEvent(EVENT_TYPE event, const std::string &licenseLocationId);
+	void addEvent(EVENT_TYPE event, const char *licenseLocationId = nullptr,
+			const char *info = nullptr);
 	void exportLastEvents(AuditEvent *auditEvents, int nlogs);
-
 };
 }
 #endif /* EVENTREGISTRY_H_ */

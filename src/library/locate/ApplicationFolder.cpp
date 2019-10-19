@@ -23,18 +23,15 @@ namespace license {
 namespace locate {
 using namespace std;
 
-
-
 ApplicationFolder::ApplicationFolder() :
 		LocatorStrategy("ApplicationFolder") {
-
 }
 
 ApplicationFolder::~ApplicationFolder() {
 }
 
-const vector<string> ApplicationFolder::licenseLocations(
-		EventRegistry &eventRegistry) const {
+const vector<string> ApplicationFolder::license_locations(
+		EventRegistry &eventRegistry) {
 	vector<string> diskFiles;
 	char fname[MAX_PATH] = { 0 };
 	const FUNCTION_RETURN fret = getModuleName(fname);
@@ -44,11 +41,9 @@ const vector<string> ApplicationFolder::licenseLocations(
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
 			diskFiles.push_back(temptativeLicense);
-			eventRegistry.addEvent((EVENT_TYPE) LICENSE_FILE_FOUND,
-					(SEVERITY) SVRT_INFO, temptativeLicense);
+			eventRegistry.addEvent(LICENSE_FOUND, temptativeLicense.c_str());
 		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, SVRT_WARN,
-					temptativeLicense);
+			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, temptativeLicense.c_str());
 		}
 		f.close();
 	} else {

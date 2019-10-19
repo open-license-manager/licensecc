@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : license-manager-cpp.cpp
-// Author      : 
+// Author      :
 // Version     :
 // Copyright   : BSD
 //============================================================================
@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+#include <iostream>
 
 #include "api/license++.h"
 
@@ -41,7 +42,7 @@ static void mergeLicenses(vector<license::FullLicenseInfo> licenses,
 }
 
 EVENT_TYPE acquire_license(const char * product,
-		LicenseLocation licenseLocation, LicenseInfo* license) {
+		const LicenseLocation* licenseLocation, LicenseInfo* licenseInfoOut) {
 	license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	license::EventRegistry er = lr.readLicenses(string(product), licenses);
@@ -50,28 +51,32 @@ EVENT_TYPE acquire_license(const char * product,
 		vector<license::FullLicenseInfo> licenses_with_errors;
 		vector<license::FullLicenseInfo> licenses_ok;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
-			license::EventRegistry validation_er = it->validate(0);
-			if (validation_er.isGood()) {
+			bool valid = it->validate(0,er);
+			if (valid) {
 				licenses_ok.push_back(*it);
 			} else {
 				licenses_with_errors.push_back(*it);
 			}
-			er.append(validation_er);
 		}
 		if (licenses_ok.size() > 0) {
-			er.turnErrosIntoWarnings();
+			er.turnErrorsIntoWarnings();
 			result = LICENSE_OK;
-			mergeLicenses(licenses_ok, license);
+			mergeLicenses(licenses_ok, licenseInfoOut);
 		} else {
+			er.turnWarningsIntoErrors();
 			result = er.getLastFailure()->event_type;
-			mergeLicenses(licenses_with_errors, license);
+			mergeLicenses(licenses_with_errors, licenseInfoOut);
 		}
 
 	} else {
+		er.turnWarningsIntoErrors();
 		result = er.getLastFailure()->event_type;
 	}
-	if (license != nullptr) {
-		er.exportLastEvents(license->status, 5);
+#ifdef _DEBUG
+	cout << er <<endl;
+#endif
+	if (licenseInfoOut != nullptr) {
+		er.exportLastEvents(licenseInfoOut->status, AUDIT_EVENT_NUM);
 	}
 	return result;
 }

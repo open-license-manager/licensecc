@@ -18,7 +18,8 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 
 * **Use a clear and descriptive title** for the issue to identify the problem.
 * **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager. 
-* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). The best way to report a bug is to **design a test** to demonstrate it. 
+* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). 
+* **Provide a boost unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
 * **If you're reporting that Open License Manager crashed**, include a crash dump and the associated message. 
 * **Label the issue as bug.**
 
@@ -79,8 +80,8 @@ Supposing you already know how to contribute to an open source project on GitHub
 
 ##### Don't
  * Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. 
- * Very large pull requests with few comments, no corresponding issue will probably be rejected.
-    * We understand that the project is still in a very alpha stage and a rearrangement is needed, however we would like to discuss it with you before we take project changing decision. 
-    * We can't break current functionality, user established habits without documenting the change.
+ * Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
+    * We understand that the project is still in a very alpha stage and a rearrangement is needed, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
+    * Even it it's in alpha stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
 
   

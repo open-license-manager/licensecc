@@ -3,22 +3,9 @@
 
 /*
  * This include file is the public api di License++
- * You should include this file if your software don't plan to use
- * the part of the library dealing with features.
- * Otherwise licensepp-features.h should be included.
- */
+*/
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#ifdef __unix__
-#define DllExport
-#ifndef MAX_PATH
-	#define MAX_PATH 1024
-#endif
-#else
-#include <windows.h>
-#define DllExport  __declspec( dllexport )
 #endif
 
 #include "datatypes.h"
@@ -53,7 +40,7 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
  */
 
 EVENT_TYPE acquire_license(const char * productName,
-		LicenseLocation licenseLocation, LicenseInfo* license);
+		const LicenseLocation* licenseLocation, LicenseInfo* license);
 
 /**
  * Do nothing for now, useful for network licenses.
@@ -61,7 +48,7 @@ EVENT_TYPE acquire_license(const char * productName,
  * license.
  */
 EVENT_TYPE confirm_license(char * featureName,
-		LicenseLocation licenseLocation);
+		LicenseLocation* licenseLocation);
 /**
  * Do nothing for now, useful for network licenses.
  */

@@ -43,7 +43,7 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-
+#set CROSSCOMPILING_EMULATOR
 IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
 #binfmt_misc doesn't work in my system :(
 	ADD_TEST(NAME test_standard_license COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_standard_license WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

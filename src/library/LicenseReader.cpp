@@ -22,9 +22,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <public_key.h>
+
 #include "pc-identifiers.h"
 #include "build_properties.h"
-#include "public-key.h"
 #include "LicenseReader.hpp"
 #include "base/StringUtils.h"
 #include "base/logger.h"
@@ -207,8 +208,7 @@ LicenseReader::~LicenseReader() {
 string FullLicenseInfo::printForSign() const {
 	ostringstream oss;
 	oss << toupper_copy(trim_copy(this->product));
-	oss << SHARED_RANDOM
-	;
+	//oss << SHARED_RANDOM;
 	if (has_client_sig) {
 		oss << trim_copy(this->client_signature);
 	}

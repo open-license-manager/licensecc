@@ -1,0 +1,2 @@
+#define PRODUCT_NAME {{ product_name }}
+#define PUBLIC_KEY {1,2,3}

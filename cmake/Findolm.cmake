@@ -57,6 +57,7 @@ if(OLM_LOCATION)
 	set_property(TARGET license_generator::olm PROPERTY IMPORTED_LOCATION ${OLM_EXECUTABLE})  
 ELSE(OLM_LOCATION)
 	find_package(olm REQUIRED NO_CMAKE_PATH) #try to find it without looping on this module
+	message(STATUS ${olm_FOUND})
 	IF(NOT olm_FOUND) 	
 		find_package(Git QUIET)
 		if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")

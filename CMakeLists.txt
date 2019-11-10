@@ -36,7 +36,7 @@ set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/privat
 
 add_custom_command(
   OUTPUT "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}"
-  COMMAND license_generator::olm project initialize -s "${PROJECT_SOURCE_DIR}/src" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
+  COMMAND license_generator::olm project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
   COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY}"
   USES_TERMINAL
 )

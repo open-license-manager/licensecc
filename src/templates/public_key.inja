@@ -1,2 +1,4 @@
 #define PRODUCT_NAME {{ product_name }}
-#define PUBLIC_KEY {1,2,3}
+#define PUBLIC_KEY { \
+{%for i in public_key%}{% if loop.index1 > 1 %},{% endif %}{{ i }}{%endfor%}\ 
+}

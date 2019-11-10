@@ -19,7 +19,7 @@ static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
 FUNCTION_RETURN verifySignature(const char* stringToVerify,
 		const char* signatureB64) {
 	EVP_MD_CTX *mdctx = NULL;
-	const char *pubKey = PUBLIC_KEY;
+	const char pubKey[] = PUBLIC_KEY;
 	int func_ret = 0;
 
 	BIO* bio = BIO_new_mem_buf((void*) (pubKey), strlen(pubKey));

@@ -28,6 +28,6 @@ build/*
 *.out
 /Default/
 
-product/*
-!product/.gitkeep
+projects/*
+!projects/.gitkeep
 

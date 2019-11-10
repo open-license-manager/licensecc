@@ -6,6 +6,6 @@ ADD_LIBRARY(base STATIC
     base64.c
 )
 
-add_dependencies( base product_initialize )
+add_dependencies( base project_initialize )
 
 install(TARGETS base ARCHIVE DESTINATION lib)

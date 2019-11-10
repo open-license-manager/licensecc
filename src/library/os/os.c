@@ -1,6 +1,6 @@
 #include "os.h"
 #include "../base/logger.h"
-#include "public-key.h"
+#include <public_key.h>
 #include <stdio.h>
 
 #ifdef __linux__

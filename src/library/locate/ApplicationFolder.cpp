@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#include <build_properties.h>
+//B#include <build_properties.h>
 
 #include "../base/logger.h"
 #include "../api/datatypes.h"

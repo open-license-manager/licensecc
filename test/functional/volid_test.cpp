@@ -6,8 +6,9 @@
 #include <cstring>
 #include "../../src/tools/license-generator/license-generator.h"
 #include "../../src/library/api/license++.h"
-#include <build_properties.h>
 #include <boost/filesystem.hpp>
+#include <licensecc_properties.h>
+#include <licensecc_properties_test.h>
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 #include "../../src/library/pc-identifiers.h"

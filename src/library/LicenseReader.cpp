@@ -23,9 +23,9 @@
 #include <math.h>
 
 #include <public_key.h>
+#include <licensecc_properties.h>
 
 #include "pc-identifiers.h"
-#include "build_properties.h"
 #include "LicenseReader.hpp"
 #include "base/StringUtils.h"
 #include "base/logger.h"

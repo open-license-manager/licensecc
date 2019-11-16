@@ -203,13 +203,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 }
 
 void os_initialize() {
-	static int initialized = 0;
-	if (initialized == 0) {
-		initialized = 1;
-		ERR_load_ERR_strings();
-		ERR_load_crypto_strings();
-		OpenSSL_add_all_algorithms();
-	}
+
 }
 
 static void _getCpuid(unsigned int *p, unsigned int ax) {

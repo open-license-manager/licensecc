@@ -14,7 +14,7 @@ SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 IF(NOT LCC_PROJECT_NAME)
 	message(WARNING "You should define a variable LCC_PROJECT_NAME containing the name of the software you want to add a license to."
 		"A mock product named DEFAULT has been added for you.")
-	set(LCC_PROJECT_NAME "DEFAULT") 
+	set(LCC_PROJECT_NAME "DEFAULT" CACHE STRING "Project name (name of the software for which you want to issue a license)") 
 ENDIF(NOT LCC_PROJECT_NAME)
 
 #base folder where projects are stored (/projects)
@@ -26,8 +26,69 @@ project (licensecc C CXX )
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-#find olm executable or build it.
-find_package(olm REQUIRED) 
+#find lcc executable or build it.
+find_package(lcc REQUIRED) 
+
+#Not sure about this. My system doesn't support binfmt misc
+IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT DEFINED CMAKE_CROSSCOMPILING_EMULATOR )
+	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
+ENDIF()
+
+if(MSVC)
+	include(target_arch)
+	target_architecture( TARGET_ARCHITECTURE )
+	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
+	
+	#Boost > 3.15 handle the /MD flag more nicely than this
+	if(${STATIC_RUNTIME})
+		string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+		string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+		string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+		string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+		SET(Boost_USE_STATIC_RUNTIME ON)
+	endif(${STATIC_RUNTIME})
+
+	add_definitions("/D _CRT_SECURE_NO_WARNINGS")
+else(MSVC)
+    if(MINGW)
+        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lws2_32 -liphlpapi")
+        SET(CMAKE_EXE_LINKER_FLAGS "-static")
+    endif(MINGW)
+endif(MSVC)
+
+if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
+	#find a static version of openssl crypto library
+	SET ( OPENSSL_USE_STATIC_LIBS ON )
+	find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+	include_directories(${OPENSSL_INCLUDE_DIR})
+    #list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
+    #find_package(Threads)
+	#if(THREADS_HAVE_PTHREAD_ARG)
+  	#	list(APPEND EXTERNAL_LIBS "-pthread")
+	#else(THREADS_HAVE_PTHREAD_ARG)
+	#	if(CMAKE_THREAD_LIBS_INIT)
+  	#		 list(APPEND EXTERNAL_LIBS "${CMAKE_THREAD_LIBS_INIT}")
+	#	endif()
+	#endif(THREADS_HAVE_PTHREAD_ARG)
+	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
+	#Zlib required when openssl version < 1.0.1f
+	#SET ( ZLIB_USE_STATIC_LIBS ON )
+	#find_package(ZLIB REQUIRED)
+	#MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
+	find_program( MEMORYCHECK_COMMAND valgrind )
+	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+	if(USE_DBUS_IDENTIFIER)
+	    FIND_PACKAGE(Dbus REQUIRED)
+	    add_definitions(-DUSE_DBUS)
+	    include_directories(${DBUS_INCLUDE_DIR})
+	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
+	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
+	endif(USE_DBUS_IDENTIFIER)    
+	if(NOT MINGW)
+ 		list(APPEND EXTERNAL_LIBS ${CMAKE_DL_LIBS}) 
+	endif(NOT MINGW)
+endif(UNIX)
+
 
 #load the current project from files or find it from environment variables or create a default one
 set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJECT_NAME}/${LCC_PROJECT_NAME}" )
@@ -36,18 +97,14 @@ set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/privat
 
 add_custom_command(
   OUTPUT "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}"
-  COMMAND license_generator::olm project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
+  COMMAND license_generator::lcc project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
   COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY}"
   USES_TERMINAL
 )
 
 add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
 
-configure_file (
-	"src/templates/build_properties.h.in" 
-	"${LCC_INCLUDE_DIR}/build_properties.h"
-)
-include_directories( ${LCC_INCLUDE_DIR} )
+include_directories( ${LCC_INCLUDE_DIR} ${CMAKE_BINARY_DIR} )
 
 message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
 message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
@@ -62,6 +119,8 @@ message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
 message( STATUS "Project name      : " ${LCC_PROJECT_NAME} )
 message( STATUS "Project base dir  : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME} )
 
+add_subdirectory(src)
+
 #boost is required only for tests
 #bug in cmake win32 - can't find boost compiled with mingw 
 if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
@@ -73,14 +132,8 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
     endif()
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
-
-add_subdirectory(src)
-
 SET( Boost_USE_STATIC_LIBS ON )
 find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
-
-#set below in case of dynamic linking in debug.
-#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)
 
 #if boost is found enable tests
 IF(Boost_FOUND)
@@ -91,7 +144,7 @@ IF(Boost_FOUND)
 		add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
 		add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
 		include_directories(${Boost_INCLUDE_DIRS}) 
-#		add_subdirectory(test)
+		add_subdirectory(test)
 	ENDIF(BUILD_TESTING)
 ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")

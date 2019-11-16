@@ -7,7 +7,7 @@
 
 #include "EnvironmentVarData.hpp"
 
-#include <build_properties.h>
+#include <licensecc_properties.h>
 #include <cstdlib>
 #include <regex>
 #include <string>

@@ -11,7 +11,8 @@
 #include <boost/test/unit_test.hpp>
 #include <stdlib.h>
 
-#include <build_properties.h>
+#include <licensecc_properties.h>
+#include <licensecc_properties_test.h>
 
 #include "../../src/library/os/os.h"
 #include "../../src/library/base/EventRegistry.h"

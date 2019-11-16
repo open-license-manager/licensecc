@@ -1,18 +1,30 @@
-IF(WIN32)
+IF(UNIX)
     ADD_LIBRARY(os STATIC
-        os.c
-        os-win.c)
-ELSE(WIN32)
-    ADD_LIBRARY(os STATIC
+        linux/verifier.cpp
         os.c
         os-linux.c
         network_id.c)
-ENDIF(WIN32)
+        
+	target_link_libraries(
+	     os
+	     base
+	     OpenSSL::Crypto
+	     ${EXTERNAL_LIBS}
+	     ##ZLIB::ZLIB
+	)
+	
+ELSE(UNIX)
+    ADD_LIBRARY(os STATIC
+        windows/verifier.cpp
+        os.c
+        os-win.c)
 
-target_link_libraries(
-     os
-     base
-     ${EXTERNAL_LIBS}
-)
+	target_link_libraries(
+	     os
+	     base
+	)
+ENDIF(UNIX)
+
+
 
 install(TARGETS os ARCHIVE DESTINATION lib)

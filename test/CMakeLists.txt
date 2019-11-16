@@ -4,4 +4,4 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_directories ( ${Boost_LIBRARY_DIR} )
 
 add_subdirectory(library)
-add_subdirectory(functional)
+#add_subdirectory(functional)

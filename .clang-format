@@ -1,0 +1,12 @@
+BasedOnStyle: Google
+Language: Cpp
+Standard: Cpp11
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 120
+UseTab: Always
+AccessModifierOffset: -4
+AlignTrailingComments: false
+FixNamespaceComments: true
+SortIncludes: false
+SortUsingDeclarations : true

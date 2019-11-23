@@ -12,7 +12,7 @@
 
 #include <public_key.h>
 
-#include "../verifier.hpp"
+#include "../signature_verifier.h"
 
 namespace license {
 #include "../../base/logger.h"
@@ -26,7 +26,7 @@ static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
 	}
 }
 
-Verifier::Verifier() {
+static void initialize() {
 	static int initialized = 0;
 	if (initialized == 0) {
 		initialized = 1;
@@ -36,13 +36,14 @@ Verifier::Verifier() {
 	}
 }
 
-FUNCTION_RETURN Verifier::verifySignature(const std::string& stringToVerify, const std::string& signatureB64) {
+FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::string& signatureB64) {
 	EVP_MD_CTX* mdctx = NULL;
 	const unsigned char pubKey[] = PUBLIC_KEY;
 	int func_ret = 0;
+	initialize();
 
-	BIO* bio = BIO_new_mem_buf((void*)(pubKey), PUBLIC_KEY_LEN);
-	RSA* rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);
+	BIO* bio = BIO_new_mem_buf((void*)(pubKey), sizeof(pubKey));
+	RSA* rsa = d2i_RSAPublicKey_bio(bio, NULL);
 	BIO_free(bio);
 	if (rsa == NULL) {
 		LOG_ERROR("Error reading public key");
@@ -97,9 +98,6 @@ FUNCTION_RETURN Verifier::verifySignature(const std::string& stringToVerify, con
 
 	free_resources(pkey, mdctx);
 	return result;
-}
-
-Verifier::~Verifier() {
 }
 
 } /* namespace license */

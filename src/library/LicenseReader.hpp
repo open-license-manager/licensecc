@@ -11,7 +11,8 @@
 #include <ctime>
 
 #define SI_SUPPORT_IOSTREAMS
-#include "api/datatypes.h"
+#include <licensecc/datatypes.h>
+
 #include "base/EventRegistry.h"
 #include "os/os.h"
 #include "ini/SimpleIni.h"
@@ -20,37 +21,14 @@ namespace license {
 
 class FullLicenseInfo {
 public:
-	std::string source;
-	std::string product;
-	std::string license_signature;
-	int license_version;
-	std::string from_date;
-	std::string to_date;
-	bool has_expiry;
-	unsigned int from_sw_version;
-	unsigned int to_sw_version;
-	bool has_versions;
-	std::string client_signature;
-	bool has_client_sig;
-	std::string extra_data;
+	const std::string license_signature;
+	const std::string source;
+	const std::string m_project;
+	std::map<std::string, std::string> m_limits;
 
-	static const char* UNUSED_TIME;
-	static const unsigned int UNUSED_SOFTWARE_VERSION = 0;
-
-	FullLicenseInfo(const std::string& source, const std::string& product,
-			const std::string& license_signature, int licenseVersion,
-			std::string from_date = UNUSED_TIME,
-			std::string to_date = UNUSED_TIME, //
-			const std::string& client_signature = "", //
-			unsigned int from_sw_version = UNUSED_SOFTWARE_VERSION,
-			unsigned int to_sw_version = UNUSED_SOFTWARE_VERSION,
-			const std::string& extra_data = "");
+	FullLicenseInfo(const std::string& source, const std::string& product, const std::string& license_signature);
 	std::string printForSign() const;
-	void printAsIni(std::ostream & a_ostream) const;
-	void toLicenseInfo(LicenseInfo* license) const;
-	bool validate(int sw_version, EventRegistry& eventRegistryOut);
-	time_t expires_on() const;
-	time_t valid_from() const;
+	operator LicenseInfo() const;
 };
 
 /**
@@ -74,11 +52,11 @@ public:
 class LicenseReader {
 private:
 	const LicenseLocation* licenseLocation;
+
 public:
 	LicenseReader(const LicenseLocation* licenseLocation);
-	EventRegistry readLicenses(const std::string &product,
-			std::vector<FullLicenseInfo>& licenseInfoOut);
+	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut);
 	virtual ~LicenseReader();
 };
-}
+}  // namespace license
 #endif /* LICENSEREADER_H_ */

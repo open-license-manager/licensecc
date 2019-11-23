@@ -7,8 +7,8 @@
 
 #include <licensecc_properties.h>
 #include <licensecc_properties_test.h>
+#include <licensecc/datatypes.h>
 
-#include "../../src/library/api/datatypes.h"
 #include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/os/os.h"
 #include "../../src/library/LicenseReader.hpp"

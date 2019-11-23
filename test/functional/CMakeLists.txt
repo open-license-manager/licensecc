@@ -32,6 +32,19 @@ target_link_libraries(
 )
 
 add_executable(
+ test_signature_verifier
+ signature_verifier_test.cpp
+)
+
+target_link_libraries(
+ test_signature_verifier
+ licensecc_static
+ license_generator_snippet
+ ${Boost_LIBRARIES}
+)
+
+
+add_executable(
  test_volid
  volid_test.cpp
 )
@@ -43,16 +56,10 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-#set CROSSCOMPILING_EMULATOR
-IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
-#binfmt_misc doesn't work in my system :(
-	ADD_TEST(NAME test_standard_license COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_standard_license WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-	ADD_TEST(NAME test_date COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_date WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-	ADD_TEST(NAME test_volid COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_volid WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-ELSE()
-	ADD_TEST(NAME test_standard_license COMMAND test_standard_license WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-	ADD_TEST(NAME test_date COMMAND test_date WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-	ADD_TEST(NAME test_volid COMMAND test_volid WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-ENDIF()
+
+ADD_TEST(NAME test_date COMMAND test_date WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME test_standard_license COMMAND test_standard_license WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME test_signature_verifier COMMAND test_signature_verifier WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME test_volid COMMAND test_volid WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 

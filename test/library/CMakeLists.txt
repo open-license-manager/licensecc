@@ -70,17 +70,3 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
 ELSE()
 	ADD_TEST(NAME test_event_registry COMMAND test_event_registry)
 ENDIF()
-
-### verifier tests
-add_executable(
- test_verifier
- verifier_test.cpp
-)
-
-target_link_libraries(
- test_verifier
- base
- ${Boost_LIBRARIES}
-)
-
-ADD_TEST(NAME test_verifier COMMAND test_verfier)

@@ -17,50 +17,42 @@
 namespace license {
 using namespace std;
 
-const map<EVENT_TYPE, int> PROGRESS_BY_EVENT_TYPE = { { LICENSE_SPECIFIED, 0 },
-		{ LICENSE_FOUND, 1 }, { PRODUCT_FOUND, 2 }, { SIGNATURE_VERIFIED, 3 }, {
-				LICENSE_OK, 4 } };
+const map<EVENT_TYPE, int> PROGRESS_BY_EVENT_TYPE = {
+	{LICENSE_SPECIFIED, 0}, {LICENSE_FOUND, 1}, {PRODUCT_FOUND, 2}, {SIGNATURE_VERIFIED, 3}, {LICENSE_OK, 4}};
 
-EventRegistry::EventRegistry() {
-	current_validation_step = -1;
-}
+EventRegistry::EventRegistry() { current_validation_step = -1; }
 
-EventRegistry& operator<<(EventRegistry &eventRegistry,
-		AuditEvent &securityEvent) {
+EventRegistry &operator<<(EventRegistry &eventRegistry, AuditEvent &securityEvent) {
 	eventRegistry.logs.push_back(securityEvent);
 	return eventRegistry;
 }
 
-EventRegistry& operator<<(EventRegistry &eventRegistry1,
-		EventRegistry &otherRegistry) {
+EventRegistry &operator<<(EventRegistry &eventRegistry1, EventRegistry &otherRegistry) {
 	eventRegistry1.append(otherRegistry);
 	return eventRegistry1;
 }
 
-ostream& operator<<(std::ostream &out, const EventRegistry &er) {
-	out << string("EventReg[step:") << er.current_validation_step
-			<< ",events:{";
+ostream &operator<<(std::ostream &out, const EventRegistry &er) {
+	out << string("EventReg[step:") << er.current_validation_step << ",events:{";
 	for (auto &it : er.logs) {
-		out << "[ev:" << it.event_type << ",sev:" << it.severity << "ref:"
-				<< it.license_reference << "]";
+		out << "[ev:" << it.event_type << ",sev:" << it.severity << "ref:" << it.license_reference << "]";
 	}
 	out << "]";
 	return out;
 }
 
 void EventRegistry::append(const EventRegistry &eventRegistry) {
-	logs.insert(logs.end(), eventRegistry.logs.begin(),
-			eventRegistry.logs.end());
+	logs.insert(logs.end(), eventRegistry.logs.begin(), eventRegistry.logs.end());
 }
 
-AuditEvent const* EventRegistry::getLastFailure() const {
+const AuditEvent *EventRegistry::getLastFailure() const {
 	const AuditEvent *result = nullptr;
 	if (logs.size() == 0) {
 		return result;
 	}
-	//try to find a failure between the licenses who progressed the most
+	// try to find a failure between the licenses who progressed the most
 	if (mostAdvancedLogIdx_by_LicenseId.size() > 0) {
-		for (auto const &mostAdvLogIter : mostAdvancedLogIdx_by_LicenseId) {
+		for (const auto &mostAdvLogIter : mostAdvancedLogIdx_by_LicenseId) {
 			const AuditEvent &currentLog = logs[mostAdvLogIter.second];
 			if (currentLog.severity == SVRT_ERROR) {
 				result = &(currentLog);
@@ -81,13 +73,11 @@ AuditEvent const* EventRegistry::getLastFailure() const {
 	return result;
 }
 
-void EventRegistry::addEvent(EVENT_TYPE event,
-		const std::string &licenseLocationId) {
+void EventRegistry::addEvent(EVENT_TYPE event, const std::string &licenseLocationId) {
 	addEvent(event, licenseLocationId.c_str(), nullptr);
 }
 
-void EventRegistry::addEvent(EVENT_TYPE event, const char *licenseLocationId,
-		const char *info) {
+void EventRegistry::addEvent(EVENT_TYPE event, const char *licenseLocationId, const char *info) {
 	AuditEvent audit;
 	auto eventIterator = PROGRESS_BY_EVENT_TYPE.find(event);
 	bool successEvent = (eventIterator != PROGRESS_BY_EVENT_TYPE.end());
@@ -104,7 +94,7 @@ void EventRegistry::addEvent(EVENT_TYPE event, const char *licenseLocationId,
 		strncpy(audit.param2, info, 255);
 	}
 	logs.push_back(audit);
-//udpate the status of the log
+	// udpate the status of the log
 	if (successEvent) {
 		int step = eventIterator->second;
 		if (step > current_validation_step) {
@@ -113,23 +103,19 @@ void EventRegistry::addEvent(EVENT_TYPE event, const char *licenseLocationId,
 		}
 
 		if (step == current_validation_step) {
-			mostAdvancedLogIdx_by_LicenseId[audit.license_reference] =
-					logs.size() - 1;
+			mostAdvancedLogIdx_by_LicenseId[audit.license_reference] = logs.size() - 1;
 		}
-	} else if (mostAdvancedLogIdx_by_LicenseId.find(audit.license_reference)
-			!= mostAdvancedLogIdx_by_LicenseId.end()) {
-		mostAdvancedLogIdx_by_LicenseId[audit.license_reference] = logs.size()
-				- 1;
+	} else if (mostAdvancedLogIdx_by_LicenseId.find(audit.license_reference) != mostAdvancedLogIdx_by_LicenseId.end()) {
+		mostAdvancedLogIdx_by_LicenseId[audit.license_reference] = logs.size() - 1;
 	}
 }
 
 bool EventRegistry::turnWarningsIntoErrors() {
 	bool eventFound = false;
 	if (mostAdvancedLogIdx_by_LicenseId.size() > 0) {
-		for (auto const &mostAdvLogIter : mostAdvancedLogIdx_by_LicenseId) {
+		for (const auto &mostAdvLogIter : mostAdvancedLogIdx_by_LicenseId) {
 			AuditEvent &currentLog = logs[mostAdvLogIter.second];
-			if (currentLog.severity == SVRT_WARN
-					|| currentLog.severity == SVRT_ERROR) {
+			if (currentLog.severity == SVRT_WARN || currentLog.severity == SVRT_ERROR) {
 				currentLog.severity = SVRT_ERROR;
 				eventFound = true;
 			}
@@ -158,13 +144,10 @@ bool EventRegistry::turnErrorsIntoWarnings() {
 }
 
 void EventRegistry::exportLastEvents(AuditEvent *auditEvents, int nlogs) {
-	const int sizeToCopy = min(nlogs, (int) logs.size());
+	const int sizeToCopy = min(nlogs, (int)logs.size());
 	std::copy(logs.end() - sizeToCopy, logs.end(), auditEvents);
 }
 
-bool EventRegistry::isGood() const {
-	return getLastFailure() == nullptr;
-}
+bool EventRegistry::isGood() const { return getLastFailure() == nullptr; }
 
-}
-
+}  // namespace license

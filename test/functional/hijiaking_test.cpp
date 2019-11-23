@@ -5,7 +5,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "../../src/tools/license-generator/license-generator.h"
-#include "../../src/library/api/license++.h"
+#include <licensecc/licensecc.h>
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 

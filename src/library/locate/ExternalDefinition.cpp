@@ -10,7 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "../api/datatypes.h"
+#include <licensecc/datatypes.h>
+
 #include "../base/base64.h"
 #include "../base/EventRegistry.h"
 #include "../base/FileUtils.hpp"

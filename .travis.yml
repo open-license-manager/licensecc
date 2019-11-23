@@ -94,6 +94,7 @@ matrix:
              - mingw-w64-tools 
              - mingw-w64-x86-64-dev 
              - wine-development
+             - wine32-development
      before_script:
         - mkdir build
         - cd build

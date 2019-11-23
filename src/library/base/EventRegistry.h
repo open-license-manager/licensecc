@@ -8,7 +8,8 @@
 #ifndef EVENTREGISTRY_H_
 #define EVENTREGISTRY_H_
 
-#include "../api/datatypes.h"
+#include <licensecc/datatypes.h>
+
 #include <vector>
 #include <map>
 #include <set>
@@ -22,21 +23,21 @@ namespace license {
  */
 class EventRegistry {
 private:
-	friend EventRegistry& operator<<(EventRegistry&, AuditEvent&);
-	friend EventRegistry& operator<<(EventRegistry&, EventRegistry&);
-	friend std::ostream & operator << (std::ostream &out, const EventRegistry &er);
+	friend EventRegistry &operator<<(EventRegistry &, AuditEvent &);
+	friend EventRegistry &operator<<(EventRegistry &, EventRegistry &);
+	friend std::ostream &operator<<(std::ostream &out, const EventRegistry &er);
 
 	std::vector<AuditEvent> logs;
 	/**
 	 * For every license keep track of the events who progressed most
 	 * in the validation process
 	 */
-	std::map<std::string,size_t> mostAdvancedLogIdx_by_LicenseId;
+	std::map<std::string, size_t> mostAdvancedLogIdx_by_LicenseId;
 	int current_validation_step;
 
 public:
 	EventRegistry();
-	//operator <<
+	// operator <<
 	void append(const EventRegistry &eventRegistry);
 	/**
 	 * Turn the event warning for the license with the most advanced status
@@ -50,11 +51,10 @@ public:
 	 * for the license with the most advanced status.
 	 * @return NULL if no failures are found.
 	 */
-	AuditEvent const* getLastFailure() const;
+	const AuditEvent *getLastFailure() const;
 	void addEvent(EVENT_TYPE event, const std::string &licenseLocationId);
-	void addEvent(EVENT_TYPE event, const char *licenseLocationId = nullptr,
-			const char *info = nullptr);
+	void addEvent(EVENT_TYPE event, const char *licenseLocationId = nullptr, const char *info = nullptr);
 	void exportLastEvents(AuditEvent *auditEvents, int nlogs);
 };
-}
+}  // namespace license
 #endif /* EVENTREGISTRY_H_ */

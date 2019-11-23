@@ -77,7 +77,7 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 VIRTUALIZATION getVirtualization();
 void os_initialize();
 
-FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
+// FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
 
 #ifdef _WIN32
 #define SETENV(VAR,VAL) _putenv_s(VAR, VAL);

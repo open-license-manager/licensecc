@@ -6,6 +6,7 @@
  */
 
 #include "EnvironmentVarData.hpp"
+#include <licensecc/datatypes.h>
 
 #include <licensecc_properties.h>
 #include <cstdlib>
@@ -13,7 +14,6 @@
 #include <string>
 #include <vector>
 
-#include "../api/datatypes.h"
 #include "../base/base64.h"
 #include "../base/EventRegistry.h"
 #include "../base/StringUtils.h"

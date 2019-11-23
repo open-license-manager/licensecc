@@ -29,7 +29,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 #find lcc executable or build it.
 find_package(lcc REQUIRED) 
 
-#Not sure about this. My system doesn't support binfmt misc
+#My system doesn't support binfmt misc
 IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT DEFINED CMAKE_CROSSCOMPILING_EMULATOR )
 	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
 ENDIF()
@@ -39,7 +39,7 @@ if(MSVC)
 	target_architecture( TARGET_ARCHITECTURE )
 	message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
 	
-	#Boost > 3.15 handle the /MD flag more nicely than this
+	#cmake > 3.15 handle the /MD flag more nicely than this
 	if(${STATIC_RUNTIME})
 		string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 		string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
@@ -89,7 +89,7 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	endif(NOT MINGW)
 endif(UNIX)
 
-
+#initialize project
 #load the current project from files or find it from environment variables or create a default one
 set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJECT_NAME}/${LCC_PROJECT_NAME}" )
 set(LCC_PROJECT_PUBLIC_KEY "${LCC_INCLUDE_DIR}/public_key.h" )
@@ -101,10 +101,10 @@ add_custom_command(
   COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY}"
   USES_TERMINAL
 )
-
 add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
 
-include_directories( ${LCC_INCLUDE_DIR} ${CMAKE_BINARY_DIR} )
+
+include_directories( ${LCC_INCLUDE_DIR} ${CMAKE_BINARY_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
 message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
@@ -133,7 +133,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
-find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework program_options system filesystem)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework system filesystem)
 
 #if boost is found enable tests
 IF(Boost_FOUND)
@@ -141,9 +141,6 @@ IF(Boost_FOUND)
 	IF(BUILD_TESTING)
 		SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
 		MARK_AS_ADVANCED(BUILDNAME)
-		add_definitions(-DBOOST_ALL_NO_LIB) #Disable Boost Microsoft magic, all dependencies are handled by cmake
-		add_definitions(-DBOOST_LIB_DIAGNOSTIC) #Check it is really disabled
-		include_directories(${Boost_INCLUDE_DIRS}) 
 		add_subdirectory(test)
 	ENDIF(BUILD_TESTING)
 ELSE(Boost_FOUND)

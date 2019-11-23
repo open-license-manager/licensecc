@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <licensecc/datatypes.h>
 
 #include "../base/base.h"
-#include "../api/datatypes.h"
 #include "LocatorStrategy.hpp"
 
 namespace license {

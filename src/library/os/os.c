@@ -6,7 +6,7 @@
 #ifdef __linux__
 
 #include <openssl/pem.h>
-
+/*
 static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
 	if (pkey) {
 		EVP_PKEY_free(pkey);
@@ -14,8 +14,8 @@ static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
 	if (mdctx) {
 		EVP_MD_CTX_destroy(mdctx);
 	}
-}
-
+}*/
+/*
 FUNCTION_RETURN verifySignature(const char* stringToVerify,
 		const char* signatureB64) {
 	EVP_MD_CTX *mdctx = NULL;
@@ -37,7 +37,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 	 RSA *key = 0;
 	 PEM_read_bio_RSAPublicKey(bo, &key, 0, 0);
 	 BIO_free(bo);*/
-
+/*
 //RSA* rsa = EVP_PKEY_get1_RSA( key );
 //RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
 	unsigned char buffer[512];
@@ -52,7 +52,6 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 
 	BIO_free_all(biosig);
 
-	/* Create the Message Digest Context */
 	if (!(mdctx = EVP_MD_CTX_create())) {
 		free_resources(pkey, mdctx);
 		LOG_ERROR("Error creating context");
@@ -79,7 +78,7 @@ FUNCTION_RETURN verifySignature(const char* stringToVerify,
 
 	free_resources(pkey, mdctx);
 	return result;
-}
+}*/
 
 #else
 

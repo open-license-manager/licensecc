@@ -3,9 +3,10 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
-#include <build_properties.h>
-#include "../../src/tools/license-generator/license-generator.h"
-#include "../../src/library/api/license++.h"
+#include <licensecc_properties.h>
+#include <licensecc_properties_test.h>
+
+#include <licensecc/licensecc.h>
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
 
@@ -13,9 +14,10 @@ namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
+namespace license {
 namespace test {
 
-BOOST_AUTO_TEST_CASE( license_not_expired ) {
+BOOST_AUTO_TEST_CASE(license_not_expired) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/not_expired.lic");
 	vector<string> extraArgs;
 	extraArgs.push_back("-e");
@@ -26,14 +28,13 @@ BOOST_AUTO_TEST_CASE( license_not_expired ) {
 	LicenseLocation licenseLocation;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.licenseData = "";
-	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
-			&license);
+	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 }
 
-BOOST_AUTO_TEST_CASE( license_expired ) {
+BOOST_AUTO_TEST_CASE(license_expired) {
 	const string licLocation(PROJECT_TEST_TEMP_DIR "/expired.lic");
 	remove(licLocation.c_str());
 	vector<string> extraArgs;
@@ -46,11 +47,11 @@ BOOST_AUTO_TEST_CASE( license_expired ) {
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.licenseData = nullptr;
 	BOOST_TEST_MESSAGE("before acquire license");
-	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
-			&license);
+	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 }
 
-}
+}  // namespace test
+}  // namespace license

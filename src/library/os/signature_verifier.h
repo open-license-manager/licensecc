@@ -13,13 +13,7 @@
 
 namespace license {
 
-class Verifier {
-
-public:
-	Verifier();
-	FUNCTION_RETURN verifySignature(const std::string& stringToVerify, const std::string& signatureB64);
-	~Verifier();
-};
+FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::string& signatureB64);
 
 } /* namespace license */
 

@@ -27,8 +27,6 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
 /**
  * This method is used to request the use of one license for a product.
  * In case of local license it's used to check if the product is licensed.
- * [In case of network licenses this will decrease the count of the available
- *  licenses]
  *
  * @return LICENSE_OK(0) if successful. Other values if there are errors.
  * @param productName[in]
@@ -39,8 +37,8 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
  * @param license[out] optional, can be NULL, if set it will return extra informations about the license.
  */
 
-EVENT_TYPE acquire_license(const char * productName,
-		const LicenseLocation* licenseLocation, LicenseInfo* license);
+EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
+						   LicenseInfo* license_out);
 
 /**
  * Do nothing for now, useful for network licenses.

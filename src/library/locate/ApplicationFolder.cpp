@@ -8,10 +8,9 @@
 #include <sstream>
 #include <string>
 
-//B#include <build_properties.h>
+#include <licensecc/datatypes.h>
 
 #include "../base/logger.h"
-#include "../api/datatypes.h"
 #include "../base/base.h"
 #include "../base/EventRegistry.h"
 #include "../base/FileUtils.hpp"

@@ -1,6 +1,6 @@
 IF(UNIX)
     ADD_LIBRARY(os STATIC
-        linux/verifier.cpp
+        openssl/signature_verifier.cpp
         os.c
         os-linux.c
         network_id.c)
@@ -8,14 +8,15 @@ IF(UNIX)
 	target_link_libraries(
 	     os
 	     base
-	     OpenSSL::Crypto
+	     OpenSSL::Crypto 
 	     ${EXTERNAL_LIBS}
+	     ${CMAKE_DL_LIBS}
 	     ##ZLIB::ZLIB
 	)
 	
 ELSE(UNIX)
     ADD_LIBRARY(os STATIC
-        windows/verifier.cpp
+        windows/signature_verifier.cpp
         os.c
         os-win.c)
 

@@ -49,7 +49,7 @@ find_package(PkgConfig)
 if(LCC_LOCATION)
 	# First search the PATH and specific locations.
 	find_program(LCC_EXECUTABLE
-	  NAMES ${lcc_names} HINTS ${LCC_LOCATION} DOC "lcc command line client")
+	NAMES ${lcc_names} HINTS ${LCC_LOCATION} DOC "lcc command line client")
 	FIND_PACKAGE_HANDLE_STANDARD_ARGS(lcc FOUND_VAR LCC_FOUND
                                        REQUIRED_VARS LCC_EXECUTABLE 
                                        FAIL_MESSAGE "Error finding lcc executable. variable LCC_LOCATION non set correctly.")
@@ -78,7 +78,6 @@ ELSE(LCC_LOCATION)
 		endif()
 		add_subdirectory("${PROJECT_SOURCE_DIR}/extern/license-generator")
 	ENDIF(NOT lcc_FOUND)
-	set(LCC_EXECUTABLE $<TARGET_FILE:license_generator::lcc>)
 ENDIF(LCC_LOCATION)
 
 

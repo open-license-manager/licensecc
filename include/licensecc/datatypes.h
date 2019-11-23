@@ -1,12 +1,15 @@
 #ifndef DATATYPES_H_
 #define DATATYPES_H_
 
+#include <licensecc_properties.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//definition of size_t
+// definition of size_t
 #include <stdlib.h>
+#include <stdint.h>
 #ifndef _MSC_VER
 #include <stdbool.h>
 #endif
@@ -14,47 +17,39 @@ extern "C" {
 #ifdef __unix__
 #define DllExport
 #ifndef MAX_PATH
-	#define MAX_PATH 1024
+#define MAX_PATH 1024
 #endif
 #else
 #include <windows.h>
-#define DllExport  __declspec( dllexport )
+#define DllExport __declspec(dllexport)
 #endif
 
 
-#define PC_IDENTIFIER_SIZE 18
-#define PROPRIETARY_DATA_SIZE 16
-#define AUDIT_EVENT_NUM 5
-
-#define LICENESE_INT_VERSION 110
-#define LICENSEPP_VERSION "1.1.0"
 
 typedef enum {
-	LICENSE_OK = 0, 					//OK
-	LICENSE_FILE_NOT_FOUND = 1, 		//license file not found
-	LICENSE_SERVER_NOT_FOUND = 2, 		//license server can't be contacted
-	ENVIRONMENT_VARIABLE_NOT_DEFINED = 3, //environment variable not defined
-	FILE_FORMAT_NOT_RECOGNIZED = 4,		 //license file has invalid format (not .ini file)
-	LICENSE_MALFORMED = 5,			//some mandatory field are missing, or data can't be fully read.
-	PRODUCT_NOT_LICENSED = 6,		//this product was not licensed
+	LICENSE_OK = 0,  // OK
+	LICENSE_FILE_NOT_FOUND = 1,  // license file not found
+	LICENSE_SERVER_NOT_FOUND = 2,  // license server can't be contacted
+	ENVIRONMENT_VARIABLE_NOT_DEFINED = 3,  // environment variable not defined
+	FILE_FORMAT_NOT_RECOGNIZED = 4,  // license file has invalid format (not .ini file)
+	LICENSE_MALFORMED = 5,  // some mandatory field are missing, or data can't be fully read.
+	PRODUCT_NOT_LICENSED = 6,  // this product was not licensed
 	PRODUCT_EXPIRED = 7,
-	LICENSE_CORRUPTED = 8,		//License signature didn't match with current license
-	IDENTIFIERS_MISMATCH = 9,   //Calculated identifier and the one provided in license didn't match
+	LICENSE_CORRUPTED = 8,  // License signature didn't match with current license
+	IDENTIFIERS_MISMATCH = 9,  // Calculated identifier and the one provided in license didn't match
 
-	LICENSE_SPECIFIED = 100,	//license location was specified
-	LICENSE_FOUND = 101, 		//License file has been found or license data has been located
-	PRODUCT_FOUND = 102,		//License has been loaded and the declared product has been found
+	LICENSE_SPECIFIED = 100,  // license location was specified
+	LICENSE_FOUND = 101,  // License file has been found or license data has been located
+	PRODUCT_FOUND = 102,  // License has been loaded and the declared product has been found
 	SIGNATURE_VERIFIED = 103
-
 } EVENT_TYPE;
 
 typedef enum {
-	LOCAL, REMOTE //remote licenses are not supported now.
+	LOCAL,
+	REMOTE  // remote licenses are not supported now.
 } LICENSE_TYPE;
 
-typedef enum {
-	SVRT_INFO, SVRT_WARN, SVRT_ERROR
-} SEVERITY;
+typedef enum { SVRT_INFO, SVRT_WARN, SVRT_ERROR } SEVERITY;
 
 typedef struct {
 	SEVERITY severity;
@@ -85,7 +80,14 @@ typedef struct {
 	 */
 	const char *licenseData;
 } LicenseLocation;
-
+/**
+ * Informations on the software requiring the license
+ */
+typedef struct {
+	char version[16];  // software version in format xxxx.xxxx.xxxx
+	char project_name[16];  // name of the project (must correspond to the name in the license)
+	uint32_t magic;  // reserved
+} CallerInformations;
 typedef struct {
 	/**
 	 * Detailed reason of success/failure. Reasons for a failure can be
@@ -98,13 +100,15 @@ typedef struct {
 	 * can be '\0' if the software don't expire
 	 * */
 	char expiry_date[11];
-	unsigned int days_left;bool has_expiry;bool linked_to_pc;
-	LICENSE_TYPE license_type; // Local or Remote
+	unsigned int days_left;
+	bool has_expiry;
+	bool linked_to_pc;
+	LICENSE_TYPE license_type;  // Local or Remote
 	/* A string of character inserted into the license understood
 	 * by the calling application.
 	 * '\0' if the application didn't specify one */
 	char proprietary_data[PROPRIETARY_DATA_SIZE + 1];
-	int license_version; //license file version
+	int license_version;  // license file version
 } LicenseInfo;
 
 /**

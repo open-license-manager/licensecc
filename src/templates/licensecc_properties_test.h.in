@@ -8,6 +8,20 @@
 #define PROJECT_TEST_SRC_DIR "@CMAKE_SOURCE_DIR@/test"
 #define PROJECT_TEST_TEMP_DIR "@CMAKE_BINARY_DIR@/Testing/Temporary"
 #define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
-#define LCC_EXE "@LCC_EXECUTABLE@"
+#define LCC_EXE "$<TARGET_FILE:license_generator::lcc>"
+
+#define LCC_TEST_LICENSES_PROJECT "@CMAKE_BINARY_DIR@/Testing/Temporary/@LCC_PROJECT_NAME@"
+#define LCC_LICENSES_BASE LCC_TEST_LICENSES_PROJECT "/licenses"
+#define LCC_PROJECTS_BASE_DIR "@LCC_PROJECTS_BASE_DIR@"
+#define LCC_PROJECT_PRIVATE_KEY "@LCC_PROJECT_PRIVATE_KEY@"
+
+/*
+ * command line parameters 
+ */
+#define PARAM_BASE64 "base64"
+#define PARAM_LICENSE_NAME "license-name"
+#define PARAM_PRODUCT_NAME "product-name"
+#define PARAM_PROJECT_FOLDER "project-folder"
+#define PARAM_PRIMARY_KEY "primary-key"
 
 #endif

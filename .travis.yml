@@ -62,7 +62,6 @@ matrix:
              - libboost-thread-dev
              - libboost-date-time-dev
      before_script:
-         - mkdir build
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
      script: 
          - cmake --build . --target install
@@ -76,7 +75,7 @@ matrix:
         - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
             "yum -y update && yum -y install install centos-release-scl &&
               yum -y install cmake boost boost-devel boost-static openssl openssl-devel glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel && 
-              cd /root/open-license-manager && mkdir build && cd build && 
+              cd /root/open-license-manager/build && 
               CC=/opt/rh/devtoolset-7/root/usr/bin/gcc CXX=/opt/rh/devtoolset-7/root/usr/bin/g++ cmake .."
         - docker commit centos7_toconfigure centos7_configured
      script: 
@@ -96,7 +95,6 @@ matrix:
              - wine-development
              - wine32-development
      before_script:
-        - mkdir build
         - cd build
         - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
         - tar xjf boost_1_71_0.tar.bz2
@@ -110,16 +108,14 @@ matrix:
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
          - travis_wait 40 ./windows_download_boost.bat
-         - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
+         - cd "${TRAVIS_BUILD_DIR}/build"
+         - cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      before_script:
          - travis_wait 40 ./windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
           
    - os: windows
@@ -147,14 +143,12 @@ matrix:
                dir 
            fi
          - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
          - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
     
 before_script:
-    - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 script: 

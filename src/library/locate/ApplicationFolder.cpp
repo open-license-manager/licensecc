@@ -22,17 +22,13 @@ namespace license {
 namespace locate {
 using namespace std;
 
-ApplicationFolder::ApplicationFolder() :
-		LocatorStrategy("ApplicationFolder") {
-}
+ApplicationFolder::ApplicationFolder() : LocatorStrategy("ApplicationFolder") {}
 
-ApplicationFolder::~ApplicationFolder() {
-}
+ApplicationFolder::~ApplicationFolder() {}
 
-const vector<string> ApplicationFolder::license_locations(
-		EventRegistry &eventRegistry) {
+const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRegistry) {
 	vector<string> diskFiles;
-	char fname[MAX_PATH] = { 0 };
+	char fname[MAX_PATH] = {0};
 	const FUNCTION_RETURN fret = getModuleName(fname);
 	if (fret == FUNC_RET_OK) {
 		const string module_name = remove_extension(fname);
@@ -51,5 +47,5 @@ const vector<string> ApplicationFolder::license_locations(
 	return diskFiles;
 }
 
-}
+}  // namespace locate
 } /* namespace license */

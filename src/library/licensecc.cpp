@@ -24,13 +24,13 @@ void identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char chbuffer[PC_IDENTIFI
 
 static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* license_out) {
 	if (license_out != nullptr) {
-		int days_left = -1;
+		int days_left = INT_MIN;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
 			// choose the license that expires later...
 			if (!it->has_expiry) {
 				*license_out = *it;
 				break;
-			} else if (days_left < it->days_left) {
+			} else if (days_left < (int)it->days_left) {
 				*license_out = *it;
 				days_left = it->days_left;
 			}

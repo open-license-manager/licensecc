@@ -16,29 +16,25 @@ namespace locate {
  *
  * Usage:
  * <ol>
- * <li> call licenseLocations to get a list of available locations (the returned format is defined by the class, it's usually the file name)</li>
- * <li> iterate over the returned vector and call retrieveLicense to get the content of the license</li>
+ * <li> call licenseLocations to get a list of available locations (the returned format is defined by the class, it's
+ * usually the file name)</li> <li> iterate over the returned vector and call retrieveLicense to get the content of the
+ * license</li>
  * </ol>
  */
 class LocatorStrategy {
 protected:
 	const std::string m_strategy_name;
-	inline LocatorStrategy(const std::string &strategyName) :
-			m_strategy_name(strategyName) {
-	}
-public:
+	inline LocatorStrategy(const std::string &strategyName) : m_strategy_name(strategyName) {}
 
-	virtual const std::string get_strategy_name() const {
-		return m_strategy_name;
-	}
+public:
+	const virtual std::string get_strategy_name() const { return m_strategy_name; }
 	/**
 	 * Try to find licenses
 	 * @param eventRegistry
 	 * @return
 	 * A list of identifiers for call retrieve_license_content.
 	 */
-	virtual const std::vector<std::string> license_locations(
-			EventRegistry &eventRegistry) = 0;
+	const virtual std::vector<std::string> license_locations(EventRegistry &eventRegistry) = 0;
 
 	/**
 	 * Default implementation is to retrieve the license from file.
@@ -49,12 +45,10 @@ public:
 	 * @return
 	 * 	a string containing the license data in INI format.
 	 */
-	virtual const std::string retrieve_license_content(
-			const std::string &licenseLocationId) const;
-	inline virtual ~LocatorStrategy() {
-	}
+	const virtual std::string retrieve_license_content(const std::string &licenseLocationId) const;
+	inline virtual ~LocatorStrategy() {}
 };
 
-}
-}
+}  // namespace locate
+}  // namespace license
 #endif

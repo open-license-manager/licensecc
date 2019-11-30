@@ -9,7 +9,6 @@ configure_file (
 	"${CMAKE_BINARY_DIR}/licensecc_properties_test.h.tmp"
 )
 
-cmake_policy(SET CMP0070 NEW)
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/include/$<CONFIG>/licensecc_properties_test.h" 
 		INPUT "${CMAKE_BINARY_DIR}/licensecc_properties_test.h.tmp")
 

@@ -1,45 +1,44 @@
-# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
-# file Copyright.txt or https://cmake.org/licensing for details.
+# Distributed under the OSI-approved BSD 3-Clause License.  
 
 #[=======================================================================[.rst:
-Findlcc
--------
-
-Find or build the lcc executable.
-
-Imported Targets
-^^^^^^^^^^^^^^^^
-
-This module provides the following imported targets, if found:
-
-``license_generator::lcc``
-  The lcc executable
-
-If lcc is not found this module will try to download it as a submodule
-Git must be installed.
-
-Input variables
-^^^^^^^^^^^^^^^^
-
-``LCC_LOCATION`` Hint for locating the lcc executable
-
-Result Variables
-^^^^^^^^^^^^^^^^
-
-This will define the following variables:
-
-``LCC_FOUND``
-  True if the system has the Foo library.
-``lcc_VERSION``
-
-Cache Variables
-^^^^^^^^^^^^^^^
-
-The following cache variables will also be set:
-
-``LCC_EXECUTABLE``
-  Path to the lcc executable.
-
+#Findlcc
+#-------
+#
+#Find or build the lcc executable.
+#
+#Imported Targets
+#^^^^^^^^^^^^^^^^
+#
+#This module provides the following imported targets, if found:
+#
+#``license_generator::lcc``
+#  The lcc executable
+#
+#If lcc is not found this module will try to download it as a submodule
+#Git must be installed.
+#
+#Input variables
+#^^^^^^^^^^^^^^^^
+#
+#``LCC_LOCATION`` Hint for locating the lcc executable
+#
+#Result Variables
+#^^^^^^^^^^^^^^^^
+#
+#This will define the following variables:
+#
+#``LCC_FOUND``
+#  True if the system has the Foo library.
+#``lcc_VERSION``
+#
+#Cache Variables
+#^^^^^^^^^^^^^^^
+#
+#The following cache variables will also be set:
+#
+#``LCC_EXECUTABLE``
+#  Path to the lcc executable.
+#
 #]=======================================================================]
 
 set(lcc_names lcc lcc.exe)

@@ -9,12 +9,7 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
-#binfmt_misc doesn't work in my system :(
-	ADD_TEST(NAME test_license_reader COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_license_reader)
-ELSE()
-	ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
-ENDIF()
+ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
 
 IF(WIN32)
 #test windows
@@ -33,7 +28,6 @@ ELSE(WIN32)
 	ADD_TEST(NAME test_os_linux COMMAND test_os_linux)
 ENDIF(WIN32)
 
-
 ### LicenseLocator tests
 add_executable(
  test_license_locator
@@ -46,12 +40,7 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
-#binfmt_misc doesn't work in my system :(
-	ADD_TEST(NAME test_license_locator COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_license_locator)
-ELSE()
-	ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
-ENDIF()
+ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
 
 ### LicenseLocator tests
 add_executable(

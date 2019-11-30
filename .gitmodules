@@ -1,4 +1,4 @@
-[submodule "extern/license-generator"]
+[submodule "license-generator"]
 	path = extern/license-generator
 	url = https://github.com/open-license-manager/lcc-license-generator.git
 	branch = develop

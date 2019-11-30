@@ -62,8 +62,8 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	SET ( OPENSSL_USE_STATIC_LIBS ON )
 	find_package(OpenSSL REQUIRED COMPONENTS Crypto)
 	include_directories(${OPENSSL_INCLUDE_DIR})
-    #list(APPEND EXTERNAL_LIBS ${OPENSSL_CRYPTO_LIBRARY})
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
+	
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
   		list(APPEND EXTERNAL_LIBS "-pthread")
@@ -72,12 +72,10 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
   			 list(APPEND EXTERNAL_LIBS "${CMAKE_THREAD_LIBS_INIT}")
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
-	#Zlib required when openssl version < 1.0.1f
-	#SET ( ZLIB_USE_STATIC_LIBS ON )
-	#find_package(ZLIB REQUIRED)
-	#MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
+	
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+	
 	if(USE_DBUS_IDENTIFIER)
 	    FIND_PACKAGE(Dbus REQUIRED)
 	    add_definitions(-DUSE_DBUS)
@@ -85,9 +83,6 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
 	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
 	endif(USE_DBUS_IDENTIFIER)    
-	#if(NOT MINGW)
- 	#	list(APPEND EXTERNAL_LIBS ${CMAKE_DL_LIBS}) 
-	#endif(NOT MINGW)
 endif(UNIX)
 
 #initialize project

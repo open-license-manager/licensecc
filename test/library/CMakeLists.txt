@@ -65,8 +65,4 @@ target_link_libraries(
  ${Boost_LIBRARIES}
 )
 
-IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND CMAKE_CROSSCOMPILING)
-	ADD_TEST(NAME test_event_registry COMMAND wine ${CMAKE_CURRENT_BINARY_DIR}/test_event_registry)
-ELSE()
-	ADD_TEST(NAME test_event_registry COMMAND test_event_registry)
-ENDIF()
+ADD_TEST(NAME test_event_registry COMMAND test_event_registry)

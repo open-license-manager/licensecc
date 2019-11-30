@@ -28,8 +28,9 @@ string generate_license(const string& license_name, const vector<string>& other_
 		BOOST_REQUIRE_MESSAGE(fs::create_directories(licenses_base), "test folders created " + licenses_base.string());
 	}
 
-	fs::path license_fname(licenses_base / (license_name + ".lic"));
-	remove(license_fname.c_str());
+	const fs::path license_fname(licenses_base / (license_name + ".lic"));
+	const string license_fname_s = license_fname.string();
+	remove(license_fname_s.c_str());
 
 	stringstream ss;
 	ss << LCC_EXE << " license issue";
@@ -60,15 +61,15 @@ string sign_data(const string& data, const string& test_name) {
 		BOOST_REQUIRE_MESSAGE(fs::create_directories(licenses_base), "test folders created " + licenses_base.string());
 	}
 
-	fs::path outputFile(fs::path(PROJECT_TEST_TEMP_DIR) / (test_name + ".tmp"));
-
-	remove(outputFile.c_str());
+	const fs::path outputFile(fs::path(PROJECT_TEST_TEMP_DIR) / (test_name + ".tmp"));
+	const string output_file_s = outputFile.string();
+	remove(output_file_s.c_str());
 
 	stringstream ss;
 	ss << LCC_EXE << " test sign";
 	ss << " --" PARAM_PRIMARY_KEY " " << LCC_PROJECT_PRIVATE_KEY;
 	ss << " -d " << data;
-	ss << " -o " << outputFile.string();
+	ss << " -o " << output_file_s;
 
 	cout << "executing :" << ss.str() << endl;
 	const int retCode = std::system(ss.str().c_str());

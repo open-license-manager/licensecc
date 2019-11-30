@@ -47,7 +47,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	char szLogicalDrives[MAX_PATH] = { 0 };
     unsigned char buf[8] = "";
 
-	FUNCTION_RETURN return_value;
+	FUNCTION_RETURN return_value = FUNC_RET_NOT_AVAIL;
 	const DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
 
 	if (dwResult > 0 && dwResult <= MAX_PATH) {

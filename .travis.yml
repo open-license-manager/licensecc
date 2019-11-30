@@ -61,13 +61,21 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
+             - lcov
      before_script:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
      script: 
          - cmake --build . --target install
          - ctest
          - ctest -T memcheck
-         
+     after_success:
+         # Create lcov report
+         - lcov --capture --directory . --output-file coverage.info
+         - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
+         - lcov --list coverage.info # debug info
+         # Uploading report to CodeCov
+         - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+                  
    - os: linux
      dist: bionic
      name: "CentOS-7 Docker"
@@ -149,6 +157,10 @@ matrix:
            fi
          - cd "${TRAVIS_BUILD_DIR}"
          - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+     script: 
+         - travis_wait 20 cmake --build . --target install --config Release
+         - ctest -C Release
+
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
 before_script:

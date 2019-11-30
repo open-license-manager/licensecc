@@ -84,6 +84,9 @@ matrix:
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
+     env:
+        - CTEST_OUTPUT_ON_FAILURE=1      
+        - WINEARCH=win64
      addons:
         apt:
           packages:
@@ -107,14 +110,14 @@ matrix:
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
-         - travis_wait 40 ./windows_download_boost.bat
+         - travis_wait 40 ./scripts/windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}/build"
          - cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      before_script:
-         - travis_wait 40 ./windows_download_boost.bat
+         - travis_wait 40 ./scripts/windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
           
@@ -147,7 +150,6 @@ matrix:
          
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
-    
 before_script:
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 

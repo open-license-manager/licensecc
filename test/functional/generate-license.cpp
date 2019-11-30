@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 
 #include <licensecc_properties_test.h>

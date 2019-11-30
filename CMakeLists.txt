@@ -119,6 +119,7 @@ message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
 message( STATUS "Project name      : " ${LCC_PROJECT_NAME} )
 message( STATUS "Project base dir  : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME} )
 
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 add_subdirectory(src)
 
 #boost is required only for tests
@@ -133,7 +134,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
-find_package(Boost REQUIRED COMPONENTS unit_test_framework system filesystem)
+find_package(Boost COMPONENTS unit_test_framework system filesystem)
 
 #if boost is found enable tests
 IF(Boost_FOUND)
@@ -146,6 +147,3 @@ IF(Boost_FOUND)
 ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")
 ENDIF(Boost_FOUND)
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
-  

@@ -19,7 +19,7 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 * **Use a clear and descriptive title** for the issue to identify the problem.
 * **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager. 
 * **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). 
-* **Provide a boost unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
+* **Provide a unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
 * **If you're reporting that Open License Manager crashed**, include a crash dump and the associated message. 
 * **Label the issue as bug.**
 
@@ -33,8 +33,8 @@ Include details about your configuration and environment:
 
 * **Update Open License Manager to the latest version** If possible try to pull the latest changes from `develop` branch.
 * **What's the name and version of the OS you're using**?
-* **What's the name and version of the compiler you're using**? Are you cross compiling?
-* **What's are the `cmake` command line you used to generate your build scripts **? 
+* **What's the name and version of the compiler you're using**? Are you cross compiling? If you're cross compiling specify the host and the target operating system.
+* **What's are the `cmake` command line you used to generate your build scripts**? 
 * **Are you running Open License Manager in a virtual machine/docker?** If so, which VM software are you using and which operating systems and versions are used for the guest?
 
 ### Suggesting Enhancements
@@ -72,16 +72,16 @@ We apply a subset of [GitFlow](https://nvie.com/posts/a-successful-git-branching
 
 Supposing you already know how to contribute to an open source project on GitHub (if you have doubts you can check this short [guide](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project) ), you're working on an existing issue the code is already committed on your fork. 
 
- * Ensure your feature branch is up to date with the `develop`, eventually merge the latest changes from the `develop` branch. This will help us save time.
- * ~~ Reformat the changed code using "clang-format" to keep consistent formatting style ~~ (not yet).
- * Prepare your pull request, in the pull request comment reference the issue the pull request will fix.
- * Check your pull request compiles and pass the checks on Travis CI
- * In the pull request comment reference the issue you want to fix.
+* Ensure your feature branch is up to date with the `develop`, eventually merge the latest changes from the `develop` branch. This will help us save time.
+* Reformat the changed code using "clang-format" to keep consistent formatting style. The style we use is in `.clang-format` at the base of the project.
+* Prepare your pull request, in the pull request comment reference the issue the pull request will fix.
+* Check your pull request compiles and pass the checks on Travis CI
+* In the pull request comment reference the issue you want to fix.
 
 ##### Don't
- * Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. 
- * Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
-    * We understand that the project is still in a very alpha stage and a rearrangement is needed, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
+* Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
+* Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
+    * We understand that the project is still in a very alpha stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
     * Even it it's in alpha stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
 
   

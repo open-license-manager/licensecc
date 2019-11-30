@@ -103,7 +103,6 @@ add_custom_command(
 )
 add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
 
-
 include_directories( ${LCC_INCLUDE_DIR} ${CMAKE_BINARY_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
@@ -147,3 +146,5 @@ ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")
 ENDIF(Boost_FOUND)
 
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
+  

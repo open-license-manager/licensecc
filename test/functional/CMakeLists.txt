@@ -4,7 +4,7 @@ ADD_LIBRARY(license_generator_snippet STATIC
 
 target_link_libraries(
 	license_generator_snippet
- 	license_generator_lib
+ 	${Boost_LIBRARIES}
 )
 
 add_executable(

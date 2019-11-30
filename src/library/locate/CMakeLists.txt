@@ -16,3 +16,4 @@ target_link_libraries(
      base
 )
 
+install(TARGETS locators ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})

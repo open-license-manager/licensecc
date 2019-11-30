@@ -8,4 +8,4 @@ ADD_LIBRARY(base STATIC
 
 add_dependencies( base project_initialize )
 
-install(TARGETS base ARCHIVE DESTINATION lib)
+install(TARGETS base ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})

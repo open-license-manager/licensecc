@@ -10,6 +10,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <public_key.h>
 
 #include "../signature_verifier.h"

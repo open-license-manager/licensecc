@@ -55,7 +55,7 @@ private:
 
 public:
 	LicenseReader(const LicenseLocation* licenseLocation);
-	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut);
+	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut) const;
 	virtual ~LicenseReader();
 };
 }  // namespace license

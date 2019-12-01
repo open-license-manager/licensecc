@@ -76,7 +76,7 @@ string sign_data(const string& data, const string& test_name) {
 	const int retCode = std::system(ss.str().c_str());
 	BOOST_CHECK_EQUAL(retCode, 0);
 	BOOST_ASSERT(fs::exists(outputFile));
-	std::ifstream ifs(outputFile.c_str());
+	std::ifstream ifs(output_file_s.c_str());
 	std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 	return content;
 }

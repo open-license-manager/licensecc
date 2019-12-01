@@ -12,7 +12,6 @@
 #include <vector>
 
 namespace license {
-using namespace std;
 
 /**
  * Eliminate whitespace from both sides of a string and returns a copy
@@ -20,23 +19,22 @@ using namespace std;
  * @param string_to_trim
  * @return the trimmed string
  */
-string trim_copy(const string& string_to_trim);
+std::string trim_copy(const std::string& string_to_trim);
 
-string toupper_copy(const string& lowercase);
+std::string toupper_copy(const std::string& lowercase);
 
 time_t seconds_from_epoch(const char* s);
 
 /**
  * Split a string on a given character
  */
-const vector<string> split_string(const string& stringToBeSplit, const char splitchar);
+const std::vector<std::string> split_string(const std::string& stringToBeSplit, const char splitchar);
 
 typedef enum {
 	INI, BASE64, UNKNOWN
 } FILE_FORMAT;
 
-FILE_FORMAT identify_format(const string& license);
-
+FILE_FORMAT identify_format(const std::string& license);
 }
 
 /* namespace license */

@@ -40,7 +40,7 @@ static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* lice
 
 EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
 						   LicenseInfo* license_out) {
-	license::LicenseReader lr = license::LicenseReader(licenseLocation);
+	const license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
 	if (callerInformation != nullptr && strlen(callerInformation->project_name) > 0) {

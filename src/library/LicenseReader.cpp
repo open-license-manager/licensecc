@@ -34,6 +34,7 @@
 #include "locate/LocatorFactory.hpp"
 
 namespace license {
+using namespace std;
 
 FullLicenseInfo::FullLicenseInfo(const string &source, const string &product, const string &license_signature)
 	: source(source),
@@ -42,7 +43,7 @@ FullLicenseInfo::FullLicenseInfo(const string &source, const string &product, co
 
 LicenseReader::LicenseReader(const LicenseLocation *licenseLocation) : licenseLocation(licenseLocation) {}
 
-EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLicenseInfo> &licenseInfoOut) {
+EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLicenseInfo> &licenseInfoOut) const {
 	vector<string> diskFiles;
 	vector<unique_ptr<locate::LocatorStrategy>> locator_strategies;
 	FUNCTION_RETURN ret = locate::LocatorFactory::get_active_strategies(locator_strategies, licenseLocation);
@@ -64,7 +65,7 @@ EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLice
 		CSimpleIniA ini;
 		for (auto it = licenseLocations.begin(); it != licenseLocations.end(); it++) {
 			ini.Reset();
-			string license = locator->retrieve_license_content((*it).c_str());
+			const string license = locator->retrieve_license_content((*it).c_str());
 			const SI_Error rc = ini.LoadData(license.c_str(), license.size());
 			if (rc < 0) {
 				eventRegistry.addEvent(FILE_FORMAT_NOT_RECOGNIZED, *it);
@@ -120,7 +121,7 @@ string FullLicenseInfo::printForSign() const {
 	}
 
 #ifdef _DEBUG
-	cout << "[" << oss.str() << "]" << endl;
+	cout << "license to sign [" << oss.str() << "]" << endl;
 #endif
 	return oss.str();
 }

@@ -107,6 +107,7 @@ matrix:
              - wine64-development-preloader
              - wine-development
              - wine64
+             - p7zip-full
      before_script:
         - cd build
         - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
@@ -114,12 +115,11 @@ matrix:
         - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
         - cd boost_1_71_0
         - ./bootstrap.sh
-        - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
+        - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --layout=tagged --prefix=./dist release install
         - cd ..
-        - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
-     script: 
-        - cmake --build . --target install --config Release
-        #disabling tests for now. Need to compile and install openssl... 
+        - wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z
+        - 7z x openssl.7z
+        - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl-1.0.2h-win64-mingw/ ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:

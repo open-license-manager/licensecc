@@ -62,12 +62,14 @@ find_package(OpenSSL COMPONENTS Crypto)
 IF(OPENSSL_FOUND)
 	add_definitions(-DHAS_OPENSSL)
 	include_directories(${OPENSSL_INCLUDE_DIR})
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
+	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
+ELSE(OPENSSL_FOUND)
+	MESSAGE(STATUS "OpenSSL not found")
 ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(NOT OPENSSL_FOUND)
-		MESSAGE(SEND_ERROR "Openssl not found - required in Linux")
+		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
 	ENDIF(NOT OPENSSL_FOUND)
 	
     find_package(Threads)

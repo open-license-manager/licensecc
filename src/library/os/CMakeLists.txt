@@ -1,10 +1,10 @@
 IF(UNIX OR OPENSSL_FOUND)
-    ADD_LIBRARY(os STATIC
-        openssl/signature_verifier.cpp
-        os.c
-        os-linux.c
-        network_id.c)
-
+	IF(UNIX)
+	    ADD_LIBRARY(os STATIC openssl/signature_verifier.cpp os.c os-linux.c network_id.c)
+	ELSE(UNIX)
+  	    ADD_LIBRARY(os STATIC openssl/signature_verifier.cpp os.c os-win.c)
+	ENDIF(UNIX)
+	
 	if (CMAKE_VERSION VERSION_GREATER 3.5)
 		target_link_libraries(os base OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
 	#patch for old cmake in Centos 7

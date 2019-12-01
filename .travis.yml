@@ -115,7 +115,7 @@ matrix:
         - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
         - cd boost_1_71_0
         - ./bootstrap.sh
-        - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --layout=tagged --prefix=./dist release install
+        - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
         - wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z
         - 7z x openssl.7z

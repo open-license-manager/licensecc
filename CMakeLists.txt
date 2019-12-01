@@ -52,17 +52,23 @@ if(MSVC)
 	add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 else(MSVC)
     if(MINGW)
-        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lws2_32 -liphlpapi")
+        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lbcrypt -lws2_32 -liphlpapi")
         SET(CMAKE_EXE_LINKER_FLAGS "-static")
     endif(MINGW)
 endif(MSVC)
 
-if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
-	#find a static version of openssl crypto library
-	SET ( OPENSSL_USE_STATIC_LIBS ON )
-	find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+SET ( OPENSSL_USE_STATIC_LIBS ON )
+find_package(OpenSSL COMPONENTS Crypto)
+IF(OPENSSL_FOUND)
+	add_definitions(-DHAS_OPENSSL)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} ")
+ENDIF(OPENSSL_FOUND)
+
+if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
+	IF(NOT OPENSSL_FOUND)
+		MESSAGE(SEND_ERROR "Openssl not found - required in Linux")
+	ENDIF(NOT OPENSSL_FOUND)
 	
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)

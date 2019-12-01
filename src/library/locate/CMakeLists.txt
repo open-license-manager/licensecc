@@ -1,4 +1,3 @@
-
 ADD_LIBRARY(locators STATIC
     ApplicationFolder.cpp
     EnvironmentVarLocation.cpp

@@ -1,8 +1,6 @@
 #ifndef DATATYPES_H_
 #define DATATYPES_H_
 
-#include <licensecc_properties.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,7 +22,10 @@ extern "C" {
 #define DllExport __declspec(dllexport)
 #endif
 
-
+// define api structure sizes
+#define PC_IDENTIFIER_SIZE 18
+#define PROPRIETARY_DATA_SIZE 16
+#define AUDIT_EVENT_NUM 5
 
 typedef enum {
 	LICENSE_OK = 0,  // OK
@@ -116,12 +117,12 @@ typedef struct {
  * in most cases.
  */
 typedef enum {
-	DEFAULT,
-	ETHERNET,
-	IP_ADDRESS,
-	DISK_NUM,
-	DISK_LABEL,
-	PLATFORM_SPECIFIC,
+	STRATEGY_DEFAULT,
+	STRATEGY_ETHERNET,
+	STRATEGY_IP_ADDRESS,
+	STRATEGY_DISK_NUM,
+	STRATEGY_DISK_LABEL,
+	STRATEGY_PLATFORM_SPECIFIC,
 	STRATEGY_UNKNOWN
 } IDENTIFICATION_STRATEGY;
 

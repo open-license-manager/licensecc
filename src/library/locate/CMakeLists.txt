@@ -1,18 +1,9 @@
-ADD_LIBRARY(locators STATIC
-    ApplicationFolder.cpp
-    EnvironmentVarLocation.cpp
-    EnvironmentVarData.cpp
-    ExternalDefinition.cpp
-    LocatorStrategy.cpp
-    LocatorFactory.cpp
+target_sources(licensecc_static PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/ApplicationFolder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/EnvironmentVarLocation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/EnvironmentVarData.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ExternalDefinition.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocatorStrategy.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocatorFactory.cpp
 )
 
-add_dependencies( locators os base )
-
-target_link_libraries(
-     locators
-     os
-     base
-)
-
-install(TARGETS locators ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})

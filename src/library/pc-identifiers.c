@@ -201,19 +201,19 @@ FUNCTION_RETURN generate_pc_id(PcIdentifier *identifiers, unsigned int *array_si
 	const unsigned int original_array_size = *array_size;
 	unsigned char strategy_num;
 	switch (strategy) {
-		case DEFAULT:
+		case STRATEGY_DEFAULT:
 			result = generate_default_pc_id(identifiers, array_size);
 			break;
-		case ETHERNET:
+		case STRATEGY_ETHERNET:
 			result = generate_ethernet_pc_id(identifiers, array_size, true);
 			break;
-		case IP_ADDRESS:
+		case STRATEGY_IP_ADDRESS:
 			result = generate_ethernet_pc_id(identifiers, array_size, false);
 			break;
-		case DISK_NUM:
+		case STRATEGY_DISK_NUM:
 			result = generate_disk_pc_id(identifiers, array_size, false);
 			break;
-		case DISK_LABEL:
+		case STRATEGY_DISK_LABEL:
 			result = generate_disk_pc_id(identifiers, array_size, true);
 			break;
 		default:

@@ -25,7 +25,7 @@ namespace test {
 BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	PcSignature identifier_out;
 
-	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
+	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
 	const FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	size_t disk_num;
 	getDiskInfos(NULL, &disk_num);
 	if (disk_num >0) {
-		strategies = { DEFAULT, DISK_NUM, DISK_LABEL };
+		strategies = {STRATEGY_DEFAULT, STRATEGY_DISK_NUM, STRATEGY_DISK_LABEL};
 	} else {
 		BOOST_TEST_CHECKPOINT("if no disk default strategy fails see #49");
 		//strategies = { DEFAULT };
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	size_t adapters;
 	getAdapterInfos(nullptr, &adapters);
 	if(adapters > 0){
-		strategies.push_back(ETHERNET);
+		strategies.push_back(STRATEGY_ETHERNET);
 	}
 
 	size_t num_strategies = strategies.size();

@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 typedef unsigned char PcIdentifier[6];
-typedef char PcSignature[21];
+typedef char PcSignature[PC_IDENTIFIER_SIZE + 1];
 
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_size,
 		IDENTIFICATION_STRATEGY strategy);
@@ -30,8 +30,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code);
  * @param strategy
  * @return
  */
-FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out,
-		IDENTIFICATION_STRATEGY strategy);
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, IDENTIFICATION_STRATEGY strategy);
 
 #ifdef __cplusplus
 }

@@ -1,17 +1,20 @@
 # Open License Manager
 
+A copy protection, licensing software written in C++ for Windows and Linux (with a simple C api for use in C projects).
+
 [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop)](https://travis-ci.org/open-license-manager/open-license-manager)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a)](https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade)
 [![Github Issues](![GitHub issues](https://img.shields.io/github/issues/open-license-manager/open-license-manager))](http://github.com/open-license-manager/open-license-manager/issues)
-
-A copy protection, licensing software written in C++ for Windows and Linux (with a simple C api for use in C projects).
 
 It allows to protect the software you develop from unauthorized copies,
 limit the usage in time, to a specific set of machines, or prevent the usage in 
 virtualized environments. It is an Open License Manager that helps to keep your 
 software closed :smirk: . A comprehensive [list of features](https://github.com/open-license-manager/open-license-manager/wiki/features), and their status is available in the project wiki.
+
+** Warning! documentation outdated. We're in process of releasing the 2.0.0 verision that include a large update. Documentation still refers to 1.1.x series. In case of doubts look to .travis.yml file for hints on how to build the library. **
 
 ## License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 

@@ -2,8 +2,6 @@
 #define BUILD_PROPERTIES_H_
 
 #define LCC_PROJECT_NAME "@LCC_PROJECT_NAME@"
-#define PROJECT_INT_VERSION @LICENSECC_INT_VERSION@
-#define PROJECT_VERSION "@LICENSECC_VERSION@"
 
 //License retrieval configuration
 #define FIND_LICENSE_NEAR_MODULE 1
@@ -11,11 +9,6 @@
 
 #define LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
 #define LICENSE_DATA_ENV_VAR "LICENSE_DATA"
-
-//define api structure sizes
-#define PC_IDENTIFIER_SIZE 18
-#define PROPRIETARY_DATA_SIZE 16
-#define AUDIT_EVENT_NUM 5
 
 //Internal data structures limits
 #define MAX_LICENSE_LENGTH 256*1024

@@ -21,7 +21,7 @@ ELSE(WIN32)
 
 	target_link_libraries(
  		test_os_linux
- 		os
+ 		licensecc_static
  		${Boost_LIBRARIES}
 	)
 
@@ -36,7 +36,7 @@ add_executable(
 
 target_link_libraries(
  test_license_locator
- locators
+ licensecc_static
  ${Boost_LIBRARIES}
 )
 

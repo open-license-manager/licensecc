@@ -20,9 +20,7 @@ void print_error(char out_buffer[256], LicenseInfo* licenseInfo);
  * This method calculate the pc identifier. The string has to be shown
  * to the user in order to calculate the license.
  */
-void identify_pc(IDENTIFICATION_STRATEGY pc_id_method,
-		char chbuffer[PC_IDENTIFIER_SIZE + 1]);
-
+bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t bufSize);
 
 /**
  * This method is used to request the use of one license for a product.

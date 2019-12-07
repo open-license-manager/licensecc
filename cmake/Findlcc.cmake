@@ -55,7 +55,7 @@ if(LCC_LOCATION)
     add_executable(license_generator::lcc IMPORTED GLOBAL)                                            
 	set_property(TARGET license_generator::lcc PROPERTY IMPORTED_LOCATION ${LCC_EXECUTABLE})  
 ELSE(LCC_LOCATION)
-	find_package(lcc HINTS ${CMAKE_BINARY_DIR} 	NO_CMAKE_PATH) #try to find it without looping on this module
+	find_package(lcc HINTS ${CMAKE_BINARY_DIR} CONFIG) #try to find it without looping on this module
 
 	IF(NOT lcc_FOUND) 	
 		find_package(Git QUIET)

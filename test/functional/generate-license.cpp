@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -28,8 +29,8 @@ string generate_license(const string& license_name, const vector<string>& other_
 	if (!fs::exists(licenses_base)) {
 		BOOST_REQUIRE_MESSAGE(fs::create_directories(licenses_base), "test folders created " + licenses_base.string());
 	}
-
-	const fs::path license_fname(licenses_base / (license_name + ".lic"));
+	const string license_name_norm = boost::ends_with(license_name, ".lic") ? license_name : (license_name + ".lic");
+	const fs::path license_fname(licenses_base / license_name_norm);
 	const string license_fname_s = license_fname.string();
 	remove(license_fname_s.c_str());
 

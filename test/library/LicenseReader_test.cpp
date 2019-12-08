@@ -73,7 +73,9 @@ BOOST_AUTO_TEST_CASE(env_var_not_defined) {
 	BOOST_CHECK(!registry.isGood());
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	BOOST_ASSERT(registry.getLastFailure() != NULL);
-	BOOST_CHECK_EQUAL(ENVIRONMENT_VARIABLE_NOT_DEFINED, registry.getLastFailure()->event_type);
+	BOOST_CHECK_MESSAGE((ENVIRONMENT_VARIABLE_NOT_DEFINED == registry.getLastFailure()->event_type) ||
+							(LICENSE_FILE_NOT_FOUND == registry.getLastFailure()->event_type),
+						"error as expected");
 }
 
 /**

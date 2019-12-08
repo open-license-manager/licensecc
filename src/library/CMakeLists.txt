@@ -15,13 +15,7 @@ define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile
 IF(UNIX OR OPENSSL_FOUND)
 	target_compile_definitions(licensecc_static PUBLIC HAS_OPENSSL)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 1)
-	if (CMAKE_VERSION VERSION_GREATER 3.5)
-		target_link_libraries(licensecc_static PUBLIC base OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
-	#patch for old cmake in Centos 7
-	ELSE(CMAKE_VERSION VERSION_GREATER 3.5)
-		target_link_libraries(licensecc_static PUBLIC base ${OPENSSL_CRYPTO_LIBRARY} ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
-	    include_directories(${OPENSSL_INCLUDE_DIR})
-	ENDIF(CMAKE_VERSION VERSION_GREATER 3.5)
+	target_link_libraries(licensecc_static PUBLIC base OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
 ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
 	target_link_libraries(licensecc_static ${EXTERNAL_LIBS})
@@ -29,7 +23,7 @@ ENDIF(UNIX OR OPENSSL_FOUND)
 
 target_include_directories(licensecc_static
     INTERFACE 
-        $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+        $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
 )
 
@@ -38,4 +32,4 @@ install(TARGETS licensecc_static EXPORT licensecc
 	ARCHIVE DESTINATION ${main_lib_dest}/${LCC_PROJECT_NAME})
 	
 install(EXPORT licensecc NAMESPACE licensecc:: DESTINATION  ${main_lib_dest}/${LCC_PROJECT_NAME}/cmake)
-export(EXPORT licensecc NAMESPACE licensecc:: FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake)
+export(EXPORT licensecc NAMESPACE licensecc:: FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.cmake)

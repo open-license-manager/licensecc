@@ -82,9 +82,10 @@ matrix:
      before_script: 
         - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
             "yum -y update && yum -y install install centos-release-scl &&
-              yum -y install cmake boost boost-devel boost-static openssl openssl-devel glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel && 
-              cd /root/open-license-manager/build && 
-              CC=/opt/rh/devtoolset-7/root/usr/bin/gcc CXX=/opt/rh/devtoolset-7/root/usr/bin/g++ cmake .."
+              yum -y install wget boost boost-devel boost-static openssl openssl-devel openssl-static glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel &&
+              wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz && tar zxvf cmake-3.11.0.tar.gz && cd cmake-3.11.0 &&
+              export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc && export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++ &&  
+              ./bootstrap && make && make install && cd /root/open-license-manager/build && cmake .."
         - docker commit centos7_toconfigure centos7_configured
      script: 
         - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 

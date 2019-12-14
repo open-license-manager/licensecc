@@ -63,7 +63,7 @@ matrix:
              - libboost-date-time-dev
              - lcov
      before_script:
-         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON ..
      script: 
          - cmake --build . --target install
          - ctest
@@ -71,7 +71,7 @@ matrix:
      after_success:
          # Create lcov report
          - lcov --capture --directory . --output-file coverage.info
-         - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
+         - lcov --remove coverage.info '/usr/include/*' '*/ini/*' '*/test/*' --output-file coverage.info # filter system-files
          - lcov --list coverage.info # debug info
          # Uploading report to CodeCov
          - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"

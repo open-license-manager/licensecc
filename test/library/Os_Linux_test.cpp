@@ -5,10 +5,11 @@
 
 #include <licensecc_properties.h>
 #include <licensecc_properties_test.h>
-
+#include "../../src/library/base/StringUtils.h"
 #include "../../src/library/os/os.h"
+namespace license {
 using namespace std;
-
+namespace test {
 BOOST_AUTO_TEST_CASE(read_disk_id) {
 	VIRTUALIZATION virt = getVirtualization();
 	if (virt == NONE || virt == VM) {
@@ -20,8 +21,8 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		diskInfos = (DiskInfo *)malloc(sizeof(DiskInfo) * disk_info_size);
 		result = getDiskInfos(diskInfos, &disk_info_size);
 		BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
-		BOOST_CHECK_GT(strlen(diskInfos[0].device), 0);
-		BOOST_CHECK_GT(strlen(diskInfos[0].label), 0);
+		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].device, sizeof(diskInfos[0].device)), 0);
+		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].label, sizeof diskInfos[0].label), 0);
 		BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
 		free(diskInfos);
 	} else if (virt == CONTAINER) {
@@ -80,3 +81,5 @@ BOOST_AUTO_TEST_CASE(test_virtualization) {
 		}
 	}
 }
+}  // namespace test
+}  // namespace license

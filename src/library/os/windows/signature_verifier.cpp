@@ -54,7 +54,6 @@ static BCRYPT_ALG_HANDLE openHashProvider() {
 
 static DWORD hashData(BCRYPT_HASH_HANDLE& hHash, const string& data, PBYTE pbHash, DWORD hashDataLenght) {
 	DWORD status;
-	bool success = false;
 	if (NT_SUCCESS(status = BCryptHashData(hHash, (BYTE*)data.c_str(), (ULONG)data.length(), 0))) {
 		status = BCryptFinishHash(hHash, pbHash, hashDataLenght, 0);
 	}

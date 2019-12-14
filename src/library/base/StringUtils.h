@@ -23,12 +23,15 @@ std::string trim_copy(const std::string& string_to_trim);
 
 std::string toupper_copy(const std::string& lowercase);
 
-time_t seconds_from_epoch(const char* s);
+time_t seconds_from_epoch(const std::string& timeString);
 
 /**
  * Split a string on a given character
  */
 const std::vector<std::string> split_string(const std::string& stringToBeSplit, const char splitchar);
+
+// strnln_s is not well supported and strlen is marked unsafe..
+size_t mstrnlen_s(const char* szptr, size_t maxsize);
 
 typedef enum {
 	INI, BASE64, UNKNOWN

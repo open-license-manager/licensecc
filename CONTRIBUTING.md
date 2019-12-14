@@ -79,9 +79,8 @@ Supposing you already know how to contribute to an open source project on GitHub
 *  In the pull request comment reference the issue you want to fix.
 
 ##### Don't
-*  Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
-*  Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
-   *  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
-   *  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
-
+-   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
+-   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
+    -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
+    -  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
   

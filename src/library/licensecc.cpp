@@ -5,8 +5,10 @@
 // Copyright   : BSD
 //============================================================================
 
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <fstream>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <cstring>
 #include <iostream>
@@ -16,6 +18,7 @@
 #include <licensecc_properties.h>
 
 #include "limits/license_verifier.hpp"
+#include "base/StringUtils.h"
 #include "LicenseReader.hpp"
 #include "pc-identifiers.h"
 
@@ -53,8 +56,10 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 	const license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
-	if (callerInformation != nullptr && strlen(callerInformation->project_name) > 0) {
-		project = string(callerInformation->project_name);
+	size_t str_size;
+	if (callerInformation != nullptr &&
+		(str_size = license::mstrnlen_s(callerInformation->project_name, sizeof callerInformation->project_name)) > 0) {
+		project = string(callerInformation->project_name, str_size);
 	} else {
 		project = string(LCC_PROJECT_NAME);
 	}

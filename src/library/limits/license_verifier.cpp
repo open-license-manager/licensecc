@@ -38,7 +38,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	const time_t now = time(nullptr);
 	auto expiry = licInfo.m_limits.find(PARAM_EXPIRY_DATE);
 	if (expiry != licInfo.m_limits.end()) {
-		if (seconds_from_epoch(expiry->second.c_str()) < now) {
+		if (seconds_from_epoch(expiry->second) < now) {
 			/*
 						eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
 								string("Expired on: " + this->to_date).c_str());*/
@@ -48,7 +48,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	}
 	auto start_date = licInfo.m_limits.find(PARAM_BEGIN_DATE);
 	if (is_valid && start_date != licInfo.m_limits.end()) {
-		if (seconds_from_epoch(start_date->second.c_str()) > now) {
+		if (seconds_from_epoch(start_date->second) > now) {
 			/*eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
 					string("Valid from " + this->from_date).c_str());*/
 			m_event_registry.addEvent(PRODUCT_EXPIRED, licInfo.source.c_str(),
@@ -75,7 +75,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 	if (expiry != fullLicInfo.m_limits.end()) {
 		strncpy(info.expiry_date, expiry->second.c_str(), sizeof(info.expiry_date));
 		info.has_expiry = true;
-		const double secs = difftime(seconds_from_epoch(expiry->second.c_str()), time(nullptr));
+		const double secs = difftime(seconds_from_epoch(expiry->second), time(nullptr));
 		info.days_left = max((int)round(secs / (60 * 60 * 24)), 0);
 	} else {
 		info.has_expiry = false;

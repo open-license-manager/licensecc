@@ -23,9 +23,9 @@ using namespace std;
 void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {}
 
 bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t bufSize) {
-	PcSignature identifier_out;
 	FUNCTION_RETURN result = FUNC_RET_BUFFER_TOO_SMALL;
 	if (bufSize >= sizeof(PcSignature)) {
+		PcSignature identifier_out;
 		result = generate_user_pc_signature(identifier_out, pc_id_method);
 		strncpy(chbuffer, identifier_out, bufSize);
 	}

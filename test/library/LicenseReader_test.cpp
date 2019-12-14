@@ -11,13 +11,15 @@
 
 #include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/os/os.h"
+#include "../../src/library/locate/LocatorFactory.hpp"
 #include "../../src/library/LicenseReader.hpp"
-
+namespace license {
 namespace test {
+
 using namespace license;
 using namespace std;
 /**
- * Read license at fixed location
+ * Read license at application provided location
  */
 BOOST_AUTO_TEST_CASE(read_single_file) {
 	const char *licLocation = PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
@@ -50,7 +52,9 @@ BOOST_AUTO_TEST_CASE(product_not_licensed) {
  */
 BOOST_AUTO_TEST_CASE(file_not_found) {
 	const char *licLocation = PROJECT_TEST_SRC_DIR "/library/not_found.ini";
-	// const char * envName = "MYVAR";
+
+	locate::LocatorFactory::find_license_near_module(false);
+	locate::LocatorFactory::find_license_with_env_var(false);
 	const LicenseLocation location = {licLocation, nullptr};
 	LicenseReader licenseReader(&location);
 	vector<FullLicenseInfo> licenseInfos;
@@ -67,14 +71,15 @@ BOOST_AUTO_TEST_CASE(file_not_found) {
 BOOST_AUTO_TEST_CASE(env_var_not_defined) {
 	UNSETENV(LICENSE_LOCATION_ENV_VAR);
 	const LicenseLocation location = {nullptr, nullptr};
+	locate::LocatorFactory::find_license_near_module(false);
+	locate::LocatorFactory::find_license_with_env_var(true);
 	LicenseReader licenseReader(&location);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PRODUCT", licenseInfos);
 	BOOST_CHECK(!registry.isGood());
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	BOOST_ASSERT(registry.getLastFailure() != NULL);
-	BOOST_CHECK_MESSAGE((ENVIRONMENT_VARIABLE_NOT_DEFINED == registry.getLastFailure()->event_type) ||
-							(LICENSE_FILE_NOT_FOUND == registry.getLastFailure()->event_type),
+	BOOST_CHECK_MESSAGE((ENVIRONMENT_VARIABLE_NOT_DEFINED == registry.getLastFailure()->event_type),
 						"error as expected");
 }
 
@@ -85,6 +90,8 @@ BOOST_AUTO_TEST_CASE(env_var_not_defined) {
 BOOST_AUTO_TEST_CASE(env_var_point_to_wrong_file) {
 	const char *environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
 	SETENV(LICENSE_LOCATION_ENV_VAR, environment_variable_value)
+	locate::LocatorFactory::find_license_near_module(false);
+	locate::LocatorFactory::find_license_with_env_var(true);
 
 	const LicenseLocation location = {nullptr, nullptr};
 	LicenseReader licenseReader(&location);
@@ -97,4 +104,5 @@ BOOST_AUTO_TEST_CASE(env_var_point_to_wrong_file) {
 	BOOST_CHECK_EQUAL(LICENSE_FILE_NOT_FOUND, registry.getLastFailure()->event_type);
 	UNSETENV(LICENSE_LOCATION_ENV_VAR);
 }
-} /* namespace test*/
+}  // namespace test
+}  // namespace license

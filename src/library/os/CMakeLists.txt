@@ -1,6 +1,3 @@
-target_sources(licensecc_static PRIVATE 
-	 ${CMAKE_CURRENT_SOURCE_DIR}/os.c)
-
 IF(UNIX OR OPENSSL_FOUND)
 	IF(UNIX)
 		target_sources(licensecc_static PRIVATE

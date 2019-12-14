@@ -17,7 +17,10 @@ namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
-BOOST_AUTO_TEST_CASE( standard_lic_file ) {
+/**
+ * Test a generic license with no expiry neither client id.
+ */
+BOOST_AUTO_TEST_CASE(test_generic_license) {
 	const vector<string> extraArgs;
 	const string licLocation = generate_license("standard_license", extraArgs);
 	/* */

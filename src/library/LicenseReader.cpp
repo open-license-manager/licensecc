@@ -44,7 +44,6 @@ FullLicenseInfo::FullLicenseInfo(const string &source, const string &product, co
 LicenseReader::LicenseReader(const LicenseLocation *licenseLocation) : licenseLocation(licenseLocation) {}
 
 EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLicenseInfo> &licenseInfoOut) const {
-	vector<string> diskFiles;
 	vector<unique_ptr<locate::LocatorStrategy>> locator_strategies;
 	FUNCTION_RETURN ret = locate::LocatorFactory::get_active_strategies(locator_strategies, licenseLocation);
 	EventRegistry eventRegistry;

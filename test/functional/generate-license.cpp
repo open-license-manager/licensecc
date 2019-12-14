@@ -37,7 +37,7 @@ string generate_license(const string& license_name, const vector<string>& other_
 	stringstream ss;
 	ss << LCC_EXE << " license issue";
 	ss << " --" PARAM_PRIMARY_KEY " " << LCC_PROJECT_PRIVATE_KEY;
-	ss << " --" PARAM_LICENSE_NAME " " << license_name;
+	ss << " --" PARAM_LICENSE_OUTPUT " " << license_fname_s;
 	ss << " --" PARAM_PROJECT_FOLDER " " << LCC_TEST_LICENSES_PROJECT;
 
 	for (int i = 0; i < other_args.size(); i++) {

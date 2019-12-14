@@ -16,26 +16,26 @@ Before creating bug reports, please [check the repository](https://github.com/op
 
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). Explain the problem and include additional details to help maintainers reproduce the problem:
 
-*  **Use a clear and descriptive title** for the issue to identify the problem.
-*  **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager. 
-*  **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). 
-*  **Provide a unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
-*  **If you're reporting that Open License Manager crashed**, include a crash dump and the associated message. 
-*  **Label the issue as bug.**
+-   **Use a clear and descriptive title** for the issue to identify the problem.
+-   **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager. 
+-   **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). 
+-   **Provide a unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
+-   **If you're reporting that Open License Manager crashed**, include a crash dump and the associated message. 
+-   **Label the issue as bug.**
 
 Provide more context by answering these questions:
 
-*  **Can you reproduce the problem using the example application?**
-*  **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
-*  If the problem is related integrating Open License Manager with your application, **produce a minimal example to demonstrate it** Does the problem happen only with some license type? Does the problem only happen in Linux/Docker/Windows?
+-   **Can you reproduce the problem using the example application?**
+-   **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
+-   If the problem is related integrating Open License Manager with your application, **produce a minimal example to demonstrate it** Does the problem happen only with some license type? Does the problem only happen in Linux/Docker/Windows?
 
 Include details about your configuration and environment:
 
-*  **Update Open License Manager to the latest version** If possible try to pull the latest changes from `develop` branch.
-*  **What's the name and version of the OS you're using**?
-*  **What's the name and version of the compiler you're using**? Are you cross compiling? If you're cross compiling specify the host and the target operating system.
-*  **What's are the `cmake` command line you used to generate your build scripts**? 
-*  **Are you running Open License Manager in a virtual machine/docker?** If so, which VM software are you using and which operating systems and versions are used for the guest?
+-   **Update Open License Manager to the latest version** If possible try to pull the latest changes from `develop` branch.
+-   **What's the name and version of the OS you're using**?
+-   **What's the name and version of the compiler you're using**? Are you cross compiling? If you're cross compiling specify the host and the target operating system.
+-   **What's are the `cmake` command line you used to generate your build scripts**? 
+-   **Are you running Open License Manager in a virtual machine/docker?** If so, which VM software are you using and which operating systems and versions are used for the guest?
 
 ### Suggesting Enhancements
 
@@ -49,14 +49,14 @@ Please also check for the [current and planned features](https://github.com/open
 
 Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). 
 
-*  **Use a clear and descriptive title** for the issue to identify the suggestion.
-*  **Provide a detailed description of the suggested enhancement** in as many details as possible.
-*  **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets of code which we could use, or reference to other libraries, algorithms, open source code.
-*  **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
-*  **Explain why this enhancement would be useful** to most Open License Manager users and isn't something that can or should be implemented.
-*  **List some other software protection where this enhancement exists.**
-*  **Specify the name and version of the OS you're proposing the enhancement for.** If applicable include all the environment informations: is this for running the application in a VM? in a Docker?
-*  **Label the issue as enhancement.**
+-   **Use a clear and descriptive title** for the issue to identify the suggestion.
+-   **Provide a detailed description of the suggested enhancement** in as many details as possible.
+-   **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets of code which we could use, or reference to other libraries, algorithms, open source code.
+-   **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
+-   **Explain why this enhancement would be useful** to most Open License Manager users and isn't something that can or should be implemented.
+-   **List some other software protection where this enhancement exists.**
+-   **Specify the name and version of the OS you're proposing the enhancement for.** If applicable include all the environment informations: is this for running the application in a VM? in a Docker?
+-   **Label the issue as enhancement.**
 
 ### Your first code contribution
 
@@ -72,11 +72,11 @@ We apply a subset of [GitFlow](https://nvie.com/posts/a-successful-git-branching
 
 Supposing you already know how to contribute to an open source project on GitHub (if you have doubts you can check this short [guide](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project) ), you're working on an existing issue the code is already committed on your fork.
 
-*  Ensure your feature branch is up to date with the `develop`, eventually merge the latest changes from the `develop` branch. This will help us save time.
-*  Reformat the changed code using "clang-format" to keep consistent formatting style. The style we use is in `.clang-format` at the base of the project.
-*  Prepare your pull request, in the pull request comment reference the issue the pull request will fix.
-*  Check your pull request compiles and pass the checks on Travis CI
-*  In the pull request comment reference the issue you want to fix.
+-   Ensure your feature branch is up to date with the `develop`, eventually merge the latest changes from the `develop` branch. This will help us save time.
+-   Reformat the changed code using "clang-format" to keep consistent formatting style. The style we use is in `.clang-format` at the base of the project.
+-   Prepare your pull request, in the pull request comment reference the issue the pull request will fix.
+-   Check your pull request compiles and pass the checks on Travis CI
+-   In the pull request comment reference the issue you want to fix.
 
 ##### Don't
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.

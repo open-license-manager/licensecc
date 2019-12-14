@@ -23,15 +23,14 @@
  *@param buffer_out: unsigned char buffer[8] output buffer for result
  */
 static void parseUUID(const char *uuid, unsigned char *buffer_out, unsigned int out_size) {
-	size_t len;
 	unsigned int i, j;
 	char *hexuuid;
 	unsigned char cur_character;
 	// remove characters not in hex set
-	len = strlen(uuid);
-	hexuuid = (char *)malloc(sizeof(char) * strlen(uuid));
+	size_t len = strlen(uuid);
+	hexuuid = (char *)malloc(sizeof(char) * len);
 	memset(buffer_out, 0, out_size);
-	memset(hexuuid, 0, sizeof(char) * strlen(uuid));
+	memset(hexuuid, 0, sizeof(char) * len);
 
 	for (i = 0, j = 0; i < len; i++) {
 		if (isxdigit(uuid[i])) {

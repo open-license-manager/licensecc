@@ -7,37 +7,33 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iostream>
 
-#include <build_properties.h>
+#include <licensecc/datatypes.h>
+#include <licensecc_properties.h>
 
 #include "../base/logger.h"
-#include "../api/datatypes.h"
 #include "../base/base.h"
 #include "../base/EventRegistry.h"
 #include "../base/FileUtils.hpp"
 #include "../os/os.h"
 #include "ApplicationFolder.hpp"
-#include <iostream>
 
 namespace license {
 namespace locate {
 using namespace std;
 
-ApplicationFolder::ApplicationFolder() :
-		LocatorStrategy("ApplicationFolder") {
-}
+ApplicationFolder::ApplicationFolder() : LocatorStrategy("ApplicationFolder") {}
 
-ApplicationFolder::~ApplicationFolder() {
-}
+ApplicationFolder::~ApplicationFolder() {}
 
-const vector<string> ApplicationFolder::license_locations(
-		EventRegistry &eventRegistry) {
+const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRegistry) {
 	vector<string> diskFiles;
-	char fname[MAX_PATH] = { 0 };
+	char fname[MAX_PATH] = {0};
 	const FUNCTION_RETURN fret = getModuleName(fname);
 	if (fret == FUNC_RET_OK) {
 		const string module_name = remove_extension(fname);
-		const string temptativeLicense = string(module_name) + ".lic";
+		const string temptativeLicense = string(module_name) + LICENSE_FILE_EXTENSION;
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
 			diskFiles.push_back(temptativeLicense);
@@ -52,5 +48,5 @@ const vector<string> ApplicationFolder::license_locations(
 	return diskFiles;
 }
 
-}
+}  // namespace locate
 } /* namespace license */

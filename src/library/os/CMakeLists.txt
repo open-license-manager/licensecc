@@ -1,18 +1,17 @@
-IF(WIN32)
-    ADD_LIBRARY(os STATIC
-        os.c
-        os-win.c)
-ELSE(WIN32)
-    ADD_LIBRARY(os STATIC
-        os.c
-        os-linux.c
-        network_id.c)
-ENDIF(WIN32)
+IF(UNIX OR OPENSSL_FOUND)
+	IF(UNIX)
+		target_sources(licensecc_static PRIVATE
+		    ${CMAKE_CURRENT_SOURCE_DIR}/openssl/signature_verifier.cpp
+		    ${CMAKE_CURRENT_SOURCE_DIR}/os-linux.c 
+		    ${CMAKE_CURRENT_SOURCE_DIR}/network_id.c)
+	ELSE(UNIX)
+  	    target_sources(licensecc_static PRIVATE
+		    ${CMAKE_CURRENT_SOURCE_DIR}/openssl/signature_verifier.cpp
+  	    	${CMAKE_CURRENT_SOURCE_DIR}/os-win.c)
+	ENDIF(UNIX)
+ELSE(UNIX OR OPENSSL_FOUND)
+    target_sources(licensecc_static PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/windows/signature_verifier.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/os-win.c)
+ENDIF(UNIX OR OPENSSL_FOUND)
 
-target_link_libraries(
-     os
-     base
-     ${EXTERNAL_LIBS}
-)
-
-install(TARGETS os ARCHIVE DESTINATION lib)

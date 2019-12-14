@@ -24,13 +24,13 @@ using namespace std;
 
 string trim_copy(const string &string_to_trim) {
 	std::string::const_iterator it = string_to_trim.begin();
-	while (it != string_to_trim.end() && isspace(*it))
-		it++;
-
+	while (it != string_to_trim.end() && isspace(*it)) {
+		++it;
+	}
 	std::string::const_reverse_iterator rit = string_to_trim.rbegin();
-	while (rit.base() != it && isspace(*rit))
-		rit++;
-
+	while (rit.base() != it && isspace(*rit)) {
+		++rit;
+	}
 	return std::string(it, rit.base());
 }
 

@@ -3,6 +3,7 @@
 
 #ifndef LOG_DISABLED
 #include <errno.h>
+#include <string.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -15,14 +15,14 @@
 namespace license {
 namespace locate {
 
-class ApplicationFolder: public LocatorStrategy {
+class ApplicationFolder : public LocatorStrategy {
 public:
 	ApplicationFolder();
-	virtual const std::vector<std::string> license_locations(EventRegistry& eventRegistry);
+	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	virtual ~ApplicationFolder();
 };
 
-}
+}  // namespace locate
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_RETRIEVERS_APPLICATIONFOLDER_H_ */

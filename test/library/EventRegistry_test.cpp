@@ -13,8 +13,6 @@
 #include <stdlib.h>
 #include <cstdio>
 
-#include <build_properties.h>
-
 #include "../../src/library/base/EventRegistry.h"
 
 namespace test {
@@ -26,7 +24,7 @@ using namespace license;
  * The error reported is for the license that advanced most in the validation process
  *
  */
-BOOST_AUTO_TEST_CASE( test_most_advanced_license_error ) {
+BOOST_AUTO_TEST_CASE(test_most_advanced_license_error) {
 	EventRegistry er;
 	er.addEvent(LICENSE_SPECIFIED, "lic2");
 	er.addEvent(LICENSE_FOUND, "lic1");
@@ -38,4 +36,4 @@ BOOST_AUTO_TEST_CASE( test_most_advanced_license_error ) {
 	BOOST_CHECK_MESSAGE(LICENSE_CORRUPTED == event->event_type, "Error is for LICENSE_CORRUPTED");
 }
 
-}  //namespace test
+}  // namespace test

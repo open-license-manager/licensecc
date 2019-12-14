@@ -2,25 +2,30 @@
 
 #include <boost/test/unit_test.hpp>
 #include <fstream>
+#include <iostream>
 #include <stdio.h>
 #include <cstring>
-#include "../../src/tools/license-generator/license-generator.h"
-#include "../../src/library/api/license++.h"
-#include <build_properties.h>
 #include <boost/filesystem.hpp>
+#include <licensecc_properties.h>
+#include <licensecc_properties_test.h>
+
+#include <licensecc/licensecc.h>
 #include "../../src/library/ini/SimpleIni.h"
-#include "generate-license.h"
 #include "../../src/library/pc-identifiers.h"
+#include "../../src/library/os/os.h"
+#include "generate-license.h"
 
 namespace fs = boost::filesystem;
 using namespace license;
 using namespace std;
 
+namespace license {
+namespace test {
+
 BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
-	const string licLocation(PROJECT_TEST_TEMP_DIR "/volid_license.lic");
 	PcSignature identifier_out;
 
-	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::ETHERNET;
+	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
 	const FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out,
 			strategy);
@@ -31,13 +36,13 @@ BOOST_AUTO_TEST_CASE( default_volid_lic_file ) {
 	extraArgs.push_back("-s");
 	extraArgs.push_back(identifier_out);
 	BOOST_TEST_CHECKPOINT("Before generate license");
-	generate_license(licLocation, extraArgs);
+	const string licLocation = generate_license("volid_license", extraArgs);
 
 	LicenseInfo license;
 	LicenseLocation licenseLocation;
 	licenseLocation.licenseFileLocation = licLocation.c_str();
 	licenseLocation.licenseData = "";
-	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation, &license);
+	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
@@ -67,7 +72,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	size_t disk_num;
 	getDiskInfos(NULL, &disk_num);
 	if (disk_num >0) {
-		strategies = { DEFAULT, DISK_NUM, DISK_LABEL };
+		strategies = {STRATEGY_DEFAULT, STRATEGY_DISK_NUM, STRATEGY_DISK_LABEL};
 	} else {
 		BOOST_TEST_CHECKPOINT("if no disk default strategy fails see #49");
 		//strategies = { DEFAULT };
@@ -76,7 +81,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	size_t adapters;
 	getAdapterInfos(nullptr, &adapters);
 	if(adapters > 0){
-		strategies.push_back(ETHERNET);
+		strategies.push_back(STRATEGY_ETHERNET);
 	}
 
 	size_t num_strategies = strategies.size();
@@ -136,3 +141,5 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	}
 }
 
+}  // namespace test
+}  // namespace license

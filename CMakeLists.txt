@@ -35,11 +35,9 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT
 ENDIF()
 
 SET (OPENSSL_USE_STATIC_LIBS ON)
-find_package(OpenSSL COMPONENTS Crypto)
+find_package(OpenSSL COMPONENTS Crypto QUIET)
 IF(OPENSSL_FOUND)
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
-ELSE(OPENSSL_FOUND)
-	MESSAGE(STATUS "OpenSSL not found")
 ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
@@ -68,6 +66,9 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	endif(USE_DBUS_IDENTIFIER)  
 	set(main_lib_dest "lib/${PROJECT_NAME}")  
 else(UNIX)
+	IF(NOT OPENSSL_FOUND)
+		MESSAGE(STATUS "Openssl not found, configuring the library without it (running in wine not supported).")
+	ENDIF(NOT OPENSSL_FOUND)
 	if(MSVC)
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )

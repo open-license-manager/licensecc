@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 // define api structure sizes
-#define PC_IDENTIFIER_SIZE 18
+#define PC_IDENTIFIER_SIZE 19
 #define PROPRIETARY_DATA_SIZE 16
 #define AUDIT_EVENT_NUM 5
 

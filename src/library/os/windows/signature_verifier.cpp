@@ -43,13 +43,6 @@ typedef struct {
 } PUBKEY_BLOB, *P_PUBKEY_BLOB;
 #pragma pack(pop)
 
-static BCRYPT_ALG_HANDLE openSignatureProvider() {
-	DWORD status;
-	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
-
-	return hSignAlg;
-}
-
 static BCRYPT_ALG_HANDLE openHashProvider() {
 	DWORD status;
 	BCRYPT_ALG_HANDLE hHashAlg = nullptr;

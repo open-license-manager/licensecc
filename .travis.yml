@@ -101,7 +101,7 @@ matrix:
              wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz && 
              tar xzf OpenSSL_1_1_1d.tar.gz && cd openssl-OpenSSL_1_1_1d && 
              ./config && make -j 8 && make install && 
-             cd /root/lcc-license-manager/build && cmake .."
+             cd /root/open-license-manager/build && cmake .."
         - docker commit centos8_toconfigure centos8_configured
      script: 
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \

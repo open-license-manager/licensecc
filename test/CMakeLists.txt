@@ -8,16 +8,10 @@ configure_file (
 	"${CMAKE_CURRENT_SOURCE_DIR}/../src/templates/licensecc_properties_test.h.in" 
 	"${CMAKE_BINARY_DIR}/licensecc_properties_test.h.tmp"
 )
-IF(${CMAKE_VERSION} VERSION_GREATER  3.0)
-	file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/include/$<CONFIG>/licensecc_properties_test.h" 
+file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/include/$<CONFIG>/licensecc_properties_test.h" 
 		INPUT "${CMAKE_BINARY_DIR}/licensecc_properties_test.h.tmp")
-	include_directories ( ${CMAKE_BINARY_DIR}/include/$<CONFIG> )
-ELSE(${CMAKE_VERSION} VERSION_GREATER  3.0)
-#patch for Centos 7 cmake 2.8.11 :(
-	file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/include/$<CONFIGURATION>/licensecc_properties_test.h" 
-		INPUT "${CMAKE_BINARY_DIR}/licensecc_properties_test.h.tmp")
-	include_directories ( ${CMAKE_BINARY_DIR}/include/$<CONFIGURATION> )
-endif(${CMAKE_VERSION} VERSION_GREATER  3.0)
+include_directories ( ${CMAKE_BINARY_DIR}/include/$<CONFIG> )
+
 
 add_subdirectory(library)
 add_subdirectory(functional)

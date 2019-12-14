@@ -4,7 +4,9 @@ ADD_LIBRARY(license_generator_snippet STATIC
 
 target_link_libraries(
 	license_generator_snippet
- 	${Boost_LIBRARIES}
+ 	 Boost::unit_test_framework 
+     Boost::filesystem
+     Boost::system
 )
 
 add_executable(
@@ -16,7 +18,9 @@ target_link_libraries(
  test_standard_license
  licensecc_static
  license_generator_snippet
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 add_executable(
@@ -28,7 +32,9 @@ target_link_libraries(
  test_date
  licensecc_static
  license_generator_snippet
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 add_executable(
@@ -40,7 +46,9 @@ target_link_libraries(
  test_signature_verifier
  licensecc_static
  license_generator_snippet
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 
@@ -53,7 +61,9 @@ target_link_libraries(
  test_volid
  licensecc_static
  license_generator_snippet
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 

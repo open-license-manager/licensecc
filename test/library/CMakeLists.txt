@@ -6,7 +6,9 @@ add_executable(
 target_link_libraries(
  test_license_reader
  licensecc_static
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
@@ -22,7 +24,9 @@ ELSE(WIN32)
 	target_link_libraries(
  		test_os_linux
  		licensecc_static
- 		${Boost_LIBRARIES}
+ 		Boost::unit_test_framework 
+        Boost::filesystem
+        Boost::system
 	)
 
 	ADD_TEST(NAME test_os_linux COMMAND test_os_linux)
@@ -37,7 +41,9 @@ add_executable(
 target_link_libraries(
  test_license_locator
  licensecc_static
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
@@ -51,7 +57,9 @@ add_executable(
 target_link_libraries(
  test_event_registry
  base
- ${Boost_LIBRARIES}
+ Boost::unit_test_framework 
+ Boost::filesystem
+ Boost::system
 )
 
 ADD_TEST(NAME test_event_registry COMMAND test_event_registry)

@@ -83,21 +83,8 @@ ctest -C Release
 How to use
 ==========
 
-This simple example shows how to integrate open-licence-manager into your project
+The [examples](https://github.com/open-license-manager/examples) repository that shows various ways to integrate `open-licence-manager` into your project.
 
-```
-$ cd example
-$ cmake .
-$ make
-$ ./example
-license ERROR :
-    license file not found
-the pc signature is :
-    Jaaa-aaaa-MG9F-ZhBB
-$ ../install/bin/license_generator example -s Jaaa-aaaa-MG9F-ZhBB -o example.lic 
-$ ./example
-licence OK
-```
 
 # How to contribute
 The project is not dead but we take our time to answer. The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](CONTRIBUTING.md)

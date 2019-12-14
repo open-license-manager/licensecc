@@ -7,8 +7,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 #include <licensecc/datatypes.h>
+#include <licensecc_properties.h>
 
 #include "../base/logger.h"
 #include "../base/base.h"
@@ -16,7 +18,6 @@
 #include "../base/FileUtils.hpp"
 #include "../os/os.h"
 #include "ApplicationFolder.hpp"
-#include <iostream>
 
 namespace license {
 namespace locate {
@@ -32,7 +33,7 @@ const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRe
 	const FUNCTION_RETURN fret = getModuleName(fname);
 	if (fret == FUNC_RET_OK) {
 		const string module_name = remove_extension(fname);
-		const string temptativeLicense = string(module_name) + ".lic";
+		const string temptativeLicense = string(module_name) + LICENSE_FILE_EXTENSION;
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
 			diskFiles.push_back(temptativeLicense);

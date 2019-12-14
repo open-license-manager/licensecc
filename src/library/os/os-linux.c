@@ -22,15 +22,14 @@
  *@param uuid uuid as read in /dev/disk/by-uuid
  *@param buffer_out: unsigned char buffer[8] output buffer for result
  */
-static void parseUUID(const char *uuid, unsigned char *buffer_out,
-		unsigned int out_size) {
+static void parseUUID(const char *uuid, unsigned char *buffer_out, unsigned int out_size) {
 	size_t len;
 	unsigned int i, j;
 	char *hexuuid;
 	unsigned char cur_character;
-	//remove characters not in hex set
+	// remove characters not in hex set
 	len = strlen(uuid);
-	hexuuid = (char*) malloc(sizeof(char) * strlen(uuid));
+	hexuuid = (char *)malloc(sizeof(char) * strlen(uuid));
 	memset(buffer_out, 0, out_size);
 	memset(hexuuid, 0, sizeof(char) * strlen(uuid));
 
@@ -39,7 +38,7 @@ static void parseUUID(const char *uuid, unsigned char *buffer_out,
 			hexuuid[j] = uuid[i];
 			j++;
 		} else {
-			//skip
+			// skip
 			continue;
 		}
 	}
@@ -77,11 +76,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 		tmpDrives = diskInfos;
 	} else {
 		maxDrives = MAX_UNITS;
-		tmpDrives = (DiskInfo*) malloc(sizeof(DiskInfo) * maxDrives);
+		tmpDrives = (DiskInfo *)malloc(sizeof(DiskInfo) * maxDrives);
 	}
 	memset(tmpDrives, 0, sizeof(DiskInfo) * maxDrives);
-	statDrives = (__ino64_t*) malloc(maxDrives * sizeof(__ino64_t ));
-	memset(statDrives, 0, sizeof(__ino64_t ) * maxDrives);
+	statDrives = (__ino64_t *)malloc(maxDrives * sizeof(__ino64_t));
+	memset(statDrives, 0, sizeof(__ino64_t) * maxDrives);
 
 	aFile = setmntent("/proc/mounts", "r");
 	if (aFile == NULL) {
@@ -93,12 +92,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 
 	currentDrive = 0;
 	while (NULL != (ent = getmntent(aFile))) {
-		if ((strncmp(ent->mnt_type, "ext", 3) == 0
-				|| strncmp(ent->mnt_type, "xfs", 3) == 0
-				|| strncmp(ent->mnt_type, "vfat", 4) == 0
-				|| strncmp(ent->mnt_type, "ntfs", 4) == 0)
-				&& ent->mnt_fsname != NULL
-				&& strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
+		if ((strncmp(ent->mnt_type, "ext", 3) == 0 || strncmp(ent->mnt_type, "xfs", 3) == 0 ||
+			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0) &&
+			ent->mnt_fsname != NULL && strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
 			if (stat(ent->mnt_fsname, &mount_stat) == 0) {
 				drive_found = -1;
 				for (i = 0; i < currentDrive; i++) {
@@ -108,9 +104,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 				}
 				if (drive_found == -1) {
 					LOG_DEBUG("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
-							(unsigned long int)mount_stat.st_ino);
-					strncpy(tmpDrives[currentDrive].device, ent->mnt_fsname,
-							255 - 1);
+							  (unsigned long int)mount_stat.st_ino);
+					strncpy(tmpDrives[currentDrive].device, ent->mnt_fsname, 255 - 1);
 					statDrives[currentDrive] = mount_stat.st_ino;
 					drive_found = currentDrive;
 					currentDrive++;
@@ -144,17 +139,12 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 			if (stat(cur_dir, &sym_stat) == 0) {
 				for (i = 0; i < currentDrive; i++) {
 					if (sym_stat.st_ino == statDrives[i]) {
-						parseUUID(dir->d_name, tmpDrives[i].disk_sn,
-								sizeof(tmpDrives[i].disk_sn));
+						parseUUID(dir->d_name, tmpDrives[i].disk_sn, sizeof(tmpDrives[i].disk_sn));
 #ifdef _DEBUG
 						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
 
-						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i,
-								tmpDrives[i].device,
-								tmpDrives[i].disk_sn[0],
-								tmpDrives[i].disk_sn[1],
-								tmpDrives[i].disk_sn[2],
-								tmpDrives[i].disk_sn[3]);
+						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i, tmpDrives[i].device, tmpDrives[i].disk_sn[0],
+								  tmpDrives[i].disk_sn[1], tmpDrives[i].disk_sn[2], tmpDrives[i].disk_sn[3]);
 #endif
 					}
 				}
@@ -171,8 +161,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 					for (i = 0; i < currentDrive; i++) {
 						if (sym_stat.st_ino == statDrives[i]) {
 							strncpy(tmpDrives[i].label, dir->d_name, 255 - 1);
-							printf("label %d %s %s\n", i, tmpDrives[i].label,
-									tmpDrives[i].device);
+							printf("label %d %s %s\n", i, tmpDrives[i].label, tmpDrives[i].device);
 						}
 					}
 				}
@@ -202,24 +191,20 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	return result;
 }
 
-void os_initialize() {
-
-}
+void os_initialize() {}
 
 static void _getCpuid(unsigned int *p, unsigned int ax) {
-	__asm __volatile
-	( "movl %%ebx, %%esi\n\t"
-			"cpuid\n\t"
-			"xchgl %%ebx, %%esi"
-			: "=a" (p[0]), "=S" (p[1]),
-			"=c" (p[2]), "=d" (p[3])
-			: "0" (ax)
-	);
+	__asm __volatile(
+		"movl %%ebx, %%esi\n\t"
+		"cpuid\n\t"
+		"xchgl %%ebx, %%esi"
+		: "=a"(p[0]), "=S"(p[1]), "=c"(p[2]), "=d"(p[3])
+		: "0"(ax));
 }
 
 FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 	unsigned int i;
-	unsigned int cpuinfo[4] = { 0, 0, 0, 0 };
+	unsigned int cpuinfo[4] = {0, 0, 0, 0};
 	_getCpuid(cpuinfo, 0);
 	for (i = 0; i < 3; i++) {
 		identifier[i * 2] = cpuinfo[i] & 0xFF;
@@ -228,11 +213,11 @@ FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 	return FUNC_RET_OK;
 }
 
-//0=NO 1=Docker/Lxc
+// 0=NO 1=Docker/Lxc
 static int checkContainerProc() {
-	//in docer /proc/self/cgroups contains the "docker" or "lxc" string
-	//https://stackoverflow.com/questions/23513045/how-to-check-if-a-process-is-running-inside-docker-container
-	char path[MAX_PATH] = { 0 };
+	// in docer /proc/self/cgroups contains the "docker" or "lxc" string
+	// https://stackoverflow.com/questions/23513045/how-to-check-if-a-process-is-running-inside-docker-container
+	char path[MAX_PATH] = {0};
 	char proc_path[MAX_PATH], pidStr[64];
 	pid_t pid = getpid();
 	sprintf(pidStr, "%d", pid);
@@ -240,49 +225,47 @@ static int checkContainerProc() {
 	strcat(proc_path, pidStr);
 	strcat(proc_path, "/cgroup");
 
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    int result = 0;
+	FILE *fp;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	int result = 0;
 
-    fp = fopen(proc_path, "r");
-    if (fp == NULL) {
-        return 0;
-    }
+	fp = fopen(proc_path, "r");
+	if (fp == NULL) {
+		return 0;
+	}
 
-    while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
-    	//line[len]=0;
-        //printf("Retrieved line of length %zu:\n", read);
-        //printf("%s", line);
-    	if(strstr(line, "docker") != NULL || strstr(line, "lxc") != NULL) {
-    	    result = 1;
-    	}
-    }
+	while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
+		// line[len]=0;
+		// printf("Retrieved line of length %zu:\n", read);
+		// printf("%s", line);
+		if (strstr(line, "docker") != NULL || strstr(line, "lxc") != NULL) {
+			result = 1;
+		}
+	}
 
-    fclose(fp);
-    if(line) free(line);
+	fclose(fp);
+	if (line) free(line);
 	return result;
 }
 
-//0=NO 1=Docker/Lxc
-static int checkLXC() {
-	return (access("/var/run/systemd/container",F_OK)==0) ? 1:0;
-}
+// 0=NO 1=Docker/Lxc
+static int checkLXC() { return (access("/var/run/systemd/container", F_OK) == 0) ? 1 : 0; }
 
 VIRTUALIZATION getVirtualization() {
 	VIRTUALIZATION result = NONE;
 	int isContainer = checkContainerProc();
 	if (isContainer == 1) {
 		result = CONTAINER;
-	} else if(checkLXC()){
+	} else if (checkLXC()) {
 		result = CONTAINER;
 	}
 	return result;
 
-//http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
-//
-//bool rc = true;
+	// http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
+	//
+	// bool rc = true;
 	/*__asm__ (
 	 "push   %edx\n"
 	 "push   %ecx\n"
@@ -299,7 +282,7 @@ VIRTUALIZATION getVirtualization() {
 	 "pop    %edx \n"
 	 );*/
 
-	//systemd-detect-virt
+	// systemd-detect-virt
 	return NONE;
 }
 
@@ -315,7 +298,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 #if USE_DBUS
-	char* dbus_id = dbus_get_local_machine_id();
+	char *dbus_id = dbus_get_local_machine_id();
 	if (dbus_id == NULL) {
 		return FUNC_RET_ERROR;
 	}
@@ -329,7 +312,7 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
 
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	FUNCTION_RETURN result;
-	char path[MAX_PATH] = { 0 };
+	char path[MAX_PATH] = {0};
 	char proc_path[MAX_PATH], pidStr[64];
 	pid_t pid = getpid();
 	sprintf(pidStr, "%d", pid);

@@ -46,14 +46,16 @@ set (failure_messge "Error finding lcc executable.")
 find_package(PkgConfig)
 
 if(LCC_LOCATION)
-	# First search the PATH and specific locations.
-	find_program(LCC_EXECUTABLE
-	NAMES ${lcc_names} HINTS ${LCC_LOCATION} DOC "lcc command line client")
-	FIND_PACKAGE_HANDLE_STANDARD_ARGS(lcc FOUND_VAR LCC_FOUND
-                                       REQUIRED_VARS LCC_EXECUTABLE 
-                                       FAIL_MESSAGE "Error finding lcc executable. variable LCC_LOCATION non set correctly.")
-    add_executable(license_generator::lcc IMPORTED GLOBAL)                                            
-	set_property(TARGET license_generator::lcc PROPERTY IMPORTED_LOCATION ${LCC_EXECUTABLE})  
+	find_package(lcc HINTS ${LCC_LOCATION} CONFIG) #try to find it without looping on this module
+	if(NOT lcc_FOUND)
+		find_program(LCC_EXECUTABLE
+		NAMES ${lcc_names} HINTS ${LCC_LOCATION} DOC "lcc command line client")
+		FIND_PACKAGE_HANDLE_STANDARD_ARGS(lcc FOUND_VAR LCC_FOUND
+        	                               REQUIRED_VARS LCC_EXECUTABLE 
+            	                           FAIL_MESSAGE "Error finding lcc executable. variable LCC_LOCATION non set correctly.")
+    	add_executable(license_generator::lcc IMPORTED GLOBAL)                                            
+		set_property(TARGET license_generator::lcc PROPERTY IMPORTED_LOCATION ${LCC_EXECUTABLE})
+	ENDIF(NOT lcc_FOUND)
 ELSE(LCC_LOCATION)
 	find_package(lcc HINTS ${CMAKE_BINARY_DIR} CONFIG) #try to find it without looping on this module
 
@@ -76,6 +78,7 @@ ELSE(LCC_LOCATION)
 		    set(failure_messge  "All the options to find lcc executable failed. And i can't compile one from source GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 		endif()
 		add_subdirectory("${PROJECT_SOURCE_DIR}/extern/license-generator")
+		set(lcc_FOUND TRUE)
 	ENDIF(NOT lcc_FOUND)
 ENDIF(LCC_LOCATION)
 

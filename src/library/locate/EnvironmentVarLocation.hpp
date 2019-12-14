@@ -13,15 +13,14 @@
 namespace license {
 namespace locate {
 
-class EnvironmentVarLocation: public LocatorStrategy {
-
+class EnvironmentVarLocation : public LocatorStrategy {
 public:
 	EnvironmentVarLocation();
-	virtual const std::vector<std::string> license_locations(EventRegistry& eventRegistry);
+	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	virtual ~EnvironmentVarLocation();
 };
 
-}
-}
+}  // namespace locate
+}  // namespace license
 
 #endif /* SRC_LIBRARY_LOCATE_ENVIRONMENTVARLOCATION_H_ */

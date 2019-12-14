@@ -61,30 +61,57 @@ matrix:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
+             - lcov
      before_script:
-         - mkdir build
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug ..
      script: 
          - cmake --build . --target install
          - ctest
          - ctest -T memcheck
-         
+     after_success:
+         # Create lcov report
+         - lcov --capture --directory . --output-file coverage.info
+         - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
+         - lcov --list coverage.info # debug info
+         # Uploading report to CodeCov
+         - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+                  
    - os: linux
      dist: bionic
      name: "CentOS-7 Docker"
      before_script: 
         - docker run --name centos7_toconfigure -v `pwd`:/root/open-license-manager centos:centos7 /bin/bash -c 
             "yum -y update && yum -y install install centos-release-scl &&
-              yum -y install cmake boost boost-devel boost-static openssl openssl-devel glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel && 
-              cd /root/open-license-manager && mkdir build && cd build && 
-              CC=/opt/rh/devtoolset-7/root/usr/bin/gcc CXX=/opt/rh/devtoolset-7/root/usr/bin/g++ cmake .."
+              yum -y install wget boost boost-devel boost-static openssl openssl-devel openssl-static glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel &&
+              wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz && tar zxvf cmake-3.11.0.tar.gz && cd cmake-3.11.0 &&
+              export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc && export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++ &&  
+              ./bootstrap && make && make install && cd /root/open-license-manager/build && cmake .."
         - docker commit centos7_toconfigure centos7_configured
      script: 
         - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
             "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
+#   - os: linux
+#     dist: bionic
+#     name: "CentOS-8 Docker"
+#     before_script: 
+#        - docker run --name centos8_toconfigure -v `pwd`:/root/open-license-manager centos:centos8 /bin/bash -c \
+#            "yum -y update && yum -y groupinstall 'Development Tools' && 
+#             yum -y install wget cmake boost boost-devel openssl-devel zlib-devel && 
+#             dnf -y --enablerepo=PowerTools install boost-static && 
+#             wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz && 
+#             tar xzf OpenSSL_1_1_1d.tar.gz && cd openssl-OpenSSL_1_1_1d && 
+#             ./config && make -j 8 && make install && 
+#             cd /root/open-license-manager/build && cmake .."
+#        - docker commit centos8_toconfigure centos8_configured
+#     script: 
+#        - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
+#            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
+     env:
+        - CTEST_OUTPUT_ON_FAILURE=1      
+        - WINEARCH=win64
      addons:
         apt:
           packages:
@@ -93,9 +120,12 @@ matrix:
              - mingw-w64 
              - mingw-w64-tools 
              - mingw-w64-x86-64-dev 
+             - wine64-development
+             - wine64-development-preloader
              - wine-development
+             - wine64
+             - p7zip-full
      before_script:
-        - mkdir build
         - cd build
         - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
         - tar xjf boost_1_71_0.tar.bz2
@@ -104,21 +134,21 @@ matrix:
         - ./bootstrap.sh
         - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
-        - cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist  ..
+        - wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z
+        - 7z x openssl.7z
+        - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl-1.0.2h-win64-mingw/ ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
      before_script:
-         - travis_wait 40 ./windows_download_boost.bat
-         - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
+         - travis_wait 40 ./scripts/windows_download_boost.bat
+         - cd "${TRAVIS_BUILD_DIR}/build"
+         - cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
      before_script:
-         - travis_wait 40 ./windows_download_boost.bat
+         - travis_wait 40 ./scripts/windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
           
    - os: windows
@@ -146,14 +176,14 @@ matrix:
                dir 
            fi
          - cd "${TRAVIS_BUILD_DIR}"
-         - mkdir build
-         - cd build && cmake -G "MinGW Makefiles" --trace-expand -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
-         
+         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+     script: 
+         - travis_wait 20 cmake --build . --target install --config Release
+         - ctest -C Release
+
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
-    
 before_script:
-    - mkdir build
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 script: 

@@ -26,7 +26,7 @@ static void timenow(char * buffer) {
 
 static void getLogFname(char* logpath) {
 #ifdef __unix__
-	char const *folder = getenv("TMPDIR");
+	const char *folder = getenv("TMPDIR");
 	if (folder == 0) {
 		folder = "/tmp";
 	}
@@ -42,10 +42,10 @@ static void getLogFname(char* logpath) {
 }
 
 void _log(const char* format, ...) {
-	char logpath[MAX_PATH];
 	va_list args;
 	char * buffer;
 	if (logFile == NULL) {
+		char logpath[MAX_PATH];
 		getLogFname(logpath);
 		logFile = fopen(logpath, "a");
 		if (logFile == NULL) {

@@ -1,5 +1,11 @@
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 
-using namespace std;
-void generate_license(const string& fname, const vector<string>& other_args);
+namespace license {
+namespace test {
+
+std::string generate_license(const std::string& fname, const std::vector<std::string>& other_args);
+std::string sign_data(const std::string& data, const std::string& test_name);
+
+}  // namespace test
+}  // namespace license

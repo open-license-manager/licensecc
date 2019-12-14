@@ -6,6 +6,7 @@ ADD_LIBRARY(base STATIC
     base64.c
 )
 
-add_dependencies( base public_key )
+add_dependencies( base project_initialize )
 
-install(TARGETS base ARCHIVE DESTINATION lib)
+install(TARGETS base EXPORT licensecc ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})
+

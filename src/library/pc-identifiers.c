@@ -90,7 +90,6 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier *identifiers, unsigne
 
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier *identifiers, unsigned int *num_identifiers, int use_mac) {
 	FUNCTION_RETURN result_adapterInfos;
-	unsigned int j, k;
 	OsAdapterInfo *adapterInfos;
 	size_t defined_adapters, adapters = 0;
 
@@ -105,7 +104,9 @@ static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier *identifiers, unsign
 		adapterInfos = (OsAdapterInfo *)malloc(adapters * sizeof(OsAdapterInfo));
 		result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
 		if (result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL || result_adapterInfos == FUNC_RET_OK) {
+			unsigned int j;
 			for (j = 0; j < adapters; j++) {
+				unsigned int k;
 				for (k = 0; k < 6; k++)
 					if (use_mac) {
 						identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
@@ -131,7 +132,6 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier *identifiers, unsigned i
 	FUNCTION_RETURN result_diskinfos;
 	unsigned int i, j;
 	int defined_identifiers;
-	char firstChar;
 	DiskInfo *diskInfos;
 
 	result_diskinfos = getDiskInfos(NULL, &disk_num);
@@ -146,7 +146,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier *identifiers, unsigned i
 		return result_diskinfos;
 	}
 	for (i = 0; i < disk_num; i++) {
-		firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
+		char firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
 		available_disk_info += firstChar == 0 ? 0 : 1;
 	}
 
@@ -241,15 +241,14 @@ char *MakeCRC(char *BitString) {
 	static char Res[3];  // CRC Result
 	char CRC[2];
 	int i;
-	char DoInvert;
 
 	for (i = 0; i < 2; ++i) CRC[i] = 0;  // Init before calculation
 
 	for (i = 0; i < strlen(BitString); ++i) {
-		DoInvert = ('1' == BitString[i]) ^ CRC[1];  // XOR required?
+		char doInvert = ('1' == BitString[i]) ^ CRC[1];  // XOR required?
 
 		CRC[1] = CRC[0];
-		CRC[0] = DoInvert;
+		CRC[0] = doInvert;
 	}
 
 	for (i = 0; i < 2; ++i) Res[1 - i] = CRC[i] ? '1' : '0';  // Convert binary to ASCII

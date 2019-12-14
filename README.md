@@ -14,7 +14,7 @@ limit the usage in time, to a specific set of machines, or prevent the usage in
 virtualized environments. It is an Open License Manager that helps to keep your 
 software closed :smirk: . A comprehensive [list of features](https://github.com/open-license-manager/open-license-manager/wiki/features), and their status is available in the project wiki.
 
-## License
+##License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
 It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows free modification and inclusion in commercial software. 
 
@@ -31,7 +31,7 @@ The following modules are planned...
 # How to build
 Below an overview of the basic build procedure, you can find detailed instructions for [linux](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) or [windows](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library-win) in the wiki. 
 
-## prerequisites
+## Prerequisites
 *  Operating system: Linux(Ubuntu, CentOS), Windows
 *  compilers       : GCC (Linux) MINGW (Linux cross compile for Windows), MINGW or MSVC (Windows) 
 *  tools           : cmake(>3.6), git, make/ninja(linux)
@@ -41,27 +41,27 @@ For a complete list of dependencies and supported environments see [the wiki](ht
 
 Clone the project. It has submodules, don't forget the `--recursive` option.
 
-```
+```console
 git clone --recursive https://github.com/open-license-manager/open-license-manager.git
 cd open-license-manager/
 cd build
 ```
 
 ## on Linux
-```
+```console
 cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
 ```
 
 ## on Windows (with MSVC 2015)
-```
+```console
 cmake .. -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT="{Folder where boost is}" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install --config Release
 ```
 
 ## cross compile with MINGW on Linux
-```
+```console
 x86_64-w64-mingw32.static-cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
@@ -71,12 +71,12 @@ How to test
 ===========
 
 ## on Linux
-```
+```console
 make test
 ```
 
 ## on Windows (MSVC)
-```
+```console
 ctest -C Release
 ```
 

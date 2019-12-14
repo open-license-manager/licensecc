@@ -18,7 +18,7 @@ IF(UNIX OR OPENSSL_FOUND)
 	target_link_libraries(licensecc_static PUBLIC base OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
 ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
-	target_link_libraries(licensecc_static ${EXTERNAL_LIBS})
+	target_link_libraries(licensecc_static PUBLIC base ${EXTERNAL_LIBS})
 ENDIF(UNIX OR OPENSSL_FOUND)
 
 target_include_directories(licensecc_static

@@ -45,6 +45,12 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
 	ENDIF(NOT OPENSSL_FOUND)
 	
+	#Zlib required when openssl version < 1.0.1f (centos 7)
+	SET ( ZLIB_USE_STATIC_LIBS ON ) 
+	find_package(ZLIB REQUIRED)
+	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+	MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
+	
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
   		list(APPEND EXTERNAL_LIBS "-pthread")

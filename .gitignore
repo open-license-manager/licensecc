@@ -31,3 +31,5 @@ build/*
 projects/*
 !projects/.gitkeep
 
+**/CMakeCache.txt
+**/CMakeFiles

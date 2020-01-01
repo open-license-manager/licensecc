@@ -2,8 +2,8 @@
 #define LICENSEPP_H_
 
 /*
- * This include file is the public api di License++
-*/
+ * This include file is the public api di Licensecc
+ */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,7 +20,7 @@ void print_error(char out_buffer[256], LicenseInfo* licenseInfo);
  * This method calculate the pc identifier. The string has to be shown
  * to the user in order to calculate the license.
  */
-bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t bufSize);
+bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t* bufSize);
 
 /**
  * This method is used to request the use of one license for a product.

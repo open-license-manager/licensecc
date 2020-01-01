@@ -24,10 +24,10 @@ BOOST_AUTO_TEST_CASE(license_not_expired) {
 	const string licLocation = generate_license("not_expired.lic", extraArgs);
 	/* */
 	LicenseInfo license;
-	LicenseLocation licenseLocation;
-	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.licenseData = "";
-	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
+	LicenseLocation location = {LICENSE_PATH};
+	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
+
+	const EVENT_TYPE result = acquire_license(nullptr, &location, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
@@ -41,11 +41,10 @@ BOOST_AUTO_TEST_CASE(license_expired) {
 	const string licLocation = generate_license("expired", extraArgs);
 	/* */
 	LicenseInfo license;
-	LicenseLocation licenseLocation;
-	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.licenseData = nullptr;
+	LicenseLocation location = {LICENSE_PATH};
+	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
 	BOOST_TEST_MESSAGE("before acquire license");
-	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
+	const EVENT_TYPE result = acquire_license(nullptr, &location, &license);
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);

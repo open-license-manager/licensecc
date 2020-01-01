@@ -26,6 +26,8 @@ extern "C" {
 #define PC_IDENTIFIER_SIZE 19
 #define PROPRIETARY_DATA_SIZE 16
 #define AUDIT_EVENT_NUM 5
+#define API_LICENSE_DATA_LENGTH 1024 * 4
+#define API_VERSION_LENGTH 16
 
 typedef enum {
 	LICENSE_OK = 0,  // OK
@@ -62,6 +64,22 @@ typedef struct {
 	char param2[256];
 } AuditEvent;
 
+typedef enum {
+	/**
+	 * A list of absolute path separated by ';' containing the eventual location
+	 * of the license files. Can be NULL.
+	 */
+	LICENSE_PATH,
+	/**
+	 * The license is provided as plain data
+	 */
+	LICENSE_PLAIN_DATA,
+	/**
+	 * The license is encoded
+	 */
+	LICENSE_ENCODED
+} LICENSE_DATA_TYPE;
+
 /**
  * This structure contains informations on the raw license data. Software authors
  * can specify the location of the license file or its full content.
@@ -70,25 +88,23 @@ typedef struct {
  * license file location on its own.
  */
 typedef struct {
-	/**
-	 * A list of absolute path separated by ';' containing the eventual location
-	 * of the license files. Can be NULL.
-	 */
-	const char *licenseFileLocation;
-	/**
-	 * The application can provide the full license content through this string.
-	 * It can be both in encoded form (base64) or in plain. It's optional.
-	 */
-	const char *licenseData;
+	LICENSE_DATA_TYPE license_data_type;
+	char licenseData[API_LICENSE_DATA_LENGTH];
 } LicenseLocation;
+
 /**
  * Informations on the software requiring the license
  */
 typedef struct {
-	char version[16];  // software version in format xxxx.xxxx.xxxx
+	char version[API_VERSION_LENGTH];  // software version in format xxxx[.xxxx.xxxx] //TODO
 	char project_name[16];  // name of the project (must correspond to the name in the license)
-	uint32_t magic;  // reserved
+	/**
+	 * this number passed in by the application must correspond to the magic number used when compiling the library.
+	 * See cmake parameter -DLCC_PROJECT_MAGIC_NUM and licensecc_properties.h macro VERIFY_MAGIC
+	 */
+	unsigned int magic;
 } CallerInformations;
+
 typedef struct {
 	/**
 	 * Detailed reason of success/failure. Reasons for a failure can be
@@ -117,13 +133,13 @@ typedef struct {
  * in most cases.
  */
 typedef enum {
-	STRATEGY_DEFAULT,
-	STRATEGY_ETHERNET,
-	STRATEGY_IP_ADDRESS,
-	STRATEGY_DISK_NUM,
-	STRATEGY_DISK_LABEL,
-	STRATEGY_PLATFORM_SPECIFIC,
-	STRATEGY_UNKNOWN
+	STRATEGY_DEFAULT = -1,
+	STRATEGY_ETHERNET = 0,
+	STRATEGY_IP_ADDRESS = 1,
+	STRATEGY_DISK_NUM = 1,
+	STRATEGY_DISK_LABEL = 2,
+	STRATEGY_PLATFORM_SPECIFIC = 3,
+	STRATEGY_UNKNOWN = -2
 } IDENTIFICATION_STRATEGY;
 
 #ifdef __cplusplus

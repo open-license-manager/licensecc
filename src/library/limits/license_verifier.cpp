@@ -35,7 +35,7 @@ FUNCTION_RETURN LicenseVerifier::verify_signature(const FullLicenseInfo& licInfo
 
 // TODO: split in different classes
 FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
-	bool is_valid = VERIFY_MAGIC;
+	bool is_valid = VERIFY_MAGIC(licInfo);
 	if (!is_valid) {
 		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source.c_str());
 	}

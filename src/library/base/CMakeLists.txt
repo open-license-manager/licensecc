@@ -1,10 +1,12 @@
-ADD_LIBRARY(base STATIC
+ADD_LIBRARY(base OBJECT
     EventRegistry.cpp
     StringUtils.cpp
     FileUtils.cpp
+    base64.cpp
     logger.c
-    base64.c
 )
+
+add_dependencies( base project_initialize )
 
 if(CODE_COVERAGE AND UNIX)
 	  MESSAGE(STATUS "Enabling code coverage")
@@ -13,10 +15,6 @@ if(CODE_COVERAGE AND UNIX)
 	    -g         # generate debug info
 	    --coverage # sets all required flags
 	  )
-	  target_link_libraries(base PUBLIC gcov)
 endif(CODE_COVERAGE AND UNIX)
 
-add_dependencies( base project_initialize )
-
-install(TARGETS base EXPORT licensecc ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})
 

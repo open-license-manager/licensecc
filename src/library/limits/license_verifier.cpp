@@ -6,11 +6,12 @@
  */
 #include <cmath>
 #include <algorithm>
+#include <licensecc_properties.h>
 
 #include "license_verifier.hpp"
+#include "../pc_identifier_facade.hpp"
 #include "../os/signature_verifier.h"
 #include "../base/StringUtils.h"
-#include "../pc-identifiers.h"
 
 namespace license {
 using namespace std;
@@ -34,10 +35,13 @@ FUNCTION_RETURN LicenseVerifier::verify_signature(const FullLicenseInfo& licInfo
 
 // TODO: split in different classes
 FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
-	bool is_valid = true;
-	const time_t now = time(nullptr);
+	bool is_valid = VERIFY_MAGIC;
+	if (!is_valid) {
+		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source.c_str());
+	}
+	const const time_t now = time(nullptr);
 	auto expiry = licInfo.m_limits.find(PARAM_EXPIRY_DATE);
-	if (expiry != licInfo.m_limits.end()) {
+	if (is_valid && expiry != licInfo.m_limits.end()) {
 		if (seconds_from_epoch(expiry->second) < now) {
 			/*
 						eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
@@ -46,7 +50,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 			is_valid = false;
 		}
 	}
-	auto start_date = licInfo.m_limits.find(PARAM_BEGIN_DATE);
+	const auto start_date = licInfo.m_limits.find(PARAM_BEGIN_DATE);
 	if (is_valid && start_date != licInfo.m_limits.end()) {
 		if (seconds_from_epoch(start_date->second) > now) {
 			/*eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
@@ -56,11 +60,9 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 			is_valid = false;
 		}
 	}
-	auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
+	const auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	if (is_valid && client_sig != licInfo.m_limits.end()) {
-		PcSignature str_code;
-		strncpy(str_code, client_sig->second.c_str(), sizeof(str_code) - 1);
-		const EVENT_TYPE event = validate_pc_signature(str_code);
+		const EVENT_TYPE event = PcIdentifierFacade::validate_pc_signature(client_sig->second);
 		m_event_registry.addEvent(event, licInfo.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}
@@ -71,7 +73,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 	LicenseInfo info;
 	info.license_type = LOCAL;
 
-	auto expiry = fullLicInfo.m_limits.find(PARAM_EXPIRY_DATE);
+	const auto expiry = fullLicInfo.m_limits.find(PARAM_EXPIRY_DATE);
 	if (expiry != fullLicInfo.m_limits.end()) {
 		strncpy(info.expiry_date, expiry->second.c_str(), sizeof(info.expiry_date));
 		info.has_expiry = true;
@@ -83,14 +85,14 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 		info.expiry_date[0] = '\0';
 	}
 
-	auto start_date = fullLicInfo.m_limits.find(PARAM_BEGIN_DATE);
+	const auto start_date = fullLicInfo.m_limits.find(PARAM_BEGIN_DATE);
 	if (start_date != fullLicInfo.m_limits.end()) {
 	}
 
-	auto client_sig = fullLicInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
+	const auto client_sig = fullLicInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	info.linked_to_pc = (client_sig != fullLicInfo.m_limits.end());
 
-	auto proprietary_data = fullLicInfo.m_limits.find(PARAM_EXTRA_DATA);
+	const auto proprietary_data = fullLicInfo.m_limits.find(PARAM_EXTRA_DATA);
 	if (proprietary_data != fullLicInfo.m_limits.end()) {
 		strncpy(info.proprietary_data, proprietary_data->second.c_str(), PROPRIETARY_DATA_SIZE);
 	}

@@ -12,6 +12,8 @@
 #define LICENSE_DATA_ENV_VAR "LICENSE_DATA"
 
 //Internal data structures limits
-#define MAX_LICENSE_LENGTH 256*1024
+#define MAX_LICENSE_LENGTH 256 * 1024
+
+#define VERIFY_MAGIC (lic_info.m_magic == @LCC_PROJECT_MAGIC_NUM@)
 
 #endif

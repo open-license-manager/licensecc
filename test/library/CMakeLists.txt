@@ -1,17 +1,13 @@
-add_executable(
- test_license_reader
+add_executable( test_license_reader
  LicenseReader_test.cpp
 )
 
-target_link_libraries(
- test_license_reader
+target_link_libraries( test_license_reader
  licensecc_static
  Boost::unit_test_framework 
  Boost::filesystem
  Boost::system
 )
-
-ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
 
 IF(WIN32)
 #test windows
@@ -34,8 +30,8 @@ ENDIF(WIN32)
 
 ### LicenseLocator tests
 add_executable(
- test_license_locator
- LicenseLocator_test.cpp
+	test_license_locator
+ 	LicenseLocator_test.cpp
 )
 
 target_link_libraries(
@@ -46,8 +42,6 @@ target_link_libraries(
  Boost::system
 )
 
-ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
-
 ### LicenseLocator tests
 add_executable(
  test_event_registry
@@ -56,10 +50,12 @@ add_executable(
 
 target_link_libraries(
  test_event_registry
- base
+ licensecc_static
  Boost::unit_test_framework 
  Boost::filesystem
  Boost::system
 )
 
+ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
+ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
 ADD_TEST(NAME test_event_registry COMMAND test_event_registry)

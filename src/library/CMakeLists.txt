@@ -1,24 +1,27 @@
 add_subdirectory("base")
+add_subdirectory("os")
+add_subdirectory("locate")
+add_subdirectory("pc_identifier")
 
 ADD_LIBRARY(licensecc_static STATIC
     licensecc.cpp
     LicenseReader.cpp
-    pc-identifiers.c
     limits/license_verifier.cpp
     ini/ConvertUTF.c
+    $<TARGET_OBJECTS:locate>
+    $<TARGET_OBJECTS:os>
+    $<TARGET_OBJECTS:base>
 )
 
-add_subdirectory("locate")
-add_subdirectory("os")
 
 define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile" FULL_DOCS "ff")
 IF(UNIX OR OPENSSL_FOUND)
 	target_compile_definitions(licensecc_static PUBLIC HAS_OPENSSL)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 1)
-	target_link_libraries(licensecc_static PUBLIC base OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
+	target_link_libraries(licensecc_static PUBLIC OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
 ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
-	target_link_libraries(licensecc_static PUBLIC base ${EXTERNAL_LIBS})
+	target_link_libraries(licensecc_static PUBLIC ${EXTERNAL_LIBS})
 ENDIF(UNIX OR OPENSSL_FOUND)
 
 target_include_directories(licensecc_static

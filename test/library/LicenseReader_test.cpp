@@ -1,4 +1,7 @@
 #define BOOST_TEST_MODULE "test_license_reader"
+#define __STDC_WANT_LIB_EXT1__ 1
+
+#include <string>
 
 #include <boost/test/unit_test.hpp>
 #include <iostream>
@@ -22,10 +25,11 @@ using namespace std;
  * Read license at application provided location
  */
 BOOST_AUTO_TEST_CASE(read_single_file) {
-	const char *licLocation = PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
+	string location = PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
 
-	const LicenseLocation location = {licLocation, nullptr};
-	LicenseReader licenseReader(&location);
+	LicenseLocation licLocation = {LICENSE_PATH};
+	std::copy(location.begin(), location.end(), licLocation.licenseData);
+	LicenseReader licenseReader(&licLocation);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PrODUCT", licenseInfos);
 	BOOST_CHECK(registry.isGood());
@@ -36,9 +40,10 @@ BOOST_AUTO_TEST_CASE(read_single_file) {
  * Test the error return if the product code is not found in the license
  */
 BOOST_AUTO_TEST_CASE(product_not_licensed) {
-	const char *licLocation = PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
-	const LicenseLocation location = {licLocation, nullptr};
-	LicenseReader licenseReader(&location);
+	string location = PROJECT_TEST_SRC_DIR "/library/test_reader.ini";
+	LicenseLocation licLocation = {LICENSE_PATH};
+	std::copy(location.begin(), location.end(), licLocation.licenseData);
+	LicenseReader licenseReader(&licLocation);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PRODUCT-NOT", licenseInfos);
 	BOOST_CHECK(!registry.isGood());
@@ -51,11 +56,12 @@ BOOST_AUTO_TEST_CASE(product_not_licensed) {
  * Test the error code if the license file is specified but doesn't exists
  */
 BOOST_AUTO_TEST_CASE(file_not_found) {
-	const char *licLocation = PROJECT_TEST_SRC_DIR "/library/not_found.ini";
+	string licLocation = PROJECT_TEST_SRC_DIR "/library/not_found.ini";
 
 	locate::LocatorFactory::find_license_near_module(false);
 	locate::LocatorFactory::find_license_with_env_var(false);
-	const LicenseLocation location = {licLocation, nullptr};
+	LicenseLocation location = {LICENSE_PATH};
+	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
 	LicenseReader licenseReader(&location);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PRODUCT", licenseInfos);
@@ -70,10 +76,9 @@ BOOST_AUTO_TEST_CASE(file_not_found) {
  */
 BOOST_AUTO_TEST_CASE(env_var_not_defined) {
 	UNSETENV(LICENSE_LOCATION_ENV_VAR);
-	const LicenseLocation location = {nullptr, nullptr};
 	locate::LocatorFactory::find_license_near_module(false);
 	locate::LocatorFactory::find_license_with_env_var(true);
-	LicenseReader licenseReader(&location);
+	LicenseReader licenseReader(nullptr);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PRODUCT", licenseInfos);
 	BOOST_CHECK(!registry.isGood());
@@ -93,8 +98,7 @@ BOOST_AUTO_TEST_CASE(env_var_point_to_wrong_file) {
 	locate::LocatorFactory::find_license_near_module(false);
 	locate::LocatorFactory::find_license_with_env_var(true);
 
-	const LicenseLocation location = {nullptr, nullptr};
-	LicenseReader licenseReader(&location);
+	LicenseReader licenseReader(nullptr);
 	vector<FullLicenseInfo> licenseInfos;
 	const EventRegistry registry = licenseReader.readLicenses("PRODUCT", licenseInfos);
 	cout << registry << endl;

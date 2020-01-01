@@ -25,12 +25,14 @@
 using namespace std;
 void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {}
 
-bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t bufSize) {
+bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
 	FUNCTION_RETURN result = FUNC_RET_BUFFER_TOO_SMALL;
-	if (bufSize >= sizeof(PcSignature)) {
+	if (*bufSize >= sizeof(PcSignature)) {
 		PcSignature identifier_out;
 		result = generate_user_pc_signature(identifier_out, pc_id_method);
-		strncpy(chbuffer, identifier_out, bufSize);
+		strncpy(chbuffer, identifier_out, *bufSize);
+	} else {
+		*bufSize = sizeof(PcSignature);
 	}
 	return result == FUNC_RET_OK;
 }
@@ -69,16 +71,20 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 		vector<LicenseInfo> licenses_with_errors;
 		vector<LicenseInfo> licenses_ok;
 		license::LicenseVerifier verifier(er);
-		for (auto it = licenses.begin(); it != licenses.end(); it++) {
-			FUNCTION_RETURN signatureValid = verifier.verify_signature(*it);
+		for (auto full_lic_info_it = licenses.begin(); full_lic_info_it != licenses.end(); full_lic_info_it++) {
+			if (callerInformation != nullptr) {
+				full_lic_info_it->m_magic = callerInformation->magic;
+			}
+			const FUNCTION_RETURN signatureValid = verifier.verify_signature(*full_lic_info_it);
+			LicenseInfo licInfo = verifier.toLicenseInfo(*full_lic_info_it);
 			if (signatureValid == FUNC_RET_OK) {
-				if (verifier.verify_limits(*it) == FUNC_RET_OK) {
-					licenses_ok.push_back(verifier.toLicenseInfo(*it));
+				if (verifier.verify_limits(*full_lic_info_it) == FUNC_RET_OK) {
+					licenses_ok.push_back(licInfo);
 				} else {
-					licenses_with_errors.push_back(verifier.toLicenseInfo(*it));
+					licenses_with_errors.push_back(licInfo);
 				}
 			} else {
-				licenses_with_errors.push_back(verifier.toLicenseInfo(*it));
+				licenses_with_errors.push_back(licInfo);
 			}
 		}
 		if (licenses_ok.size() > 0) {

@@ -1,10 +1,11 @@
 #define BOOST_TEST_MODULE "test_license_locator"
+#define __STDC_WANT_LIB_EXT1__ 1
+#include <string.h>
 
 #include <iostream>
 #include <iterator>
 #include <cstdio>
 #include <fstream>
-#include <string>
 #include <vector>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
@@ -88,13 +89,14 @@ BOOST_AUTO_TEST_CASE(read_license_near_module) {
 
 BOOST_AUTO_TEST_CASE(external_definition) {
 	// an application can define multiple license locations separated by ';'
-	const char *applicationDefinedString = MOCK_LICENSE ";/this/one/doesnt/exist";
+	string applicationDefinedString = MOCK_LICENSE ";/this/one/doesnt/exist";
 
 	// read test license
 	std::ifstream src(MOCK_LICENSE, std::ios::binary);
 	std::string referenceContent((std::istreambuf_iterator<char>(src)), std::istreambuf_iterator<char>());
 	license::EventRegistry registry;
-	const LicenseLocation licLocation = {applicationDefinedString, nullptr};
+	LicenseLocation licLocation = {LICENSE_PATH};
+	std::copy(applicationDefinedString.begin(), applicationDefinedString.end(), licLocation.licenseData);
 	ExternalDefinition externalDefinition(&licLocation);
 	vector<string> licenseInfos = externalDefinition.license_locations(registry);
 	BOOST_CHECK(registry.isGood());
@@ -109,9 +111,10 @@ BOOST_AUTO_TEST_CASE(external_definition) {
  * The license file doesn't exist. Check that the locator reports the right error
  */
 BOOST_AUTO_TEST_CASE(external_definition_not_found) {
-	const char *applicationDefinedString = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
+	string applicationDefinedString = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
 	license::EventRegistry registry;
-	const LicenseLocation licLocation = {applicationDefinedString, nullptr};
+	LicenseLocation licLocation = {LICENSE_PATH};
+	std::copy(applicationDefinedString.begin(), applicationDefinedString.end(), licLocation.licenseData);
 	ExternalDefinition externalDefinition(&licLocation);
 	vector<string> licenseInfos = externalDefinition.license_locations(registry);
 

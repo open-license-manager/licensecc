@@ -18,17 +18,34 @@ using namespace license;
 using namespace std;
 
 /**
- * Test a generic license with no expiry neither client id.
+ * Test a generic license with no expiry neither client id. The license is read from file
  */
-BOOST_AUTO_TEST_CASE(test_generic_license) {
+BOOST_AUTO_TEST_CASE(test_generic_license_read_file) {
 	const vector<string> extraArgs;
 	const string licLocation = generate_license("standard_license", extraArgs);
 	/* */
 	LicenseInfo license;
-	LicenseLocation licenseLocation;
-	licenseLocation.licenseFileLocation = licLocation.c_str();
-	licenseLocation.licenseData = nullptr;
-	const EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
+	LicenseLocation location = {LICENSE_PATH};
+	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
+	const EVENT_TYPE result = acquire_license(nullptr, &location, &license);
+	BOOST_CHECK_EQUAL(result, LICENSE_OK);
+	BOOST_CHECK_EQUAL(license.has_expiry, false);
+	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
+}
+
+/**
+ * Test a generic license with no expiry neither client id. The license is passed in trhough the licenseData structure.
+ */
+BOOST_AUTO_TEST_CASE(test_read_license_data) {
+	const vector<string> extraArgs;
+	const fs::path licLocation = fs::path(generate_license("standard_license1", extraArgs));
+	string license_data;
+	// load the license string
+	fs::load_string_file(licLocation, license_data);
+	LicenseInfo license;
+	LicenseLocation location = {LICENSE_PLAIN_DATA};
+	std::copy(license_data.begin(), license_data.end(), location.licenseData);
+	const EVENT_TYPE result = acquire_license(nullptr, &location, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);

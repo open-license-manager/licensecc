@@ -4,7 +4,7 @@ Contributing to Open License Manager
 
 The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
-## How to Contribute
+## How to contribute
 
 ### Reporting Bugs
 
@@ -81,6 +81,6 @@ Supposing you already know how to contribute to an open source project on GitHub
 ##### Don't
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
-    -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
-    -  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
+    -   We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
+    -   Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
   

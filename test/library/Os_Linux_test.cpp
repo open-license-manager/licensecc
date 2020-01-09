@@ -7,11 +7,15 @@
 #include <licensecc_properties_test.h>
 #include "../../src/library/base/StringUtils.h"
 #include "../../src/library/os/os.h"
+#include "../../src/library/os/execution_environment.hpp"
+
 namespace license {
 using namespace std;
 namespace test {
+
 BOOST_AUTO_TEST_CASE(read_disk_id) {
-	VIRTUALIZATION virt = getVirtualization();
+	ExecutionEnvironment exec_env;
+	VIRTUALIZATION virt = exec_env.getVirtualization();
 	if (virt == NONE || virt == VM) {
 		DiskInfo *diskInfos = NULL;
 		size_t disk_info_size = 0;
@@ -61,20 +65,19 @@ BOOST_AUTO_TEST_CASE(read_network_adapters) {
 	free(adapter_info);
 }
 
-BOOST_AUTO_TEST_CASE(get_cpuid) { BOOST_CHECK_EQUAL(1, 1); }
-
 // To test if virtualization is detected correctly define an env variable VIRT_ENV
 // otherwise the test is skipped
 BOOST_AUTO_TEST_CASE(test_virtualization) {
 	const char *env = getenv("VIRT_ENV");
+	ExecutionEnvironment exec_env;
 	if (env != NULL) {
 		if (strcmp(env, "CONTAINER") == 0) {
-			VIRTUALIZATION virt = getVirtualization();
-			BOOST_CHECK_EQUAL(virt, CONTAINER);
+			VIRTUALIZATION virt = exec_env.getVirtualization();
+			BOOST_CHECK_MESSAGE(virt == CONTAINER, "container detected");
 		} else if (strcmp(env, "VM") == 0) {
 			BOOST_FAIL("check for vm not implemented");
 		} else if (strcmp(env, "NONE") == 0) {
-			VIRTUALIZATION virt = getVirtualization();
+			VIRTUALIZATION virt = exec_env.getVirtualization();
 			BOOST_CHECK_EQUAL(virt, NONE);
 		} else {
 			BOOST_FAIL(string("value ") + env + " not supported: VM,CONTAINER,NONE");

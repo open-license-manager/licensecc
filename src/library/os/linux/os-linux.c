@@ -1,9 +1,8 @@
 #include <paths.h>
 #include <sys/stat.h>
-#include "os.h"
-#include "../base/logger.h"
-#include <openssl/pem.h>
-#include <openssl/err.h>
+#include <stdio.h>
+#include "../os.h"
+#include "../../base/logger.h"
 
 #include <mntent.h>
 #include <dirent.h>
@@ -190,8 +189,6 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	return result;
 }
 
-void os_initialize() {}
-
 static void _getCpuid(unsigned int *p, unsigned int ax) {
 	__asm __volatile(
 		"movl %%ebx, %%esi\n\t"
@@ -212,78 +209,7 @@ FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 	return FUNC_RET_OK;
 }
 
-// 0=NO 1=Docker/Lxc
-static int checkContainerProc() {
-	// in docer /proc/self/cgroups contains the "docker" or "lxc" string
-	// https://stackoverflow.com/questions/23513045/how-to-check-if-a-process-is-running-inside-docker-container
-	char path[MAX_PATH] = {0};
-	char proc_path[MAX_PATH], pidStr[64];
-	pid_t pid = getpid();
-	sprintf(pidStr, "%d", pid);
-	strcpy(proc_path, "/proc/");
-	strcat(proc_path, pidStr);
-	strcat(proc_path, "/cgroup");
 
-	FILE *fp;
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read;
-	int result = 0;
-
-	fp = fopen(proc_path, "r");
-	if (fp == NULL) {
-		return 0;
-	}
-
-	while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
-		// line[len]=0;
-		// printf("Retrieved line of length %zu:\n", read);
-		// printf("%s", line);
-		if (strstr(line, "docker") != NULL || strstr(line, "lxc") != NULL) {
-			result = 1;
-		}
-	}
-
-	fclose(fp);
-	if (line) free(line);
-	return result;
-}
-
-// 0=NO 1=Docker/Lxc
-static int checkLXC() { return (access("/var/run/systemd/container", F_OK) == 0) ? 1 : 0; }
-
-VIRTUALIZATION getVirtualization() {
-	VIRTUALIZATION result = NONE;
-	int isContainer = checkContainerProc();
-	if (isContainer == 1) {
-		result = CONTAINER;
-	} else if (checkLXC()) {
-		result = CONTAINER;
-	}
-	return result;
-
-	// http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
-	//
-	// bool rc = true;
-	/*__asm__ (
-	 "push   %edx\n"
-	 "push   %ecx\n"
-	 "push   %ebx\n"
-	 "mov    %eax, 'VMXh'\n"
-	 "mov    %ebx, 0\n" // any value but not the MAGIC VALUE
-	 "mov    %ecx, 10\n"// get VMWare version
-	 "mov    %edx, 'VX'\n"// port number
-	 "in     %eax, dx\n"// read port on return EAX returns the VERSION
-	 "cmp    %ebx, 'VMXh'\n"// is it a reply from VMWare?
-	 "setz   [rc] \n"// set return value
-	 "pop    %ebx \n"
-	 "pop    %ecx \n"
-	 "pop    %edx \n"
-	 );*/
-
-	// systemd-detect-virt
-	return NONE;
-}
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	static struct utsname u;

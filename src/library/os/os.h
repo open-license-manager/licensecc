@@ -24,9 +24,6 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-typedef enum {
-	NONE, CONTAINER, VM
-} VIRTUALIZATION;
 
 typedef enum {
 	IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS
@@ -74,8 +71,6 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
  * @return
  */
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
-VIRTUALIZATION getVirtualization();
-void os_initialize();
 
 // FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
 

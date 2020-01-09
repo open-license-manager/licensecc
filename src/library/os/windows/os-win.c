@@ -29,9 +29,6 @@ FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 	return FUNC_RET_NOT_AVAIL;
 }
 
-void os_initialize() {
-}
-
 //http://www.ok-soft-gmbh.com/ForStackOverflow/EnumMassStorage.c
 //http://stackoverflow.com/questions/3098696/same-code-returns-diffrent-result-on-windows7-32-bit-system
 #define MAX_UNITS 30

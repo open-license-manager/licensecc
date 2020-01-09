@@ -9,7 +9,7 @@
 #include <licensecc_properties.h>
 
 #include "license_verifier.hpp"
-#include "../pc_identifier_facade.hpp"
+#include "../pc_identifier/pc_identifier_facade.hpp"
 #include "../os/signature_verifier.h"
 #include "../base/StringUtils.h"
 
@@ -39,13 +39,10 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	if (!is_valid) {
 		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source.c_str());
 	}
-	const const time_t now = time(nullptr);
+	const time_t now = time(nullptr);
 	auto expiry = licInfo.m_limits.find(PARAM_EXPIRY_DATE);
 	if (is_valid && expiry != licInfo.m_limits.end()) {
 		if (seconds_from_epoch(expiry->second) < now) {
-			/*
-						eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
-								string("Expired on: " + this->to_date).c_str());*/
 			m_event_registry.addEvent(PRODUCT_EXPIRED, licInfo.source.c_str(), ("Expired " + expiry->second).c_str());
 			is_valid = false;
 		}
@@ -53,8 +50,6 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	const auto start_date = licInfo.m_limits.find(PARAM_BEGIN_DATE);
 	if (is_valid && start_date != licInfo.m_limits.end()) {
 		if (seconds_from_epoch(start_date->second) > now) {
-			/*eventRegistryOut.addEvent(PRODUCT_EXPIRED, source.c_str(),
-					string("Valid from " + this->from_date).c_str());*/
 			m_event_registry.addEvent(PRODUCT_EXPIRED, licInfo.source.c_str(),
 									  ("Valid from " + start_date->second).c_str());
 			is_valid = false;

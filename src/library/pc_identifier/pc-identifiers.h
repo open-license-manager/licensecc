@@ -9,11 +9,11 @@
 #define PC_IDENTIFIERS_H_
 
 #include <licensecc/datatypes.h>
-#include "base/base.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "../base/base.h"
 
 typedef unsigned char PcIdentifier[6];
 typedef char PcSignature[PC_IDENTIFIER_SIZE + 1];

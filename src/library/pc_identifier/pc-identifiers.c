@@ -4,14 +4,14 @@
  *  Created on: Apr 16, 2014
  *
  */
-
-#include "os/os.h"
-#include "pc-identifiers.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "base/base64.h"
-#include "base/base.h"
+
+#include "../os/os.h"
+#include "pc-identifiers.h"
+#include "../base/base64.h"
+#include "../base/base.h"
 #ifdef __linux__
 #include <stdbool.h>
 #include <valgrind/memcheck.h>
@@ -69,7 +69,6 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier *identifiers, unsigne
 				array_index = i * adapter_num + j;
 				if (array_index >= caller_identifiers) {
 					function_return = FUNC_RET_BUFFER_TOO_SMALL;
-					// sweet memories...
 					goto end;
 				}
 				for (k = 0; k < 6; k++)

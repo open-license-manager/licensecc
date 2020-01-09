@@ -27,7 +27,6 @@
 #include <licensecc/licensecc.h>
 
 #include "base/base.h"
-#include "pc-identifiers.h"
 #include "LicenseReader.hpp"
 #include "base/StringUtils.h"
 #include "base/logger.h"
@@ -39,7 +38,8 @@ using namespace std;
 FullLicenseInfo::FullLicenseInfo(const string &source, const string &product, const string &license_signature)
 	: source(source),
 	  m_project(product),  //
-	  license_signature(license_signature) {}
+	  license_signature(license_signature),
+	  m_magic(0) {}
 
 LicenseReader::LicenseReader(const LicenseLocation *licenseLocation) : licenseLocation(licenseLocation) {}
 

@@ -22,8 +22,8 @@ PcIdentifier::~PcIdentifier() {}
 
 PcIdentifier::PcIdentifier(const PcIdentifier& other) : m_data(other.m_data) {}
 
-void PcIdentifier::set_identification_strategy(IDENTIFICATION_STRATEGY strategy) {
-	if (strategy == STRATEGY_UNKNOWN || strategy == STRATEGY_DEFAULT) {
+void PcIdentifier::set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy) {
+	if (strategy == STRATEGY_NONE || strategy == STRATEGY_DEFAULT) {
 		throw logic_error("Only known strategies are permitted");
 	}
 	uint8_t stratMov = (strategy << 5);
@@ -55,4 +55,8 @@ std::string PcIdentifier::print() const {
 	return result;
 }
 
+LCC_API_IDENTIFICATION_STRATEGY PcIdentifier::get_identification_strategy() const {}
+
+bool PcIdentifier::data_match(const std::array<uint8_t, 6>& data) const {}
 } /* namespace license */
+

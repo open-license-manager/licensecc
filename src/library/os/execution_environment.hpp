@@ -25,13 +25,15 @@ typedef enum {
 	ALI_CLOUD
 } CLOUD_PROVIDER;
 
-typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, XEN, KVM } VIRTUALIZATION_DETAIL;
 
 class ExecutionEnvironment {
 public:
 	ExecutionEnvironment(){};
 	virtual ~ExecutionEnvironment(){};
 	VIRTUALIZATION getVirtualization();
+	bool is_cloud();
+	bool is_docker();
+	CLOUD_PROVIDER getCloudProvider();
 };
 
 }  // namespace license

@@ -25,7 +25,7 @@ namespace test {
 BOOST_AUTO_TEST_CASE(default_volid_lic_file) {
 	PcSignature identifier_out;
 
-	const IDENTIFICATION_STRATEGY strategy = IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET;
+	const LCC_API_IDENTIFICATION_STRATEGY strategy = LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET;
 	BOOST_TEST_CHECKPOINT("Before generate");
 	const FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out, strategy);
 	BOOST_TEST_CHECKPOINT("After generate signature");
@@ -40,13 +40,13 @@ BOOST_AUTO_TEST_CASE(default_volid_lic_file) {
 	LicenseInfo license;
 	LicenseLocation location = {LICENSE_PATH};
 	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
-	const EVENT_TYPE result = acquire_license(nullptr, &location, &license);
+	const LCC_EVENT_TYPE result = acquire_license(nullptr, &location, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
 }
 
-static void generate_reference_file(const string &idfileLocation, IDENTIFICATION_STRATEGY strategies[],
+static void generate_reference_file(const string &idfileLocation, LCC_API_IDENTIFICATION_STRATEGY strategies[],
 									int num_strategies) {
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;
@@ -64,7 +64,7 @@ static void generate_reference_file(const string &idfileLocation, IDENTIFICATION
 
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(PROJECT_TEST_TEMP_DIR "/identifiers_file");
-	std::vector<IDENTIFICATION_STRATEGY> strategies;
+	std::vector<LCC_API_IDENTIFICATION_STRATEGY> strategies;
 	size_t disk_num;
 	getDiskInfos(NULL, &disk_num);
 	if (disk_num > 0) {
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 			if (reference_signatures[i] == "0000-0000-0000-0000") continue;
 			PcSignature pcsig;
 			strncpy(pcsig, reference_signatures[i].c_str(), sizeof(PcSignature) - 1);
-			EVENT_TYPE val_result = validate_pc_signature(pcsig);
+			LCC_EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);
 		}

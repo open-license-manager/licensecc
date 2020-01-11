@@ -88,94 +88,7 @@ static FUNCTION_RETURN generate_default_pc_id(PcIdentifier *identifiers, unsigne
 }
 
 static FUNCTION_RETURN generate_ethernet_pc_id(PcIdentifier *identifiers, unsigned int *num_identifiers, int use_mac) {
-	FUNCTION_RETURN result_adapterInfos;
-	OsAdapterInfo *adapterInfos;
-	size_t defined_adapters, adapters = 0;
-
-	if (identifiers == NULL || *num_identifiers == 0) {
-		result_adapterInfos = getAdapterInfos(NULL, &adapters);
-		if (result_adapterInfos == FUNC_RET_OK || result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL) {
-			*num_identifiers = adapters;
-			result_adapterInfos = FUNC_RET_OK;
-		}
-	} else {
-		defined_adapters = adapters = *num_identifiers;
-		adapterInfos = (OsAdapterInfo *)malloc(adapters * sizeof(OsAdapterInfo));
-		result_adapterInfos = getAdapterInfos(adapterInfos, &adapters);
-		if (result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL || result_adapterInfos == FUNC_RET_OK) {
-			unsigned int j;
-			for (j = 0; j < adapters; j++) {
-				unsigned int k;
-				for (k = 0; k < 6; k++)
-					if (use_mac) {
-						identifiers[j][k] = adapterInfos[j].mac_address[k + 2];
-					} else {
-						// use ip
-						if (k < 4) {
-							identifiers[j][k] = adapterInfos[j].ipv4_address[k];
-						} else {
-							// padding
-							identifiers[j][k] = 42;
-						}
-					}
-			}
-			result_adapterInfos = (adapters > defined_adapters ? FUNC_RET_BUFFER_TOO_SMALL : FUNC_RET_OK);
-		}
-		free(adapterInfos);
-	}
-	return result_adapterInfos;
-}
-
-static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier *identifiers, unsigned int *num_identifiers, bool use_label) {
-	size_t disk_num, available_disk_info = 0;
-	FUNCTION_RETURN result_diskinfos;
-	unsigned int i, j;
-	int defined_identifiers;
-	DiskInfo *diskInfos;
-
-	result_diskinfos = getDiskInfos(NULL, &disk_num);
-	if (result_diskinfos != FUNC_RET_OK) {
-		return result_diskinfos;
-	}
-	diskInfos = (DiskInfo *)malloc(disk_num * sizeof(DiskInfo));
-	memset(diskInfos, 0, disk_num * sizeof(DiskInfo));
-	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-	if (result_diskinfos != FUNC_RET_OK) {
-		free(diskInfos);
-		return result_diskinfos;
-	}
-	for (i = 0; i < disk_num; i++) {
-		char firstChar = use_label ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
-		available_disk_info += firstChar == 0 ? 0 : 1;
-	}
-
-	defined_identifiers = *num_identifiers;
-	*num_identifiers = available_disk_info;
-	if (identifiers == NULL) {
-		free(diskInfos);
-		return FUNC_RET_OK;
-	} else if (available_disk_info > defined_identifiers) {
-		free(diskInfos);
-		return FUNC_RET_BUFFER_TOO_SMALL;
-	}
-
-	j = 0;
-	for (i = 0; i < disk_num; i++) {
-		if (use_label) {
-			if (diskInfos[i].label[0] != 0) {
-				memset(identifiers[j], 0, sizeof(PcIdentifier));  //!!!!!!!
-				strncpy((char *)identifiers[j], diskInfos[i].label, sizeof(PcIdentifier));
-				j++;
-			}
-		} else {
-			if (diskInfos[i].disk_sn[0] != 0) {
-				memcpy(identifiers[j], &diskInfos[i].disk_sn[2], sizeof(PcIdentifier));
-				j++;
-			}
-		}
-	}
-	free(diskInfos);
-	return FUNC_RET_OK;
+	return FUNC_RET_NOT_AVAIL;
 }
 
 /**
@@ -194,7 +107,7 @@ static FUNCTION_RETURN generate_disk_pc_id(PcIdentifier *identifiers, unsigned i
  * @return
  */
 
-FUNCTION_RETURN generate_pc_id(PcIdentifier *identifiers, unsigned int *array_size, IDENTIFICATION_STRATEGY strategy) {
+FUNCTION_RETURN generate_pc_id(PcIdentifier *identifiers, unsigned int *array_size, LCC_IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
 	unsigned int i, j;
 	const unsigned int original_array_size = *array_size;
@@ -278,7 +191,7 @@ FUNCTION_RETURN encode_pc_id(PcIdentifier identifier1, PcIdentifier identifier2,
 
 FUNCTION_RETURN parity_check_id(PcSignature pc_identifier) { return FUNC_RET_OK; }
 
-FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, IDENTIFICATION_STRATEGY strategy) {
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, LCC_IDENTIFICATION_STRATEGY strategy) {
 	FUNCTION_RETURN result;
 	PcIdentifier *identifiers;
 	unsigned int req_buffer_size = 0;
@@ -336,14 +249,14 @@ static FUNCTION_RETURN decode_pc_id(PcIdentifier identifier1_out, PcIdentifier i
 	return FUNC_RET_OK;
 }
 
-static IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
-	return (IDENTIFICATION_STRATEGY)identifier[0] >> 5;
+static LCC_IDENTIFICATION_STRATEGY strategy_from_pc_id(PcIdentifier identifier) {
+	return (LCC_IDENTIFICATION_STRATEGY)identifier[0] >> 5;
 }
 
-EVENT_TYPE validate_pc_signature(PcSignature str_code) {
+LCC_EVENT_TYPE validate_pc_signature(PcSignature str_code) {
 	PcIdentifier user_identifiers[2];
 	FUNCTION_RETURN result;
-	IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
+	LCC_IDENTIFICATION_STRATEGY previous_strategy_id, current_strategy_id;
 	PcIdentifier *calculated_identifiers = NULL;
 	unsigned int calc_identifiers_size = 0;
 	int i = 0, j = 0;

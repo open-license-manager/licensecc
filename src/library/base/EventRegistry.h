@@ -52,8 +52,8 @@ public:
 	 * @return NULL if no failures are found.
 	 */
 	const AuditEvent *getLastFailure() const;
-	void addEvent(EVENT_TYPE event, const std::string &licenseLocationId);
-	void addEvent(EVENT_TYPE event, const char *licenseLocationId = nullptr, const char *info = nullptr);
+	void addEvent(LCC_EVENT_TYPE event, const std::string &licenseLocationId);
+	void addEvent(LCC_EVENT_TYPE event, const char *licenseLocationId = nullptr, const char *info = nullptr);
 	void exportLastEvents(AuditEvent *auditEvents, int nlogs);
 };
 }  // namespace license

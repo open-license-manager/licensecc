@@ -10,7 +10,7 @@ A copy protection, licensing software written in C++ for Windows and Linux (with
 [![codecov](https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/open-license-manager)](http://github.com/open-license-manager/open-license-manager/issues)
 
-It allows to protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
+Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. It is an Open License Manager that helps to keep your 
 software closed :smirk: . Among other features if it runs on a "real hardware" it can generate a signature of that hardware and report if the signature doesn't match.
 
@@ -91,5 +91,5 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The project is not dead but we take our time to answer. The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](CONTRIBUTING.md)
+The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](CONTRIBUTING.md)
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

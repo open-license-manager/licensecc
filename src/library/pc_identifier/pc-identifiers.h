@@ -15,13 +15,12 @@ extern "C" {
 #endif
 #include "../base/base.h"
 
-typedef unsigned char PcIdentifier[6];
-typedef char PcSignature[API_PC_IDENTIFIER_SIZE + 1];
+typedef char PcSignature[LCC_API_PC_IDENTIFIER_SIZE + 1];
 
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_size,
-		IDENTIFICATION_STRATEGY strategy);
+		LCC_IDENTIFICATION_STRATEGY strategy);
 
-EVENT_TYPE validate_pc_signature(PcSignature str_code);
+LCC_EVENT_TYPE validate_pc_signature(PcSignature str_code);
 
 /**
  * Generates an UserPcIdentifier.
@@ -30,7 +29,7 @@ EVENT_TYPE validate_pc_signature(PcSignature str_code);
  * @param strategy
  * @return
  */
-FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, IDENTIFICATION_STRATEGY strategy);
+FUNCTION_RETURN generate_user_pc_signature(PcSignature identifier_out, LCC_IDENTIFICATION_STRATEGY strategy);
 
 #ifdef __cplusplus
 }

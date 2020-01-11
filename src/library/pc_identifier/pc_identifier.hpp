@@ -13,9 +13,10 @@
 #include <iostream>
 #include <string>
 
+#include <licensecc_properties.h>
 #include "../../../include/licensecc/datatypes.h"
 #include "../os/execution_environment.hpp"
-
+#include "../os/cpu_info.hpp"
 namespace license {
 
 /**
@@ -45,13 +46,14 @@ public:
 	PcIdentifier(const std::string &param);
 	virtual ~PcIdentifier();
 	PcIdentifier(const PcIdentifier &other);
-	void set_identification_strategy(IDENTIFICATION_STRATEGY strategy);
-	IDENTIFICATION_STRATEGY get_identification_strategy() const;
+	void set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy);
+	LCC_API_IDENTIFICATION_STRATEGY get_identification_strategy() const;
 	void set_use_environment_var(bool use_env_var);
 	void set_virtual_environment(VIRTUALIZATION virtualization);
 	void set_virtualization(VIRTUALIZATION_DETAIL virtualization_detail);
 	void set_cloud_provider(CLOUD_PROVIDER cloud_provider);
 	void set_data(const std::array<uint8_t, 6> &data);
+	bool data_match(const std::array<uint8_t, 6> &data) const;
 	std::string print() const;
 	friend std::ostream &operator<<(std::ostream &output, const PcIdentifier &d) {
 		output << d.print();

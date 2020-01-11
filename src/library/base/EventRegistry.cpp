@@ -17,7 +17,7 @@
 namespace license {
 using namespace std;
 
-const map<EVENT_TYPE, int> PROGRESS_BY_EVENT_TYPE = {
+const map<LCC_EVENT_TYPE, int> PROGRESS_BY_EVENT_TYPE = {
 	{LICENSE_SPECIFIED, 0}, {LICENSE_FOUND, 1}, {PRODUCT_FOUND, 2}, {SIGNATURE_VERIFIED, 3}, {LICENSE_OK, 4}};
 
 EventRegistry::EventRegistry() { current_validation_step = -1; }
@@ -73,11 +73,11 @@ const AuditEvent *EventRegistry::getLastFailure() const {
 	return result;
 }
 
-void EventRegistry::addEvent(EVENT_TYPE event, const std::string &licenseLocationId) {
+void EventRegistry::addEvent(LCC_EVENT_TYPE event, const std::string &licenseLocationId) {
 	addEvent(event, licenseLocationId.c_str(), nullptr);
 }
 
-void EventRegistry::addEvent(EVENT_TYPE event, const char *licenseLocationId, const char *info) {
+void EventRegistry::addEvent(LCC_EVENT_TYPE event, const char *licenseLocationId, const char *info) {
 	AuditEvent audit;
 	auto eventIterator = PROGRESS_BY_EVENT_TYPE.find(event);
 	bool successEvent = (eventIterator != PROGRESS_BY_EVENT_TYPE.end());

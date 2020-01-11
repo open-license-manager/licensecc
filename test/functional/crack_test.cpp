@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(test_bad_magic_number) {
 	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
 	// magic should be 0 for this build...
 	CallerInformations callInfo{{0}, {0}, 42};
-	const EVENT_TYPE result = acquire_license(&callInfo, &location, &license);
+	const LCC_EVENT_TYPE result = acquire_license(&callInfo, &location, &license);
 	BOOST_CHECK_EQUAL(result, LICENSE_CORRUPTED);
 }
 

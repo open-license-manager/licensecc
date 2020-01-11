@@ -33,7 +33,7 @@ const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRe
 	const FUNCTION_RETURN fret = getModuleName(fname);
 	if (fret == FUNC_RET_OK) {
 		const string module_name = remove_extension(fname);
-		const string temptativeLicense = string(module_name) + LICENSE_FILE_EXTENSION;
+		const string temptativeLicense = string(module_name) + LCC_LICENSE_FILE_EXTENSION;
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
 			diskFiles.push_back(temptativeLicense);

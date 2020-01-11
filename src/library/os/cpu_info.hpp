@@ -10,10 +10,15 @@
 #include <string>
 namespace license {
 
+typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, V_OTHER } VIRTUALIZATION_DETAIL;
+
 /**
  * Cpu informations
  */
 class CpuInfo {
+private:
+	bool is_hypervisor_set() const;
+
 public:
 	CpuInfo();
 	virtual ~CpuInfo();
@@ -22,8 +27,9 @@ public:
 	 * @return true if the cpu is detected to be a virtual cpu
 	 */
 	bool cpu_virtual() const;
-	uint32_t model();
+	uint32_t model() const;
 	std::string vendor() const;
+	VIRTUALIZATION_DETAIL getVirtualizationDetail() const;
 };
 
 } /* namespace license */

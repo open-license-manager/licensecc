@@ -26,6 +26,12 @@ extern "C" {
 #define PC_IDENTIFIER_SIZE 19
 #define PROPRIETARY_DATA_SIZE 16
 #define AUDIT_EVENT_NUM 5
+#define AUDIT_EVENT_PARAM2 255
+#define VERSION_SIZE 15
+#define PROJECT_NAME_SIZE 15
+#define EXPIRY_DATE_SIZE 10
+
+#define ERROR_BUFFER_SIZE 256
 
 typedef enum {
 	LICENSE_OK = 0,  // OK
@@ -59,7 +65,7 @@ typedef struct {
 	 * License file name or location where the license is stored.
 	 */
 	char license_reference[MAX_PATH];
-	char param2[256];
+	char param2[AUDIT_EVENT_PARAM2 + 1];
 } AuditEvent;
 
 /**
@@ -85,8 +91,8 @@ typedef struct {
  * Informations on the software requiring the license
  */
 typedef struct {
-	char version[16];  // software version in format xxxx.xxxx.xxxx
-	char project_name[16];  // name of the project (must correspond to the name in the license)
+	char version[VERSION_SIZE + 1];  // software version in format xxxx.xxxx.xxxx
+	char project_name[PROJECT_NAME_SIZE + 1];  // name of the project (must correspond to the name in the license)
 	uint32_t magic;  // reserved
 } CallerInformations;
 typedef struct {
@@ -100,7 +106,7 @@ typedef struct {
 	 * Eventual expiration date of the software,
 	 * can be '\0' if the software don't expire
 	 * */
-	char expiry_date[11];
+	char expiry_date[EXPIRY_DATE_SIZE + 1];
 	unsigned int days_left;
 	bool has_expiry;
 	bool linked_to_pc;

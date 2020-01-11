@@ -89,7 +89,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 
 	const auto proprietary_data = fullLicInfo.m_limits.find(PARAM_EXTRA_DATA);
 	if (proprietary_data != fullLicInfo.m_limits.end()) {
-		strncpy(info.proprietary_data, proprietary_data->second.c_str(), PROPRIETARY_DATA_SIZE);
+		strncpy(info.proprietary_data, proprietary_data->second.c_str(), API_PROPRIETARY_DATA_SIZE);
 	}
 	return info;
 }

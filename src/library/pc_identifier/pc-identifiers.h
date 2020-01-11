@@ -16,7 +16,7 @@ extern "C" {
 #include "../base/base.h"
 
 typedef unsigned char PcIdentifier[6];
-typedef char PcSignature[PC_IDENTIFIER_SIZE + 1];
+typedef char PcSignature[API_PC_IDENTIFIER_SIZE + 1];
 
 FUNCTION_RETURN generate_pc_id(PcIdentifier * identifiers, unsigned int * array_size,
 		IDENTIFICATION_STRATEGY strategy);

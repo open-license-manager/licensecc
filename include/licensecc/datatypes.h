@@ -22,12 +22,17 @@ extern "C" {
 #define DllExport __declspec(dllexport)
 #endif
 
-// define api structure sizes
-#define PC_IDENTIFIER_SIZE 19
-#define PROPRIETARY_DATA_SIZE 16
-#define AUDIT_EVENT_NUM 5
 #define API_LICENSE_DATA_LENGTH 1024 * 4
-#define API_VERSION_LENGTH 16
+
+// define api structure sizes
+#define API_PC_IDENTIFIER_SIZE 19
+#define API_PROPRIETARY_DATA_SIZE 16
+#define API_AUDIT_EVENT_NUM 5
+#define API_AUDIT_EVENT_PARAM2 255
+#define API_VERSION_LENGTH 15
+#define API_PROJECT_NAME_SIZE 15
+#define API_EXPIRY_DATE_SIZE 10
+#define API_ERROR_BUFFER_SIZE 256
 
 typedef enum {
 	LICENSE_OK = 0,  // OK
@@ -61,7 +66,7 @@ typedef struct {
 	 * License file name or location where the license is stored.
 	 */
 	char license_reference[MAX_PATH];
-	char param2[256];
+	char param2[API_AUDIT_EVENT_PARAM2 + 1];
 } AuditEvent;
 
 typedef enum {
@@ -96,8 +101,8 @@ typedef struct {
  * Informations on the software requiring the license
  */
 typedef struct {
-	char version[API_VERSION_LENGTH];  // software version in format xxxx[.xxxx.xxxx] //TODO
-	char project_name[16];  // name of the project (must correspond to the name in the license)
+	char version[API_VERSION_LENGTH + 1];  // software version in format xxxx[.xxxx.xxxx] //TODO
+	char project_name[API_PROJECT_NAME_SIZE + 1];  // name of the project (must correspond to the name in the license)
 	/**
 	 * this number passed in by the application must correspond to the magic number used when compiling the library.
 	 * See cmake parameter -DLCC_PROJECT_MAGIC_NUM and licensecc_properties.h macro VERIFY_MAGIC
@@ -111,12 +116,12 @@ typedef struct {
 	 * multiple (for instance, license expired and signature not verified).
 	 * Only the last AUDIT_EVENT_NUM are reported.
 	 */
-	AuditEvent status[AUDIT_EVENT_NUM];
+	AuditEvent status[API_AUDIT_EVENT_NUM];
 	/**
 	 * Eventual expiration date of the software,
 	 * can be '\0' if the software don't expire
 	 * */
-	char expiry_date[11];
+	char expiry_date[API_EXPIRY_DATE_SIZE + 1];
 	unsigned int days_left;
 	bool has_expiry;
 	bool linked_to_pc;
@@ -124,7 +129,7 @@ typedef struct {
 	/* A string of character inserted into the license understood
 	 * by the calling application.
 	 * '\0' if the application didn't specify one */
-	char proprietary_data[PROPRIETARY_DATA_SIZE + 1];
+	char proprietary_data[API_PROPRIETARY_DATA_SIZE + 1];
 	int license_version;  // license file version
 } LicenseInfo;
 

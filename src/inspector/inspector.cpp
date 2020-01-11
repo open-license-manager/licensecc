@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
 	cout << "Virtual machine:" << cpu.cpu_virtual() << endl;
 	cout << "Cpu model      : 0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
 
-	char pc_identifier[PC_IDENTIFIER_SIZE + 1];
-	size_t bufSize = PC_IDENTIFIER_SIZE + 1;
+	char pc_identifier[API_PC_IDENTIFIER_SIZE + 1];
+	size_t bufSize = API_PC_IDENTIFIER_SIZE + 1;
 	for (const auto& x : stringByStrategyId) {
 		if (identify_pc(x.first, pc_identifier, &bufSize)) {
 			std::cout << x.second << ':' << pc_identifier << std::endl;

@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(file_not_found) {
  * Test the error code if the license default environment variable isn't specified
  */
 BOOST_AUTO_TEST_CASE(env_var_not_defined) {
-	UNSETENV(LICENSE_LOCATION_ENV_VAR);
+	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 	locate::LocatorFactory::find_license_near_module(false);
 	locate::LocatorFactory::find_license_with_env_var(true);
 	LicenseReader licenseReader(nullptr);
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(env_var_not_defined) {
  */
 BOOST_AUTO_TEST_CASE(env_var_point_to_wrong_file) {
 	const char *environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
-	SETENV(LICENSE_LOCATION_ENV_VAR, environment_variable_value)
+	SETENV(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value)
 	locate::LocatorFactory::find_license_near_module(false);
 	locate::LocatorFactory::find_license_with_env_var(true);
 
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(env_var_point_to_wrong_file) {
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	BOOST_ASSERT(registry.getLastFailure() != NULL);
 	BOOST_CHECK_EQUAL(LICENSE_FILE_NOT_FOUND, registry.getLastFailure()->event_type);
-	UNSETENV(LICENSE_LOCATION_ENV_VAR);
+	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }
 }  // namespace test
 }  // namespace license

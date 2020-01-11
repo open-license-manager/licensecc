@@ -7,6 +7,8 @@
 #include <paths.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fstream>
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
@@ -17,6 +19,7 @@
 #include "../execution_environment.hpp"
 
 namespace license {
+using namespace std;
 
 // 0=NO 1=Docker/2=Lxc
 static int checkContainerProc() {
@@ -58,21 +61,44 @@ static int checkContainerProc() {
 	return result;
 }
 
-// 0=NO 1=Docker/Lxc
-static int checkLXC() { return (access("/var/run/systemd/container", F_OK) == 0) ? 1 : 0; }
-
-VIRTUALIZATION ExecutionEnvironment::getVirtualization() {
-	VIRTUALIZATION result = NONE;
-	CpuInfo cpuInfo;
-	int isContainer = checkContainerProc();
-	if (isContainer == 1) {
-		result = CONTAINER;
-	} else if (isContainer == 2 || checkLXC()) {
-		result = CONTAINER;
-	} else if (cpuInfo.cpu_virtual()) {
-		result = VM;
-	} else {
+// 0=NO 1=Docker/2=Lxc
+static int checkSystemdContainer() {
+	ifstream systemd_container("/var/run/systemd/container");
+	int result = 0;
+	if (systemd_container.good()) {
+		result = 1;
+		for (string line; getline(systemd_container, line);) {
+			if (line.find("docker") != string::npos) {
+				result = 1;
+				break;
+			} else if (line.find("lxc") != string::npos) {
+				result = 2;
+				break;
+			}
+		}
 	}
 	return result;
 }
+
+VIRTUALIZATION ExecutionEnvironment::getVirtualization() {
+	VIRTUALIZATION result;
+	CpuInfo cpuInfo;
+	bool isContainer = checkContainerProc() != 0 || checkSystemdContainer() != 0;
+	if (isContainer) {
+		result = CONTAINER;
+	} else if (cpuInfo.cpu_virtual() || is_cloud()) {
+		result = VM;
+	} else {
+		result = NONE;
+	}
+	return result;
+}
+
+bool ExecutionEnvironment::is_cloud() { return getCloudProvider() == NONE; }
+
+bool ExecutionEnvironment::is_docker() { return (checkContainerProc() == 1 || checkSystemdContainer() == 1); }
+
+CLOUD_PROVIDER ExecutionEnvironment::getCloudProvider() {}
+
+
 }  // namespace license

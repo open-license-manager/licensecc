@@ -132,9 +132,9 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
 	// an application can define multiple license locations separated by ';'
 	const char *environment_variable_value = MOCK_LICENSE ";/this/one/doesnt/exist";
 #ifdef _WIN32
-	_putenv_s(LICENSE_LOCATION_ENV_VAR, environment_variable_value);
+	_putenv_s(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value);
 #else
-	setenv(LICENSE_LOCATION_ENV_VAR, environment_variable_value, 1);
+	setenv(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value, 1);
 #endif
 	// read test license
 	std::ifstream src(MOCK_LICENSE, std::ios::binary);
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
 	BOOST_CHECK_MESSAGE(string(MOCK_LICENSE).compare(currentLocation) == 0, "file found at expected location");
 	string licenseRealContent = envVarLocationStrategy.retrieve_license_content(currentLocation);
 	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
-	UNSETENV(LICENSE_LOCATION_ENV_VAR);
+	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }
 
 /**
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
  */
 BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
 	const char *environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
-	SETENV(LICENSE_LOCATION_ENV_VAR, environment_variable_value);
+	SETENV(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value);
 
 	license::EventRegistry registry;
 	EnvironmentVarLocation envVarLocationStrategy;
@@ -167,14 +167,14 @@ BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
 	BOOST_REQUIRE_MESSAGE(!registry.isGood(), "Error detected");
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	BOOST_CHECK_MESSAGE(registry.getLastFailure()->event_type == LICENSE_FILE_NOT_FOUND, "Error detected");
-	UNSETENV(LICENSE_LOCATION_ENV_VAR);
+	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }
 
 /**
  * The license file doesn't exist. Check that the locator reports the right error
  */
 BOOST_AUTO_TEST_CASE(environment_var_location_not_defined) {
-	UNSETENV(LICENSE_LOCATION_ENV_VAR);
+	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 	license::EventRegistry registry;
 	EnvironmentVarLocation environmentVarLocation;
 	vector<string> licenseInfos = environmentVarLocation.license_locations(registry);

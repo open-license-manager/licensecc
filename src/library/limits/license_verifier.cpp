@@ -35,7 +35,7 @@ FUNCTION_RETURN LicenseVerifier::verify_signature(const FullLicenseInfo& licInfo
 
 // TODO: split in different classes
 FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
-	bool is_valid = VERIFY_MAGIC(licInfo);
+	bool is_valid = LCC_VERIFY_MAGIC(licInfo);
 	if (!is_valid) {
 		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source.c_str());
 	}
@@ -57,7 +57,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	}
 	const auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	if (is_valid && client_sig != licInfo.m_limits.end()) {
-		const EVENT_TYPE event = PcIdentifierFacade::validate_pc_signature(client_sig->second);
+		const LCC_EVENT_TYPE event = PcIdentifierFacade::validate_pc_signature(client_sig->second);
 		m_event_registry.addEvent(event, licInfo.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}
@@ -89,7 +89,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 
 	const auto proprietary_data = fullLicInfo.m_limits.find(PARAM_EXTRA_DATA);
 	if (proprietary_data != fullLicInfo.m_limits.end()) {
-		strncpy(info.proprietary_data, proprietary_data->second.c_str(), API_PROPRIETARY_DATA_SIZE);
+		strncpy(info.proprietary_data, proprietary_data->second.c_str(), LCC_API_PROPRIETARY_DATA_SIZE);
 	}
 	return info;
 }

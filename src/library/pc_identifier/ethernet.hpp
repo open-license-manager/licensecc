@@ -1,20 +1,24 @@
 /*
- * default_strategy.hpp
+ * ethernet.hpp
  *
- *  Created on: Jan 2, 2020
+ *  Created on: Jan 11, 2020
  *      Author: devel
  */
 
-#ifndef SRC_LIBRARY_PC_IDENTIFIER_DEFAULT_STRATEGY_HPP_
-#define SRC_LIBRARY_PC_IDENTIFIER_DEFAULT_STRATEGY_HPP_
+#ifndef SRC_LIBRARY_PC_IDENTIFIER_ETHERNET_HPP_
+#define SRC_LIBRARY_PC_IDENTIFIER_ETHERNET_HPP_
+
 #include "identification_strategy.hpp"
 
 namespace license {
 
-class DefaultStrategy : public IdentificationStrategy {
+class Ethernet : public IdentificationStrategy {
+private:
+	const bool use_ip;
+
 public:
-	DefaultStrategy();
-	virtual ~DefaultStrategy();
+	Ethernet(bool use_ip);
+	virtual ~Ethernet();
 	virtual LCC_API_IDENTIFICATION_STRATEGY identification_strategy() const;
 	virtual FUNCTION_RETURN identify_pc(PcIdentifier &pc_id) const;
 	virtual std::vector<PcIdentifier> alternative_ids() const;
@@ -23,4 +27,4 @@ public:
 
 } /* namespace license */
 
-#endif /* SRC_LIBRARY_PC_IDENTIFIER_DEFAULT_STRATEGY_HPP_ */
+#endif /* SRC_LIBRARY_PC_IDENTIFIER_ETHERNET_HPP_ */

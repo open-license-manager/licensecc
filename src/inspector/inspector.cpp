@@ -6,11 +6,11 @@
 #include "../library/os/cpu_info.hpp"
 
 using namespace std;
-const map<IDENTIFICATION_STRATEGY, string> stringByStrategyId = {
+const map<LCC_API_IDENTIFICATION_STRATEGY, string> stringByStrategyId = {
 	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"},	 {STRATEGY_IP_ADDRESS, "IP"},
 	{STRATEGY_DISK_NUM, "Disk1"},  {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_PLATFORM_SPECIFIC, "Custom"}};
 
-const unordered_map<EVENT_TYPE, string> stringByEventType = {
+const unordered_map<LCC_EVENT_TYPE, string> stringByEventType = {
 	{LICENSE_OK, "OK "},
 	{LICENSE_FILE_NOT_FOUND, "license file not found "},
 	{LICENSE_SERVER_NOT_FOUND, "license server can't be contacted "},
@@ -22,11 +22,11 @@ const unordered_map<EVENT_TYPE, string> stringByEventType = {
 	{LICENSE_CORRUPTED, "license signature didn't match with current license "},
 	{IDENTIFIERS_MISMATCH, "Calculated identifier and the one provided in license didn't match"}};
 
-static EVENT_TYPE verifyLicense(const string& fname) {
+static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 	LicenseInfo licenseInfo;
 	LicenseLocation licLocation = {LICENSE_PATH};
 	std::copy(fname.begin(), fname.end(), licLocation.licenseData);
-	EVENT_TYPE result = acquire_license(nullptr, &licLocation, &licenseInfo);
+	LCC_EVENT_TYPE result = acquire_license(nullptr, &licLocation, &licenseInfo);
 	if (result == LICENSE_OK) {
 		cout << "license OK" << endl;
 	} else {
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
 	cout << "Virtual machine:" << cpu.cpu_virtual() << endl;
 	cout << "Cpu model      : 0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
 
-	char pc_identifier[API_PC_IDENTIFIER_SIZE + 1];
-	size_t bufSize = API_PC_IDENTIFIER_SIZE + 1;
+	char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
+	size_t bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	for (const auto& x : stringByStrategyId) {
 		if (identify_pc(x.first, pc_identifier, &bufSize)) {
 			std::cout << x.second << ':' << pc_identifier << std::endl;

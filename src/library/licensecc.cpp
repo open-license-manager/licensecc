@@ -17,6 +17,7 @@
 #include <licensecc/licensecc.h>
 #include <licensecc_properties.h>
 
+#include "base/logger.h"
 #include "pc_identifier/pc_identifier_facade.hpp"
 #include "limits/license_verifier.hpp"
 #include "base/StringUtils.h"
@@ -24,16 +25,27 @@
 
 using namespace std;
 
-void print_error(char out_buffer[API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
 
-bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
-	string pc_id = license::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
-	if (*bufSize >= pc_id.size() + 1) {
-		strncpy(chbuffer, pc_id.c_str(), *bufSize);
+void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
+
+bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
+	bool result = false;
+	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
+		try {
+			string pc_id = license::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
+			strncpy(chbuffer, pc_id.c_str(), *bufSize);
+			result = true;
+		} catch (const std::exception& ex) {
+			LOG_ERROR("Error calculating pc_identifier: %s", ex.what());
+#ifdef _DEBUG
+				cout
+				<< "Error occurred: " << ex.what() << std::endl;
+#endif
+		}
 	} else {
-		*bufSize = pc_id.size() + 1;
+		*bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	}
-	return result == FUNC_RET_OK;
+	return result;
 }
 
 static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* license_out) {
@@ -52,8 +64,8 @@ static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* lice
 	}
 }
 
-EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
-						   LicenseInfo* license_out) {
+LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation,
+									 const LicenseLocation* licenseLocation, LicenseInfo* license_out) {
 	const license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
@@ -65,7 +77,7 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 		project = string(LCC_PROJECT_NAME);
 	}
 	license::EventRegistry er = lr.readLicenses(string(project), licenses);
-	EVENT_TYPE result;
+	LCC_EVENT_TYPE result;
 	if (licenses.size() > 0) {
 		vector<LicenseInfo> licenses_with_errors;
 		vector<LicenseInfo> licenses_ok;
@@ -109,11 +121,12 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 #endif
 
 	if (license_out != nullptr) {
-		er.exportLastEvents(license_out->status, API_AUDIT_EVENT_NUM);
+		er.exportLastEvents(license_out->status, LCC_API_AUDIT_EVENT_NUM);
 	}
 	return result;
 }
 
-EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+LCC_EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
 
-EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+LCC_EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+

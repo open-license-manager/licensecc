@@ -13,9 +13,6 @@
 namespace license {
 using namespace std;
 
-const unordered_set<string> virtual_cpu_names = {"bhyve bhyve ", "KVMKVMKVM",	"Microsoft Hv",
-												 " lrpepyh vr",  "prl hyperv  ", "VMwareVMware",
-												 "XenVMMXenVMM", "ACRNACRNACRN", "VBoxVBoxVBox"};
 struct CPUVendorID {
 	unsigned int ebx;
 	unsigned int edx;
@@ -31,20 +28,15 @@ CpuInfo::~CpuInfo() {}
  * Detect Virtual machine using hypervisor bit.
  * @return true if the cpu hypervisor bit is set to 1
  */
-bool CpuInfo::cpu_virtual() const {
+bool CpuInfo::is_hypervisor_set() const {
 	unsigned int level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
 
 	bool is_virtual = (((ecx >> 31) & 1) == 1);  // hypervisor flag
-	if (!is_virtual) {
-		string cpu_vendor = vendor();
-		auto it = virtual_cpu_names.find(cpu_vendor);
-		is_virtual = (it != virtual_cpu_names.end());
-	}
 	return is_virtual;
 }
 
-uint32_t CpuInfo::model() {
+uint32_t CpuInfo::model() const {
 	unsigned int level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
 	// ax bits 0-3 stepping,4-7 model,8-11 family id,12-13 processor type

@@ -1,5 +1,5 @@
 //============================================================================
-// Name        : license-manager-cpp.cpp
+// Name        : licensecc.cpp
 // Author      :
 // Version     :
 // Copyright   : BSD
@@ -23,10 +23,10 @@
 #include "LicenseReader.hpp"
 
 using namespace std;
-void print_error(char out_buffer[256], LicenseInfo* licenseInfo) {}
+
+void print_error(char out_buffer[API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
 
 bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
-	FUNCTION_RETURN result = FUNC_RET_BUFFER_TOO_SMALL;
 	string pc_id = license::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
 	if (*bufSize >= pc_id.size() + 1) {
 		strncpy(chbuffer, pc_id.c_str(), *bufSize);
@@ -109,7 +109,7 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 #endif
 
 	if (license_out != nullptr) {
-		er.exportLastEvents(license_out->status, AUDIT_EVENT_NUM);
+		er.exportLastEvents(license_out->status, API_AUDIT_EVENT_NUM);
 	}
 	return result;
 }

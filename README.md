@@ -9,6 +9,7 @@ A copy protection, licensing software written in C++ for Windows and Linux (with
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a)](https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/open-license-manager)](http://github.com/open-license-manager/open-license-manager/issues)
+[![forum : licensecc](https://img.shields.io/badge/forum-licensecc-blue.svg)](https://groups.google.com/d/forum/licensecc)
 
 It allows to protect the software you develop from unauthorized copies,
 limit the usage in time, to a specific set of machines, or prevent the usage in 

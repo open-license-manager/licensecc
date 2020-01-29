@@ -91,5 +91,5 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The project is not dead but we take our time to answer. The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](CONTRIBUTING.md)
+The project is not dead but we take our time to answer. The best interaction you can have with us is through the [forum](https://groups.google.com/forum/#!forum/licensecc) or through the [issue system](https://github.com/open-license-manager/open-license-manager/issues). Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting issues.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

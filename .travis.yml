@@ -1,7 +1,12 @@
 language: cpp
 services: docker
 
-matrix:
+stages:
+   - name: test
+   - name: documentation
+     if: branch = develop 
+
+jobs:
    include:
    - os: linux
      dist: bionic
@@ -180,6 +185,34 @@ matrix:
      script: 
          - travis_wait 20 cmake --build . --target install --config Release
          - ctest -C Release
+   - os: linux
+     dist: bionic
+     stage: documentation
+     name: "Deploy documentation"
+     addons:
+         apt:
+           packages:
+             - cmake
+             - libssl-dev
+             - zlib1g-dev
+             - libboost-dev
+             - libboost-test-dev
+             - libboost-filesystem-dev
+             - libboost-iostreams-dev
+             - libboost-program-options-dev
+             - libboost-system-dev
+             - libboost-thread-dev
+             - libboost-date-time-dev
+             - doxygen
+     script: 
+        - make docs
+     deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        keep_history: false
+        verbose: true
+        local_dir: "html"
 
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      

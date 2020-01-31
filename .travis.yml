@@ -214,7 +214,7 @@ jobs:
         keep_history: false
         verbose: true
         target_branch: "gh-pages"
-        local_dir: "html"
+        local_dir: "build/html"
         on:
             branch: ghpages
 env:

@@ -213,8 +213,10 @@ jobs:
         github_token: $GITHUB_TOKEN
         keep_history: false
         verbose: true
+        target_branch: "gh-pages"
         local_dir: "html"
-
+        on:
+            branch: ghpages
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
 before_script:

@@ -204,6 +204,7 @@ jobs:
              - libboost-thread-dev
              - libboost-date-time-dev
              - doxygen
+             - graphviz
      script: 
         - make docs
      deploy:

@@ -4,7 +4,7 @@ services: docker
 stages:
    - name: test
    - name: documentation
-     if: branch = ghpages 
+     if: branch = develop 
 
 jobs:
    include:
@@ -216,7 +216,7 @@ jobs:
         target_branch: "gh-pages"
         local_dir: "build/html"
         on:
-            branch: ghpages
+            branch: develop
 env:
     - CTEST_OUTPUT_ON_FAILURE=1      
 before_script:

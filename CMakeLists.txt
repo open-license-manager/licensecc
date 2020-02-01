@@ -141,7 +141,6 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
 find_package(Boost COMPONENTS unit_test_framework system filesystem)
-
 #if boost is found enable tests
 IF(Boost_FOUND)
 	INCLUDE(CTest)
@@ -155,6 +154,19 @@ ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")
 ENDIF(Boost_FOUND)
 
+find_package(Doxygen COMPONENTS dot)
+IF(Doxygen_FOUND)
+    message(STATUS "Doxygen found, generating docs.")
+    SET(DOXYGEN_EXCLUDE_PATTERNS "*/library/ini/*;*/doc/resources/*")
+    SET(DOXYGEN_DISABLE_INDEX YES)
+    SET(DOXYGEN_GENERATE_TREEVIEW YES)
+    SET(DOXYGEN_LAYOUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/doc/DoxygenLayout.xml")
+	doxygen_add_docs(docs doc src include/licensecc COMMENT "doxygen docs")
+	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/resources/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/html")
+ELSE(Doxygen_FOUND)
+	message(STATUS "Doxygen not found, not generating docs.")
+ENDIF(Doxygen_FOUND)
+
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 install(FILES src/cmake/licensecc-config.cmake DESTINATION ${main_lib_dest})
@@ -162,4 +174,5 @@ install(FILES src/cmake/licensecc-config.cmake DESTINATION ${main_lib_dest})
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/licensecc-config-version.cmake COMPATIBILITY SameMajorVersion)
 install(FILES ${CMAKE_BINARY_DIR}/licensecc-config-version.cmake DESTINATION ${main_lib_dest})
+
 

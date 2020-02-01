@@ -1,3 +1,6 @@
+/** \addtogroup api
+ * @{
+ */
 #ifndef DATATYPES_H_
 #define DATATYPES_H_
 
@@ -128,3 +131,6 @@ typedef struct {
 #endif
 
 #endif
+/**
+ * @}
+ */

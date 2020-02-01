@@ -1,3 +1,6 @@
+/** \addtogroup api
+ * @{
+ */
 #ifndef LICENSEPP_H_
 #define LICENSEPP_H_
 
@@ -57,3 +60,6 @@ LCC_EVENT_TYPE release_license(char* featureName, LicenseLocation licenseLocatio
 #endif
 
 #endif
+/**
+ * @}
+ */

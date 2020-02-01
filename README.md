@@ -16,8 +16,8 @@ software closed :smirk: . Among other features if it runs on a "real hardware" i
 
 A comprehensive [list of features](https://github.com/open-license-manager/open-license-manager/wiki/features), and their status is available in the project wiki. 
 
-If you like this library remember to show us your appreciation giving it a 
-<a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> on GitHub.
+If you plan to use this library or part of it remember to show us your appreciation giving it a 
+<a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
 
 ## License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
@@ -91,5 +91,5 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The best interaction you can have with us is through the issue system. Have a look to the [contribution guidelines](CONTRIBUTING.md)
+The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc), otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

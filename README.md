@@ -9,9 +9,8 @@ A copy protection, licensing software written in C++ for Windows and Linux (with
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a)](https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/open-license-manager)](http://github.com/open-license-manager/open-license-manager/issues)
-[![forum : licensecc](https://img.shields.io/badge/forum-licensecc-blue.svg)](https://groups.google.com/d/forum/licensecc)
 
-It allows to protect the software you develop from unauthorized copies,
+Protect the software you develop from unauthorized copies,
 limit the usage in time, to a specific set of machines, or prevent the usage in 
 virtualized environments. It is an Open License Manager that helps to keep your 
 software closed :smirk: . A comprehensive [list of features](https://github.com/open-license-manager/open-license-manager/wiki/features), and their status is available in the project wiki.
@@ -20,6 +19,7 @@ software closed :smirk: . A comprehensive [list of features](https://github.com/
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
 It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows free modification and inclusion in commercial software. 
 
+If you plan to use the project or part of it consider showing us your appreciation placing a star here on github.
 ## Project Structure
 The software is made by 2 main sub-components:
 -   a C++ library with a nice C api, `licensecc` with minimal (or no) external dependencies (the part you have to integrate in your software) that is the project you're currently in.
@@ -92,5 +92,5 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The project is not dead but we take our time to answer. The best interaction you can have with us is through the [forum](https://groups.google.com/forum/#!forum/licensecc) or through the [issue system](https://github.com/open-license-manager/open-license-manager/issues). Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting issues.
+The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc), otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

@@ -8,7 +8,6 @@
 #ifndef SRC_LIBRARY_PC_IDENTIFIER_PC_IDENTIFIER_HPP_
 #define SRC_LIBRARY_PC_IDENTIFIER_PC_IDENTIFIER_HPP_
 
-#include <bits/stdint-uintn.h>
 #include <array>
 #include <iostream>
 #include <string>

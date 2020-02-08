@@ -34,31 +34,31 @@ FUNCTION_RETURN LicenseVerifier::verify_signature(const FullLicenseInfo& licInfo
 }
 
 // TODO: split in different classes
-FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
-	bool is_valid = LCC_VERIFY_MAGIC(licInfo);
+FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& lic_info) {
+	bool is_valid = LCC_VERIFY_MAGIC;
 	if (!is_valid) {
-		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source.c_str());
+		m_event_registry.addEvent(LICENSE_CORRUPTED, lic_info.source.c_str());
 	}
 	const time_t now = time(nullptr);
-	auto expiry = licInfo.m_limits.find(PARAM_EXPIRY_DATE);
-	if (is_valid && expiry != licInfo.m_limits.end()) {
+	auto expiry = lic_info.m_limits.find(PARAM_EXPIRY_DATE);
+	if (is_valid && expiry != lic_info.m_limits.end()) {
 		if (seconds_from_epoch(expiry->second) < now) {
-			m_event_registry.addEvent(PRODUCT_EXPIRED, licInfo.source.c_str(), ("Expired " + expiry->second).c_str());
+			m_event_registry.addEvent(PRODUCT_EXPIRED, lic_info.source.c_str(), ("Expired " + expiry->second).c_str());
 			is_valid = false;
 		}
 	}
-	const auto start_date = licInfo.m_limits.find(PARAM_BEGIN_DATE);
-	if (is_valid && start_date != licInfo.m_limits.end()) {
+	const auto start_date = lic_info.m_limits.find(PARAM_BEGIN_DATE);
+	if (is_valid && start_date != lic_info.m_limits.end()) {
 		if (seconds_from_epoch(start_date->second) > now) {
-			m_event_registry.addEvent(PRODUCT_EXPIRED, licInfo.source.c_str(),
+			m_event_registry.addEvent(PRODUCT_EXPIRED, lic_info.source.c_str(),
 									  ("Valid from " + start_date->second).c_str());
 			is_valid = false;
 		}
 	}
-	const auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
-	if (is_valid && client_sig != licInfo.m_limits.end()) {
+	const auto client_sig = lic_info.m_limits.find(PARAM_CLIENT_SIGNATURE);
+	if (is_valid && client_sig != lic_info.m_limits.end()) {
 		const LCC_EVENT_TYPE event = pc_identifier::PcIdentifierFacade::validate_pc_signature(client_sig->second);
-		m_event_registry.addEvent(event, licInfo.source);
+		m_event_registry.addEvent(event, lic_info.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}
 	return is_valid ? FUNC_RET_OK : FUNC_RET_ERROR;

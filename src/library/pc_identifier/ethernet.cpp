@@ -5,9 +5,7 @@
  *      Author: devel
  */
 
-#include "ethernet.hpp"
 
-#include <bits/stdint-uintn.h>
 #include <array>
 #include <vector>
 
@@ -16,6 +14,7 @@
 #include "../base/base.h"
 #include "../os/network.hpp"
 #include "pc_identifier.hpp"
+#include "ethernet.hpp"
 
 namespace license {
 namespace pc_identifier {

@@ -15,16 +15,18 @@
 #include "identification_strategy.hpp"
 
 namespace license {
+namespace pc_identifier {
+
 class PcIdentifierFacade {
 private:
 	PcIdentifierFacade(){};
 	virtual ~PcIdentifierFacade(){};
 public:
-	static std::unordered_map<LCC_API_IDENTIFICATION_STRATEGY, std::unique_ptr<IdentificationStrategy>> STRATEGY_MAP;
 	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code);
 	static std::string generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy);
 };
 
+}  // namespace pc_identifier
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_PC_IDENTIFIER_PC_IDENTIFIER_FACADE_HPP_ */

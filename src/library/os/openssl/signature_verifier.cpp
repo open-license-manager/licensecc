@@ -16,10 +16,11 @@
 
 #include <public_key.h>
 
-#include "../signature_verifier.h"
+#include "../signature_verifier.hpp"
+#include "../../base/logger.h"
 
 namespace license {
-#include "../../base/logger.h"
+namespace os {
 
 static void free_resources(EVP_PKEY* pkey, EVP_MD_CTX* mdctx) {
 	if (pkey) {
@@ -103,5 +104,5 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	free_resources(pkey, mdctx);
 	return result;
 }
-
+}  // namespace os
 } /* namespace license */

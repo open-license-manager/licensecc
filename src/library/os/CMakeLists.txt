@@ -5,8 +5,8 @@ IF(UNIX OR OPENSSL_FOUND)
 		    linux/execution_environment.cpp
 		    cpu_info_common.cpp
 		    linux/cpu_info.cpp
-		    linux/os-linux.c 
-		    linux/network_id.c)
+		    linux/network.cpp
+		    linux/os-linux.c) 
 	ELSE(UNIX)
   	    add_library(os OBJECT 
   	    cpu_info_common.cpp openssl/signature_verifier.cpp windows/os-win.c)

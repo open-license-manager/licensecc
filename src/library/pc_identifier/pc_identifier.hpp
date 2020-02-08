@@ -17,11 +17,15 @@
 #include "../../../include/licensecc/datatypes.h"
 #include "../os/execution_environment.hpp"
 #include "../os/cpu_info.hpp"
+
 namespace license {
+namespace pc_identifier {
+
+#define PC_IDENTIFIER_PROPRIETARY_DATA 8
 
 /**
  * data[0]
- * bit 7 = 0 if pc id is being generated 1 if it is included in a license.
+ * bit 7 = 0 if pc id is being generated 1 if it is coming from an issued license.
  *
  * if bit 7 = 0
  * bit 6 = environment variable was used to generate pc_id
@@ -34,12 +38,12 @@ namespace license {
  * bit 6 = 1 enable magic file/registry key
  * ----
  * data[1] bit 7-6-5 define identification strategy.
- * data[1] bits 4-0 and data[1-5] are pc identifier proprietary strategy data.
+ * data[1] bits 4-0, data[2-8] are pc identifier proprietary strategy data.
  */
 
 class PcIdentifier {
 private:
-	std::array<uint8_t, 6> m_data = {};
+	std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA + 1> m_data = {};
 
 public:
 	PcIdentifier();
@@ -52,8 +56,8 @@ public:
 	void set_virtual_environment(VIRTUALIZATION virtualization);
 	void set_virtualization(VIRTUALIZATION_DETAIL virtualization_detail);
 	void set_cloud_provider(CLOUD_PROVIDER cloud_provider);
-	void set_data(const std::array<uint8_t, 6> &data);
-	bool data_match(const std::array<uint8_t, 6> &data) const;
+	void set_data(const std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA> &data);
+	bool data_match(const std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA> &data) const;
 	std::string print() const;
 	friend std::ostream &operator<<(std::ostream &output, const PcIdentifier &d) {
 		output << d.print();
@@ -61,6 +65,7 @@ public:
 	};
 };
 
+}  // namespace pc_identifier
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_PC_IDENTIFIER_PC_IDENTIFIER_HPP_ */

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #include "base64.h"
 namespace license {
@@ -102,28 +103,26 @@ string base64(const void* binaryData, size_t len, int lineLenght) {
 	return encodeBuffer;
 }
 
-unsigned char* unbase64(const char* ascii, int len, int* flen) {
-	const unsigned char* safeAsciiPtr = (const unsigned char*)ascii;
-	unsigned char* bin;
+std::vector<uint8_t> unbase64(const std::string& base64_data) {
+	string tmp_str(base64_data);
+	tmp_str.erase(std::remove(tmp_str.begin(), tmp_str.end(), '\n'), tmp_str.end());
+	const unsigned char* safeAsciiPtr = (const unsigned char*)tmp_str.c_str();
+	std::vector<uint8_t> bin;
 	int cb = 0;
 	int charNo;
 	int pad = 0;
+	int len = tmp_str.size();
 
 	if (len < 2) {  // 2 accesses below would be OOB.
 		// catch empty string, return NULL as result.
 		puts("ERROR: You passed an invalid base64 string (too short). You get NULL back.");
-		*flen = 0;
-		return 0;
+		return bin;
 	}
 	if (safeAsciiPtr[len - 1] == '=') ++pad;
 	if (safeAsciiPtr[len - 2] == '=') ++pad;
 
-	*flen = 3 * len / 4 - pad;
-	bin = (unsigned char*)malloc(*flen);
-	if (!bin) {
-		puts("ERROR: unbase64 could not allocate enough memory.");
-		return 0;
-	}
+	unsigned int flen = 3 * len / 4 - pad;
+	bin.reserve(flen);
 
 	for (charNo = 0; charNo <= len - 4 - pad; charNo += 4) {
 		int A = unb64[safeAsciiPtr[charNo]];
@@ -131,23 +130,21 @@ unsigned char* unbase64(const char* ascii, int len, int* flen) {
 		int C = unb64[safeAsciiPtr[charNo + 2]];
 		int D = unb64[safeAsciiPtr[charNo + 3]];
 
-		bin[cb++] = (A << 2) | (B >> 4);
-		bin[cb++] = (B << 4) | (C >> 2);
-		bin[cb++] = (C << 6) | (D);
+		bin.push_back((A << 2) | (B >> 4));
+		bin.push_back((B << 4) | (C >> 2));
+		bin.push_back((C << 6) | (D));
 	}
 
 	if (pad == 1) {
 		int A = unb64[safeAsciiPtr[charNo]];
 		int B = unb64[safeAsciiPtr[charNo + 1]];
 		int C = unb64[safeAsciiPtr[charNo + 2]];
-
-		bin[cb++] = (A << 2) | (B >> 4);
-		bin[cb++] = (B << 4) | (C >> 2);
+		bin.push_back((A << 2) | (B >> 4));
+		bin.push_back((B << 4) | (C >> 2));
 	} else if (pad == 2) {
 		int A = unb64[safeAsciiPtr[charNo]];
 		int B = unb64[safeAsciiPtr[charNo + 1]];
-
-		bin[cb++] = (A << 2) | (B >> 4);
+		bin.push_back((A << 2) | (B >> 4));
 	}
 
 	return bin;

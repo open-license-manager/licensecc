@@ -20,11 +20,12 @@
 #include <public_key.h>
 #include "../../base/logger.h"
 #include "../../base/base64.h"
-#include "../signature_verifier.h"
+#include "../signature_verifier.hpp"
 
 #define RSA_KEY_BITLEN 1024
 
 namespace license {
+namespace os {
 using namespace std;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
@@ -241,5 +242,5 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	}
 	return result;
 }
-
+}  // namespace os
 } /* namespace license */

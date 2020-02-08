@@ -8,7 +8,7 @@
 using namespace std;
 const map<LCC_API_IDENTIFICATION_STRATEGY, string> stringByStrategyId = {
 	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"},	 {STRATEGY_IP_ADDRESS, "IP"},
-	{STRATEGY_DISK_NUM, "Disk1"},  {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_PLATFORM_SPECIFIC, "Custom"}};
+	{STRATEGY_DISK_NUM, "Disk1"},  {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_NONE, "Custom"}};
 
 const unordered_map<LCC_EVENT_TYPE, string> stringByEventType = {
 	{LICENSE_OK, "OK "},

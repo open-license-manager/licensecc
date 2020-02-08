@@ -59,3 +59,6 @@ target_link_libraries(
 ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
 ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
 ADD_TEST(NAME test_event_registry COMMAND test_event_registry)
+
+ADD_SUBDIRECTORY(os)
+ADD_SUBDIRECTORY(pc_identifier)

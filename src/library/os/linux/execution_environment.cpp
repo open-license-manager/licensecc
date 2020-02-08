@@ -98,7 +98,8 @@ bool ExecutionEnvironment::is_cloud() { return getCloudProvider() == NONE; }
 
 bool ExecutionEnvironment::is_docker() { return (checkContainerProc() == 1 || checkSystemdContainer() == 1); }
 
-CLOUD_PROVIDER ExecutionEnvironment::getCloudProvider() {}
-
+CLOUD_PROVIDER ExecutionEnvironment::getCloudProvider() {
+	// TODO
+}
 
 }  // namespace license

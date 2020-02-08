@@ -5,8 +5,6 @@ add_library(pc_identifier OBJECT
 	disk_strategy.cpp
 	pc_identifier.cpp
 	default_strategy.cpp
-	
-	#pc-identifiers.c
 )
 
 if(CODE_COVERAGE AND UNIX)

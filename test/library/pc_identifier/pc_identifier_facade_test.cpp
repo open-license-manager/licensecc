@@ -1,51 +1,19 @@
-#define BOOST_TEST_MODULE test_volid
+/*
+ * pc_identifier_facade_test.cpp
+ *
+ *  Created on: Dec 26, 2019
+ *      Author: devel
+ */
 
-#include <boost/test/unit_test.hpp>
-#include <fstream>
-#include <iostream>
-#include <stdio.h>
-#include <cstring>
-#include <boost/filesystem.hpp>
-#include <licensecc_properties.h>
-#include <licensecc_properties_test.h>
-
-#include <licensecc/licensecc.h>
-#include "../../src/library/ini/SimpleIni.h"
-#include "../../src/library/pc-identifiers.h"
-#include "../../src/library/os/os.h"
-#include "generate-license.h"
-
-namespace fs = boost::filesystem;
-using namespace license;
-using namespace std;
+#include "pc_identifier_facade.hpp"
 
 namespace license {
-namespace test {
-
-BOOST_AUTO_TEST_CASE(default_volid_lic_file) {
-	PcSignature identifier_out;
-
-	const LCC_API_IDENTIFICATION_STRATEGY strategy = LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET;
-	BOOST_TEST_CHECKPOINT("Before generate");
-	const FUNCTION_RETURN generate_ok = generate_user_pc_signature(identifier_out, strategy);
-	BOOST_TEST_CHECKPOINT("After generate signature");
-	BOOST_ASSERT(generate_ok == FUNCTION_RETURN::FUNC_RET_OK);
-	cout << "Identifier:" << identifier_out << endl;
-	vector<string> extraArgs;
-	extraArgs.push_back("-s");
-	extraArgs.push_back(identifier_out);
-	BOOST_TEST_CHECKPOINT("Before generate license");
-	const string licLocation = generate_license("volid_license", extraArgs);
-
-	LicenseInfo license;
-	LicenseLocation location = {LICENSE_PATH};
-	std::copy(licLocation.begin(), licLocation.end(), location.licenseData);
-	const LCC_EVENT_TYPE result = acquire_license(nullptr, &location, &license);
-	BOOST_CHECK_EQUAL(result, LICENSE_OK);
-	BOOST_CHECK_EQUAL(license.has_expiry, false);
-	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
-}
-
+/*
+ * Test identifier stability:
+ * 1) generate the pc-identifier
+ * 2) save it to disk
+ * 3) every time check that the identifier can still be verified.
+ */
 static void generate_reference_file(const string &idfileLocation, LCC_API_IDENTIFICATION_STRATEGY strategies[],
 									int num_strategies) {
 	ofstream idfile(idfileLocation);
@@ -129,5 +97,4 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	}
 }
 
-}  // namespace test
-}  // namespace license
+} /* namespace license */

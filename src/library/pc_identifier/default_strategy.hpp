@@ -10,6 +10,7 @@
 #include "identification_strategy.hpp"
 
 namespace license {
+namespace pc_identifier {
 
 class DefaultStrategy : public IdentificationStrategy {
 public:
@@ -20,7 +21,7 @@ public:
 	virtual std::vector<PcIdentifier> alternative_ids() const;
 	virtual LCC_EVENT_TYPE validate_identifier(const PcIdentifier &identifier) const;
 };
-
+}  // namespace pc_identifier
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_PC_IDENTIFIER_DEFAULT_STRATEGY_HPP_ */

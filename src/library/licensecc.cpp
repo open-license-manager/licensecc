@@ -32,7 +32,7 @@ bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, s
 	bool result = false;
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
-			string pc_id = license::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
+			string pc_id = license::pc_identifier::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
 			strncpy(chbuffer, pc_id.c_str(), *bufSize);
 			result = true;
 		} catch (const std::exception& ex) {

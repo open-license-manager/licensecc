@@ -17,25 +17,12 @@ extern "C" {
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
-//definition of size_t
+// definition of size_t
 #include <stdlib.h>
 #ifdef __unix__
 #include <unistd.h>
 #include <stdbool.h>
 #endif
-
-
-typedef enum {
-	IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS
-} IFACE_TYPE;
-
-typedef struct {
-	int id;
-	char description[1024];
-	unsigned char mac_address[8];
-	unsigned char ipv4_address[4];
-	IFACE_TYPE type;
-} OsAdapterInfo;
 
 typedef struct {
 	int id;
@@ -45,12 +32,10 @@ typedef struct {
 	bool preferred;
 } DiskInfo;
 
-FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
-		size_t * adapter_info_size);
-FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size);
+FUNCTION_RETURN getDiskInfos(DiskInfo* diskInfos, size_t* disk_info_size);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]);
-FUNCTION_RETURN getCpuId(unsigned char identifier[6]);
+// FUNCTION_RETURN getCpuId(unsigned char identifier[6]);
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
 /**
  * Get an identifier of the machine in an os specific way.
@@ -75,11 +60,11 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 // FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
 
 #ifdef _WIN32
-#define SETENV(VAR,VAL) _putenv_s(VAR, VAL);
-#define	UNSETENV(P) _putenv_s(P, "");
+#define SETENV(VAR, VAL) _putenv_s(VAR, VAL);
+#define UNSETENV(P) _putenv_s(P, "");
 #else
-#define SETENV(VAR,VAL) setenv(VAR, VAL, 1);
-#define	UNSETENV(P)	unsetenv(P);
+#define SETENV(VAR, VAL) setenv(VAR, VAL, 1);
+#define UNSETENV(P) unsetenv(P);
 #endif
 
 #ifdef __cplusplus

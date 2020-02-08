@@ -10,8 +10,8 @@
 
 #include "license_verifier.hpp"
 #include "../pc_identifier/pc_identifier_facade.hpp"
-#include "../os/signature_verifier.h"
 #include "../base/StringUtils.h"
+#include "../os/signature_verifier.hpp"
 
 namespace license {
 using namespace std;
@@ -23,7 +23,7 @@ LicenseVerifier::~LicenseVerifier() {}
 FUNCTION_RETURN LicenseVerifier::verify_signature(const FullLicenseInfo& licInfo) {
 	const string licInfoData(licInfo.printForSign());
 
-	FUNCTION_RETURN ret = license::verify_signature(licInfoData, licInfo.license_signature);
+	FUNCTION_RETURN ret = license::os::verify_signature(licInfoData, licInfo.license_signature);
 
 	if (ret == FUNC_RET_OK) {
 		m_event_registry.addEvent(SIGNATURE_VERIFIED, licInfo.source);
@@ -57,7 +57,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 	}
 	const auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	if (is_valid && client_sig != licInfo.m_limits.end()) {
-		const LCC_EVENT_TYPE event = PcIdentifierFacade::validate_pc_signature(client_sig->second);
+		const LCC_EVENT_TYPE event = pc_identifier::PcIdentifierFacade::validate_pc_signature(client_sig->second);
 		m_event_registry.addEvent(event, licInfo.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}
@@ -66,7 +66,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& licInfo) {
 
 LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) const {
 	LicenseInfo info;
-	info.license_type = LOCAL;
+	info.license_type = LCC_LOCAL;
 
 	const auto expiry = fullLicInfo.m_limits.find(PARAM_EXPIRY_DATE);
 	if (expiry != fullLicInfo.m_limits.end()) {

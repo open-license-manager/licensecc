@@ -12,6 +12,7 @@
 
 using namespace std;
 namespace license {
+namespace pc_identifier {
 
 static vector<LCC_API_IDENTIFICATION_STRATEGY> available_strategies() {
 	ExecutionEnvironment exec;
@@ -46,11 +47,8 @@ FUNCTION_RETURN DefaultStrategy::identify_pc(PcIdentifier& pc_id) const {
 	FUNCTION_RETURN ret = FUNC_RET_NOT_AVAIL;
 	for (auto it : strategy_to_try) {
 		LCC_API_IDENTIFICATION_STRATEGY strat_to_try = it;
-		auto strategy_ptr = PcIdentifierFacade::STRATEGY_MAP.find(strat_to_try);
-		if (strategy_ptr == PcIdentifierFacade::STRATEGY_MAP.end()) {
-			throw logic_error("strategy not found");
-		}
-		ret = strategy_ptr->second->identify_pc(pc_id);
+		unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strat_to_try);
+		ret = strategy_ptr->identify_pc(pc_id);
 		if (ret == FUNC_RET_OK) {
 			break;
 		}
@@ -64,12 +62,9 @@ std::vector<PcIdentifier> DefaultStrategy::alternative_ids() const {
 	FUNCTION_RETURN ret = FUNC_RET_NOT_AVAIL;
 	for (auto it : strategy_to_try) {
 		LCC_API_IDENTIFICATION_STRATEGY strat_to_try = it;
-		auto strategy_ptr = PcIdentifierFacade::STRATEGY_MAP.find(strat_to_try);
-		if (strategy_ptr == PcIdentifierFacade::STRATEGY_MAP.end()) {
-			throw logic_error("strategy not found");
-		}
-		vector<PcIdentifier> alt_ids = strategy_ptr->second->alternative_ids();
-		// identifiers.push_back(alt_ids);
+		unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strat_to_try);
+		vector<PcIdentifier> alt_ids = strategy_ptr->alternative_ids();
+		identifiers.insert(alt_ids.begin(), alt_ids.end(), identifiers.end());
 	}
 	return identifiers;
 }
@@ -79,4 +74,5 @@ LCC_EVENT_TYPE DefaultStrategy::validate_identifier(const PcIdentifier& identifi
 	return IDENTIFIERS_MISMATCH;
 }
 
+}  // namespace pc_identifier
 } /* namespace license */

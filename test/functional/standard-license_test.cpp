@@ -11,11 +11,11 @@
 #include "generate-license.h"
 #include "../../src/library/base/FileUtils.hpp"
 
+using namespace std;
+namespace fs = boost::filesystem;
+
 namespace license {
 namespace test {
-namespace fs = boost::filesystem;
-using namespace license;
-using namespace std;
 
 /**
  * Test a generic license with no expiry neither client id. The license is read from file

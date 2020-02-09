@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(read_network_adapters) {
 	FUNCTION_RETURN result = getAdapterInfos(adapters);
 	ExecutionEnvironment exec_env;
 	if (result != FUNC_RET_OK && exec_env.is_docker()) {
-		BOOST_TEST_INFO("detected docker environment, not having network interfaces is normal here");
+		BOOST_TEST_MESSAGE("detected docker environment, not having network interfaces is normal here");
 		return;
 	}
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);

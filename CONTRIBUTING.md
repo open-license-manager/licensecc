@@ -2,9 +2,15 @@ Contributing to Open License Manager
 ==========
 :+1::tada: First off, if you landed here means you want to contribute! :tada::+1:
 
-The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. These are mostly guidelines, not rules. 
 
 ## How to Contribute
+
+### Interacting with the team 
+
+This section will help you understand how to interact with the development team and seek help. This is also a way of contributing because the answers given to you may help others.
+
+If you're experinecing issues with the project, due to lack/unclear documentation and you're unsure if opening or not a bug you can first contact us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). Please try to be very specific about your problem. Use the guidelines in ["How to Submit A (Good) Bug Report"](#how-do-i-submit-a-good-bug-report) to structure your question. 
 
 ### Reporting Bugs
 
@@ -17,8 +23,9 @@ Before creating bug reports, please [check the repository](https://github.com/op
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). Explain the problem and include additional details to help maintainers reproduce the problem:
 
 -   **Use a clear and descriptive title** for the issue to identify the problem.
--   **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager. 
+-   **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how are you using Open License Manager.  
 -   **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or licenses, which can cause the bug. If you're providing code snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines). 
+-   **Describe the current behavior and the expected one*** Describe the current result, and the expected behavior.
 -   **Provide a unit test to demonstrate the bug**. The best way to report a bug, and to have it fixed **forever** is to design a test to demonstrate it. 
 -   **If you're reporting that Open License Manager crashed**, include a crash dump and the associated message. 
 -   **Label the issue as bug.**
@@ -81,6 +88,5 @@ Supposing you already know how to contribute to an open source project on GitHub
 ##### Don't
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
-    -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. Please contact the project maintainer at `contini.mailing[AT]gmail.com` if you have time and plan to do a large contribution.
+    -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
     -  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
-  

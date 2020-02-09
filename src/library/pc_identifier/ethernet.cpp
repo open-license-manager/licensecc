@@ -9,8 +9,8 @@
 #include <array>
 #include <vector>
 
-#include "../../../include/licensecc/datatypes.h"
-#include "../../../projects/DEFAULT/include/licensecc/DEFAULT/licensecc_properties.h"
+#include <licensecc/datatypes.h>
+#include <licensecc_properties.h>
 #include "../base/base.h"
 #include "../os/network.hpp"
 #include "pc_identifier.hpp"

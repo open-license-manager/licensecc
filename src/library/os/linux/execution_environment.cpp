@@ -94,7 +94,7 @@ VIRTUALIZATION ExecutionEnvironment::getVirtualization() {
 	return result;
 }
 
-bool ExecutionEnvironment::is_cloud() { return getCloudProvider() == NONE; }
+bool ExecutionEnvironment::is_cloud() { return getCloudProvider() != ON_PREMISE; }
 
 bool ExecutionEnvironment::is_docker() { return (checkContainerProc() == 1 || checkSystemdContainer() == 1); }
 

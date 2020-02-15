@@ -10,9 +10,9 @@
 
 using namespace std;
 namespace license {
-namespace pc_identifier {
+namespace hw_identifier {
 
-static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA>> &v_disk_id,
+static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> &v_disk_id,
 										   bool use_id) {
 	size_t disk_num, available_disk_info = 0;
 	FUNCTION_RETURN result_diskinfos;
@@ -47,7 +47,7 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, PC_IDENTIFIER_P
 	}
 	v_disk_id.reserve(available_disk_info);
 	for (i = 0; i < disk_num; i++) {
-		array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
+		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
 		if (use_id) {
 			if (diskInfos[i].disk_sn[0] != 0) {
 				memcpy(&a_disk_id[0], &diskInfos[i].disk_sn[2], a_disk_id.size());
@@ -65,33 +65,22 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, PC_IDENTIFIER_P
 	return FUNC_RET_OK;
 }
 
-DiskStrategy::DiskStrategy(bool use_id) : m_use_id(use_id) {
-}
+DiskStrategy::DiskStrategy(bool use_id) : m_use_id(use_id) {}
 
-DiskStrategy::~DiskStrategy() {
-}
+DiskStrategy::~DiskStrategy() {}
 
 LCC_API_IDENTIFICATION_STRATEGY DiskStrategy::identification_strategy() const {
 	return m_use_id ? STRATEGY_DISK_NUM : STRATEGY_DISK_LABEL;
 }
 
-FUNCTION_RETURN DiskStrategy::identify_pc(PcIdentifier &pc_id) const {
-	vector<array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA>> data;
+std::vector<HwIdentifier> DiskStrategy::alternative_ids() const {
+	vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> data;
 	FUNCTION_RETURN result = generate_disk_pc_id(data, m_use_id);
-	if (result == FUNC_RET_OK) {
-		pc_id.set_data(data[0]);
-	}
-	return result;
-}
-
-std::vector<PcIdentifier> DiskStrategy::alternative_ids() const {
-	vector<array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA>> data;
-	FUNCTION_RETURN result = generate_disk_pc_id(data, m_use_id);
-	vector<PcIdentifier> identifiers;
+	vector<HwIdentifier> identifiers;
 	if (result == FUNC_RET_OK) {
 		identifiers.resize(data.size());
 		for (auto &it : data) {
-			PcIdentifier pc_id;
+			HwIdentifier pc_id;
 			pc_id.set_identification_strategy(identification_strategy());
 			pc_id.set_data(it);
 			identifiers.push_back(pc_id);
@@ -100,15 +89,5 @@ std::vector<PcIdentifier> DiskStrategy::alternative_ids() const {
 	return identifiers;
 }
 
-LCC_EVENT_TYPE DiskStrategy::validate_identifier(const PcIdentifier &identifier) const {
-	vector<array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA>> data;
-	FUNCTION_RETURN generate_ethernet = generate_disk_pc_id(data, m_use_id);
-	LCC_EVENT_TYPE result = IDENTIFIERS_MISMATCH;
-	if (generate_ethernet == FUNC_RET_OK) {
-		result = validate_identifier(identifier, data);
-	}
-	return result;
-}
-
-}  // namespace pc_identifier
+}  // namespace hw_identifier
 } /* namespace license */

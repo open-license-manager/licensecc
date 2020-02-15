@@ -18,7 +18,7 @@
 #include <licensecc_properties.h>
 
 #include "base/logger.h"
-#include "pc_identifier/pc_identifier_facade.hpp"
+#include "hw_identifier/hw_identifier_facade.hpp"
 #include "limits/license_verifier.hpp"
 #include "base/StringUtils.h"
 #include "LicenseReader.hpp"
@@ -32,11 +32,11 @@ bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, s
 	bool result = false;
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
-			string pc_id = license::pc_identifier::PcIdentifierFacade::generate_user_pc_signature(pc_id_method);
+			string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
 			strncpy(chbuffer, pc_id.c_str(), *bufSize);
 			result = true;
 		} catch (const std::exception& ex) {
-			LOG_ERROR("Error calculating pc_identifier: %s", ex.what());
+			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
 #ifdef _DEBUG
 				cout
 				<< "Error occurred: " << ex.what() << std::endl;

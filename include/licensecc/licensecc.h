@@ -22,7 +22,7 @@ extern "C" {
 void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo);
 
 /**
- * This method calculates the pc identifier. The string need to be shown to the user and given back to the software
+ * This method calculates the hardware identifier. The string need to be shown to the user and given back to the software
  * editor when issuing a license.
  *  pc_id_method = STRATEGY_DEFAULT usually works.
  */

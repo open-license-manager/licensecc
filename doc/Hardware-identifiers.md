@@ -7,7 +7,7 @@ OpenLicenseManager guess the environment where the user is trying to launch the 
 This is straightforward case. If the software is executing on a physical hardware it is possible to identify the hardware by various parameters (cpu type/memory/disk label/mac address)
 
 ### Execution in a virtual machine
-Generating a pc identifier on a virtual machine doesn't make much sense, since the vm can be copied as a whole elsewhere 
+Generating a hardware identifier on a virtual machine doesn't make much sense, since the vm can be copied as a whole elsewhere 
 and there are few ways to detect this without using an external license server.
 
 *   Usually when the machine is copied the MAC address is changed. But sometimes it changes on its own. Software publishers may want to use this as a last resort to prevent the vm for being cloned. It has to be verified case by case.

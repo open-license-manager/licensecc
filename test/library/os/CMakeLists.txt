@@ -10,3 +10,7 @@ target_link_libraries( test_network
 )
 
 ADD_TEST(NAME test_network COMMAND test_network)
+
+if(CODE_COVERAGE AND UNIX)
+	target_compile_options(test_network PUBLIC -O0 -g --coverage)
+endif(CODE_COVERAGE AND UNIX)

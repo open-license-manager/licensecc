@@ -32,7 +32,7 @@ It can handle multiple licenses at the same time. See the wiki page about [licen
 A licensed software may be composed by many features (functions) each one activable independently. Licensing system tells the licensed software which features are enabled, and which features are disabled.
  
 ## License Management (planned)
-It is necessary to keep track of the licenses that have been issued, of the clients, and their pc identifier. 
+It is necessary to keep track of the licenses that have been issued, of the clients, and their hardware identifier. 
 A web application is planned that will provide integration with payment systems to allow licensed software customers to buy licenses.
 
 ## Customizable execution limits (planned)

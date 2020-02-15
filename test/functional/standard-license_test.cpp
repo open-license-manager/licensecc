@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 //	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 //}
 //
-// BOOST_AUTO_TEST_CASE( pc_identifier ) {
-//	const string licLocation(PROJECT_TEST_TEMP_DIR "/pc_identifier.lic");
+// BOOST_AUTO_TEST_CASE( hw_identifier ) {
+//	const string licLocation(PROJECT_TEST_TEMP_DIR "/hw_identifier.lic");
 //	const vector<string> extraArgs = { "-s", "Jaaa-aaaa-MG9F-ZhB1" };
 //	generate_license(licLocation, extraArgs);
 //

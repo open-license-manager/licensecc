@@ -1,5 +1,5 @@
 /*
- * pc_identifier.h
+ * hw_identifier.h
  *
  *  Created on: Dec 22, 2019
  *      Author: GC
@@ -18,9 +18,9 @@
 #include "../os/cpu_info.hpp"
 
 namespace license {
-namespace pc_identifier {
+namespace hw_identifier {
 
-#define PC_IDENTIFIER_PROPRIETARY_DATA 8
+#define HW_IDENTIFIER_PROPRIETARY_DATA 8
 
 /**
  * data[0]
@@ -33,38 +33,40 @@ namespace pc_identifier {
  * if on premise vm bits 2-1-0 are virtualization technology
  * if cloud vm bits 2-1-0 identify cloud provider
  *
- * if bit 7 = 1 pc identifier is used to enable some flag that we don't want to show openly in the license
+ * if bit 7 = 1 hardware identifier is used to enable some flag that we don't want to show openly in the license
  * bit 6 = 1 enable magic file/registry key
  * ----
  * data[1] bit 7-6-5 define identification strategy.
- * data[1] bits 4-0, data[2-8] are pc identifier proprietary strategy data.
+ * data[1] bits 4-0, data[2-8] are hardware identifier proprietary strategy data.
  */
 
-class PcIdentifier {
+class HwIdentifier {
 private:
-	std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA + 1> m_data = {};
+	std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA + 1> m_data = {};
+	friend bool operator==(const HwIdentifier &lhs, const HwIdentifier &rhs);
 
 public:
-	PcIdentifier();
-	PcIdentifier(const std::string &param);
-	virtual ~PcIdentifier();
-	PcIdentifier(const PcIdentifier &other);
+	HwIdentifier();
+	HwIdentifier(const std::string &param);
+	virtual ~HwIdentifier();
+	HwIdentifier(const HwIdentifier &other);
 	void set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy);
 	LCC_API_IDENTIFICATION_STRATEGY get_identification_strategy() const;
 	void set_use_environment_var(bool use_env_var);
 	void set_virtual_environment(VIRTUALIZATION virtualization);
 	void set_virtualization(VIRTUALIZATION_DETAIL virtualization_detail);
 	void set_cloud_provider(CLOUD_PROVIDER cloud_provider);
-	void set_data(const std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA> &data);
-	bool data_match(const std::array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA> &data) const;
+	void set_data(const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> &data);
+	bool data_match(const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> &data) const;
 	std::string print() const;
-	friend std::ostream &operator<<(std::ostream &output, const PcIdentifier &d) {
+	friend std::ostream &operator<<(std::ostream &output, const HwIdentifier &d) {
 		output << d.print();
 		return output;
 	};
 };
 
-}  // namespace pc_identifier
+
+}  // namespace hw_identifier
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_PC_IDENTIFIER_PC_IDENTIFIER_HPP_ */

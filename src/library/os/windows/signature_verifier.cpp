@@ -136,13 +136,13 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	DWORD status;
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	PBYTE pbSignature = nullptr;
-	DWORD dwSigLen;
 	BYTE* sigBlob = nullptr;
 	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
 
-	// FIXME!!
-	sigBlob = unbase64(signatureBuffer.c_str(), (int)signatureBuffer.size(), (int*)&dwSigLen);
-
+	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
+	DWORD dwSigLen = signatureBlob.size();
+	sigBlob = &signatureBlob[0]; 
+	
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {
 		if ((result = readPublicKey(hSignAlg, &phKey)) == FUNC_RET_OK) {
 			BCRYPT_PKCS1_PADDING_INFO paddingInfo;
@@ -160,7 +160,8 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 		} else {
 			LOG_DEBUG("Error reading public key");
 		}
-	} else {
+	}
+	else {
 		result = FUNC_RET_NOT_AVAIL;
 #ifdef _DEBUG
 		formatError(status, "error opening RSA provider");

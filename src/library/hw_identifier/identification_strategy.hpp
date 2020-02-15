@@ -13,26 +13,31 @@
 #include <vector>
 #include <bits/unique_ptr.h>
 #include "../base/base.h"
-#include "pc_identifier.hpp"
+#include "hw_identifier.hpp"
+
 namespace license {
-namespace pc_identifier {
+namespace hw_identifier {
 
 class IdentificationStrategy {
 protected:
-	LCC_EVENT_TYPE validate_identifier(const PcIdentifier& identifier,
-									   const std::vector<std::array<uint8_t, 8>>& available_ids) const;
+	IdentificationStrategy(){};
 
 public:
-	IdentificationStrategy(){};
 	virtual ~IdentificationStrategy(){};
 	virtual LCC_API_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
-	virtual FUNCTION_RETURN identify_pc(PcIdentifier& identifier) const = 0;
-	virtual std::vector<PcIdentifier> alternative_ids() const = 0;
-	virtual LCC_EVENT_TYPE validate_identifier(const PcIdentifier& identifier) const = 0;
+	virtual FUNCTION_RETURN identify_pc(HwIdentifier& identifier_out) const;
+	virtual std::vector<HwIdentifier> alternative_ids() const = 0;
+	virtual LCC_EVENT_TYPE validate_identifier(const HwIdentifier& identifier_in) const;
+
+	/**
+	 * Factory method to create an instance of IdentificationStrategy
+	 * @param strategy
+	 * @return
+	 */
 	static std::unique_ptr<IdentificationStrategy> get_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy);
 };
 
-}  // namespace pc_identifier
+}  // namespace hw_identifier
 } /* namespace license */
 
 #endif /* SRC_LIBRARY_PC_IDENTIFIER_IDENTIFICATION_STRATEGY_HPP_ */

@@ -9,9 +9,9 @@
 #include <licensecc_properties.h>
 
 #include "license_verifier.hpp"
-#include "../pc_identifier/pc_identifier_facade.hpp"
 #include "../base/StringUtils.h"
 #include "../os/signature_verifier.hpp"
+#include "../hw_identifier/hw_identifier_facade.hpp"
 
 namespace license {
 using namespace std;
@@ -57,7 +57,7 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& lic_info) 
 	}
 	const auto client_sig = lic_info.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	if (is_valid && client_sig != lic_info.m_limits.end()) {
-		const LCC_EVENT_TYPE event = pc_identifier::PcIdentifierFacade::validate_pc_signature(client_sig->second);
+		const LCC_EVENT_TYPE event = hw_identifier::HwIdentifierFacade::validate_pc_signature(client_sig->second);
 		m_event_registry.addEvent(event, lic_info.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}

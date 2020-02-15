@@ -6,7 +6,7 @@ Working examples are provided in the [examples](https://github.com/open-license-
 The file containing the public api is `include/licensecc/licensecc.h`. Functions in there are considered stable.
 
 
-### Print a pc identifier
+### Print a hardware identifier
 
 ```CPP
 bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t bufSize);

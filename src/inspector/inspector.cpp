@@ -42,11 +42,11 @@ int main(int argc, char* argv[]) {
 	cout << "Virtual machine:" << cpu.cpu_virtual() << endl;
 	cout << "Cpu model      : 0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
 
-	char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
+	char hw_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
 	size_t bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	for (const auto& x : stringByStrategyId) {
-		if (identify_pc(x.first, pc_identifier, &bufSize)) {
-			std::cout << x.second << ':' << pc_identifier << std::endl;
+		if (identify_pc(x.first, hw_identifier, &bufSize)) {
+			std::cout << x.second << ':' << hw_identifier << std::endl;
 
 		} else {
 			std::cout << x.second << ": NA" << endl;

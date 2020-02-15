@@ -12,7 +12,7 @@ IF(UNIX OR OPENSSL_FOUND)
   	    cpu_info_common.cpp openssl/signature_verifier.cpp windows/os-win.c)
 	ENDIF(UNIX)
 ELSE(UNIX OR OPENSSL_FOUND)
-    target_sources(os OBJECT
+    add_library(os OBJECT
         cpu_info_common.cpp windows/signature_verifier.cpp windows/os-win.c)
 ENDIF(UNIX OR OPENSSL_FOUND)
 

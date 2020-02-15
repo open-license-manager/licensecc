@@ -23,7 +23,7 @@
 #define LCC_LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
 #define LCC_LICENSE_DATA_ENV_VAR "LICENSE_DATA"
 /**
- * Environment variable that if defined will change the identification strategy used to generate the pc identifier.
+ * Environment variable that if defined will change the identification strategy used to generate the hardware identifier.
  * If a client has an unstable pc-identifier use this variable to generate one. 
  * Valid values are integers defined in `LCC_IDENTIFICATION_STRATEGY` enum.
  */

@@ -1,14 +1,14 @@
 add_subdirectory("base")
 add_subdirectory("os")
 add_subdirectory("locate")
-add_subdirectory("pc_identifier")
+add_subdirectory("hw_identifier")
 
 ADD_LIBRARY(licensecc_static STATIC
     licensecc.cpp
     LicenseReader.cpp
     limits/license_verifier.cpp
     ini/ConvertUTF.c
-    $<TARGET_OBJECTS:pc_identifier>
+    $<TARGET_OBJECTS:hw_identifier>
     $<TARGET_OBJECTS:locate>
     $<TARGET_OBJECTS:os>
     $<TARGET_OBJECTS:base>

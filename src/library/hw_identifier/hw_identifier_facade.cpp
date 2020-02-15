@@ -1,11 +1,11 @@
 /*
- * pc_identifier_facade.cpp
+ * hw_identifier_facade.cpp
  *
  *  Created on: Dec 26, 2019
  *      Author: devel
  */
 
-#include "pc_identifier_facade.hpp"
+#include "hw_identifier_facade.hpp"
 
 #include <cstdlib>
 #include <stdexcept>
@@ -15,15 +15,15 @@
 #include "../os/cpu_info.hpp"
 #include "../os/execution_environment.hpp"
 #include "identification_strategy.hpp"
-#include "pc_identifier.hpp"
+#include "hw_identifier.hpp"
 
 namespace license {
-namespace pc_identifier {
+namespace hw_identifier {
 
 using namespace std;
 
-LCC_EVENT_TYPE PcIdentifierFacade::validate_pc_signature(const std::string& str_code) {
-	PcIdentifier pc_id(str_code);
+LCC_EVENT_TYPE HwIdentifierFacade::validate_pc_signature(const std::string& str_code) {
+	HwIdentifier pc_id(str_code);
 	LCC_API_IDENTIFICATION_STRATEGY id_strategy = pc_id.get_identification_strategy();
 	LCC_EVENT_TYPE result = IDENTIFIERS_MISMATCH;
 	try {
@@ -35,7 +35,7 @@ LCC_EVENT_TYPE PcIdentifierFacade::validate_pc_signature(const std::string& str_
 	return result;
 }
 
-std::string PcIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy) {
+std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy) {
 	bool use_env_var = false;
 	vector<LCC_API_IDENTIFICATION_STRATEGY> strategies_to_try;
 	if (strategy == STRATEGY_DEFAULT) {
@@ -52,7 +52,7 @@ std::string PcIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 	}
 
 	unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strategy);
-	PcIdentifier pc_id;
+	HwIdentifier pc_id;
 	FUNCTION_RETURN result = strategy_ptr->identify_pc(pc_id);
 	if (result != FUNC_RET_OK) {
 		/// FIXME
@@ -73,5 +73,5 @@ std::string PcIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 	return pc_id.print();
 }
 
-}  // namespace pc_identifier
+}  // namespace hw_identifier
 } /* namespace license */

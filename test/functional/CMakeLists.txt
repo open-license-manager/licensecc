@@ -46,7 +46,7 @@ target_link_libraries(
 )
 
 
-add_executable(test_it_pc_identifer pc_identifier_it_test.cpp)
+add_executable(test_it_pc_identifer hw_identifier_it_test.cpp)
 
 target_link_libraries(test_it_pc_identifer
  licensecc_static

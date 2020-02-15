@@ -4,16 +4,16 @@
 #include "ethernet.hpp"
 #include "disk_strategy.hpp"
 namespace license {
-namespace pc_identifier {
+namespace hw_identifier {
 
 using namespace std;
-LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(
-	const PcIdentifier& identifier, const vector<array<uint8_t, PC_IDENTIFIER_PROPRIETARY_DATA>>& available_ids) const {
+LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(const HwIdentifier& identifier) const {
 	LCC_EVENT_TYPE result = IDENTIFIERS_MISMATCH;
 
 	if (identifier.get_identification_strategy() == identification_strategy()) {
-		for (auto& it : available_ids) {
-			if (identifier.data_match(it)) {
+		const vector<HwIdentifier> available_ids = alternative_ids();
+		for (const auto& it : available_ids) {
+			if (it == identifier) {
 				result = LICENSE_OK;
 				break;
 			}
@@ -22,6 +22,16 @@ LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(
 	return result;
 }
 
+FUNCTION_RETURN IdentificationStrategy::identify_pc(HwIdentifier& pc_id) const {
+	vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> data;
+	const vector<HwIdentifier> available_ids = alternative_ids();
+	FUNCTION_RETURN result = FUNC_RET_NOT_AVAIL;
+	if (available_ids.size() > 0) {
+		pc_id = available_ids[0];
+		result = FUNC_RET_OK;
+	}
+	return result;
+}
 std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy) {
 	unique_ptr<IdentificationStrategy> result;
 	switch (strategy) {
@@ -45,6 +55,5 @@ std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC
 	}
 	return result;
 }
-}  // namespace pc_identifier
+}  // namespace hw_identifier
 }  // namespace license
-

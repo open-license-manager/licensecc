@@ -1,11 +1,11 @@
 /*
- * pc_identifier_facade_test.cpp
+ * hw_identifier_facade_test.cpp
  *
  *  Created on: Dec 26, 2019
  *      Author: devel
  */
 
-#include "pc_identifier_facade.hpp"
+#include "../../../src/library/hw_identifier/hw_identifier_facade.hpp"
 
 namespace license {
 /*

@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE integration_test_pc_identifier
+#define BOOST_TEST_MODULE integration_test_hw_identifier
 
 #include <boost/test/unit_test.hpp>
 #include <fstream>
@@ -11,7 +11,7 @@
 
 #include <licensecc/licensecc.h>
 #include "../../src/library/ini/SimpleIni.h"
-#include "../../src/library/pc_identifier/pc_identifier_facade.hpp"
+#include "../../src/library/hw_identifier/hw_identifier_facade.hpp"
 #include "../../src/library/os/os.h"
 #include "../../src/library/os/network.hpp"
 #include "generate-license.h"
@@ -21,16 +21,16 @@ namespace license {
 namespace test {
 namespace fs = boost::filesystem;
 using namespace std;
-using namespace pc_identifier;
+using namespace hw_identifier;
 
 /**
- * If the current pc has at least one disk generate a pc identifier using disk, generate a license, verify the license
+ * If the current pc has at least one disk generate a hardware identifier using disk, generate a license, verify the license
  * is OK
  */
 
 static void generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY strategy, const string& lic_fname) {
 	BOOST_TEST_CHECKPOINT("Before generate");
-	const string identifier_out = PcIdentifierFacade::generate_user_pc_signature(strategy);
+	const string identifier_out = HwIdentifierFacade::generate_user_pc_signature(strategy);
 	BOOST_TEST_CHECKPOINT("After generate signature");
 	cout << "Identifier:" << identifier_out << endl;
 	vector<string> extraArgs;
@@ -48,24 +48,24 @@ static void generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY strategy
 }
 
 BOOST_AUTO_TEST_CASE(volid_lic_file) {
-	PcIdentifier identifier_out;
+	HwIdentifier identifier_out;
 	size_t disk_num;
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if ((result_diskinfos == FUNC_RET_BUFFER_TOO_SMALL || result_diskinfos == FUNC_RET_OK) && disk_num > 0) {
 		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_DISK_NUM, "volid_lic_file");
 	} else {
-		BOOST_TEST_MESSAGE("No disk found skipping testing disk pc identifier");
+		BOOST_TEST_MESSAGE("No disk found skipping testing disk hardware identifier");
 	}
 }
 
 BOOST_AUTO_TEST_CASE(volume_name_lic_file) {
-	PcIdentifier identifier_out;
+	HwIdentifier identifier_out;
 	size_t disk_num;
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if ((result_diskinfos == FUNC_RET_BUFFER_TOO_SMALL || result_diskinfos == FUNC_RET_OK) && disk_num > 0) {
 		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_DISK_LABEL, "volume_name_lic_file");
 	} else {
-		BOOST_TEST_MESSAGE("No disk found skipping testing volume name disk pc identifier");
+		BOOST_TEST_MESSAGE("No disk found skipping testing volume name disk hardware identifier");
 	}
 }
 
@@ -76,10 +76,10 @@ BOOST_AUTO_TEST_CASE(strategy_mac_address) {
 		adapters.size() > 0) {
 		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET, "strategy_mac_address");
 	} else {
-		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing mac address pc identifier");
+		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing mac address hardware identifier");
 	}
 }
-/*
+
 BOOST_AUTO_TEST_CASE(strategy_ip_address) {
 	vector<os::OsAdapterInfo> adapters;
 	FUNCTION_RETURN result_adapterInfos = os::getAdapterInfos(adapters);
@@ -87,9 +87,9 @@ BOOST_AUTO_TEST_CASE(strategy_ip_address) {
 		adapters.size() > 0) {
 		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_IP_ADDRESS, "strategy_ip_address");
 	} else {
-		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing ip pc identifier");
+		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing ip hardware identifier");
 	}
 }
-*/
+
 }  // namespace test
 }  // namespace license

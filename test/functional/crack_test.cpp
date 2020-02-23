@@ -1,3 +1,4 @@
+
 #define BOOST_TEST_MODULE standard_license_test
 
 #include <boost/test/unit_test.hpp>
@@ -9,7 +10,7 @@
 #include <iostream>
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
-#include "../../src/library/base/FileUtils.hpp"
+#include "../../src/library/base/file_utils.hpp"
 
 namespace license {
 namespace test {

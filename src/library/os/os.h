@@ -26,10 +26,10 @@ extern "C" {
 
 typedef struct {
 	int id;
-	char device[255];
+	char device[MAX_PATH];
 	unsigned char disk_sn[8];
 	char label[255];
-	bool preferred;
+	int preferred;
 } DiskInfo;
 
 FUNCTION_RETURN getDiskInfos(DiskInfo* diskInfos, size_t* disk_info_size);

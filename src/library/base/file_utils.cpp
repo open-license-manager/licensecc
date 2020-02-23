@@ -11,7 +11,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "FileUtils.hpp"
+#include "file_utils.hpp"
 
 namespace license {
 using namespace std;

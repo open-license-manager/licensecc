@@ -57,16 +57,16 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 	if (result != FUNC_RET_OK) {
 		/// FIXME
 	}
-	ExecutionEnvironment exec;
-	VIRTUALIZATION virtualization = exec.getVirtualization();
+	os::ExecutionEnvironment exec;
+	os::VIRTUALIZATION virtualization = exec.getVirtualization();
 	pc_id.set_virtual_environment(virtualization);
 	pc_id.set_use_environment_var(use_env_var);
-	if (virtualization != NONE) {
+	if (virtualization != os::NONE) {
 		bool isCloud = exec.is_cloud();
 		if (isCloud) {
 			pc_id.set_cloud_provider(exec.getCloudProvider());
 		} else {
-			CpuInfo cpu;
+			os::CpuInfo cpu;
 			pc_id.set_virtualization(cpu.getVirtualizationDetail());
 		}
 	}

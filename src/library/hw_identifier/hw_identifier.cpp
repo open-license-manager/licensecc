@@ -47,16 +47,16 @@ void HwIdentifier::set_use_environment_var(bool use_env_var) {
 	}
 }
 
-void HwIdentifier::set_virtual_environment(VIRTUALIZATION virt) {
+void HwIdentifier::set_virtual_environment(os::VIRTUALIZATION virt) {
 	// 110000 0x30
 	m_data[0] = (m_data[0] & ~0x30) | virt << 4;
 }
 
-void HwIdentifier::set_virtualization(VIRTUALIZATION_DETAIL virtualization_detail) {
+void HwIdentifier::set_virtualization(os::VIRTUALIZATION_DETAIL virtualization_detail) {
 	m_data[0] = (m_data[0] & ~0x0F) | virtualization_detail;
 }
 
-void HwIdentifier::set_cloud_provider(CLOUD_PROVIDER cloud_provider) {
+void HwIdentifier::set_cloud_provider(os::CLOUD_PROVIDER cloud_provider) {
 	m_data[0] = (m_data[0] & ~0x0F) | cloud_provider | 0x08;
 }
 

@@ -1,3 +1,4 @@
+
 #define BOOST_TEST_MODULE test_standard_license
 
 #include <boost/test/unit_test.hpp>
@@ -9,7 +10,7 @@
 
 #include "../../src/library/ini/SimpleIni.h"
 #include "generate-license.h"
-#include "../../src/library/base/FileUtils.hpp"
+#include "../../src/library/base/file_utils.hpp"
 
 using namespace std;
 namespace fs = boost::filesystem;

@@ -37,7 +37,7 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 }
 
 int main(int argc, char* argv[]) {
-	license::CpuInfo cpu;
+	license::os::CpuInfo cpu;
 	cout << "CpuVendor      :" << cpu.vendor() << endl;
 	cout << "Virtual machine:" << cpu.cpu_virtual() << endl;
 	cout << "Cpu model      : 0x" << std::hex << ((long)cpu.model()) << std::dec << endl;

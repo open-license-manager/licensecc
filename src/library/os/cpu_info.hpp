@@ -9,7 +9,7 @@
 #define SRC_LIBRARY_OS_CPU_INFO_H_
 #include <string>
 namespace license {
-
+namespace os {
 typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, V_OTHER } VIRTUALIZATION_DETAIL;
 
 /**
@@ -32,6 +32,6 @@ public:
 	VIRTUALIZATION_DETAIL getVirtualizationDetail() const;
 };
 
-} /* namespace license */
-
+}  // namespace os
+}  // namespace license
 #endif /* SRC_LIBRARY_OS_CPU_INFO_H_ */

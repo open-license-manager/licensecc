@@ -7,8 +7,8 @@
 
 #include <licensecc_properties.h>
 
-#include "../base/FileUtils.hpp"
 #include "LocatorStrategy.hpp"
+#include "../base/file_utils.hpp"
 
 namespace license {
 namespace locate {

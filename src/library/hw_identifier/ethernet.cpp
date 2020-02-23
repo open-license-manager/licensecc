@@ -32,7 +32,7 @@ static FUNCTION_RETURN generate_ethernet_pc_id(vector<array<uint8_t, HW_IDENTIFI
 	}
 
 	for (auto &it : adapters) {
-		unsigned int k, data_len, data_byte;
+		unsigned int k, data_len;
 		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> identifier;
 		data_len = use_ip ? sizeof(os::OsAdapterInfo::ipv4_address) : sizeof(os::OsAdapterInfo::mac_address);
 

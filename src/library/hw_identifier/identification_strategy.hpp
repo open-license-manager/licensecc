@@ -11,7 +11,6 @@
 #include <licensecc/datatypes.h>
 #include <licensecc_properties.h>
 #include <vector>
-#include <bits/unique_ptr.h>
 #include "../base/base.h"
 #include "hw_identifier.hpp"
 

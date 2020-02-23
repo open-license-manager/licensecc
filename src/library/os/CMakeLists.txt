@@ -9,11 +9,25 @@ IF(UNIX OR OPENSSL_FOUND)
 		    linux/os-linux.c) 
 	ELSE(UNIX)
   	    add_library(os OBJECT 
-  	    cpu_info_common.cpp openssl/signature_verifier.cpp windows/os-win.c)
+  	    cpu_info_common.cpp windows/cpu_info.cpp 
+  	    openssl/signature_verifier.cpp 
+  	    windows/execution_environment.cpp
+  	    windows/isvm/Native.cpp
+        windows/isvm/BIOSReader.cpp
+  	    windows/os-win.c 
+  	    windows/network.cpp)
 	ENDIF(UNIX)
 ELSE(UNIX OR OPENSSL_FOUND)
+#windows no openssl
     add_library(os OBJECT
-        cpu_info_common.cpp windows/signature_verifier.cpp windows/os-win.c)
+        cpu_info_common.cpp 
+        windows/cpu_info.cpp 
+        windows/signature_verifier.cpp 
+        windows/execution_environment.cpp
+        windows/isvm/Native.cpp
+        windows/isvm/BIOSReader.cpp
+        windows/os-win.c 
+        windows/network.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
 if(CODE_COVERAGE AND UNIX)

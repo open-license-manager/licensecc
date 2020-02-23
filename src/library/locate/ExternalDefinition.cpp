@@ -9,7 +9,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-
+#include <stdexcept>
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"
@@ -21,7 +21,7 @@
 
 namespace license {
 namespace locate {
-using namespace std;
+	using namespace std;
 
 ExternalDefinition::ExternalDefinition(const LicenseLocation *location)
 	: LocatorStrategy("ExternalDefinition"), m_location(location) {}

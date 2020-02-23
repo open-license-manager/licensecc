@@ -8,10 +8,15 @@
 #ifndef SRC_LIBRARY_OS_VIRTUALIZATION_HPP_
 #define SRC_LIBRARY_OS_VIRTUALIZATION_HPP_
 
+#include <string>
+
 namespace license {
+namespace os {
 
 typedef enum { NONE, CONTAINER, VM } VIRTUALIZATION;
+
 typedef enum {
+	PROV_UNKNOWN,
 	ON_PREMISE,
 	GOOGLE_CLOUD,
 	AZURE_CLOUD,
@@ -25,17 +30,23 @@ typedef enum {
 	ALI_CLOUD
 } CLOUD_PROVIDER;
 
-
 class ExecutionEnvironment {
+private:
+	std::string sys_vendor;
+	std::string bios_vendor;
+	std::string bios_description;
+	//detect if it's a kind of container technology (docker or lxc)
+	bool is_container() const;
 public:
-	ExecutionEnvironment(){};
-	virtual ~ExecutionEnvironment(){};
-	VIRTUALIZATION getVirtualization();
-	bool is_cloud();
-	bool is_docker();
-	CLOUD_PROVIDER getCloudProvider();
+	ExecutionEnvironment();
+	~ExecutionEnvironment(){};
+	VIRTUALIZATION getVirtualization() const;
+	bool is_cloud() const;
+	bool is_docker() const;
+	CLOUD_PROVIDER getCloudProvider() const;
 };
 
+}  // namespace os
 }  // namespace license
 
 #endif /* SRC_LIBRARY_OS_VIRTUALIZATION_HPP_ */

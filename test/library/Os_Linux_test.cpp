@@ -10,13 +10,14 @@
 #include "../../src/library/os/execution_environment.hpp"
 
 namespace license {
-using namespace std;
 namespace test {
+using namespace std;
+using namespace os;
 
 BOOST_AUTO_TEST_CASE(read_disk_id) {
-	ExecutionEnvironment exec_env;
-	VIRTUALIZATION virt = exec_env.getVirtualization();
-	if (virt == NONE || virt == VM) {
+	os::ExecutionEnvironment exec_env;
+	os::VIRTUALIZATION virt = exec_env.getVirtualization();
+	if (virt == VIRTUALIZATION::NONE || virt == VIRTUALIZATION::VM) {
 		DiskInfo *diskInfos = NULL;
 		size_t disk_info_size = 0;
 		FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
@@ -29,7 +30,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].label, sizeof diskInfos[0].label), 0);
 		BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
 		free(diskInfos);
-	} else if (virt == CONTAINER) {
+	} else if (virt == VIRTUALIZATION::CONTAINER) {
 		// docker or lxc diskInfo is not meaningful
 		DiskInfo *diskInfos = NULL;
 		size_t disk_info_size = 0;
@@ -42,16 +43,16 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 // otherwise the test is skipped
 BOOST_AUTO_TEST_CASE(test_virtualization) {
 	const char *env = getenv("VIRT_ENV");
-	ExecutionEnvironment exec_env;
+	os::ExecutionEnvironment exec_env;
 	if (env != NULL) {
 		if (strcmp(env, "CONTAINER") == 0) {
-			VIRTUALIZATION virt = exec_env.getVirtualization();
-			BOOST_CHECK_MESSAGE(virt == CONTAINER, "container detected");
+			os::VIRTUALIZATION virt = exec_env.getVirtualization();
+			BOOST_CHECK_MESSAGE(virt == VIRTUALIZATION::CONTAINER, "container detected");
 		} else if (strcmp(env, "VM") == 0) {
 			BOOST_FAIL("check for vm not implemented");
 		} else if (strcmp(env, "NONE") == 0) {
-			VIRTUALIZATION virt = exec_env.getVirtualization();
-			BOOST_CHECK_EQUAL(virt, NONE);
+			os::VIRTUALIZATION virt = exec_env.getVirtualization();
+			BOOST_CHECK_EQUAL(virt, VIRTUALIZATION::NONE);
 		} else {
 			BOOST_FAIL(string("value ") + env + " not supported: VM,CONTAINER,NONE");
 		}

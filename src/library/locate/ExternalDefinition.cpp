@@ -9,19 +9,19 @@
 #include <cstring>
 #include <string>
 #include <vector>
-
+#include <stdexcept>
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"
 #include "../base/EventRegistry.h"
-#include "../base/FileUtils.hpp"
 #include "../base/StringUtils.h"
 
 #include "ExternalDefinition.hpp"
+#include "../base/file_utils.hpp"
 
 namespace license {
 namespace locate {
-using namespace std;
+	using namespace std;
 
 ExternalDefinition::ExternalDefinition(const LicenseLocation *location)
 	: LocatorStrategy("ExternalDefinition"), m_location(location) {}

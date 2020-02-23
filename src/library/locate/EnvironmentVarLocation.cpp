@@ -7,9 +7,9 @@
 
 #include <licensecc_properties.h>
 
-#include "../base/FileUtils.hpp"
 #include "../base/StringUtils.h"
 #include "EnvironmentVarLocation.hpp"
+#include "../base/file_utils.hpp"
 
 namespace license {
 namespace locate {

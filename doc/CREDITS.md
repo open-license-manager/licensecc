@@ -1,7 +1,10 @@
-The following code has been used in OpenLicenseManager. Many thanks to the authors
+The following open source code has been used in OpenLicenseManager. 
+Thanks to every one of the authors of such projects. Without you open license manager would never have been completed.  
 
 
-========================================================
+## isVM
+Thanks for the great smbios parsing code. It saved me days.
+
 isvm : https://github.com/0of/isvm
 
 The MIT License (MIT)
@@ -25,5 +28,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-=============================
+
 

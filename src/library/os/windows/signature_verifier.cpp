@@ -136,12 +136,11 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	DWORD status;
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	PBYTE pbSignature = nullptr;
-	BYTE* sigBlob = nullptr;
 	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
 
 	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
 	DWORD dwSigLen = signatureBlob.size();
-	sigBlob = &signatureBlob[0]; 
+	BYTE* sigBlob = &signatureBlob[0]; 
 	
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {
 		if ((result = readPublicKey(hSignAlg, &phKey)) == FUNC_RET_OK) {
@@ -174,9 +173,9 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	if (hSignAlg != nullptr) {
 		BCryptCloseAlgorithmProvider(hSignAlg, 0);
 	}
-	if (sigBlob) {
-		free(sigBlob);
-	}
+	//if (sigBlob) {
+	//	free(sigBlob);
+	//}
 	return result;
 }
 

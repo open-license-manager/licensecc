@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(license_not_expired) {
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, true);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
-	BOOST_CHECK_GT(license.days_left, 0);
+	BOOST_CHECK_GT(license.days_left, (unsigned int)0);
 }
 
 BOOST_AUTO_TEST_CASE(license_expired) {

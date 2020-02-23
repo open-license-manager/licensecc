@@ -8,6 +8,7 @@
 #include "cpu_info.hpp"
 
 namespace license {
+namespace os {
 using namespace std;
 
 const unordered_map<string, VIRTUALIZATION_DETAIL> virtual_cpu_names{
@@ -39,4 +40,5 @@ VIRTUALIZATION_DETAIL CpuInfo::getVirtualizationDetail() const {
 	}
 	return result;
 }
+}  // namespace os
 }  // namespace license

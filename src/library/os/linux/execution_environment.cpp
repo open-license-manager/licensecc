@@ -17,8 +17,10 @@
 #include "../../base/base.h"
 #include "../cpu_info.hpp"
 #include "../execution_environment.hpp"
+#include "../../base/file_utils.hpp"
 
 namespace license {
+namespace os {
 using namespace std;
 
 // 0=NO 1=Docker/2=Lxc
@@ -80,26 +82,24 @@ static int checkSystemdContainer() {
 	return result;
 }
 
-VIRTUALIZATION ExecutionEnvironment::getVirtualization() {
-	VIRTUALIZATION result;
-	CpuInfo cpuInfo;
-	bool isContainer = checkContainerProc() != 0 || checkSystemdContainer() != 0;
-	if (isContainer) {
-		result = CONTAINER;
-	} else if (cpuInfo.cpu_virtual() || is_cloud()) {
-		result = VM;
-	} else {
-		result = NONE;
+ExecutionEnvironment::ExecutionEnvironment() {
+	try {
+		bios_vendor = get_file_contents("/sys/class/dmi/id/sys_vendor", 256);
+	} catch (...) {
 	}
-	return result;
+	try {
+		bios_description = get_file_contents("/sys/class/dmi/id/modalias", 256);
+	} catch (...) {
+	}
+	try {
+		sys_vendor = get_file_contents("/sys/class/dmi/id/sys_vendor", 256);
+	} catch (...) {
+	}
 }
 
-bool ExecutionEnvironment::is_cloud() { return getCloudProvider() != ON_PREMISE; }
+bool ExecutionEnvironment::is_container() const { return (checkContainerProc() != 0 || checkSystemdContainer() != 0); }
 
-bool ExecutionEnvironment::is_docker() { return (checkContainerProc() == 1 || checkSystemdContainer() == 1); }
+bool ExecutionEnvironment::is_docker() const { return (checkContainerProc() == 1 || checkSystemdContainer() == 1); }
 
-CLOUD_PROVIDER ExecutionEnvironment::getCloudProvider() {
-	// TODO
-}
-
+}  // namespace os
 }  // namespace license

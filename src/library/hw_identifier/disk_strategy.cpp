@@ -14,10 +14,10 @@ namespace hw_identifier {
 
 static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> &v_disk_id,
 										   bool use_id) {
-	size_t disk_num, available_disk_info = 0;
+	size_t disk_num = 0;
+	size_t available_disk_info = 0;
 	FUNCTION_RETURN result_diskinfos;
 	unsigned int i;
-	DiskInfo *diskInfos;
 
 	result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK && result_diskinfos != FUNC_RET_BUFFER_TOO_SMALL) {
@@ -26,13 +26,14 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 	if (disk_num == 0) {
 		return FUNC_RET_NOT_AVAIL;
 	}
-
-	diskInfos = (DiskInfo *)malloc(disk_num * sizeof(DiskInfo));
+	size_t mem = disk_num * sizeof(DiskInfo);
+	DiskInfo *diskInfos = (DiskInfo *)malloc(mem);
 	if (diskInfos == nullptr) {
 		return FUNC_RET_NOT_AVAIL;
 	}
-	memset(diskInfos, 0, disk_num * sizeof(DiskInfo));
+	memset(diskInfos, 0, mem);
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
+	
 	if (result_diskinfos != FUNC_RET_OK) {
 		free(diskInfos);
 		return result_diskinfos;
@@ -46,17 +47,19 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 		return FUNC_RET_NOT_AVAIL;
 	}
 	v_disk_id.reserve(available_disk_info);
+	//FIXME use preferred drive.
 	for (i = 0; i < disk_num; i++) {
 		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
+		a_disk_id.fill(0);
 		if (use_id) {
 			if (diskInfos[i].disk_sn[0] != 0) {
-				memcpy(&a_disk_id[0], &diskInfos[i].disk_sn[2], a_disk_id.size());
+				size_t size = min(a_disk_id.size(), sizeof(&diskInfos[i].disk_sn));
+				memcpy(&a_disk_id[0], diskInfos[i].disk_sn, size);
 				v_disk_id.push_back(a_disk_id);
 			}
 		} else {
 			if (diskInfos[i].label[0] != 0) {
-				a_disk_id.fill(0);
-				strncpy((char *)&a_disk_id[0], diskInfos[i].label, a_disk_id.size());
+				strncpy((char *)&a_disk_id[0], diskInfos[i].label, a_disk_id.size()-1);
 				v_disk_id.push_back(a_disk_id);
 			}
 		}

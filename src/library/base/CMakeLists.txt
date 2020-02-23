@@ -1,7 +1,7 @@
 ADD_LIBRARY(base OBJECT
     EventRegistry.cpp
     StringUtils.cpp
-    FileUtils.cpp
+    file_utils.cpp
     base64.cpp
     logger.c
 )

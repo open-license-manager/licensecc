@@ -23,7 +23,6 @@
 #include <ifaddrs.h>
 #include <linux/if_link.h>
 #include <netpacket/packet.h>
-#include <string.h>
 #include <stdio.h>
 #include <unordered_map>
 
@@ -35,25 +34,6 @@ namespace license {
 namespace os {
 using namespace std;
 
-/**
- *
- * @param ifnames
- * @param ifname
- * @param ifnames_max
- * @return
- */
-
-static int ifname_position(char *ifnames, char *ifname, int ifnames_max) {
-	int i, position;
-	position = -1;
-	for (i = 0; i < ifnames_max; i++) {
-		if (strcmp(ifname, &ifnames[i * NI_MAXHOST]) == 0) {
-			position = i;
-			break;
-		}
-	}
-	return position;
-}
 
 /**
  *

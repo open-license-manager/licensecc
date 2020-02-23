@@ -14,7 +14,7 @@ namespace license {
 namespace hw_identifier {
 
 static vector<LCC_API_IDENTIFICATION_STRATEGY> available_strategies() {
-	ExecutionEnvironment exec;
+	os::ExecutionEnvironment exec;
 	VIRTUALIZATION virtualization = exec.getVirtualization();
 	vector<LCC_API_IDENTIFICATION_STRATEGY> strategy_to_try;
 	if (virtualization == CONTAINER) {

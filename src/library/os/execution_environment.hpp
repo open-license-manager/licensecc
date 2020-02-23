@@ -9,7 +9,7 @@
 #define SRC_LIBRARY_OS_VIRTUALIZATION_HPP_
 
 namespace license {
-
+namespace os {
 typedef enum { NONE, CONTAINER, VM } VIRTUALIZATION;
 typedef enum {
 	ON_PREMISE,
@@ -25,7 +25,6 @@ typedef enum {
 	ALI_CLOUD
 } CLOUD_PROVIDER;
 
-
 class ExecutionEnvironment {
 public:
 	ExecutionEnvironment(){};
@@ -35,7 +34,7 @@ public:
 	bool is_docker();
 	CLOUD_PROVIDER getCloudProvider();
 };
-
+}  // namespace os
 }  // namespace license
 
 #endif /* SRC_LIBRARY_OS_VIRTUALIZATION_HPP_ */

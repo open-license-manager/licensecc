@@ -1,17 +1,13 @@
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
-#include "../base/logger.h"
-#include "os.h"
+#include "../../base/logger.h"
+#include "../os.h"
 #include <iphlpapi.h>
 #include <stdio.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
 unsigned char* unbase64(const char* ascii, int len, int *flen);
-
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
-	return FUNC_RET_NOT_AVAIL;
-}
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
@@ -100,79 +96,6 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	return return_value;
 }
 
-static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
-	size_t index = 0;
-
-	char* str2 = ipStringIn; /* save the pointer */
-	while (*str2) {
-		if (isdigit((unsigned char) *str2)) {
-			ipv4[index] *= 10;
-			ipv4[index] += *str2 - '0';
-		} else {
-			index++;
-		}
-		str2++;
-	}
-	return 0;
-}
-
-//http://stackoverflow.com/questions/18046063/mac-address-using-c
-//TODO: count only interfaces with type (MIB_IF_TYPE_ETHERNET IF_TYPE_IEEE80211)
-FUNCTION_RETURN getAdapterInfos(OsAdapterInfo * adapterInfos,
-		size_t * adapter_info_size) {
-	DWORD dwStatus;
-	PIP_ADAPTER_INFO pAdapterInfo;
-	//IP_ADAPTER_INFO AdapterInfo[20];              // Allocate information for up to 16 NICs
-	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO); //10 * sizeof(IP_ADAPTER_INFO);  // Save the memory size of buffer
-
-	unsigned int i = 3;
-	do {
-		pAdapterInfo = (PIP_ADAPTER_INFO) malloc(dwBufLen);
-		dwStatus = GetAdaptersInfo(               // Call GetAdapterInfo
-				pAdapterInfo, // [out] buffer to receive data
-				&dwBufLen   // [in] size of receive data buffer
-				);
-		if (dwStatus != NO_ERROR) {
-			free(pAdapterInfo);
-            pAdapterInfo = NULL;
-		}
-	} while (dwStatus == ERROR_BUFFER_OVERFLOW && i-- > 0);
-
-	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
-		return FUNC_RET_ERROR;
-	}
-
-	if (adapterInfos == NULL || *adapter_info_size == 0) {
-		*adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
-		if (pAdapterInfo != NULL){
-			free(pAdapterInfo);
-		}
-		return FUNC_RET_OK;
-	}
-
-	*adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
-	memset(adapterInfos, 0, dwBufLen);
-	PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-	i = 0;
-	FUNCTION_RETURN result = FUNC_RET_OK;
-	while (pAdapter) {
-		strncpy(adapterInfos[i].description, pAdapter->Description,
-				min(sizeof(adapterInfos->description),
-						MAX_ADAPTER_DESCRIPTION_LENGTH));
-		memcpy(adapterInfos[i].mac_address, pAdapter->Address, 8);
-		translate(pAdapter->IpAddressList.IpAddress.String,
-				adapterInfos[i].ipv4_address);
-		adapterInfos[i].type = IFACE_TYPE_ETHERNET;
-		i++;
-		pAdapter = pAdapter->Next;
-		if (i == *adapter_info_size) {
-			result = FUNC_RET_BUFFER_TOO_SMALL;
-			break;
-		}
-	}
-	free(pAdapterInfo);
-	return result;
-}
 
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	FUNCTION_RETURN result = FUNC_RET_OK;
@@ -183,29 +106,4 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	return result;
 }
 
-// TODO: remove unused
-static void printHash(HCRYPTHASH* hHash) {
-	DWORD dwHashLen;
-	DWORD dwHashLenSize = sizeof(DWORD);
-
-	if (CryptGetHashParam(*hHash, HP_HASHSIZE, (BYTE *) &dwHashLen,
-			&dwHashLenSize, 0)) {
-		BYTE* pbHash = (BYTE*)malloc(dwHashLen);
-		char* hashStr = (char*)malloc(dwHashLen * 2 + 1);
-		if (CryptGetHashParam(*hHash, HP_HASHVAL, pbHash, &dwHashLen, 0)) {
-			for (unsigned int i = 0; i < dwHashLen; i++) {
-				sprintf(&hashStr[i * 2], "%02x", pbHash[i]);
-			} LOG_DEBUG("Hash to verify: %s", hashStr);
-		}
-		free(pbHash);
-		free(hashStr);
-	}
-}
-
-/**
- * Not implemented yet.
- */
-VIRTUALIZATION getVirtualization() {
-	return NONE;
-}
 

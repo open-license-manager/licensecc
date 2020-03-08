@@ -56,7 +56,7 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		SET ( ZLIB_USE_STATIC_LIBS ON ) 
 		find_package(ZLIB REQUIRED)
 		list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
-		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} ")
+		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
 	ENDIF(OPENSSL_VERSION VERSION_LESS 1.0.2)
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)

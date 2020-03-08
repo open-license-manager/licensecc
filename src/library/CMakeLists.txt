@@ -14,6 +14,12 @@ ADD_LIBRARY(licensecc_static STATIC
     $<TARGET_OBJECTS:base>
 )
 
+if(CODE_COVERAGE AND UNIX)
+	  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	    target_link_options(licensecc_static PUBLIC --coverage)
+	  endif()
+	  list(APPEND EXTERNAL_LIBS gcov)
+endif(CODE_COVERAGE AND UNIX)
 
 define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile" FULL_DOCS "ff")
 IF(UNIX OR OPENSSL_FOUND)

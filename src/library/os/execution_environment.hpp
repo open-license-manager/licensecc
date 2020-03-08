@@ -13,6 +13,12 @@
 namespace license {
 namespace os {
 
+/*
+ * windows bios sometimes reports vm names add execution environment detection from bios
+const char *vmVendors[] = {
+	"VMware", "Microsoft Corporation", "Virtual Machine", "innotek GmbH", "PowerVM", "Bochs", "KVM"};
+*/
+
 typedef enum { NONE, CONTAINER, VM } VIRTUALIZATION;
 
 typedef enum {
@@ -35,8 +41,9 @@ private:
 	std::string sys_vendor;
 	std::string bios_vendor;
 	std::string bios_description;
-	//detect if it's a kind of container technology (docker or lxc)
+	// detect if it's a kind of container technology (docker or lxc)
 	bool is_container() const;
+
 public:
 	ExecutionEnvironment();
 	~ExecutionEnvironment(){};

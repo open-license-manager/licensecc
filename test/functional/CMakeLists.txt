@@ -40,6 +40,7 @@ target_link_libraries(
  test_signature_verifier
  licensecc_static
  license_generator_snippet
+ ${EXTERNAL_LIBS}
  Boost::unit_test_framework 
  Boost::filesystem
  Boost::system

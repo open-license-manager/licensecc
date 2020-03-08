@@ -6,11 +6,19 @@
 #include "../library/os/cpu_info.hpp"
 
 using namespace std;
-const map<LCC_API_IDENTIFICATION_STRATEGY, string> stringByStrategyId = {
+
+struct enum_hash {
+	template <typename T>
+	constexpr typename std::enable_if<std::is_enum<T>::value, std::size_t>::type operator()(T s) const noexcept {
+		return static_cast<std::size_t>(s);
+	}
+};
+
+const map<LCC_API_IDENTIFICATION_STRATEGY, string, enum_hash> stringByStrategyId = {
 	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"},	 {STRATEGY_IP_ADDRESS, "IP"},
 	{STRATEGY_DISK_NUM, "Disk1"},  {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_NONE, "Custom"}};
 
-const unordered_map<LCC_EVENT_TYPE, string> stringByEventType = {
+const unordered_map<LCC_EVENT_TYPE, string, enum_hash> stringByEventType = {
 	{LICENSE_OK, "OK "},
 	{LICENSE_FILE_NOT_FOUND, "license file not found "},
 	{LICENSE_SERVER_NOT_FOUND, "license server can't be contacted "},

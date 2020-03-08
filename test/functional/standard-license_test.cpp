@@ -40,9 +40,8 @@ BOOST_AUTO_TEST_CASE(test_generic_license_read_file) {
 BOOST_AUTO_TEST_CASE(test_read_license_data) {
 	const vector<string> extraArgs;
 	const fs::path licLocation = fs::path(generate_license("standard_license1", extraArgs));
-	string license_data;
-	// load the license string
-	fs::load_string_file(licLocation, license_data);
+	const string licLocationStr = licLocation.string();
+	string license_data = get_file_contents(licLocationStr.c_str(), 65536);
 	LicenseInfo license;
 	LicenseLocation location = {LICENSE_PLAIN_DATA};
 	std::copy(license_data.begin(), license_data.end(), location.licenseData);

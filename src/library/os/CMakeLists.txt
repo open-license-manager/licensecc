@@ -31,6 +31,9 @@ ELSE(UNIX OR OPENSSL_FOUND)
         windows/network.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
+#dependency of signature_verifier.cpp
+add_dependencies( os project_initialize )
+
 if(CODE_COVERAGE AND UNIX)
 	  MESSAGE(STATUS "Enabling code coverage")
 	  target_compile_options(os PUBLIC -O0 -g --coverage)

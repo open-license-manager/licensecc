@@ -6,8 +6,6 @@ ADD_LIBRARY(base OBJECT
     logger.c
 )
 
-add_dependencies( base project_initialize )
-
 if(CODE_COVERAGE AND UNIX)
 	  MESSAGE(STATUS "Enabling code coverage")
 	  target_compile_options(base PUBLIC

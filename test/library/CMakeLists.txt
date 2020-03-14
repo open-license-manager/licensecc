@@ -50,9 +50,8 @@ add_executable(
 
 target_link_libraries(
  test_event_registry
- licensecc_static
+ base
  Boost::unit_test_framework 
- Boost::filesystem
  Boost::system
 )
 

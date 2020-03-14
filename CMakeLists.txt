@@ -20,7 +20,7 @@ cmake_policy(SET CMP0048 NEW)
 project (licensecc 
 			VERSION 2.0.0
 			DESCRIPTION "Copy protection and licensing library" 
-			LANGUAGES C CXX)
+			LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -46,7 +46,6 @@ ENDIF(OPENSSL_FOUND)
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(${STATIC_RUNTIME})
 		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
-		#SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 	ENDIF(${STATIC_RUNTIME})
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
@@ -97,6 +96,10 @@ else(UNIX)
 	    if(MINGW)
 	        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lbcrypt -lws2_32 -liphlpapi")
 	        SET(CMAKE_EXE_LINKER_FLAGS "-static")
+	        #super ugly bug when cross compiling in cmake 3.16
+	        #IF(CMAKE_CROSSCOMPILING)
+			#	link_directories(BEFORE /usr/lib/gcc/x86_64-w64-mingw32/7.3-win32)
+			#ENDIF()
 	    endif(MINGW)
 	endif(MSVC)
 	set(main_lib_dest "${PROJECT_NAME}")  
@@ -129,8 +132,6 @@ endif(CMAKE_BUILD_TYPE)
 message( STATUS "Install prefix      : " ${CMAKE_INSTALL_PREFIX})
 message( STATUS "Project name        : " ${LCC_PROJECT_NAME} )
 message( STATUS "Project base dir    : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME} )
-get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
-message( STATUS "Include dirs : " "${inc_dirs}" )
 
 add_subdirectory(src)
 
@@ -160,8 +161,13 @@ ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")
 ENDIF(Boost_FOUND)
 
+#################################
+# Documentation
+#################################
 find_package(Doxygen COMPONENTS dot)
-IF(Doxygen_FOUND)
+find_package(Sphinx)
+ 
+IF(Doxygen_FOUND AND Sphinx_FOUND)
     message(STATUS "Doxygen found, generating docs.")
     SET(DOXYGEN_EXCLUDE_PATTERNS "*/library/ini/*;*/doc/resources/*")
     SET(DOXYGEN_DISABLE_INDEX YES)
@@ -169,10 +175,25 @@ IF(Doxygen_FOUND)
     SET(DOXYGEN_GENERATE_XML YES)
     SET(DOXYGEN_LAYOUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/doc/DoxygenLayout.xml")
 	doxygen_add_docs(docs doc src include/licensecc COMMENT "doxygen docs")
-	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/resources/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/html")
-ELSE(Doxygen_FOUND)
-	message(STATUS "Doxygen not found, not generating docs.")
-ENDIF(Doxygen_FOUND)
+	#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/resources/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/html")
+	
+	#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/sphinx/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+	set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+	set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
+ 
+	add_custom_target(documentation
+                  COMMAND
+                  ${SPHINX_EXECUTABLE} -b html
+                  ${SPHINX_SOURCE} ${SPHINX_BUILD}
+                  -Dbreathe_projects.licensecc=${CMAKE_CURRENT_BINARY_DIR}/xml
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  COMMENT "Generating documentation with Sphinx")
+    add_dependencies(documentation docs)
+    
+ELSE(Doxygen_FOUND AND Sphinx_FOUND)
+	message(STATUS "Doxygen or Sphynx not found, not generating docs.")
+ENDIF(Doxygen_FOUND AND Sphinx_FOUND)
+
 
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)

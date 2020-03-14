@@ -15,7 +15,7 @@
 #include <iphlpapi.h>
 #include <unordered_map>
 #include <stdio.h>
-#pragma comment(lib, "IPHLPAPI.lib")
+//#pragma comment(lib, "IPHLPAPI.lib")
 
 #include "../../base/StringUtils.h"
 #include "../../base/logger.h"
@@ -52,7 +52,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	DWORD dwStatus;
 	int adapter_info_size;
 	PIP_ADAPTER_INFO pAdapterInfo;
-	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);  
+	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
 
 	unsigned int i = 3;
 	do {
@@ -82,7 +82,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	while (pAdapter) {
 		OsAdapterInfo ai = {};
 		strncpy(ai.description, pAdapter->Description,
-				min(sizeof(ai.description), MAX_ADAPTER_DESCRIPTION_LENGTH));
+				min((int)sizeof(ai.description), MAX_ADAPTER_DESCRIPTION_LENGTH));
 		memcpy(ai.mac_address, pAdapter->Address, 8);
 		translate(pAdapter->IpAddressList.IpAddress.String, ai.ipv4_address);
 		ai.type = IFACE_TYPE_ETHERNET;

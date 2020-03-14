@@ -3,7 +3,7 @@ ADD_LIBRARY(base OBJECT
     StringUtils.cpp
     file_utils.cpp
     base64.cpp
-    logger.c
+    logger.cpp
 )
 
 if(CODE_COVERAGE AND UNIX)

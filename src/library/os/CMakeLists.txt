@@ -7,7 +7,9 @@ IF(UNIX OR OPENSSL_FOUND)
 		    cpu_info_common.cpp
 		    linux/cpu_info.cpp
 		    linux/network.cpp
-		    linux/os-linux.c) 
+		    linux/os-linux.cpp) 
+		    
+		target_link_libraries(os PUBLIC OpenSSL::Crypto)
 	ELSE(UNIX)
   	    add_library(os OBJECT 
   	    cpu_info_common.cpp windows/cpu_info.cpp 
@@ -15,8 +17,10 @@ IF(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp windows/execution_environment.cpp
   	    windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
-  	    windows/os-win.c 
+  	    windows/os-win.cpp
   	    windows/network.cpp)
+  	    
+  	    target_link_libraries(os PUBLIC OpenSSL::Crypto)
 	ENDIF(UNIX)
 ELSE(UNIX OR OPENSSL_FOUND)
 #windows no openssl
@@ -27,7 +31,7 @@ ELSE(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp windows/execution_environment.cpp
         windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
-        windows/os-win.c 
+        windows/os-win.cpp
         windows/network.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
@@ -35,6 +39,5 @@ ENDIF(UNIX OR OPENSSL_FOUND)
 add_dependencies( os project_initialize )
 
 if(CODE_COVERAGE AND UNIX)
-	  MESSAGE(STATUS "Enabling code coverage")
 	  target_compile_options(os PUBLIC -O0 -g --coverage)
 endif(CODE_COVERAGE AND UNIX)

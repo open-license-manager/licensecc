@@ -15,7 +15,7 @@
 #include <wincrypt.h>
 #include <iphlpapi.h>
 #include <windows.h>
-#pragma comment(lib, "bcrypt.lib")
+//#pragma comment(lib, "bcrypt.lib")
 
 #include <public_key.h>
 #include "../../base/logger.h"
@@ -140,8 +140,8 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 
 	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
 	DWORD dwSigLen = (DWORD) signatureBlob.size();
-	BYTE* sigBlob = &signatureBlob[0]; 
-	
+	BYTE* sigBlob = &signatureBlob[0];
+
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {
 		if ((result = readPublicKey(hSignAlg, &phKey)) == FUNC_RET_OK) {
 			BCRYPT_PKCS1_PADDING_INFO paddingInfo;

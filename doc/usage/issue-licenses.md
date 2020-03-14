@@ -1,3 +1,4 @@
+# Issue licenses
 
 The easiest way to issue licenses is to enter the project library and create the following project structure:
 The projects folder can be anyware. We created one in `open-license-manager/projects` for your convenience (and for testing purposes). A default project<sup>1</sup> named `DEFAULT` has been created for you when you configured the project with cmake.

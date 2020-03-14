@@ -1,4 +1,5 @@
-# License retrieval
+# Place the license file
+
 Open License Manager, when integrated into a licensed software can automatically find its license file (or multiple license files) based on:
  
  * An environment variable: 

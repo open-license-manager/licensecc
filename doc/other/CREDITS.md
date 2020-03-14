@@ -1,3 +1,4 @@
+# Credits 
 The following open source code has been used in OpenLicenseManager. 
 Thanks to every one of the authors of such projects. Without you open license manager would never have been completed.  
 

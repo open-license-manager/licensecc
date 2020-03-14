@@ -19,3 +19,7 @@ if not exist "C:/local/boost/libs" (
 		cd C:/local/boost
 		dir
 ) else echo "Boost already installed"
+
+linux cross compile for windows openssl
+
+ ./Configure no-zlib no-shared --prefix=$PWD/dist-win-64 --cross-compile-prefix=x86_64-w64-mingw32- mingw64

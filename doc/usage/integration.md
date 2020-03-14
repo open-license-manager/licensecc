@@ -1,3 +1,5 @@
+# Integrate license in your application
+
 This short guide explain how to integrate `open-license-manager` in your application.
 
 Working examples are provided in the [examples](https://github.com/open-license-manager/examples) project. 

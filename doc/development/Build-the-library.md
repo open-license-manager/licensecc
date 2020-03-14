@@ -1,5 +1,3 @@
-@ingroup  group_01
-
 # Linux
 
 ## Install prerequisites

@@ -1,4 +1,4 @@
-@ingroup  group_02
+# Windows
 
 This page describes how to build the library. It's a good starting point if you just downloaded it and you want to start explore.
 

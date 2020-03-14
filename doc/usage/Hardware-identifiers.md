@@ -1,5 +1,8 @@
+# Hardware Identifiers
+
 ## Use cases
-Linking the execution of a software to a. With the recent coming of virtualized environments the installation of software directly on the machine has been less and less.
+Linking the execution of a software to a physical hardware (a pc). With the recent coming of virtualized environments 
+the installation of software directly on the machine has been less and less.
 
 OpenLicenseManager guess the environment where the user is trying to launch the software, and reports it to the software publisher when he is generating a license in a way that he can decide how to limit the usage on per license basis.
 
@@ -22,4 +25,5 @@ Below the identifier generation workflow.
 
 
 If the licensed software specify the parameter
-If the licensed software uses `STRATEGY_DEFAULT` and the strategy generates an unstable identifier it is possible to ask the user to set t 
+If the licensed software uses `STRATEGY_DEFAULT` and the strategy generates an unstable identifier it is possible to ask the user to 
+set the environemnt variable.

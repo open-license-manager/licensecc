@@ -22,8 +22,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <public_key.h>
-#include <licensecc_properties.h>
 #include <licensecc/licensecc.h>
 
 #include "base/base.h"

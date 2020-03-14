@@ -32,9 +32,11 @@ ELSE(UNIX OR OPENSSL_FOUND)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
 target_include_directories(licensecc_static
-    INTERFACE 
+    PUBLIC 
         $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}/${LCC_PROJECT_NAME}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${LCC_INCLUDE_DIR}>
 )
 
 add_library(licensecc::licensecc_static ALIAS licensecc_static)

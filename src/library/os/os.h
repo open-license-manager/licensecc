@@ -12,7 +12,6 @@
 extern "C" {
 #endif
 
-#include "../base/base.h"
 #include <stddef.h>
 #include <string.h>
 #include <ctype.h>
@@ -23,6 +22,7 @@ extern "C" {
 #include <unistd.h>
 #include <stdbool.h>
 #endif
+#include "../base/base.h"
 
 typedef struct {
 	int id;

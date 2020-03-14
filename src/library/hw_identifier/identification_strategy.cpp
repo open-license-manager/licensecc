@@ -32,6 +32,7 @@ FUNCTION_RETURN IdentificationStrategy::identify_pc(HwIdentifier& pc_id) const {
 	}
 	return result;
 }
+
 std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy) {
 	unique_ptr<IdentificationStrategy> result;
 	switch (strategy) {

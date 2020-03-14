@@ -55,7 +55,7 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 	HwIdentifier pc_id;
 	FUNCTION_RETURN result = strategy_ptr->identify_pc(pc_id);
 	if (result != FUNC_RET_OK) {
-		/// FIXME
+		throw logic_error("strategy " + to_string(strategy_ptr->identification_strategy()) + " failed");
 	}
 	os::ExecutionEnvironment exec;
 	os::VIRTUALIZATION virtualization = exec.getVirtualization();

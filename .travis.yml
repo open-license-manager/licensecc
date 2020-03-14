@@ -11,6 +11,8 @@ jobs:
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - Travis CI VM"
+     env:
+     - VIRTUAL_ENV=VM
      addons:
         apt:
           packages:
@@ -51,6 +53,8 @@ jobs:
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - Travis CI VM - Debug build"
+     env:
+     - VIRTUAL_ENV=VM
      addons:
         apt:
           packages:
@@ -72,7 +76,6 @@ jobs:
      script: 
          - cmake --build . --target install
          - ctest
-         - ctest -T memcheck
      after_success:
          # Create lcov report
          - lcov --capture --directory . --output-file coverage.info
@@ -80,7 +83,6 @@ jobs:
          - lcov --list coverage.info # debug info
          # Uploading report to CodeCov
          - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
-                  
    - os: linux
      dist: bionic
      name: "CentOS-7 Docker"
@@ -110,7 +112,7 @@ jobs:
         - docker commit centos8_toconfigure centos8_configured
      script: 
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
-            "cd /root/open-license-manager/build && make && make install && VIRT_ENV=CONTAINER make test"
+            "cd /root/open-license-manager/build && make && make install && VIRTUAL_ENV=DOCKER make test"
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
@@ -218,7 +220,7 @@ jobs:
         on:
             branch: develop
 env:
-    - CTEST_OUTPUT_ON_FAILURE=1      
+    - CTEST_OUTPUT_ON_FAILURE=1
 before_script:
     - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 

@@ -23,6 +23,12 @@ private:
 	virtual ~HwIdentifierFacade(){};
 public:
 	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code);
+	/**
+	 *
+	 * @throws logic_error if pc_identifier can't be generated.
+	 * @param strategy
+	 * @return
+	 */
 	static std::string generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy);
 };
 

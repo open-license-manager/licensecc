@@ -38,11 +38,9 @@ typedef enum {
 
 class ExecutionEnvironment {
 private:
-	std::string sys_vendor;
-	std::string bios_vendor;
-	std::string bios_description;
-	// detect if it's a kind of container technology (docker or lxc)
-	bool is_container() const;
+	std::string m_sys_vendor;
+	std::string m_bios_vendor;
+	std::string m_bios_description;
 
 public:
 	ExecutionEnvironment();
@@ -50,7 +48,13 @@ public:
 	VIRTUALIZATION getVirtualization() const;
 	bool is_cloud() const;
 	bool is_docker() const;
+	// detect if it's a kind of container technology (docker or lxc)
+	bool is_container() const;
 	CLOUD_PROVIDER getCloudProvider() const;
+	const std::string& bios_vendor() const { return m_bios_vendor; };
+	const std::string& sys_vendor() const { return m_sys_vendor; };
+	const std::string& bios_description() const { return m_bios_description; };
+	// VIRTUALIZATION_DETAIL getVirtualizationDetail() const; //as reported by the bios
 };
 
 }  // namespace os

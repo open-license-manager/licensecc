@@ -39,24 +39,5 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 	}
 }
 
-// To test if virtualization is detected correctly define an env variable VIRT_ENV
-// otherwise the test is skipped
-BOOST_AUTO_TEST_CASE(test_virtualization) {
-	const char *env = getenv("VIRT_ENV");
-	os::ExecutionEnvironment exec_env;
-	if (env != NULL) {
-		if (strcmp(env, "CONTAINER") == 0) {
-			os::VIRTUALIZATION virt = exec_env.getVirtualization();
-			BOOST_CHECK_MESSAGE(virt == VIRTUALIZATION::CONTAINER, "container detected");
-		} else if (strcmp(env, "VM") == 0) {
-			BOOST_FAIL("check for vm not implemented");
-		} else if (strcmp(env, "NONE") == 0) {
-			os::VIRTUALIZATION virt = exec_env.getVirtualization();
-			BOOST_CHECK_EQUAL(virt, VIRTUALIZATION::NONE);
-		} else {
-			BOOST_FAIL(string("value ") + env + " not supported: VM,CONTAINER,NONE");
-		}
-	}
-}
 }  // namespace test
 }  // namespace license

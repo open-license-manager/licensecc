@@ -139,7 +139,7 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
 
 	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
-	DWORD dwSigLen = signatureBlob.size();
+	DWORD dwSigLen = (DWORD) signatureBlob.size();
 	BYTE* sigBlob = &signatureBlob[0]; 
 	
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {

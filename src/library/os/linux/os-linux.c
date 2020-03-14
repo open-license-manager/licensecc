@@ -111,7 +111,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 				if (strcmp(ent->mnt_dir, "/") == 0) {
 					strcpy(tmpDrives[drive_found].label, "root");
 					LOG_DEBUG("drive %s set to preferred\n", ent->mnt_fsname);
-					tmpDrives[drive_found].preferred = true;
+					tmpDrives[drive_found].preferred = 1;
+				} else {
+					tmpDrives[drive_found].preferred = 0;
 				}
 			}
 		}
@@ -169,22 +171,6 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	} else {
 		result = FUNC_RET_BUFFER_TOO_SMALL;
 	}
-	/*
-	 FILE *mounts = fopen(_PATH_MOUNTED, "r");
-	 if (mounts == NULL) {
-	 return ERROR;
-	 }
-
-	 while (fscanf(mounts, "%64s %64s %64s %1024[^\n]", device, name, type,
-	 discard) != EOF) {
-	 if (stat(device, &mount_stat) != 0)
-	 continue;
-	 if (filename_stat.st_dev == mount_stat.st_rdev) {
-	 fprintf(stderr, "device: %s; name: %s; type: %s\n", device, name,
-	 type);
-	 }
-	 }
-	 */
 	free(statDrives);
 	return result;
 }

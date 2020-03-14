@@ -63,7 +63,7 @@ std::vector<HwIdentifier> Ethernet::alternative_ids() const {
 	FUNCTION_RETURN result = generate_ethernet_pc_id(data, use_ip);
 	vector<HwIdentifier> identifiers;
 	if (result == FUNC_RET_OK) {
-		identifiers.resize(data.size());
+		identifiers.reserve(data.size());
 		for (auto &it : data) {
 			HwIdentifier pc_id;
 			pc_id.set_identification_strategy(identification_strategy());

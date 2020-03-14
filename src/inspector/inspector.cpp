@@ -4,21 +4,28 @@
 #include <licensecc/licensecc.h>
 #include <fstream>
 #include "../library/os/cpu_info.hpp"
+#include "../library/os/execution_environment.hpp"
 
 using namespace std;
+using namespace license::os;
 
-struct enum_hash {
-	template <typename T>
-	constexpr typename std::enable_if<std::is_enum<T>::value, std::size_t>::type operator()(T s) const noexcept {
-		return static_cast<std::size_t>(s);
-	}
-};
+const map<int, string> stringByStrategyId = {{STRATEGY_DEFAULT, "DEFAULT"},  {STRATEGY_ETHERNET, "MAC"},
+											 {STRATEGY_IP_ADDRESS, "IP"},	{STRATEGY_DISK_NUM, "Disk1"},
+											 {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_NONE, "Custom"}};
 
-const map<LCC_API_IDENTIFICATION_STRATEGY, string, enum_hash> stringByStrategyId = {
-	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"},	 {STRATEGY_IP_ADDRESS, "IP"},
-	{STRATEGY_DISK_NUM, "Disk1"},  {STRATEGY_DISK_LABEL, "Disk2"}, {STRATEGY_NONE, "Custom"}};
 
-const unordered_map<LCC_EVENT_TYPE, string, enum_hash> stringByEventType = {
+const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtualization"},
+													 {VMWARE, "Vmware"},
+													 {VIRTUALBOX, "Virtualbox"},
+													 {V_XEN, "XEN"},
+													 {KVM, "KVM"},
+													 {HV, "Microsoft Hypervisor"},
+													 {V_OTHER, "Other type of vm"}};
+
+const unordered_map<int, string> descByVirt = {
+	{VIRTUALIZATION::NONE, "No virtualization"}, {VIRTUALIZATION::VM, "VM"}, {VIRTUALIZATION::CONTAINER, "Container"}};
+
+const unordered_map<int, string> stringByEventType = {
 	{LICENSE_OK, "OK "},
 	{LICENSE_FILE_NOT_FOUND, "license file not found "},
 	{LICENSE_SERVER_NOT_FOUND, "license server can't be contacted "},
@@ -46,16 +53,25 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 
 int main(int argc, char* argv[]) {
 	license::os::CpuInfo cpu;
-	cout << "CpuVendor      :" << cpu.vendor() << endl;
-	cout << "Virtual machine:" << cpu.cpu_virtual() << endl;
-	cout << "Cpu model      : 0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
+	cout << "CpuVendor       :" << cpu.vendor() << endl;
+	cout << "Virtual machine :" << cpu.cpu_virtual() << endl;
+	cout << "Cpu model       :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
+	cout << "Virt. detail cpu:" << descByVirtDetail.find(cpu.getVirtualizationDetail())->second << endl;
+	ExecutionEnvironment execEnv;
+	cout << "Running in cloud:" << execEnv.is_cloud() << endl;
+	cout << "Docker          :" << execEnv.is_docker() << endl;
+	cout << "other container :" << execEnv.is_container() << endl;
+	cout << "Virtualiz. class:" << descByVirt.find(execEnv.getVirtualization())->second << endl;
+
+	cout << "Bios vendor     :" << execEnv.bios_vendor() << endl;
+	cout << "Bios description:" << execEnv.bios_description() << endl;
+	cout << "System vendor   :" << execEnv.sys_vendor() << endl;
 
 	char hw_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
 	size_t bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	for (const auto& x : stringByStrategyId) {
-		if (identify_pc(x.first, hw_identifier, &bufSize)) {
+		if (identify_pc(static_cast<LCC_API_IDENTIFICATION_STRATEGY>(x.first), hw_identifier, &bufSize)) {
 			std::cout << x.second << ':' << hw_identifier << std::endl;
-
 		} else {
 			std::cout << x.second << ": NA" << endl;
 		}

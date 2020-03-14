@@ -17,7 +17,6 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 	size_t disk_num = 0;
 	size_t available_disk_info = 0;
 	FUNCTION_RETURN result_diskinfos;
-	unsigned int i;
 
 	result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if (result_diskinfos != FUNC_RET_OK && result_diskinfos != FUNC_RET_BUFFER_TOO_SMALL) {
@@ -33,12 +32,12 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 	}
 	memset(diskInfos, 0, mem);
 	result_diskinfos = getDiskInfos(diskInfos, &disk_num);
-	
+
 	if (result_diskinfos != FUNC_RET_OK) {
 		free(diskInfos);
 		return result_diskinfos;
 	}
-	for (i = 0; i < disk_num; i++) {
+	for (unsigned int i = 0; i < disk_num; i++) {
 		char firstChar = use_id ? diskInfos[i].label[0] : diskInfos[i].disk_sn[0];
 		available_disk_info += firstChar == 0 ? 0 : 1;
 	}
@@ -47,20 +46,22 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 		return FUNC_RET_NOT_AVAIL;
 	}
 	v_disk_id.reserve(available_disk_info);
-	//FIXME use preferred drive.
-	for (i = 0; i < disk_num; i++) {
-		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
-		a_disk_id.fill(0);
-		if (use_id) {
-			if (diskInfos[i].disk_sn[0] != 0) {
-				size_t size = min(a_disk_id.size(), sizeof(&diskInfos[i].disk_sn));
-				memcpy(&a_disk_id[0], diskInfos[i].disk_sn, size);
-				v_disk_id.push_back(a_disk_id);
-			}
-		} else {
-			if (diskInfos[i].label[0] != 0) {
-				strncpy((char *)&a_disk_id[0], diskInfos[i].label, a_disk_id.size()-1);
-				v_disk_id.push_back(a_disk_id);
+	for (int j = 0; j < 2; j++) {
+		int preferred = (j == 0 ? 1 : 0);
+		for (unsigned int i = 0; i < disk_num; i++) {
+			array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
+			a_disk_id.fill(0);
+			if (use_id) {
+				if (diskInfos[i].disk_sn[0] != 0 && diskInfos[i].preferred == preferred) {
+					size_t size = min(a_disk_id.size(), sizeof(&diskInfos[i].disk_sn));
+					memcpy(&a_disk_id[0], diskInfos[i].disk_sn, size);
+					v_disk_id.push_back(a_disk_id);
+				}
+			} else {
+				if (diskInfos[i].label[0] != 0 && diskInfos[i].preferred == preferred) {
+					strncpy((char *)&a_disk_id[0], diskInfos[i].label, a_disk_id.size() - 1);
+					v_disk_id.push_back(a_disk_id);
+				}
 			}
 		}
 	}
@@ -81,7 +82,7 @@ std::vector<HwIdentifier> DiskStrategy::alternative_ids() const {
 	FUNCTION_RETURN result = generate_disk_pc_id(data, m_use_id);
 	vector<HwIdentifier> identifiers;
 	if (result == FUNC_RET_OK) {
-		identifiers.resize(data.size());
+		identifiers.reserve(data.size());
 		for (auto &it : data) {
 			HwIdentifier pc_id;
 			pc_id.set_identification_strategy(identification_strategy());

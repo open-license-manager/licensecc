@@ -29,6 +29,7 @@ bool CpuInfo::cpu_virtual() const {
 	}
 	return is_virtual;
 }
+
 VIRTUALIZATION_DETAIL CpuInfo::getVirtualizationDetail() const {
 	string cpu_vendor = vendor();
 	auto it = virtual_cpu_names.find(cpu_vendor);

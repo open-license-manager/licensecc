@@ -25,9 +25,9 @@ ExecutionEnvironment::ExecutionEnvironment() {
 	if (InitEntryPoints()) {
 		BIOSReader reader;
 		SystemInformation info = reader.readSystemInfo();
-		sys_vendor = toupper_copy(info.Manufacturer);
-		bios_vendor = toupper_copy(info.ProductName);
-		bios_description = toupper_copy(info.SysVersion) + toupper_copy(info.family);
+		m_sys_vendor = toupper_copy(info.Manufacturer);
+		m_bios_vendor = toupper_copy(info.ProductName);
+		m_bios_description = toupper_copy(info.SysVersion) + toupper_copy(info.family);
 	}
 }
 

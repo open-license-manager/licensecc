@@ -7,7 +7,7 @@ ADD_LIBRARY(licensecc_static STATIC
     licensecc.cpp
     LicenseReader.cpp
     limits/license_verifier.cpp
-    ini/ConvertUTF.c
+    ini/ConvertUTF.cpp
     $<TARGET_OBJECTS:hw_identifier>
     $<TARGET_OBJECTS:locate>
     $<TARGET_OBJECTS:os>

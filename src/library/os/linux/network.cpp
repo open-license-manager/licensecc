@@ -25,6 +25,8 @@
 #include <netpacket/packet.h>
 #include <stdio.h>
 #include <unordered_map>
+#include <string.h>
+#include <memory.h>
 
 #include "../../base/StringUtils.h"
 #include "../../base/logger.h"

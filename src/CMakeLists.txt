@@ -1,5 +1,3 @@
-#for no reason overwrite it (maybe it's manually customized)
-
 IF (NOT LCC_PROJECT_MAGIC_NUM) 
 	set(LCC_PROJECT_MAGIC_NUM 0)  
 ENDIF (NOT LCC_PROJECT_MAGIC_NUM)

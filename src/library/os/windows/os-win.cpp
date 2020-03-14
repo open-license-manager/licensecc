@@ -7,7 +7,7 @@
 #include <licensecc/datatypes.h>
 #include <iphlpapi.h>
 #include <stdio.h>
-#pragma comment(lib, "IPHLPAPI.lib")
+//#pragma comment(lib, "IPHLPAPI.lib")
 
 unsigned char* unbase64(const char* ascii, int len, int *flen);
 
@@ -64,8 +64,9 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 					if (diskInfos != NULL) {
 						if (ndrives < (int)*disk_info_size) {
 							diskInfos[ndrives].id = ndrives;
-							strncpy(diskInfos[ndrives].device, volName, min(MAX_PATH,sizeof(volName))-1);
-							strncpy(diskInfos[ndrives].label, fileSysName,min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
+							strncpy(diskInfos[ndrives].device, volName, cmin(MAX_PATH, sizeof(volName)) - 1);
+							strncpy(diskInfos[ndrives].label, fileSysName,
+									cmin(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
 							memcpy(diskInfos[ndrives].disk_sn, &volSerial, sizeof(DWORD));
 							diskInfos[ndrives].preferred = (szSingleDrive[0] == 'C');
 						} else {
@@ -91,7 +92,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 		}
 		*disk_info_size = ndrives;
 	} else {
-		*disk_info_size = min(ndrives, *disk_info_size);
+		*disk_info_size = cmin(ndrives, *disk_info_size);
 	}
 	return return_value;
 }
@@ -105,5 +106,4 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	}
 	return result;
 }
-
 

@@ -34,7 +34,7 @@ struct smbios_type_1 {
 //
 //	Windows
 //
-#include <Windows.h>
+#include <windows.h>
 #include <tchar.h>
 
 int8_t *parse_smbiod_content(int8_t *addr, int8_t **indexes, int32_t *count) {

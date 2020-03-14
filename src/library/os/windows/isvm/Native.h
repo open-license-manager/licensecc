@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <Windows.h>
+#include <windows.h>
 
 struct RawSMBIOSData
 {

@@ -205,10 +205,12 @@ jobs:
              - libboost-system-dev
              - libboost-thread-dev
              - libboost-date-time-dev
+             - python3-pip
              - doxygen
              - graphviz
      script: 
-        - make docs
+        - pip3 install sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme
+        - make documentation
      deploy:
         provider: pages
         skip_cleanup: true
@@ -216,7 +218,7 @@ jobs:
         keep_history: false
         verbose: true
         target_branch: "gh-pages"
-        local_dir: "build/html"
+        local_dir: "build/docs/sphinx"
         on:
             branch: develop
 env:

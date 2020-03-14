@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <time.h>
 
+#ifndef LOG_DISABLED
+
 #ifdef __unix__
 #include <unistd.h>
 #define MAX_PATH 255
@@ -69,3 +71,4 @@ void _shutdown_log() {
 		logFile = NULL;
 	}
 }
+#endif

@@ -15,16 +15,17 @@
 #include <wincrypt.h>
 #include <iphlpapi.h>
 #include <windows.h>
-#pragma comment(lib, "bcrypt.lib")
+//#pragma comment(lib, "bcrypt.lib")
 
 #include <public_key.h>
 #include "../../base/logger.h"
 #include "../../base/base64.h"
-#include "../signature_verifier.h"
+#include "../signature_verifier.hpp"
 
 #define RSA_KEY_BITLEN 1024
 
 namespace license {
+namespace os {
 using namespace std;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
@@ -135,12 +136,11 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	DWORD status;
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	PBYTE pbSignature = nullptr;
-	DWORD dwSigLen;
-	BYTE* sigBlob = nullptr;
 	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
 
-	// FIXME!!
-	sigBlob = unbase64(signatureBuffer.c_str(), (int)signatureBuffer.size(), (int*)&dwSigLen);
+	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
+	DWORD dwSigLen = (DWORD) signatureBlob.size();
+	BYTE* sigBlob = &signatureBlob[0];
 
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {
 		if ((result = readPublicKey(hSignAlg, &phKey)) == FUNC_RET_OK) {
@@ -159,7 +159,8 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 		} else {
 			LOG_DEBUG("Error reading public key");
 		}
-	} else {
+	}
+	else {
 		result = FUNC_RET_NOT_AVAIL;
 #ifdef _DEBUG
 		formatError(status, "error opening RSA provider");
@@ -172,9 +173,9 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	if (hSignAlg != nullptr) {
 		BCryptCloseAlgorithmProvider(hSignAlg, 0);
 	}
-	if (sigBlob) {
-		free(sigBlob);
-	}
+	//if (sigBlob) {
+	//	free(sigBlob);
+	//}
 	return result;
 }
 
@@ -241,5 +242,5 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	}
 	return result;
 }
-
+}  // namespace os
 } /* namespace license */

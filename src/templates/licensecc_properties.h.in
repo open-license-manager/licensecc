@@ -1,17 +1,74 @@
 #ifndef BUILD_PROPERTIES_H_
 #define BUILD_PROPERTIES_H_
 
+/**
+ * This file contains all the properties that are customizable on on a per-project basis eg:
+ * 1) api parameter sizes
+ * 2) 
+ *
+ * It is safe to place the values that your project need to customize here, since each project get its own copy of this
+ * file.
+ */
+
 #define LCC_PROJECT_NAME "@LCC_PROJECT_NAME@"
 
 //License retrieval configuration
 #define FIND_LICENSE_NEAR_MODULE true
 #define FIND_LICENSE_WITH_ENV_VAR false
 
-#define LICENSE_FILE_EXTENSION ".lic"
-#define LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
-#define LICENSE_DATA_ENV_VAR "LICENSE_DATA"
+/**
+ * License file name extension
+ */
+#define LCC_LICENSE_FILE_EXTENSION ".lic"
+#define LCC_LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
+#define LCC_LICENSE_DATA_ENV_VAR "LICENSE_DATA"
+/**
+ * Environment variable that if defined will change the identification strategy used to generate the hardware identifier.
+ * If a client has an unstable pc-identifier use this variable to generate one. 
+ * Valid values are integers defined in `LCC_IDENTIFICATION_STRATEGY` enum.
+ */
+#define LCC_IDENTIFICATION_STRATEGY_ENV_VAR "IDENTIFICATION_STRATEGY"
 
-//Internal data structures limits
-#define MAX_LICENSE_LENGTH 256*1024
+/**
+ * Enum to select a specific pc identification_strategy. DEFAULT Should be used in most cases.
+ */
+typedef enum {
+	STRATEGY_DEFAULT = -1,
+	STRATEGY_ETHERNET = 0,
+	STRATEGY_IP_ADDRESS = 1,
+	STRATEGY_DISK_NUM = 2,
+	STRATEGY_DISK_LABEL = 3,
+	STRATEGY_MEMORY_CPU_SIZE = 4,
+	STRATEGY_HOST_NAME = 5,
+	STRATEGY_NONE = -2
+} LCC_API_IDENTIFICATION_STRATEGY;
+
+//strategies used for each virtual environment.
+#define LCC_BARE_TO_METAL_STRATEGIES { STRATEGY_ETHERNET, STRATEGY_DISK_LABEL, STRATEGY_NONE }
+#define LCC_VM_STRATEGIES { STRATEGY_ETHERNET, STRATEGY_NONE }
+#define LCC_LXC_STRATEGIES { STRATEGY_ETHERNET, STRATEGY_NONE }
+#define LCC_DOCKER_STRATEGIES { STRATEGY_NONE }
+#define LCC_CLOUD_STRATEGIES { STRATEGY_NONE }
+
+//Api structure limits
+/**
+ * Maximum size of a license file or base64 data
+ */
+#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 4
+
+// define api structure sizes
+#define LCC_API_PC_IDENTIFIER_SIZE 19
+#define LCC_API_PROPRIETARY_DATA_SIZE 16
+#define LCC_API_AUDIT_EVENT_NUM 5
+#define LCC_API_AUDIT_EVENT_PARAM2 255
+#define LCC_API_VERSION_LENGTH 15
+#define LCC_API_PROJECT_NAME_SIZE 15
+#define LCC_API_EXPIRY_DATE_SIZE 10
+#define LCC_API_ERROR_BUFFER_SIZE 256
+
+/**
+This definition allows to specify a custom expression to verify the magic number passed in by the api.
+*/
+#define LCC_VERIFY_MAGIC (lic_info.m_magic == @LCC_PROJECT_MAGIC_NUM@)
 
 #endif

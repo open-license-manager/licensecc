@@ -17,25 +17,35 @@
 #include <licensecc/licensecc.h>
 #include <licensecc_properties.h>
 
+#include "base/logger.h"
+#include "hw_identifier/hw_identifier_facade.hpp"
 #include "limits/license_verifier.hpp"
 #include "base/StringUtils.h"
 #include "LicenseReader.hpp"
-#include "pc-identifiers.h"
 
 using namespace std;
 
-void print_error(char out_buffer[ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
 
-bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
-	FUNCTION_RETURN result = FUNC_RET_BUFFER_TOO_SMALL;
-	if (*bufSize > sizeof(PcSignature)) {
-		PcSignature identifier_out;
-		result = generate_user_pc_signature(identifier_out, pc_id_method);
-		strncpy(chbuffer, identifier_out, *bufSize);
+void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
+
+bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
+	bool result = false;
+	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
+		try {
+			string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
+			strncpy(chbuffer, pc_id.c_str(), *bufSize);
+			result = true;
+		} catch (const std::exception& ex) {
+			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
+#ifdef _DEBUG
+				cout
+				<< "Error occurred: " << ex.what() << std::endl;
+#endif
+		}
 	} else {
-		*bufSize = sizeof(PcSignature) + 1;
+		*bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	}
-	return result == FUNC_RET_OK;
+	return result;
 }
 
 static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* license_out) {
@@ -54,8 +64,8 @@ static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* lice
 	}
 }
 
-EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
-						   LicenseInfo* license_out) {
+LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation,
+									 const LicenseLocation* licenseLocation, LicenseInfo* license_out) {
 	const license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
@@ -67,21 +77,25 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 		project = string(LCC_PROJECT_NAME);
 	}
 	license::EventRegistry er = lr.readLicenses(string(project), licenses);
-	EVENT_TYPE result;
+	LCC_EVENT_TYPE result;
 	if (licenses.size() > 0) {
 		vector<LicenseInfo> licenses_with_errors;
 		vector<LicenseInfo> licenses_ok;
 		license::LicenseVerifier verifier(er);
-		for (auto it = licenses.begin(); it != licenses.end(); it++) {
-			FUNCTION_RETURN signatureValid = verifier.verify_signature(*it);
+		for (auto full_lic_info_it = licenses.begin(); full_lic_info_it != licenses.end(); full_lic_info_it++) {
+			if (callerInformation != nullptr) {
+				full_lic_info_it->m_magic = callerInformation->magic;
+			}
+			const FUNCTION_RETURN signatureValid = verifier.verify_signature(*full_lic_info_it);
+			LicenseInfo licInfo = verifier.toLicenseInfo(*full_lic_info_it);
 			if (signatureValid == FUNC_RET_OK) {
-				if (verifier.verify_limits(*it) == FUNC_RET_OK) {
-					licenses_ok.push_back(verifier.toLicenseInfo(*it));
+				if (verifier.verify_limits(*full_lic_info_it) == FUNC_RET_OK) {
+					licenses_ok.push_back(licInfo);
 				} else {
-					licenses_with_errors.push_back(verifier.toLicenseInfo(*it));
+					licenses_with_errors.push_back(licInfo);
 				}
 			} else {
-				licenses_with_errors.push_back(verifier.toLicenseInfo(*it));
+				licenses_with_errors.push_back(licInfo);
 			}
 		}
 		if (licenses_ok.size() > 0) {
@@ -107,11 +121,12 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
 #endif
 
 	if (license_out != nullptr) {
-		er.exportLastEvents(license_out->status, AUDIT_EVENT_NUM);
+		er.exportLastEvents(license_out->status, LCC_API_AUDIT_EVENT_NUM);
 	}
 	return result;
 }
 
-EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+LCC_EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
 
-EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+LCC_EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
+

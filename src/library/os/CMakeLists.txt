@@ -1,17 +1,41 @@
 IF(UNIX OR OPENSSL_FOUND)
 	IF(UNIX)
-		target_sources(licensecc_static PRIVATE
-		    ${CMAKE_CURRENT_SOURCE_DIR}/openssl/signature_verifier.cpp
-		    ${CMAKE_CURRENT_SOURCE_DIR}/os-linux.c 
-		    ${CMAKE_CURRENT_SOURCE_DIR}/network_id.c)
+		add_library(os OBJECT
+		    openssl/signature_verifier.cpp
+            execution_environment_common.cpp
+		    linux/execution_environment.cpp
+		    cpu_info_common.cpp
+		    linux/cpu_info.cpp
+		    linux/network.cpp
+		    linux/os_linux.cpp) 
 	ELSE(UNIX)
-  	    target_sources(licensecc_static PRIVATE
-		    ${CMAKE_CURRENT_SOURCE_DIR}/openssl/signature_verifier.cpp
-  	    	${CMAKE_CURRENT_SOURCE_DIR}/os-win.c)
+	    #windows and openssl
+  	    add_library(os OBJECT 
+  	    cpu_info_common.cpp windows/cpu_info.cpp 
+  	    openssl/signature_verifier.cpp 
+        execution_environment_common.cpp windows/execution_environment.cpp
+  	    windows/isvm/Native.cpp
+        windows/isvm/BIOSReader.cpp
+  	    windows/os_win.cpp
+  	    windows/network.cpp)
 	ENDIF(UNIX)
+	target_include_directories(os PUBLIC ${OPENSSL_INCLUDE_DIR})
 ELSE(UNIX OR OPENSSL_FOUND)
-    target_sources(licensecc_static PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/windows/signature_verifier.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/os-win.c)
+#windows no openssl
+    add_library(os OBJECT
+        cpu_info_common.cpp 
+        windows/cpu_info.cpp 
+        windows/signature_verifier.cpp 
+        execution_environment_common.cpp windows/execution_environment.cpp
+        windows/isvm/Native.cpp
+        windows/isvm/BIOSReader.cpp
+        windows/os_win.cpp
+        windows/network.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
+#dependency of signature_verifier.cpp
+add_dependencies( os project_initialize )
+
+if(CODE_COVERAGE AND UNIX)
+	  target_compile_options(os PUBLIC -O0 -g --coverage)
+endif(CODE_COVERAGE AND UNIX)

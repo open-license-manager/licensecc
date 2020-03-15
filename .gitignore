@@ -9,6 +9,7 @@
 
 #Visual studio files
 .vs
+/out
 
 # Compiled Static libraries
 *.lai
@@ -31,3 +32,6 @@ build/*
 projects/*
 !projects/.gitkeep
 
+**/CMakeCache.txt
+**/CMakeFiles
+/CMakeSettings.json

@@ -4,7 +4,7 @@ Contributing to Open License Manager
 
 The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. These are mostly guidelines, not rules. 
 
-## How to Contribute
+## How to contribute
 
 ### Interacting with the team 
 
@@ -90,3 +90,4 @@ Supposing you already know how to contribute to an open source project on GitHub
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
     -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
     -  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
+    

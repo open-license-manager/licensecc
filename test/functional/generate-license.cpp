@@ -20,8 +20,10 @@
 
 namespace fs = boost::filesystem;
 using namespace std;
+
 namespace license {
 namespace test {
+
 string generate_license(const string& license_name, const vector<string>& other_args) {
 	fs::path lcc_exe(LCC_EXE);
 	BOOST_REQUIRE_MESSAGE(fs::is_regular_file(lcc_exe), "License generator not found: " LCC_EXE);

@@ -17,10 +17,11 @@ IF(NOT LCC_PROJECTS_BASE_DIR)
 ENDIF(NOT LCC_PROJECTS_BASE_DIR)
 
 cmake_policy(SET CMP0048 NEW)
+#cmake_policy(SET CMP0091 NEW)
 project (licensecc 
 			VERSION 2.0.0
 			DESCRIPTION "Copy protection and licensing library" 
-			LANGUAGES C CXX)
+			LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -34,22 +35,22 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT
 	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
 ENDIF()
 
-SET (OPENSSL_USE_STATIC_LIBS ON)
+SET (OPENSSL_USE_STATIC_LIBS TRUE)
+IF(${STATIC_RUNTIME})
+	SET(OPENSSL_MSVC_STATIC_RT TRUE)
+ENDIF(${STATIC_RUNTIME})
 find_package(OpenSSL COMPONENTS Crypto QUIET)
 IF(OPENSSL_FOUND)
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION}")
+	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} -licensecc")
 ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
+	IF(${STATIC_RUNTIME})
+		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+	ENDIF(${STATIC_RUNTIME})
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
 	ENDIF(NOT OPENSSL_FOUND)
-	
-	#Zlib required when openssl version < 1.0.1f (centos 7)
-	SET ( ZLIB_USE_STATIC_LIBS ON ) 
-	find_package(ZLIB REQUIRED)
-	list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
-	MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION} ")
 	
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
@@ -59,17 +60,19 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
   			 list(APPEND EXTERNAL_LIBS "${CMAKE_THREAD_LIBS_INIT}")
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
+
+	#Zlib required with old openssl version < 1.0.1f in centos 7
+	IF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
+		SET ( ZLIB_USE_STATIC_LIBS ON ) 
+		find_package(ZLIB REQUIRED)
+		list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
+	ELSE(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
+	    MESSAGE(STATUS "openssl ${OPENSSL_VERSION} zlib not required - licensecc")
+	ENDIF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
 	
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
-	
-	if(USE_DBUS_IDENTIFIER)
-	    FIND_PACKAGE(Dbus REQUIRED)
-	    add_definitions(-DUSE_DBUS)
-	    include_directories(${DBUS_INCLUDE_DIR})
-	    include_directories(${DBUS_ARCH_INCLUDE_DIR})
-	    list(APPEND EXTERNAL_LIBS ${DBUS_LIBRARIES})
-	endif(USE_DBUS_IDENTIFIER)  
 	set(main_lib_dest "lib/${PROJECT_NAME}")  
 else(UNIX)
 	IF(NOT OPENSSL_FOUND)
@@ -79,21 +82,20 @@ else(UNIX)
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )
 		message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
-		
 		#cmake > 3.15 handle the /MD flag more nicely than this
-		if(${STATIC_RUNTIME})
-			string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+		if(STATIC_RUNTIME)
+		    message(STATUS "Static runtime ${STATIC_RUNTIME}")
 			string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-			string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 			string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			#list(APPEND CMAKE_CXX_FLAGS_DEBUG "/MTd")
 			SET(Boost_USE_STATIC_RUNTIME ON)
-		endif(${STATIC_RUNTIME})
-	
+		endif(STATIC_RUNTIME)
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
+	    list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")
 	else(MSVC)
-	    if(MINGW)
-	        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lbcrypt -lws2_32 -liphlpapi")
-	        SET(CMAKE_EXE_LINKER_FLAGS "-static")
+	    if(MINGW)        
+            list(APPEND EXTERNAL_LIBS "-lbcrypt" "-lcrypt32" "-lws2_32" "-liphlpapi")
+	        SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libstdc++")
 	    endif(MINGW)
 	endif(MSVC)
 	set(main_lib_dest "${PROJECT_NAME}")  
@@ -111,21 +113,19 @@ add_custom_command(
   COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY}"
   USES_TERMINAL
 )
+include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
-include_directories( ${LCC_INCLUDE_DIR} ${CMAKE_BINARY_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-message( STATUS "C compiler        : " ${CMAKE_C_COMPILER})
-message( STATUS "C compiler flags  : " ${CMAKE_C_FLAGS})
-message( STATUS "CXX compiler      : " ${CMAKE_CXX_COMPILER})
-message( STATUS "CXX compiler flags: " ${CMAKE_CXX_FLAGS})
+message( STATUS "CXX compiler        : " ${CMAKE_CXX_COMPILER})
+message( STATUS "CXX compiler flags  : " ${CMAKE_CXX_FLAGS})
 message( STATUS "CXX compiler flags debug : " ${CMAKE_CXX_FLAGS_DEBUG})
 message( STATUS "CXX compiler flags release: " ${CMAKE_CXX_FLAGS_RELEASE})
 if(CMAKE_BUILD_TYPE)
-  message( STATUS "Build type        : " ${CMAKE_BUILD_TYPE})
+  message( STATUS "Build type          : " ${CMAKE_BUILD_TYPE})
 endif(CMAKE_BUILD_TYPE)
-message( STATUS "Install prefix    : " ${CMAKE_INSTALL_PREFIX})
-message( STATUS "Project name      : " ${LCC_PROJECT_NAME} )
-message( STATUS "Project base dir  : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME} )
+message( STATUS "Install prefix      : " ${CMAKE_INSTALL_PREFIX})
+message( STATUS "Project name        : " ${LCC_PROJECT_NAME} )
+message( STATUS "Project base dir    : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME} )
 
 add_subdirectory(src)
 
@@ -150,22 +150,44 @@ IF(Boost_FOUND)
 		MARK_AS_ADVANCED(BUILDNAME)
 		add_subdirectory(test)
 	ENDIF(BUILD_TESTING)
+	add_subdirectory("src/inspector")
 ELSE(Boost_FOUND)
 	message(WARNING "Boost not found, disabling tests")
 ENDIF(Boost_FOUND)
 
+#################################
+# Documentation
+#################################
 find_package(Doxygen COMPONENTS dot)
-IF(Doxygen_FOUND)
+find_package(Sphinx)
+ 
+IF(Doxygen_FOUND AND Sphinx_FOUND)
     message(STATUS "Doxygen found, generating docs.")
     SET(DOXYGEN_EXCLUDE_PATTERNS "*/library/ini/*;*/doc/resources/*")
     SET(DOXYGEN_DISABLE_INDEX YES)
     SET(DOXYGEN_GENERATE_TREEVIEW YES)
+    SET(DOXYGEN_GENERATE_XML YES)
     SET(DOXYGEN_LAYOUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/doc/DoxygenLayout.xml")
 	doxygen_add_docs(docs doc src include/licensecc COMMENT "doxygen docs")
-	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/resources/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/html")
-ELSE(Doxygen_FOUND)
-	message(STATUS "Doxygen not found, not generating docs.")
-ENDIF(Doxygen_FOUND)
+	#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/resources/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/html")
+	
+	#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/sphinx/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+	set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+	set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
+ 
+	add_custom_target(documentation
+                  COMMAND
+                  ${SPHINX_EXECUTABLE} -b html
+                  ${SPHINX_SOURCE} ${SPHINX_BUILD}
+                  -Dbreathe_projects.licensecc=${CMAKE_CURRENT_BINARY_DIR}/xml
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  COMMENT "Generating documentation with Sphinx")
+    add_dependencies(documentation docs)
+    
+ELSE(Doxygen_FOUND AND Sphinx_FOUND)
+	message(STATUS "Doxygen or Sphynx not found, not generating docs.")
+ENDIF(Doxygen_FOUND AND Sphinx_FOUND)
+
 
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)

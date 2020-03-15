@@ -11,20 +11,22 @@
 extern "C" {
 #endif
 
+#include <licensecc_properties.h>
+
 #include "datatypes.h"
 
-/*
+/**
  * Method used to convert the LicenseInfo into a human readable
- * representation. //not yet implemented
+ * representation.
  */
-void print_error(char out_buffer[ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo);
+void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo);
 
 /**
- * This method calculates the pc identifier. The string need to be shown to the user and given back to the software
+ * This method calculates the hardware identifier. The string need to be shown to the user and given back to the software
  * editor when issuing a license.
  *  pc_id_method = STRATEGY_DEFAULT usually works.
  */
-bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t* bufSize);
+bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, size_t* bufSize);
 
 /**
  * This method is used to request the use of one license for a product.
@@ -39,7 +41,7 @@ bool identify_pc(IDENTIFICATION_STRATEGY pc_id_method, char* identifier_out, siz
  * @param license[out] optional, can be NULL, if set it will return extra informations about the license.
  */
 
-EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
+LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
 						   LicenseInfo* license_out);
 
 /**
@@ -47,11 +49,11 @@ EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const Li
  * Should be called from time to time to confirm we're still using the
  * license.
  */
-EVENT_TYPE confirm_license(char* featureName, LicenseLocation* licenseLocation);
+LCC_EVENT_TYPE confirm_license(char* featureName, LicenseLocation* licenseLocation);
 /**
  * Do nothing for now, useful for network licenses.
  */
-EVENT_TYPE release_license(char* featureName, LicenseLocation licenseLocation);
+LCC_EVENT_TYPE release_license(char* featureName, LicenseLocation licenseLocation);
 
 #ifdef __cplusplus
 }

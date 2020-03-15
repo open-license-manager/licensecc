@@ -1,12 +1,13 @@
 #ifndef logger_INCLUDED
 #define logger_INCLUDED
+#ifdef __cplusplus
+extern "C" {
+#endif
+#define LOG_DISABLED 1
 
 #ifndef LOG_DISABLED
 #include <errno.h>
 #include <string.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 

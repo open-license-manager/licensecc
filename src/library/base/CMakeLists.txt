@@ -1,9 +1,9 @@
-ADD_LIBRARY(base STATIC
+ADD_LIBRARY(base OBJECT
     EventRegistry.cpp
     StringUtils.cpp
-    FileUtils.cpp
-    logger.c
-    base64.c
+    file_utils.cpp
+    base64.cpp
+    logger.cpp
 )
 
 if(CODE_COVERAGE AND UNIX)
@@ -13,10 +13,6 @@ if(CODE_COVERAGE AND UNIX)
 	    -g         # generate debug info
 	    --coverage # sets all required flags
 	  )
-	  target_link_libraries(base PUBLIC gcov)
 endif(CODE_COVERAGE AND UNIX)
 
-add_dependencies( base project_initialize )
-
-install(TARGETS base EXPORT licensecc ARCHIVE DESTINATION lib/${PROJECT_NAME}/${LCC_PROJECT_NAME})
 

@@ -17,6 +17,7 @@ IF(NOT LCC_PROJECTS_BASE_DIR)
 ENDIF(NOT LCC_PROJECTS_BASE_DIR)
 
 cmake_policy(SET CMP0048 NEW)
+#cmake_policy(SET CMP0091 NEW)
 project (licensecc 
 			VERSION 2.0.0
 			DESCRIPTION "Copy protection and licensing library" 
@@ -81,15 +82,14 @@ else(UNIX)
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )
 		message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
-		
 		#cmake > 3.15 handle the /MD flag more nicely than this
-		if(${STATIC_RUNTIME})
-			string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+		if(STATIC_RUNTIME)
+		    message(STATUS "Static runtime ${STATIC_RUNTIME}")
 			string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-			string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 			string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			#list(APPEND CMAKE_CXX_FLAGS_DEBUG "/MTd")
 			SET(Boost_USE_STATIC_RUNTIME ON)
-		endif(${STATIC_RUNTIME})
+		endif(STATIC_RUNTIME)
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 	    list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")
 	else(MSVC)
@@ -116,8 +116,6 @@ add_custom_command(
 include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
 
-message( STATUS "C compiler          : " ${CMAKE_C_COMPILER})
-message( STATUS "C compiler flags    : " ${CMAKE_C_FLAGS})
 message( STATUS "CXX compiler        : " ${CMAKE_CXX_COMPILER})
 message( STATUS "CXX compiler flags  : " ${CMAKE_CXX_FLAGS})
 message( STATUS "CXX compiler flags debug : " ${CMAKE_CXX_FLAGS_DEBUG})

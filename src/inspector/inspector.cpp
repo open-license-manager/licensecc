@@ -54,10 +54,11 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 
 int main(int argc, char* argv[]) {
 	license::os::CpuInfo cpu;
-	cout << "CpuVendor       :" << cpu.vendor() << endl;
-	cout << "Virtual machine :" << cpu.cpu_virtual() << endl;
+	cout << "Cpu Vendor      :" << cpu.vendor() << endl;
+	cout << "Cpu Brand       :" << cpu.brand() << endl;
+	cout << "Cpu is hypervis.:" << cpu.cpu_virtual() << endl;
 	cout << "Cpu model       :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
-	cout << "Virt. detail cpu:" << descByVirtDetail.find(cpu.getVirtualizationDetail())->second << endl;
+	cout << "Virt. detail cpu:" << descByVirtDetail.find(cpu.virtualization_details())->second << endl <<endl;
 	ExecutionEnvironment execEnv;
 	cout << "Running in cloud:" << execEnv.is_cloud() << endl;
 	cout << "Docker          :" << execEnv.is_docker() << endl;
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]) {
 
 	cout << "Bios vendor     :" << execEnv.bios_vendor() << endl;
 	cout << "Bios description:" << execEnv.bios_description() << endl;
-	cout << "System vendor   :" << execEnv.sys_vendor() << endl;
+	cout << "System vendor   :" << execEnv.sys_vendor() << endl <<endl;
 
 	char hw_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
 	size_t bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;

@@ -67,7 +67,7 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 			pc_id.set_cloud_provider(exec.getCloudProvider());
 		} else {
 			os::CpuInfo cpu;
-			pc_id.set_virtualization(cpu.getVirtualizationDetail());
+			pc_id.set_virtualization(cpu.virtualization_details());
 		}
 	}
 	return pc_id.print();

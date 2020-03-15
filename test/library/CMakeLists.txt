@@ -14,7 +14,7 @@ IF(WIN32)
 ELSE(WIN32)
     add_executable(
  		test_os_linux
- 		Os_Linux_test.cpp
+ 		os_linux_test.cpp
 	)
 
 	target_link_libraries(

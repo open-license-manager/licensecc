@@ -111,7 +111,7 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 	int cb = 0;
 	int charNo;
 	int pad = 0;
-	int len = tmp_str.size();
+	size_t len = tmp_str.size();
 
 	if (len < 2) {  // 2 accesses below would be OOB.
 		// catch empty string, return NULL as result.
@@ -121,7 +121,7 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 	if (safeAsciiPtr[len - 1] == '=') ++pad;
 	if (safeAsciiPtr[len - 2] == '=') ++pad;
 
-	unsigned int flen = 3 * len / 4 - pad;
+	size_t flen = 3 * len / 4 - pad;
 	bin.reserve(flen);
 
 	for (charNo = 0; charNo <= len - 4 - pad; charNo += 4) {

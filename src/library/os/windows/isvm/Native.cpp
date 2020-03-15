@@ -332,13 +332,14 @@ bool InitEntryPoints()
     return true;
 }
 
-void *LocateSMBIOS(uint32_t *smbios_size)
-{
+void *LocateSMBIOS(uint32_t *smbios_size) {
     void *buf = NULL;
+	const DWORD tableSignature = ('R' << 24) | ('S' << 16) | ('M' << 8) | 'B';
+
     if (bIsWindowsXPLater)
     {
         uint32_t size = 0;
-        size = Win32GetSystemFirmwareTable('RSMB', 0, buf, size);
+		size = Win32GetSystemFirmwareTable(tableSignature, 0, buf, size);
         if (0 == size)
         {
             return NULL;
@@ -347,7 +348,7 @@ void *LocateSMBIOS(uint32_t *smbios_size)
         buf = malloc(size);
         if (buf)
         {
-            if (0 == Win32GetSystemFirmwareTable('RSMB', 0, buf, size))
+			if (0 == Win32GetSystemFirmwareTable(tableSignature, 0, buf, size))
             {
                 free(buf);
                 buf = NULL;

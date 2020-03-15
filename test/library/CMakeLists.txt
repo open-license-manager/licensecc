@@ -55,6 +55,10 @@ target_link_libraries(
  Boost::system
 )
 
+if(CODE_COVERAGE AND UNIX)
+  target_link_libraries(test_event_registry gcov)
+endif(CODE_COVERAGE AND UNIX)
+
 ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
 ADD_TEST(NAME test_license_locator COMMAND test_license_locator)
 ADD_TEST(NAME test_event_registry COMMAND test_event_registry)

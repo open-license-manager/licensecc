@@ -208,8 +208,10 @@ jobs:
              - python3-pip
              - doxygen
              - graphviz
-     script: 
+     before_script: 
         - pip3 install sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme
+        - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
+     script:
         - make documentation
      deploy:
         provider: pages

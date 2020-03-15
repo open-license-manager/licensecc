@@ -46,11 +46,11 @@ target_link_libraries(
 add_executable(
  test_event_registry
  EventRegistry_test.cpp
+ $<TARGET_OBJECTS:base>
 )
 
 target_link_libraries(
  test_event_registry
- base
  Boost::unit_test_framework 
  Boost::system
 )

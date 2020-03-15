@@ -5,9 +5,9 @@
 
 #include <licensecc_properties.h>
 #include <licensecc_properties_test.h>
-#include "../../src/library/base/StringUtils.h"
-#include "../../src/library/os/network.hpp"
-#include "../../src/library/os/execution_environment.hpp"
+#include "../../../src/library/base/StringUtils.h"
+#include "../../../src/library/os/network.hpp"
+#include "../../../src/library/os/execution_environment.hpp"
 
 namespace license {
 namespace os {

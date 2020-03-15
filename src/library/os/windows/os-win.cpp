@@ -1,15 +1,13 @@
-/*#ifdef _MSC_VER
-#include <Windows.h>
-#endif*/
-#include "../../base/logger.h"
-#include "../os.h"
-
+#define NOMINMAX
+#include <windows.h>
+#include <algorithm>
 #include <licensecc/datatypes.h>
 #include <iphlpapi.h>
 #include <stdio.h>
-//#pragma comment(lib, "IPHLPAPI.lib")
 
-unsigned char* unbase64(const char* ascii, int len, int *flen);
+#include "../../base/logger.h"
+#include "../os.h"
+using namespace std;
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
@@ -33,7 +31,7 @@ FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
 //bug check return with diskinfos == null func_ret_ok
 FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 	DWORD fileMaxLen;
-	int ndrives = 0;
+	size_t ndrives = 0;
 	DWORD fileFlags;
 	char volName[MAX_PATH], fileSysName[MAX_PATH];
 	DWORD volSerial = 0;
@@ -63,10 +61,11 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 					LOG_DEBUG("Filesystem      : %s", fileSysName);
 					if (diskInfos != NULL) {
 						if (ndrives < (int)*disk_info_size) {
-							diskInfos[ndrives].id = ndrives;
-							strncpy(diskInfos[ndrives].device, volName, cmin(MAX_PATH, sizeof(volName)) - 1);
+							diskInfos[ndrives].id = (int)ndrives;
+							strncpy(diskInfos[ndrives].device, volName,
+									min(std::size_t{MAX_PATH}, sizeof(volName)) - 1);
 							strncpy(diskInfos[ndrives].label, fileSysName,
-									cmin(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
+									min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
 							memcpy(diskInfos[ndrives].disk_sn, &volSerial, sizeof(DWORD));
 							diskInfos[ndrives].preferred = (szSingleDrive[0] == 'C');
 						} else {
@@ -92,7 +91,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo * diskInfos, size_t * disk_info_size) {
 		}
 		*disk_info_size = ndrives;
 	} else {
-		*disk_info_size = cmin(ndrives, *disk_info_size);
+		*disk_info_size = min(ndrives, *disk_info_size);
 	}
 	return return_value;
 }

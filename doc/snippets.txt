@@ -23,3 +23,4 @@ if not exist "C:/local/boost/libs" (
 linux cross compile for windows openssl
 
  ./Configure no-zlib no-shared --prefix=$PWD/dist-win-64 --cross-compile-prefix=x86_64-w64-mingw32- mingw64
+ /usr/local/bin/cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/../../boost_1_69_0/dist-win-x64/ -DOPENSSL_ROOT_DIR=$PWD/../../openssl-OpenSSL_1_1_1d/dist-win-64/ -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DCMAKE_VERBOSE_MAKEFILE=ON  -DLOGS_DISABLED=ON ..

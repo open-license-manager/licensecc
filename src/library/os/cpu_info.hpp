@@ -29,6 +29,7 @@ public:
 	bool cpu_virtual() const;
 	uint32_t model() const;
 	std::string vendor() const;
+	// std::string brand() const;
 	VIRTUALIZATION_DETAIL getVirtualizationDetail() const;
 };
 

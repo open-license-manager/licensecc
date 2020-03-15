@@ -41,8 +41,14 @@ uint32_t CpuInfo::model() const {
 string CpuInfo::vendor() const {
 	// hypervisor flag false, try to get the vendor name, see if it's a virtual cpu
 	int cpui[4] = {0};
-	__cpuid(cpui, 0x0);
-	return string(reinterpret_cast<const char *>(cpui), 12);
+	__cpuidex(cpui, 0x0, 0x0);
+
+	char vendor[13];
+	memset(vendor, 0, sizeof(vendor));
+	*reinterpret_cast<int *>(vendor) = cpui[1];
+	*reinterpret_cast<int *>(vendor +4) = cpui[3];
+	*reinterpret_cast<int *>(vendor + 8) = cpui[2];
+	return string(vendor, 12);
 }
 }  // namespace os
 } /* namespace license */

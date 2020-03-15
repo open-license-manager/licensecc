@@ -15,7 +15,42 @@ namespace license {
 namespace os {
 using namespace std;
 
-CpuInfo::CpuInfo() {}
+static string get_cpu_vendor() {
+	// hypervisor flag false, try to get the vendor name, see if it's a virtual cpu
+	int cpui[4] = {0};
+	__cpuidex(cpui, 0x0, 0x0);
+
+	char vendor[13];
+	memset(vendor, 0, sizeof(vendor));
+	*reinterpret_cast<int *>(vendor) = cpui[1];
+	*reinterpret_cast<int *>(vendor + 4) = cpui[3];
+	*reinterpret_cast<int *>(vendor + 8) = cpui[2];
+	return string(vendor, 12);
+}
+
+static string get_cpu_brand() {
+	int cpui[4] = {0};
+	__cpuid(cpui, 0x80000000);
+	int maxSupported = cpui[0];
+
+	char brand[0x41];
+	memset(brand, 0, sizeof(brand));
+	string result;
+	if (maxSupported >= 0x80000004) {
+		int instruction = 0x80000002;
+		for (int i = 0; i <= 2; ++i) {
+			__cpuidex(cpui, instruction + i, 0);
+			memcpy(&brand[i * sizeof(cpui)], cpui, sizeof(cpui));
+		}
+		result = string(brand);
+	} else {
+		result = "NA";
+	}
+
+	return result;
+}
+
+CpuInfo::CpuInfo() : m_vendor(get_cpu_vendor()), m_brand(get_cpu_brand()) {}
 
 CpuInfo::~CpuInfo() {}
 /**
@@ -38,17 +73,6 @@ uint32_t CpuInfo::model() const {
 	return (cpui[0] & 0x3FFF) | (cpui[0] & 0x3FF8000) >> 2 | (cpui[1] & 0xff) << 24;
 }
 
-string CpuInfo::vendor() const {
-	// hypervisor flag false, try to get the vendor name, see if it's a virtual cpu
-	int cpui[4] = {0};
-	__cpuidex(cpui, 0x0, 0x0);
 
-	char vendor[13];
-	memset(vendor, 0, sizeof(vendor));
-	*reinterpret_cast<int *>(vendor) = cpui[1];
-	*reinterpret_cast<int *>(vendor +4) = cpui[3];
-	*reinterpret_cast<int *>(vendor + 8) = cpui[2];
-	return string(vendor, 12);
-}
 }  // namespace os
 } /* namespace license */

@@ -18,7 +18,8 @@ typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, V_OTHER } VIRT
 class CpuInfo {
 private:
 	bool is_hypervisor_set() const;
-
+	const std::string m_vendor;
+	const std::string m_brand;
 public:
 	CpuInfo();
 	virtual ~CpuInfo();
@@ -28,9 +29,9 @@ public:
 	 */
 	bool cpu_virtual() const;
 	uint32_t model() const;
-	std::string vendor() const;
-	// std::string brand() const;
-	VIRTUALIZATION_DETAIL getVirtualizationDetail() const;
+	const std::string& vendor() const { return m_vendor; }
+	const std::string& brand() const { return m_brand; }
+	VIRTUALIZATION_DETAIL virtualization_details() const;
 };
 
 }  // namespace os

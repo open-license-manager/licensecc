@@ -7,7 +7,7 @@ IF(UNIX OR OPENSSL_FOUND)
 		    cpu_info_common.cpp
 		    linux/cpu_info.cpp
 		    linux/network.cpp
-		    linux/os-linux.cpp) 
+		    linux/os_linux.cpp) 
 	ELSE(UNIX)
 	    #windows and openssl
   	    add_library(os OBJECT 
@@ -16,7 +16,7 @@ IF(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp windows/execution_environment.cpp
   	    windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
-  	    windows/os-win.cpp
+  	    windows/os_win.cpp
   	    windows/network.cpp)
 	ENDIF(UNIX)
 	target_include_directories(os PUBLIC ${OPENSSL_INCLUDE_DIR})
@@ -29,7 +29,7 @@ ELSE(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp windows/execution_environment.cpp
         windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
-        windows/os-win.cpp
+        windows/os_win.cpp
         windows/network.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 

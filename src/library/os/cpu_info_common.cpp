@@ -30,7 +30,7 @@ bool CpuInfo::cpu_virtual() const {
 	return is_virtual;
 }
 
-VIRTUALIZATION_DETAIL CpuInfo::getVirtualizationDetail() const {
+VIRTUALIZATION_DETAIL CpuInfo::virtualization_details() const {
 	string cpu_vendor = vendor();
 	auto it = virtual_cpu_names.find(cpu_vendor);
 	VIRTUALIZATION_DETAIL result = BARE_TO_METAL;

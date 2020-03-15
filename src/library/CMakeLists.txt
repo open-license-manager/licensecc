@@ -31,6 +31,8 @@ ELSE(UNIX OR OPENSSL_FOUND)
 	target_link_libraries(licensecc_static PUBLIC ${EXTERNAL_LIBS})
 ENDIF(UNIX OR OPENSSL_FOUND)
 
+#set_property(TARGET licensecc_static PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 target_include_directories(licensecc_static
     PUBLIC 
         $<INSTALL_INTERFACE:include>

@@ -54,7 +54,7 @@ Ethernet::Ethernet(bool useIp) : use_ip(useIp) {}
 
 Ethernet::~Ethernet() {}
 
-LCC_API_IDENTIFICATION_STRATEGY Ethernet::identification_strategy() const {
+LCC_API_HW_IDENTIFICATION_STRATEGY Ethernet::identification_strategy() const {
 	return use_ip ? STRATEGY_IP_ADDRESS : STRATEGY_ETHERNET;
 }
 

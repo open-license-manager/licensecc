@@ -1,8 +1,8 @@
-/** \addtogroup api
- * @{
- */
 #ifndef DATATYPES_H_
 #define DATATYPES_H_
+/** \addtogroup apistruct
+ * @{
+ */
 
 #ifdef __cplusplus
 extern "C" {
@@ -130,7 +130,7 @@ typedef struct {
 }
 #endif
 
-#endif
 /**
  * @}
  */
+#endif

@@ -32,7 +32,10 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.todo',
-    'sphinx.ext.githubpages', 'breathe', 'recommonmark', 'sphinx_markdown_tables', 'sphinx_rtd_theme' ]
+    'sphinx.ext.githubpages', 'breathe', 'recommonmark', 'sphinx_markdown_tables', 'sphinx_rtd_theme',
+    'sphinx_sitemap','sphinx.ext.autosectionlabel' ]
+
+autosectionlabel_prefix_document = True
 
 # Breathe Configuration
 breathe_default_project = "licensecc"
@@ -50,7 +53,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = 'licensecc'
+project = 'Licensecc'
 copyright = '2020, Open License Manager'
 author = 'Open License Manager'
 
@@ -94,6 +97,8 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 #
 html_theme_options = {
+  'canonical_url': 'http://open-license-manager.github.io/open-license-manager/',
+  'analytics_id': 'UA-61067325-2',  #  Provided by Google in your dashboard
   'titles_only': False
 }
 
@@ -114,6 +119,13 @@ html_static_path = ['_static']
 #    ]
 #}
 
+html_js_files = [
+    'https://buttons.github.io/buttons.js'
+]
+
+html_css_files = [
+    'css/custom.css'
+]
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -171,5 +183,8 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+# Sitemap plugin
+html_baseurl = 'http://open-license-manager.github.io/open-license-manager'
 
-
+#html_logo = "_static/lock_32.png"
+html_favicon="_static/lock_32.ico"

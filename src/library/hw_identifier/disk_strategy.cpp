@@ -73,7 +73,7 @@ DiskStrategy::DiskStrategy(bool use_id) : m_use_id(use_id) {}
 
 DiskStrategy::~DiskStrategy() {}
 
-LCC_API_IDENTIFICATION_STRATEGY DiskStrategy::identification_strategy() const {
+LCC_API_HW_IDENTIFICATION_STRATEGY DiskStrategy::identification_strategy() const {
 	return m_use_id ? STRATEGY_DISK_NUM : STRATEGY_DISK_LABEL;
 }
 

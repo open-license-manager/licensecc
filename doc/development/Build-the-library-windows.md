@@ -1,15 +1,14 @@
-# Windows
+# Build - Windows
 
-This page describes how to build the library. It's a good starting point if you just downloaded it and you want to start explore.
-
-Under windows both MSVC compiler and MinGW are supported
+This page describes how to build the library. Under windows both MSVC compiler and MinGW are supported
 
 ## MSVC (2015~2019) - prerequisites
 Pre-compiled [versions of boost](https://sourceforge.net/projects/boost/files/boost-binaries/) for windows are available at SourceForge. 
 
-For MSVC 2019: recommended cmake => 3.15.2 (the version 3.14 embedded in visual studio is not working with boost 1.71), [boost 1.71 msvc-14.2](https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.2-64.exe)
+For MSVC 2019: recommended cmake => 3.15.2 (the version 3.14 embedded in visual studio is not working with boost 1.71), 
+[boost 1.71 msvc-14.2](https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.2-64.exe)
 
-### Download:
+### Checkout the code
 This project has a submodule (the license generator). Remember to add the option `--recursive` to clone it.
 
 ```console
@@ -29,7 +28,7 @@ cmake .. -G "Visual Studio 16 2019" -A x64 -DBOOST_ROOT="C:\local\boost"  //(or 
 ```
 
 ### Supported cmake definitions/options
-Below a list of some useful cmake configurations 
+Below a list of some useful cmake configurations:
 
 |Definition name|Description|
 |---------------|-----------|

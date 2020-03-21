@@ -22,7 +22,7 @@ LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(const HwIdentifier& i
 	return result;
 }
 
-FUNCTION_RETURN IdentificationStrategy::identify_pc(HwIdentifier& pc_id) const {
+FUNCTION_RETURN IdentificationStrategy::generate_pc_id(HwIdentifier& pc_id) const {
 	vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> data;
 	const vector<HwIdentifier> available_ids = alternative_ids();
 	FUNCTION_RETURN result = FUNC_RET_NOT_AVAIL;
@@ -33,7 +33,7 @@ FUNCTION_RETURN IdentificationStrategy::identify_pc(HwIdentifier& pc_id) const {
 	return result;
 }
 
-std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy) {
+std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY strategy) {
 	unique_ptr<IdentificationStrategy> result;
 	switch (strategy) {
 		case STRATEGY_DEFAULT:

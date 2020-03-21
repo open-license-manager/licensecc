@@ -20,7 +20,7 @@ These are the dependencies of the library you have to link to your code. We try 
 | Windows MinGW    | optional<sup>1</sup>     |                             | optional(test) 1.71 |
 
 
-## License generator executable `lcc` dependencies
+## License generator executable `lccgen` dependencies
 
 | Operating System               | Openssl      | Zlib                       | Boost<sup>3</sup>       |
 |--------------------------------|:------------:|:--------------------------:|:-----------------------:| 

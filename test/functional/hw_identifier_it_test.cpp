@@ -28,7 +28,7 @@ using namespace hw_identifier;
  * is OK
  */
 
-static void generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY strategy, const string& lic_fname) {
+static void generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY strategy, const string& lic_fname) {
 	BOOST_TEST_CHECKPOINT("Before generate");
 	const string identifier_out = HwIdentifierFacade::generate_user_pc_signature(strategy);
 	BOOST_TEST_CHECKPOINT("After generate signature");
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(volid_lic_file) {
 	size_t disk_num;
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if ((result_diskinfos == FUNC_RET_BUFFER_TOO_SMALL || result_diskinfos == FUNC_RET_OK) && disk_num > 0) {
-		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_DISK_NUM, "volid_lic_file");
+		generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DISK_NUM, "volid_lic_file");
 	} else {
 		BOOST_TEST_MESSAGE("No disk found skipping testing disk hardware identifier");
 	}
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(volume_name_lic_file) {
 	size_t disk_num;
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(nullptr, &disk_num);
 	if ((result_diskinfos == FUNC_RET_BUFFER_TOO_SMALL || result_diskinfos == FUNC_RET_OK) && disk_num > 0) {
-		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_DISK_LABEL, "volume_name_lic_file");
+		generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DISK_LABEL, "volume_name_lic_file");
 	} else {
 		BOOST_TEST_MESSAGE("No disk found skipping testing volume name disk hardware identifier");
 	}
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(strategy_mac_address) {
 	FUNCTION_RETURN result_adapterInfos = os::getAdapterInfos(adapters);
 	if ((result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL || result_adapterInfos == FUNC_RET_OK) &&
 		adapters.size() > 0) {
-		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET, "strategy_mac_address");
+		generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET, "strategy_mac_address");
 	} else {
 		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing mac address hardware identifier");
 	}
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(strategy_ip_address) {
 	FUNCTION_RETURN result_adapterInfos = os::getAdapterInfos(adapters);
 	if ((result_adapterInfos == FUNC_RET_BUFFER_TOO_SMALL || result_adapterInfos == FUNC_RET_OK) &&
 		adapters.size() > 0) {
-		generate_and_verify_license(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_IP_ADDRESS, "strategy_ip_address");
+		generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_IP_ADDRESS, "strategy_ip_address");
 	} else {
 		BOOST_TEST_MESSAGE("No ethernet adapter found skipping testing ip hardware identifier");
 	}

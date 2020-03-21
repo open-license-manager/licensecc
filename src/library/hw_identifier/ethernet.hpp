@@ -19,7 +19,7 @@ private:
 public:
 	Ethernet(bool use_ip);
 	virtual ~Ethernet();
-	virtual LCC_API_IDENTIFICATION_STRATEGY identification_strategy() const;
+	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const;
 	virtual std::vector<HwIdentifier> alternative_ids() const;
 };
 

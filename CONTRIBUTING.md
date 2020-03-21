@@ -2,23 +2,19 @@ Contributing to Open License Manager
 ==========
 :+1::tada: First off, if you landed here means you want to contribute! :tada::+1:
 
-The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. These are mostly guidelines, not rules. 
+The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. 
 
 ## How to contribute
 
 ### Interacting with the team 
 
-This section will help you understand how to interact with the development team and seek help. This is also a way of contributing because the answers given to you may help others.
-
-If you're experinecing issues with the project, due to lack/unclear documentation and you're unsure if opening or not a bug you can first contact us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). Please try to be very specific about your problem. Use the guidelines in ["How to Submit A (Good) Bug Report"](#how-do-i-submit-a-good-bug-report) to structure your question. 
+If you're experinecing issues with the project, due to lack/unclear documentation and you're unsure if opening or not a bug you can first contact us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). Please try to be very specific about your problem. Use the guidelines in ["How to Submit A (Good) Bug Report"](#how-to-submit-a-good-bug-report) to structure your question. 
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for Open License Manager. Following these guidelines helps maintainers and the community understand your report :pencil:, reproduce the behavior :computer: :computer:, and find related reports :mag_right:.
+Before creating bug reports, please [check the repository](https://github.com/open-license-manager/open-license-manager/issues) to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one. When you are creating a bug report, please [include as many details as possible](#how-to-submit-a-good-bug-report). 
 
-Before creating bug reports, please [check the repository](https://github.com/open-license-manager/open-license-manager/issues) to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). 
-
-#### How to Submit A (Good) Bug Report
+#### How to submit a good Bug Report
 
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). Explain the problem and include additional details to help maintainers reproduce the problem:
 
@@ -48,11 +44,11 @@ Include details about your configuration and environment:
 
 This section guides you through submitting an enhancement suggestion for Open License Manager, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions :mag_right:.
 
-Before creating enhancement suggestions, please check [existing enhancement request](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aenhancement) to see if the enhancement has already been suggested, as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). 
+Before creating enhancement suggestions, please check [existing enhancement request](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aenhancement) to see if the enhancement has already been suggested, as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-to-submit-a-good-enhancement-suggestion). 
 
 Please also check for the [current and planned features](https://github.com/open-license-manager/open-license-manager/wiki/features) in the wiki to see where the project is heading to.
 
-#### How to submit a (Good) enhancement suggestion
+#### How to submit a (good) enhancement suggestion
 
 Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). 
 

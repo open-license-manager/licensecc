@@ -52,11 +52,11 @@ BOOST_AUTO_TEST_CASE(print_and_read) {
 	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
 	HwIdentifier pc_id;
 	pc_id.set_data(data);
-	pc_id.set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET);
+	pc_id.set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET);
 	string pc_id_str = pc_id.print();
 	cout << pc_id_str << endl;
 	const HwIdentifier id2(pc_id_str);
-	BOOST_CHECK_MESSAGE(id2.get_identification_strategy() == LCC_API_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET,
+	BOOST_CHECK_MESSAGE(id2.get_identification_strategy() == LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET,
 						"Strategy decoded correctly");
 	BOOST_CHECK_MESSAGE(id2.data_match(data), "Data deserialized correctly");
 }

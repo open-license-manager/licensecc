@@ -1,4 +1,4 @@
-# Linux
+# Build - Linux
 
 ## Install prerequisites
 Below the prerequisites for compiling open-license-manager. For developing it we use Eclipse. Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.

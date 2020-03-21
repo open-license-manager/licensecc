@@ -24,7 +24,7 @@ using namespace std;
 
 LCC_EVENT_TYPE HwIdentifierFacade::validate_pc_signature(const std::string& str_code) {
 	HwIdentifier pc_id(str_code);
-	LCC_API_IDENTIFICATION_STRATEGY id_strategy = pc_id.get_identification_strategy();
+	LCC_API_HW_IDENTIFICATION_STRATEGY id_strategy = pc_id.get_identification_strategy();
 	LCC_EVENT_TYPE result = IDENTIFIERS_MISMATCH;
 	try {
 		unique_ptr<IdentificationStrategy> strategy = IdentificationStrategy::get_strategy(id_strategy);
@@ -35,9 +35,9 @@ LCC_EVENT_TYPE HwIdentifierFacade::validate_pc_signature(const std::string& str_
 	return result;
 }
 
-std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy) {
+std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_HW_IDENTIFICATION_STRATEGY strategy) {
 	bool use_env_var = false;
-	vector<LCC_API_IDENTIFICATION_STRATEGY> strategies_to_try;
+	vector<LCC_API_HW_IDENTIFICATION_STRATEGY> strategies_to_try;
 	if (strategy == STRATEGY_DEFAULT) {
 		char* env_var_value = getenv(LCC_IDENTIFICATION_STRATEGY_ENV_VAR);
 		if (env_var_value != nullptr && env_var_value[0] != '\0') {
@@ -45,7 +45,7 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 			if (strategy_int < 0 || strategy_int > 3) {
 				LOG_WARN("unknown " LCC_IDENTIFICATION_STRATEGY_ENV_VAR " %s", env_var_value);
 			} else {
-				strategy = (LCC_API_IDENTIFICATION_STRATEGY)strategy_int;
+				strategy = (LCC_API_HW_IDENTIFICATION_STRATEGY)strategy_int;
 				use_env_var = true;
 			}
 		}
@@ -53,7 +53,7 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_IDENTIFICATIO
 
 	unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strategy);
 	HwIdentifier pc_id;
-	FUNCTION_RETURN result = strategy_ptr->identify_pc(pc_id);
+	FUNCTION_RETURN result = strategy_ptr->generate_pc_id(pc_id);
 	if (result != FUNC_RET_OK) {
 		throw logic_error("strategy " + to_string(strategy_ptr->identification_strategy()) + " failed");
 	}

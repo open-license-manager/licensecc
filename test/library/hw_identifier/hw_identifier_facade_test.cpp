@@ -14,7 +14,7 @@ namespace license {
  * 2) save it to disk
  * 3) every time check that the identifier can still be verified.
  */
-static void generate_reference_file(const string &idfileLocation, LCC_API_IDENTIFICATION_STRATEGY strategies[],
+static void generate_reference_file(const string &idfileLocation, LCC_API_HW_IDENTIFICATION_STRATEGY strategies[],
 									int num_strategies) {
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;
@@ -32,7 +32,7 @@ static void generate_reference_file(const string &idfileLocation, LCC_API_IDENTI
 
 BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 	const string idfileLocation(PROJECT_TEST_TEMP_DIR "/identifiers_file");
-	std::vector<LCC_API_IDENTIFICATION_STRATEGY> strategies;
+	std::vector<LCC_API_HW_IDENTIFICATION_STRATEGY> strategies;
 	size_t disk_num;
 	getDiskInfos(NULL, &disk_num);
 	if (disk_num > 0) {

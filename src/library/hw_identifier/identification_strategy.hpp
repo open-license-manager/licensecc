@@ -1,5 +1,5 @@
-/*
- * identification_strategy.hpp
+/**
+ * \file identification_strategy.hpp
  *
  *  Created on: Jan 1, 2020
  *      Author: devel
@@ -18,14 +18,17 @@
 namespace license {
 namespace hw_identifier {
 
+/**
+ * Abstract class that represent a way to calculate hardware identifiers.
+ */
 class IdentificationStrategy {
 protected:
 	IdentificationStrategy(){};
 
 public:
 	virtual ~IdentificationStrategy(){};
-	virtual LCC_API_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
-	virtual FUNCTION_RETURN identify_pc(HwIdentifier& identifier_out) const;
+	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
+	virtual FUNCTION_RETURN generate_pc_id(HwIdentifier& identifier_out) const;
 	virtual std::vector<HwIdentifier> alternative_ids() const = 0;
 	virtual LCC_EVENT_TYPE validate_identifier(const HwIdentifier& identifier_in) const;
 
@@ -34,7 +37,7 @@ public:
 	 * @param strategy
 	 * @return
 	 */
-	static std::unique_ptr<IdentificationStrategy> get_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy);
+	static std::unique_ptr<IdentificationStrategy> get_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY strategy);
 };
 
 }  // namespace hw_identifier

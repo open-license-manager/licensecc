@@ -1,6 +1,8 @@
 # Backoffice (Draft) (Use Cases)
 
-Not implemented yet. 
+This is a very old sketch of a backoffice domain model (this documentation should be removed since it's not in the 
+current plans)
+
 ## Domain
 
 **Software Provider**
@@ -25,7 +27,7 @@ Not implemented yet.
 * HostId (NULL)
 
 
-## Use Cases
+## Use Cases ...
 
 **Software Provider Sign Up**
  \<\<inlcude\>\>

@@ -1,7 +1,8 @@
-# Place the license file
+# License retrieval
 
-Open License Manager, when integrated into a licensed software can automatically find its license file (or multiple license files) based on:
- 
+## how `licensecc` find the license file
+
+Open License Manager, when integrated into a licensed software can automatically find its license file (or multiple license files) based on: 
  * An environment variable: 
  	* Placing the full path of the license file in the environment variable `LICENSE_LOCATION` the library will look for it. Multiple license files can be separated by ';'
  	* Placing the full license content in the environment `LICENSE_DATA` will let the library load it.

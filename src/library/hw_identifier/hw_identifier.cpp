@@ -31,7 +31,7 @@ HwIdentifier::~HwIdentifier() {}
 
 HwIdentifier::HwIdentifier(const HwIdentifier& other) : m_data(other.m_data) {}
 
-void HwIdentifier::set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy) {
+void HwIdentifier::set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY strategy) {
 	if (strategy == STRATEGY_NONE || strategy == STRATEGY_DEFAULT) {
 		throw logic_error("Only known strategies are permitted");
 	}
@@ -73,9 +73,9 @@ std::string HwIdentifier::print() const {
 	return result.substr(0, result.size() - 1);
 }
 
-LCC_API_IDENTIFICATION_STRATEGY HwIdentifier::get_identification_strategy() const {
+LCC_API_HW_IDENTIFICATION_STRATEGY HwIdentifier::get_identification_strategy() const {
 	uint8_t stratMov = m_data[1] >> 5;
-	return static_cast<LCC_API_IDENTIFICATION_STRATEGY>(stratMov);
+	return static_cast<LCC_API_HW_IDENTIFICATION_STRATEGY>(stratMov);
 }
 
 bool HwIdentifier::data_match(const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>& data) const {

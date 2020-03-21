@@ -50,8 +50,8 @@ public:
 	HwIdentifier(const std::string &param);
 	virtual ~HwIdentifier();
 	HwIdentifier(const HwIdentifier &other);
-	void set_identification_strategy(LCC_API_IDENTIFICATION_STRATEGY strategy);
-	LCC_API_IDENTIFICATION_STRATEGY get_identification_strategy() const;
+	void set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY strategy);
+	LCC_API_HW_IDENTIFICATION_STRATEGY get_identification_strategy() const;
 	void set_use_environment_var(bool use_env_var);
 	void set_virtual_environment(os::VIRTUALIZATION virtualization);
 	void set_virtualization(os::VIRTUALIZATION_DETAIL virtualization_detail);

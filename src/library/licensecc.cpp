@@ -28,7 +28,7 @@ using namespace std;
 
 void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
 
-bool identify_pc(LCC_API_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
+bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
 	bool result = false;
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {

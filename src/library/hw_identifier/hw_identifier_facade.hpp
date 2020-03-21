@@ -29,7 +29,7 @@ public:
 	 * @param strategy
 	 * @return
 	 */
-	static std::string generate_user_pc_signature(LCC_API_IDENTIFICATION_STRATEGY strategy);
+	static std::string generate_user_pc_signature(LCC_API_HW_IDENTIFICATION_STRATEGY strategy);
 };
 
 }  // namespace hw_identifier

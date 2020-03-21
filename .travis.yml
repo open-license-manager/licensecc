@@ -209,7 +209,7 @@ jobs:
              - doxygen
              - graphviz
      before_script: 
-        - pip3 install sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme
+        - pip3 install sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme sphinx-sitemap
         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
      script:
         - make documentation

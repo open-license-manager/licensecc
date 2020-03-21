@@ -206,10 +206,11 @@ jobs:
              - libboost-thread-dev
              - libboost-date-time-dev
              - python3-pip
+             - python3-setuptools
              - doxygen
              - graphviz
      before_script: 
-        - pip3 install sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme sphinx-sitemap
+        - pip3 install setuptools sphinx sphinx_rtd_theme breathe sphinx-markdown-tables recommonmark sphinx-rtd-theme sphinx-sitemap
         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
      script:
         - make documentation

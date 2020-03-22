@@ -1,7 +1,7 @@
 
-ADD_EXECUTABLE(inspector inspector.cpp )
+ADD_EXECUTABLE(lccinspector inspector.cpp )
 
-target_link_libraries(inspector 
+target_link_libraries(lccinspector 
      licensecc_static
  	 Boost::unit_test_framework 
      Boost::filesystem

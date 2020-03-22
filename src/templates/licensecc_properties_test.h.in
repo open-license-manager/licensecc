@@ -8,7 +8,7 @@
 #define PROJECT_TEST_SRC_DIR "@CMAKE_SOURCE_DIR@/test"
 #define PROJECT_TEST_TEMP_DIR "@CMAKE_BINARY_DIR@/Testing/Temporary"
 #define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
-#define LCC_EXE "$<TARGET_FILE:license_generator::lcc>"
+#define LCC_EXE "$<TARGET_FILE:license_generator::lccgen>"
 
 #define LCC_TEST_LICENSES_PROJECT "@CMAKE_BINARY_DIR@/Testing/Temporary/@LCC_PROJECT_NAME@"
 #define LCC_LICENSES_BASE LCC_TEST_LICENSES_PROJECT "/licenses"

@@ -98,7 +98,7 @@ html_theme = 'sphinx_rtd_theme'
 #
 html_theme_options = {
   'canonical_url': 'http://open-license-manager.github.io/open-license-manager/',
-  'analytics_id': 'UA-61067325-2',  #  Provided by Google in your dashboard
+  'analytics_id': 'UA-160839650-1',  #  Provided by Google in your dashboard
   'titles_only': False
 }
 

@@ -1,5 +1,5 @@
 ###############################################
-Implement your own hardware signature generator 
+Customize hardware signature generators 
 ###############################################
 
 Customize how default strategy behaves

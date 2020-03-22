@@ -24,7 +24,7 @@ Copy protect, restrict the usage of your C++ software with a license file using 
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. It is an open source license management system that helps to keep your 
-software closed :smirk: . Among the other features the most notable one is: if it runs on a "real hardware" 
+software closed |:smirk:| . Among the other features the most notable one is: if it runs on a "real hardware" 
 it can generate a signature of that hardware and report if the signature doesn't match, because for instance 
 the software has been copied to another pc.
 
@@ -60,8 +60,11 @@ Prerequisites
 * tools            : Cmake(>3.6), git, make/ninja(linux)
 * libraries        : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
-For a complete list of dependencies and supported environments see the :ref:`development/Dependencies:Dependencies` section.
-Clone the project. It has submodules, don't forget the `--recursive` option.
+For a complete list of dependencies and supported environments see the :ref:`dependencies <development/Dependencies:Dependencies>` section.
+Clone the project. 
+
+.. NOTE::
+  It has submodules, don't forget the `--recursive` option.
 
 .. code-block:: console
 

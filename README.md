@@ -30,7 +30,8 @@ The software is made by 3 main sub-components:
 -   a license generator (github project [lcc-license-generator](https://github.com/open-license-manager/lcc-license-generator)) `lcc` for customizing the library and generate the licenses.
  
 ## How to build
-Below an overview of the basic build procedure, you can find detailed instructions for [linux](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library) or [windows](https://github.com/open-license-manager/open-license-manager/wiki/Build-the-library-windows) in the wiki. 
+Below an overview of the basic build procedure, you can find detailed instructions for [linux](http://open-license-manager.github.io/open-license-manager/development/Build-the-library.html) 
+or [windows](http://open-license-manager.github.io/open-license-manager/development/Build-the-library-windows.html) in the project web site. 
 
 ### Prerequisites
 -   Operating system: Linux(Ubuntu, CentOS), Windows
@@ -91,5 +92,8 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc), otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
-We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 
+The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), 
+otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). 
+Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
+We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). 
+Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

@@ -33,7 +33,7 @@
 # ones.
 extensions = ['sphinx.ext.todo',
     'sphinx.ext.githubpages', 'breathe', 'recommonmark', 'sphinx_markdown_tables', 'sphinx_rtd_theme',
-    'sphinx_sitemap','sphinx.ext.autosectionlabel' ]
+    'sphinxemoji.sphinxemoji', 'sphinx_sitemap','sphinx.ext.autosectionlabel' ]
 
 autosectionlabel_prefix_document = True
 
@@ -185,6 +185,8 @@ texinfo_documents = [
 
 # Sitemap plugin
 html_baseurl = 'http://open-license-manager.github.io/open-license-manager'
+
+sphinxemoji_style = 'twemoji'
 
 #html_logo = "_static/lock_32.png"
 html_favicon="_static/lock_32.ico"

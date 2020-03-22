@@ -1,10 +1,10 @@
 #######################################
-Customizations
+Extension points
 #######################################
 
 The version 2.0 of the library comes with clear API extension and customization points. 
 
-Custom hardware signature generator
+Tweak hardware signature generator
 ***************************************
 
 You've found the provided hardware signatures don't behave well for your customers (we can test on a limited set of 

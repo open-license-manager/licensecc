@@ -185,6 +185,8 @@ texinfo_documents = [
 
 # Sitemap plugin
 html_baseurl = 'http://open-license-manager.github.io/open-license-manager'
+#sitemap_url_scheme = "{lang}{version}subdir/{link}"
+sitemap_url_scheme = "{link}"
 
 sphinxemoji_style = 'twemoji'
 

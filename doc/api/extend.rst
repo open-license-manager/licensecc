@@ -10,7 +10,7 @@ Tweak hardware signature generator
 You've found the provided hardware signatures don't behave well for your customers (we can test on a limited set of 
 hardware we've receiving reports of usage on environments we never imagined before). 
 You can either change the way the default strategy behaves (choose for instance cpu type over disk label as default) or
-invent your own identification method.
+provide your own identification method.
 
 .. toctree::
 

@@ -39,11 +39,12 @@ It uses a `BSD 3 clauses`_ licensing schema, that allows modification and inclus
 
 Project Structure
 *******************
-The software is made by 3 main sub-components:
+The software is made by 4 main sub-components:
 
 * ``licensecc``    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies. This is the project you're currently looking at.
 * ``lccinspector`` : a license debugger to be sent to the final customer to diagnose licensing problems or for calculating the pc hash before issuing the license.
 * ``lccgen``       : a license generator (github project `lcc-license-generator`_ ) to initialize the library and generate the licenses.
+* ``examples``     : usage samples (github project `examples <https://github.com/open-license-manager/examples>`_ ).
 
 .. _lcc-license-generator: https://github.com/open-license-manager/lcc-license-generator
 
@@ -115,9 +116,15 @@ On Windows (MSVC):
 
 How to use
 **************
-The `examples`_ repository shows various ways to integrate `licensecc` into your project.
+The `examples`_ repository shows various ways to integrate ``licensecc`` into your project.
 
 .. _examples: https://github.com/open-license-manager/examples 
+
+Branches and status
+*********************
+
+* On branch ``master`` there is the 'legacy' 1.0.0 version. This version is working but doesn't correspond to the current documentation, and we don't plan to actively fix it. There are well-known bugs and limitations. We still accept community contributions on this branch. Feel free to propose your pull request.   
+* On branch ``develop`` there is the upcoming 2.0.0 version that corresponds to the documentation. This version is under development and has not been extensively used/tested. However we encourage users to download and use this one.   
 
 How to contribute
 ********************

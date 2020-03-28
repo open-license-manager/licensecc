@@ -2,7 +2,13 @@
 Features
 ###########
 
-features and their status
+Licensecc is suitable  for your project if it is relatively small, you plan to distribute it in a demo version and you 
+estimate there will be a "limited" number of clients: 
+
+* The management of licenses is command-line. If you plan to issue hundreds of licenses you should consider more advanced licensing systems.   
+* Open License Manager doesn't offer professional support. 
+
+Features and their status
 ****************************
 
 ======================================  ========================

@@ -14,7 +14,7 @@ Protect the software you develop from unauthorized copies, limit the usage in ti
 machines, or prevent the usage in  virtualized environments. It is an Open License Manager that helps to keep your 
 software closed :smirk: . Among other features if it runs on a "real hardware" it can generate a signature of that hardware and report if the signature doesn't match.
 
-A comprehensive [list of features](https://github.com/open-license-manager/open-license-manager/wiki/features), and their status is available in the project wiki. 
+A comprehensive [list of features](http://open-license-manager.github.io/open-license-manager/analysis/features.html), and their status is available in the project wiki. 
 
 If you plan to use this library or part of it remember to show us your appreciation giving it a 
 <a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
@@ -39,7 +39,7 @@ or [windows](http://open-license-manager.github.io/open-license-manager/developm
 -   tools           : cmake(>3.6), git, make/ninja(linux)
 -   libs            : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
-For a complete list of dependencies and supported environments see [the wiki](https://github.com/open-license-manager/open-license-manager/wiki/Dependencies)
+For a complete list of dependencies and supported environments see [the wiki](http://open-license-manager.github.io/open-license-manager/development/Dependencies.html)
 
 Clone the project. It has submodules, don't forget the `--recursive` option.
 

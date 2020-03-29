@@ -10,7 +10,7 @@ Travis CI builds the release for the supported environments and deploys it to Gi
 
 ### Binary release contents
 Binary release contains: 
- * open-license-manager executable (`lcc-gen`).
+ * open-license-manager executable (`lccgen`).
  * source code of the unconfigured library.
  * source code of (part of) the tests.
  

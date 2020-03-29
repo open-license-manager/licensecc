@@ -134,8 +134,8 @@ jobs:
              - p7zip-full
      before_script:
         - cd build
-        - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
-        - tar xjf boost_1_71_0.tar.bz2
+        - wget -c https://github.com/boostorg/boost/archive/boost-1.71.0.tar.gz
+        - tar xzf boost_1_71_0.tar.gz
         - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
         - cd boost_1_71_0
         - ./bootstrap.sh
@@ -146,6 +146,10 @@ jobs:
         - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl-1.0.2h-win64-mingw/ ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
+     cache:
+         edge: true
+         directories:
+             - "/C/local/boost"
      before_script:
          - travis_wait 40 ./scripts/windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}/build"
@@ -153,37 +157,38 @@ jobs:
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
+     cache:
+         edge: true
+         directories:
+             - "/C/local/boost"
      before_script:
          - travis_wait 40 ./scripts/windows_download_boost.bat
          - cd "${TRAVIS_BUILD_DIR}"
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
-          
    - os: windows
      name: "Widnows server 1803 - MinGW Win64"
-     env:
-        - CACHE_NAME=boost-mingw
      cache:
-         name: boost-mingw
+         edge: true
          directories:
-             - "/C/local/boost"
+             - "./boost-mingw"
      before_script:
          - | 
-           if [ -d "/C/local/boost/lib" ]; then
+           if [ -d "${TRAVIS_BUILD_DIR}/boost-mingw/lib" ]; then
                echo "Boost already installed"
            else
                echo "Boost not cached, compiling it"
-               wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
+               wget -q https://github.com/boostorg/boost/archive/boost-1.68.0.tar.gz
                echo "Boost downloaded"
-               travis_wait 20 7z x boost_1_68_0.7z -oC:/local
-               cd "C:/local/boost_1_68_0"
+               travis_wait 20 tar -xzf boost-1.68.0.tar.gz
+               cd "boost_1_68_0"
                ./bootstrap.bat gcc 
-               travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:/local/boost install
+               travis_wait 40 ./b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=${TRAVIS_BUILD_DIR}/boost-mingw install
                echo "Boost installed"
-               cd /C/local/boost/lib
+               cd ${TRAVIS_BUILD_DIR}/boost-mingw/lib
                dir 
            fi
          - cd "${TRAVIS_BUILD_DIR}"
-         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+         - cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="${TRAVIS_BUILD_DIR}/boost-mingw" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
      script: 
          - travis_wait 20 cmake --build . --target install --config Release
          - ctest -C Release

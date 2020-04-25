@@ -126,6 +126,31 @@ typedef struct {
 	int license_version;  // license file version
 } LicenseInfo;
 
+typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, V_OTHER } LCC_API_VIRTUALIZATION_DETAIL;
+
+typedef enum {
+	PROV_UNKNOWN = 0,
+	ON_PREMISE = 1,
+	GOOGLE_CLOUD = 2,
+	AZURE_CLOUD = 3,
+	AWS = 4,
+	/**
+	 * "/sys/class/dmi/id/bios_vendor" SeaBIOS
+	 * "/sys/class/dmi/id/sys_vendor" Alibaba Cloud
+	 * modalias
+	 * "dmi:bvnSeaBIOS:bvrrel-1.7.5-0-ge51488c-20140602_164612-nilsson.home.kraxel.org:bd04/01/2014:svnAlibabaCloud:pnAlibabaCloudECS:pvrpc-i440fx-2.1:cvnAlibabaCloud:ct1:cvrpc-i440fx-2.1:"
+	 */
+	ALI_CLOUD = 5
+} LCC_API_CLOUD_PROVIDER;
+
+typedef enum { NONE, CONTAINER, VM } LCC_API_VIRTUALIZATION_SUMMARY;
+
+typedef struct {
+	LCC_API_CLOUD_PROVIDER cloud_provider;
+	LCC_API_VIRTUALIZATION_SUMMARY virtualization;
+	LCC_API_VIRTUALIZATION_DETAIL virtualization_detail;
+} ExecutionEnvironmentInfo;
+
 #ifdef __cplusplus
 }
 #endif

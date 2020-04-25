@@ -26,7 +26,7 @@ const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> virtual_cpu_names{
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{{"VMWARE", VMWARE},
 															  {"MICROSOFT", HV},
 															  {"VITRUAL MACHINE", V_OTHER},
-															  {"INNOTEK GMBH", V_OTHER},
+																	  {"INNOTEK GMBH", VIRTUALBOX},
 															  {"POWERVM", V_OTHER},
 															  {"BOCHS", V_OTHER},
 															  {"KVM", KVM}};

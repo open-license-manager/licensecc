@@ -28,21 +28,6 @@ const unordered_map<int, string> descByVirt = {
 	{LCC_API_VIRTUALIZATION_SUMMARY::VM, "Virtual machine"},
 	{LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container"}};
 
-typedef enum {
-	PROV_UNKNOWN = 0,
-	ON_PREMISE = 1,
-	GOOGLE_CLOUD = 2,
-	AZURE_CLOUD = 3,
-	AWS = 4,
-	/**
-	 * "/sys/class/dmi/id/bios_vendor" SeaBIOS
-	 * "/sys/class/dmi/id/sys_vendor" Alibaba Cloud
-	 * modalias
-	 * "dmi:bvnSeaBIOS:bvrrel-1.7.5-0-ge51488c-20140602_164612-nilsson.home.kraxel.org:bd04/01/2014:svnAlibabaCloud:pnAlibabaCloudECS:pvrpc-i440fx-2.1:cvnAlibabaCloud:ct1:cvrpc-i440fx-2.1:"
-	 */
-	ALI_CLOUD = 5
-} LCC_API_CLOUD_PROVIDER;
-
 const unordered_map<int, string> descByCloudProvider = {{PROV_UNKNOWN, "Provider unknown"},
 														{ON_PREMISE, "On premise hardware (no cloud)"},
 														{GOOGLE_CLOUD, "Google Cloud"},
@@ -90,7 +75,7 @@ int main(int argc, char* argv[]) {
 	}
 	cout << "Virtualiz. class :" << descByVirt.find(exec_env_info.virtualization)->second << endl;
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
-	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider) << endl
+	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl
 		 << "=============" << endl;
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;

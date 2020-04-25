@@ -40,11 +40,11 @@ static CONTAINER_TYPE checkContainerProc() {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	CONTAINER_TYPE result = NONE;
+	CONTAINER_TYPE result = CONTAINER_TYPE::NONE;
 
 	fp = fopen(proc_path, "r");
 	if (fp == NULL) {
-		return NONE;
+		return CONTAINER_TYPE::NONE;
 	}
 
 	while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
@@ -52,10 +52,10 @@ static CONTAINER_TYPE checkContainerProc() {
 		// printf("Retrieved line of length %zu:\n", read);
 		// printf("%s", line);
 		if (strstr(line, "docker") != NULL) {
-			result = DOCKER;
+			result = CONTAINER_TYPE::DOCKER;
 		}
 		if (strstr(line, "lxc") != NULL) {
-			result = LXC;
+			result = CONTAINER_TYPE::LXC;
 		}
 	}
 
@@ -67,15 +67,15 @@ static CONTAINER_TYPE checkContainerProc() {
 // 0=NO 1=Docker/2=Lxc
 static CONTAINER_TYPE checkSystemdContainer() {
 	ifstream systemd_container("/var/run/systemd/container");
-	CONTAINER_TYPE result = NONE;
+	CONTAINER_TYPE result = CONTAINER_TYPE::NONE;
 	if (systemd_container.good()) {
-		result = DOCKER;
+		result = CONTAINER_TYPE::DOCKER;
 		for (string line; getline(systemd_container, line);) {
 			if (line.find("docker") != string::npos) {
-				result = DOCKER;
+				result = CONTAINER_TYPE::DOCKER;
 				break;
 			} else if (line.find("lxc") != string::npos) {
-				result = LXC;
+				result = CONTAINER_TYPE::LXC;
 				break;
 			}
 		}
@@ -85,7 +85,7 @@ static CONTAINER_TYPE checkSystemdContainer() {
 
 static CONTAINER_TYPE get_container_type() {
 	CONTAINER_TYPE result = checkContainerProc();
-	if (result == NONE) {
+	if (result == CONTAINER_TYPE::NONE) {
 		result = checkSystemdContainer();
 	}
 	return result;

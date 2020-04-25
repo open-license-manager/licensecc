@@ -30,6 +30,7 @@ jobs:
              - libboost-date-time-dev
      script: 
          - cmake --build . --target install
+         - src/inspector/lccinspector
          - ctest
          - ctest -T memcheck        
    - os: linux
@@ -75,6 +76,7 @@ jobs:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON ..
      script: 
          - cmake --build . --target install
+         - src/inspector/lccinspector
          - ctest
      after_success:
          # Create lcov report
@@ -112,7 +114,7 @@ jobs:
         - docker commit centos8_toconfigure centos8_configured
      script: 
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
-            "cd /root/open-license-manager/build && make && make install && VIRTUAL_ENV=DOCKER make test"
+            "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && VIRTUAL_ENV=DOCKER make test"
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"

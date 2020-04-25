@@ -39,7 +39,7 @@ const static unsigned char unb64[] = {
 };  // This array has 255 elements
 
 // review api
-void add_CR_if_needed(string& encodeBuffer, int lineLenght) {
+static void add_CR_if_needed(string& encodeBuffer, int lineLenght) {
 	if (lineLenght > 0 && ((encodeBuffer.size() + 1) % lineLenght) == 0) {
 		encodeBuffer += '\n';
 	}

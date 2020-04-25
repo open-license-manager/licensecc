@@ -12,8 +12,6 @@
 
 #include "../base/base.h"
 #include "../base/logger.h"
-#include "../os/cpu_info.hpp"
-#include "../os/execution_environment.hpp"
 #include "identification_strategy.hpp"
 #include "hw_identifier.hpp"
 
@@ -56,19 +54,6 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_HW_IDENTIFICA
 	FUNCTION_RETURN result = strategy_ptr->generate_pc_id(pc_id);
 	if (result != FUNC_RET_OK) {
 		throw logic_error("strategy " + to_string(strategy_ptr->identification_strategy()) + " failed");
-	}
-	os::ExecutionEnvironment exec;
-	os::VIRTUALIZATION virtualization = exec.getVirtualization();
-	pc_id.set_virtual_environment(virtualization);
-	pc_id.set_use_environment_var(use_env_var);
-	if (virtualization != os::NONE) {
-		bool isCloud = exec.is_cloud();
-		if (isCloud) {
-			pc_id.set_cloud_provider(exec.getCloudProvider());
-		} else {
-			os::CpuInfo cpu;
-			pc_id.set_virtualization(cpu.virtualization_details());
-		}
 	}
 	return pc_id.print();
 }

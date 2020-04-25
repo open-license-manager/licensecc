@@ -175,27 +175,6 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	return result;
 }
 
-static void _getCpuid(unsigned int *p, unsigned int ax) {
-	__asm __volatile(
-		"movl %%ebx, %%esi\n\t"
-		"cpuid\n\t"
-		"xchgl %%ebx, %%esi"
-		: "=a"(p[0]), "=S"(p[1]), "=c"(p[2]), "=d"(p[3])
-		: "0"(ax));
-}
-
-FUNCTION_RETURN getCpuId(unsigned char identifier[6]) {
-	unsigned int i;
-	unsigned int cpuinfo[4] = {0, 0, 0, 0};
-	_getCpuid(cpuinfo, 0);
-	for (i = 0; i < 3; i++) {
-		identifier[i * 2] = cpuinfo[i] & 0xFF;
-		identifier[i * 2 + 1] = (cpuinfo[i] & 0xFF00) >> 8;
-	}
-	return FUNC_RET_OK;
-}
-
-
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	static struct utsname u;

@@ -11,8 +11,6 @@
 extern "C" {
 #endif
 
-#include <licensecc_properties.h>
-
 #include "datatypes.h"
 
 /**
@@ -39,15 +37,17 @@ void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licens
  * wiki for more informations.
  * @param identifier_out[out] buffer where the identification string will be placed.
  * @param identifier_out[in-out] size of the buffer where the identification string will be placed.
+ * @param execution_environment_info[out] if not null will contain the informations about the execution environment.
  */
-bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size);
+bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
+				 ExecutionEnvironmentInfo* execution_environment_info);
 
 /**
  * This method is used to request the use of one license for a product.
  * In case of local license it's used to check if the product is licensed.
  *
  * @return ::LICENSE_OK(0) if successful. Other values if there are errors.
- * 
+ *
  * @param callerInformation[in]
  * 			a vendor defined string containing the name of the product we want to request.
  * @param licenseLocation[in] otpional, can be NULL.

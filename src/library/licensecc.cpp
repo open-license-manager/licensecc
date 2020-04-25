@@ -19,31 +19,37 @@
 
 #include "base/logger.h"
 #include "hw_identifier/hw_identifier_facade.hpp"
+#include "os/execution_environment.hpp"
 #include "limits/license_verifier.hpp"
 #include "base/StringUtils.h"
 #include "LicenseReader.hpp"
 
 using namespace std;
 
-
 void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licenseInfo) {}
 
-bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize) {
+bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
+				 ExecutionEnvironmentInfo* execution_environment_info) {
 	bool result = false;
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
-			string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
+			const string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
 			strncpy(chbuffer, pc_id.c_str(), *bufSize);
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
 #ifdef _DEBUG
-				cout
-				<< "Error occurred: " << ex.what() << std::endl;
+			cout << "Error occurred: " << ex.what() << std::endl;
 #endif
 		}
 	} else {
 		*bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
+	}
+	if (execution_environment_info != nullptr) {
+		const license::os::ExecutionEnvironment exec_env;
+		execution_environment_info->cloud_provider = exec_env.cloud_provider();
+		execution_environment_info->virtualization = exec_env.virtualization();
+		execution_environment_info->virtualization_detail = exec_env.virtualization_detail();
 	}
 	return result;
 }
@@ -64,8 +70,8 @@ static void mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* lice
 	}
 }
 
-LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation,
-									 const LicenseLocation* licenseLocation, LicenseInfo* license_out) {
+LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
+							   LicenseInfo* license_out) {
 	const license::LicenseReader lr = license::LicenseReader(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
@@ -129,4 +135,3 @@ LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation,
 LCC_EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
 
 LCC_EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
-

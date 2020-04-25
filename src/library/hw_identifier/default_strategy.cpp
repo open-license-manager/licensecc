@@ -14,16 +14,16 @@ namespace license {
 namespace hw_identifier {
 
 static vector<LCC_API_HW_IDENTIFICATION_STRATEGY> available_strategies() {
-	os::ExecutionEnvironment exec;
-	os::VIRTUALIZATION virtualization = exec.getVirtualization();
+	const os::ExecutionEnvironment exec;
+	LCC_API_VIRTUALIZATION_SUMMARY virtualization = exec.virtualization();
 	vector<LCC_API_HW_IDENTIFICATION_STRATEGY> strategy_to_try;
-	if (virtualization == os::CONTAINER) {
+	if (virtualization == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
 		if (exec.is_docker()) {
 			strategy_to_try = LCC_DOCKER_STRATEGIES;
 		} else {
 			strategy_to_try = LCC_LXC_STRATEGIES;
 		}
-	} else if (virtualization == os::VM) {
+	} else if (virtualization == LCC_API_VIRTUALIZATION_SUMMARY::VM) {
 		if (exec.is_cloud()) {
 			strategy_to_try = LCC_CLOUD_STRATEGIES;
 		} else {

@@ -28,7 +28,7 @@ using namespace license::hw_identifier;
  * Test get and set and compare hardware identifier data
  */
 BOOST_AUTO_TEST_CASE(set_and_compare_data) {
-	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0xFF, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
+	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0xFF, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
 	HwIdentifier pc_id;
 	pc_id.set_data(data);
 	data[0] = data[0] & 0x1f;
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(set_and_compare_data) {
  * Test get and set and compare hardware identifier data
  */
 BOOST_AUTO_TEST_CASE(compare_wrong_data) {
-	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
+	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
 	HwIdentifier pc_id;
 	pc_id.set_data(data);
 	data[4] = 0;
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(compare_wrong_data) {
  * Print a hardware identifier and read it from the same string, check the data matches
  */
 BOOST_AUTO_TEST_CASE(print_and_read) {
-	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
+	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42};
 	HwIdentifier pc_id;
 	pc_id.set_data(data);
 	pc_id.set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_ETHERNET);

@@ -16,8 +16,8 @@ using namespace os;
 
 BOOST_AUTO_TEST_CASE(read_disk_id) {
 	os::ExecutionEnvironment exec_env;
-	os::VIRTUALIZATION virt = exec_env.getVirtualization();
-	if (virt == VIRTUALIZATION::NONE || virt == VIRTUALIZATION::VM) {
+	LCC_API_VIRTUALIZATION_SUMMARY virt = exec_env.virtualization();
+	if (virt == LCC_API_VIRTUALIZATION_SUMMARY::NONE || virt == LCC_API_VIRTUALIZATION_SUMMARY::VM) {
 		DiskInfo *diskInfos = NULL;
 		size_t disk_info_size = 0;
 		FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].label, sizeof diskInfos[0].label), 0);
 		BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
 		free(diskInfos);
-	} else if (virt == VIRTUALIZATION::CONTAINER) {
+	} else if (virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
 		// docker or lxc diskInfo is not meaningful
 		DiskInfo *diskInfos = NULL;
 		size_t disk_info_size = 0;

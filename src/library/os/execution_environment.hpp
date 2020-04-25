@@ -35,9 +35,9 @@ public:
 	~ExecutionEnvironment(){};
 	LCC_API_VIRTUALIZATION_SUMMARY virtualization() const;
 	bool is_cloud() const;
-	bool is_docker() const { return m_container_type != CONTAINER_TYPE::DOCKER; }
+	bool is_docker() const { return m_container_type == CONTAINER_TYPE::DOCKER; }
 	// detect if it's a kind of container technology (docker or lxc)
-	bool is_container() const { return m_container_type != NONE; }
+	bool is_container() const { return m_container_type != CONTAINER_TYPE::NONE; }
 	LCC_API_CLOUD_PROVIDER cloud_provider() const;
 	LCC_API_VIRTUALIZATION_DETAIL virtualization_detail() const;
 };

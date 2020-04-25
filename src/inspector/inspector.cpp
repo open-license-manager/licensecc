@@ -23,10 +23,32 @@ const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtual
 													 {HV, "Microsoft Hypervisor"},
 													 {V_OTHER, "Other type of vm"}};
 
-const unordered_map<LCC_API_VIRTUALIZATION_SUMMARY, string> descByVirt = {
+const unordered_map<int, string> descByVirt = {
 	{LCC_API_VIRTUALIZATION_SUMMARY::NONE, "No virtualization"},
-	{LCC_API_VIRTUALIZATION_SUMMARY::VM, "VM"},
+	{LCC_API_VIRTUALIZATION_SUMMARY::VM, "Virtual machine"},
 	{LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container"}};
+
+typedef enum {
+	PROV_UNKNOWN = 0,
+	ON_PREMISE = 1,
+	GOOGLE_CLOUD = 2,
+	AZURE_CLOUD = 3,
+	AWS = 4,
+	/**
+	 * "/sys/class/dmi/id/bios_vendor" SeaBIOS
+	 * "/sys/class/dmi/id/sys_vendor" Alibaba Cloud
+	 * modalias
+	 * "dmi:bvnSeaBIOS:bvrrel-1.7.5-0-ge51488c-20140602_164612-nilsson.home.kraxel.org:bd04/01/2014:svnAlibabaCloud:pnAlibabaCloudECS:pvrpc-i440fx-2.1:cvnAlibabaCloud:ct1:cvrpc-i440fx-2.1:"
+	 */
+	ALI_CLOUD = 5
+} LCC_API_CLOUD_PROVIDER;
+
+const unordered_map<int, string> descByCloudProvider = {{PROV_UNKNOWN, "Provider unknown"},
+														{ON_PREMISE, "On premise hardware (no cloud)"},
+														{GOOGLE_CLOUD, "Google Cloud"},
+														{AZURE_CLOUD, "Microsoft Azure"},
+														{AWS, "Amazon AWS"},
+														{ALI_CLOUD, "Alibaba Cloud (Chinese cloud provider)"}};
 
 const unordered_map<int, string> stringByEventType = {
 	{LICENSE_OK, "OK "},
@@ -68,15 +90,14 @@ int main(int argc, char* argv[]) {
 	}
 	cout << "Virtualiz. class :" << descByVirt.find(exec_env_info.virtualization)->second << endl;
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
-	cout << "Cloud provider   :" << exec_env_info.cloud_provider << endl << "=============" << endl;
-	;
+	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider) << endl
+		 << "=============" << endl;
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;
 	cout << "Cpu Brand        :" << cpu.brand() << endl;
 	cout << "Cpu hypervisor   :" << cpu.is_hypervisor_set() << endl;
 	cout << "Cpu model        :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
 	license::os::DmiInfo dmi_info;
-
 	cout << "Bios vendor     :" << dmi_info.bios_vendor() << endl;
 	cout << "Bios description:" << dmi_info.bios_description() << endl;
 	cout << "System vendor   :" << dmi_info.sys_vendor() << endl << endl;

@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE network_test
+#define BOOST_TEST_MODULE execution_environment_test
 #include <string>
 #include <iostream>
 #include <boost/test/unit_test.hpp>

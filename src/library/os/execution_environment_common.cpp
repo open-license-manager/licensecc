@@ -24,14 +24,15 @@ const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> virtual_cpu_names{
 	{"VBOX", VIRTUALBOX}};
 
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{{"VMWARE", VMWARE},
-															  {"MICROSOFT", HV},
-															  {"VITRUAL MACHINE", V_OTHER},
+																	  {"MICROSOFT", HV},
+																	  {"VITRUAL MACHINE", V_OTHER},
 																	  {"INNOTEK GMBH", VIRTUALBOX},
-															  {"POWERVM", V_OTHER},
-															  {"BOCHS", V_OTHER},
-															  {"KVM", KVM}};
+																	  {"POWERVM", V_OTHER},
+																	  {"BOCHS", V_OTHER},
+																	  {"KVM", KVM}};
 
-static LCC_API_VIRTUALIZATION_DETAIL find_in_map(const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL>& map, const string& data) {
+static LCC_API_VIRTUALIZATION_DETAIL find_in_map(const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL>& map,
+												 const string& data) {
 	for (auto it : map) {
 		if (data.find(it.first) != string::npos) {
 			return it.second;
@@ -67,8 +68,10 @@ LCC_API_VIRTUALIZATION_DETAIL ExecutionEnvironment::virtualization_detail() cons
 			}
 		}
 	}
-	if (result == BARE_TO_METAL && m_cpu_info.is_hypervisor_set()) {
-		result = V_OTHER;
+	if (result == BARE_TO_METAL) {
+		if (m_cpu_info.is_hypervisor_set() || is_cloud()) {
+			result = V_OTHER;
+		}
 	}
 	return result;
 }
@@ -88,7 +91,8 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 		if (bios_vendor.find("SEABIOS") != string::npos || bios_description.find("ALIBABA") != string::npos ||
 			sys_vendor.find("ALIBABA") != string::npos) {
 			result = ALI_CLOUD;
-		} else if (sys_vendor.find("GOOGLE") != string::npos || bios_description.find("GOOGLE") != string::npos) {
+		} else if (sys_vendor.find("GOOGLE") != string::npos ||
+				   bios_description.find("GOOGLECOMPUTEENGINE") != string::npos) {
 			result = GOOGLE_CLOUD;
 		} else if (bios_vendor.find("AWS") != string::npos || bios_description.find("AMAZON") != string::npos ||
 				   sys_vendor.find("AWS") != string::npos) {

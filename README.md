@@ -58,10 +58,10 @@ make
 make install
 ```
 
-### build on Windows (with MSVC 2015)
+### build on Windows (with MSVC 2017)
 
 ```console
-cmake .. -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT="{Folder where boost is}" -DCMAKE_INSTALL_PREFIX=../install
+cmake .. -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="{Folder where boost is}" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install --config Release
 ```
 

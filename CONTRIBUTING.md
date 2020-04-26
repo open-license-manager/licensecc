@@ -1,14 +1,13 @@
 Contributing to Open License Manager
 ==========
-:+1::tada: First off, if you landed here means you want to contribute! :tada::+1:
 
-The following is a set of guidelines for contributing to Open License Manager and its packages, which are hosted in the [Open License Manager organization](https://github.com/open-license-manager) on GitHub. 
+The following is a set of guidelines for contributing to Open License Manager and its sub-projects. 
 
 ## How to contribute
 
 ### Interacting with the team 
 
-If you're experinecing issues with the project, due to lack/unclear documentation and you're unsure if opening or not a bug you can first contact us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). Please try to be very specific about your problem. Use the guidelines in ["How to Submit A (Good) Bug Report"](#how-to-submit-a-good-bug-report) to structure your question. 
+If you're experiencing issues with the project, due to lack of documentation or you basically just want to ask a question you can contact us on [project forum](https://groups.google.com/forum/#!forum/licensecc). If you're compiling `licensecc` following the guide and you meet an issue you'd better open a bug. Please try to be very specific about your problem. You can use the guidelines in ["How to Submit A (Good) Bug Report"](#how-to-submit-a-good-bug-report) to structure your question. 
 
 ### Reporting Bugs
 
@@ -40,11 +39,13 @@ Include details about your configuration and environment:
 -   **What's are the `cmake` command line you used to generate your build scripts**? 
 -   **Are you running Open License Manager in a virtual machine/docker?** If so, which VM software are you using and which operating systems and versions are used for the guest?
 
-### Suggesting Enhancements
+### Suggesting Enhancements or new features
 
 This section guides you through submitting an enhancement suggestion for Open License Manager, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions :mag_right:.
 
-Before creating enhancement suggestions, please check [existing enhancement request](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aenhancement) to see if the enhancement has already been suggested, as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-to-submit-a-good-enhancement-suggestion). 
+If you have an idea about a new feature or a question about an environment support, the simplest way you can reach the team is through the [project forum](https://groups.google.com/forum/#!forum/licensecc).
+
+Otherwise you can open an enhancement suggestion in github. Before you do so check [existing enhancement request](https://github.com/open-license-manager/open-license-manager/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aenhancement) to see if the enhancement has already been suggested. When you are creating an enhancement suggestion, please [include as many details as possible](#how-to-submit-a-good-enhancement-suggestion). 
 
 Please also check for the [current and planned features](https://github.com/open-license-manager/open-license-manager/wiki/features) in the wiki to see where the project is heading to.
 
@@ -54,10 +55,8 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 
 -   **Use a clear and descriptive title** for the issue to identify the suggestion.
 -   **Provide a detailed description of the suggested enhancement** in as many details as possible.
--   **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets of code which we could use, or reference to other libraries, algorithms, open source code.
--   **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
 -   **Explain why this enhancement would be useful** to most Open License Manager users and isn't something that can or should be implemented.
--   **List some other software protection where this enhancement exists.**
+-   **List some other software protection where this feature exists.**
 -   **Specify the name and version of the OS you're proposing the enhancement for.** If applicable include all the environment informations: is this for running the application in a VM? in a Docker?
 -   **Label the issue as enhancement.**
 
@@ -67,7 +66,7 @@ Unsure where to begin contributing to Open License Manager? You can start by loo
 
 You can have a look to the project upcoming milestones to see what's going to be implemented soon and what is the project direction. If you decide to contribute on an issue scheduled in the current milestone, comment on the issue first. If the issue is marked as "assigned" there may be already some work done for it. Commenting on the issue will ensure we don't duplicate our work. Also have a look to the branches:  there may be a feature branch corresponding to the issue with some work already done.   
 
-If you have already forked the repository to implement a specific feature, and you want your code to be merged in the main repository please first file an enhancement request as explained in [suggesting enhancements](#suggesting-enhancements). If you found a bug and you want to propose a fix please [report a bug](#reporting-bugs) before.
+If you have already forked the repository to implement a specific feature, and you want your code to be merged in the main repository please first file an enhancement request as explained in [suggesting enhancements](#suggesting-enhancements-or-new-features). If you found a bug and you want to propose a fix please [report a bug](#reporting-bugs) before.
 
 We apply a subset of [GitFlow](https://nvie.com/posts/a-successful-git-branching-model) development workflow. Be sure to work against `develop` branch, since `master` is reserved for stable releases, and may be outdated.
  
@@ -85,5 +84,4 @@ Supposing you already know how to contribute to an open source project on GitHub
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
     -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
-    -  Even it it's in beta stage it's used ( _by some really courageous people!_ ) in production. We can't break current functionality, user established habits without documenting the change.
     

@@ -13,6 +13,7 @@ jobs:
      name: "Ubuntu 18.04 - Travis CI VM"
      env:
      - VIRTUAL_ENV=VM
+     - CTEST_OUTPUT_ON_FAILURE=1
      addons:
         apt:
           packages:
@@ -31,7 +32,6 @@ jobs:
      script: 
          - cmake --build . --target install
          - src/inspector/lccinspector
-         - ctest
          - ctest -T memcheck        
    - os: linux
      dist: xenial
@@ -56,6 +56,7 @@ jobs:
      name: "Ubuntu 18.04 - Travis CI VM - Debug build"
      env:
      - VIRTUAL_ENV=VM
+     - CTEST_OUTPUT_ON_FAILURE=1
      addons:
         apt:
           packages:

@@ -73,7 +73,6 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
-	set(main_lib_dest "lib/${PROJECT_NAME}")  
 else(UNIX)
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(STATUS "Openssl not found, configuring the library without it (running in wine not supported).")
@@ -98,7 +97,6 @@ else(UNIX)
 	        SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libstdc++")
 	    endif(MINGW)
 	endif(MSVC)
-	set(main_lib_dest "${PROJECT_NAME}")  
 endif(UNIX)
 
 #initialize project
@@ -188,7 +186,7 @@ ELSE(Doxygen_FOUND AND Sphinx_FOUND)
 	message(STATUS "Doxygen or Sphynx not found, not generating docs.")
 ENDIF(Doxygen_FOUND AND Sphinx_FOUND)
 
-
+set(main_lib_dest "lib/cmake/${PROJECT_NAME}")  
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 install(FILES src/cmake/licensecc-config.cmake DESTINATION ${main_lib_dest})

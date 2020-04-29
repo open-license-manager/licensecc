@@ -104,6 +104,7 @@ endif(UNIX)
 set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJECT_NAME}/${LCC_PROJECT_NAME}" )
 set(LCC_PROJECT_PUBLIC_KEY "${LCC_INCLUDE_DIR}/public_key.h" )
 set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/private_key.rsa" )
+set(main_lib_dest "lib/cmake/${PROJECT_NAME}")
 
 add_custom_command(
   OUTPUT "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}"
@@ -185,8 +186,6 @@ IF(Doxygen_FOUND AND Sphinx_FOUND)
 ELSE(Doxygen_FOUND AND Sphinx_FOUND)
 	message(STATUS "Doxygen or Sphynx not found, not generating docs.")
 ENDIF(Doxygen_FOUND AND Sphinx_FOUND)
-
-set(main_lib_dest "lib/cmake/${PROJECT_NAME}")  
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 install(FILES src/cmake/licensecc-config.cmake DESTINATION ${main_lib_dest})

@@ -7,4 +7,4 @@ target_link_libraries(lccinspector
      Boost::filesystem
      Boost::system)
 
-install(TARGETS lccinspector RUNTIME DESTINATION bin)
+install(TARGETS lccinspector RUNTIME DESTINATION bin/${LCC_PROJECT_NAME})

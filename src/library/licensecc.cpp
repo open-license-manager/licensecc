@@ -21,7 +21,7 @@
 #include "hw_identifier/hw_identifier_facade.hpp"
 #include "os/execution_environment.hpp"
 #include "limits/license_verifier.hpp"
-#include "base/StringUtils.h"
+#include "base/string_utils.h"
 #include "LicenseReader.hpp"
 
 using namespace std;

@@ -95,7 +95,19 @@ typedef struct {
  */
 typedef struct {
 	char version[LCC_API_VERSION_LENGTH + 1];  // software version in format xxxx[.xxxx.xxxx] //TODO
-	char project_name[LCC_API_PROJECT_NAME_SIZE + 1];  // name of the project (must correspond to the name in the license)
+	/**
+	 * Name of the feature you want to verify. If empty the default feature will be verified.
+	 * Every project has a default feature that is equal to the project name.
+	 * Every feature has a section in the license file:
+	 * <pre>
+	 * [feature_xx]
+	 * sig=AAAA
+	 * [bb]
+	 * expiry-date
+	 * </pre>
+	 */
+	char feature_name[LCC_API_PROJECT_NAME_SIZE +
+					  1];  // name of the feature you' (must correspond to the name in the license)
 	/**
 	 * this number passed in by the application must correspond to the magic number used when compiling the library.
 	 * See cmake parameter -DLCC_PROJECT_MAGIC_NUM and licensecc_properties.h macro VERIFY_MAGIC

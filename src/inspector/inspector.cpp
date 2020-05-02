@@ -1,8 +1,13 @@
 #include <iostream>
+#include <vector>
 #include <map>
 #include <unordered_map>
 #include <licensecc/licensecc.h>
 #include <fstream>
+#include <string.h>
+#include "../library/base/string_utils.h"
+#include "../library/ini/SimpleIni.h"
+#include "../library/os/dmi_info.hpp"
 #include "../library/os/cpu_info.hpp"
 #include "../library/os/dmi_info.hpp"
 
@@ -23,10 +28,9 @@ const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtual
 													 {HV, "Microsoft Hypervisor"},
 													 {V_OTHER, "Other type of vm"}};
 
-const unordered_map<int, string> descByVirt = {
-	{LCC_API_VIRTUALIZATION_SUMMARY::NONE, "No virtualization"},
-	{LCC_API_VIRTUALIZATION_SUMMARY::VM, "Virtual machine"},
-	{LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container"}};
+const unordered_map<int, string> descByVirt = {{LCC_API_VIRTUALIZATION_SUMMARY::NONE, "No virtualization"},
+											   {LCC_API_VIRTUALIZATION_SUMMARY::VM, "Virtual machine"},
+											   {LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container"}};
 
 const unordered_map<int, string> descByCloudProvider = {{PROV_UNKNOWN, "Provider unknown"},
 														{ON_PREMISE, "On premise hardware (no cloud)"},
@@ -53,11 +57,27 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 	std::copy(fname.begin(), fname.end(), licLocation.licenseData);
 	LCC_EVENT_TYPE result = acquire_license(nullptr, &licLocation, &licenseInfo);
 	if (result == LICENSE_OK) {
-		cout << "license OK" << endl;
+		cout << "default project [" << LCC_PROJECT_NAME << "]: license OK" << endl;
 	} else {
-		cerr << stringByEventType.find(result)->second << endl;
+		cerr << "default project [" << LCC_PROJECT_NAME << "]:" << stringByEventType.find(result)->second << endl;
 	}
-
+	CSimpleIniA ini;
+	ini.LoadFile(fname.c_str());
+	CSimpleIniA::TNamesDepend sections;
+	ini.GetAllSections(sections);
+	CallerInformations callerInformation;
+	for (CSimpleIniA::Entry section : sections) {
+		const string section_name(section.pItem, 15);
+		if (section_name != LCC_PROJECT_NAME) {
+			std::copy(section_name.begin(), section_name.end(), callerInformation.project_name);
+			LCC_EVENT_TYPE result = acquire_license(&callerInformation, &licLocation, &licenseInfo);
+			if (result == LICENSE_OK) {
+				cout << "project [" << section.pItem << "]: license OK" << endl;
+			} else {
+				cerr << "project [" << section.pItem << "]" << stringByEventType.find(result)->second << endl;
+			}
+		}
+	}
 	return result;
 }
 
@@ -75,19 +95,18 @@ int main(int argc, char* argv[]) {
 	}
 	cout << "Virtualiz. class :" << descByVirt.find(exec_env_info.virtualization)->second << endl;
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
-	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl
-		 << "=============" << endl;
+	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl;
+
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;
 	cout << "Cpu Brand        :" << cpu.brand() << endl;
 	cout << "Cpu hypervisor   :" << cpu.is_hypervisor_set() << endl;
 	cout << "Cpu model        :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
 	license::os::DmiInfo dmi_info;
-	cout << "Bios vendor     :" << dmi_info.bios_vendor() << endl;
-	cout << "Bios description:" << dmi_info.bios_description() << endl;
-	cout << "System vendor   :" << dmi_info.sys_vendor() << endl << endl;
-
-
+	cout << "Bios vendor      :" << dmi_info.bios_vendor() << endl;
+	cout << "Bios description :" << dmi_info.bios_description() << endl;
+	cout << "System vendor    :" << dmi_info.sys_vendor() << endl << endl;
+	cout << "==================" << endl;
 	if (argc == 2) {
 		const string fname(argv[1]);
 		ifstream license_file(fname);
@@ -95,6 +114,25 @@ int main(int argc, char* argv[]) {
 			verifyLicense(fname);
 		} else {
 			cerr << "license file :" << fname << " not found." << endl;
+		}
+	}
+	bool find_license_with_env_var = FIND_LICENSE_WITH_ENV_VAR;
+	if (find_license_with_env_var) {
+		char* env_var_value = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
+		if (env_var_value != nullptr && env_var_value[0] != '\0') {
+			cout << "environment variable [" << LCC_LICENSE_LOCATION_ENV_VAR << "] value [" << env_var_value << "]"
+				 << endl;
+			const vector<string> declared_licenses = license::split_string(string(env_var_value), ';');
+			for (string fname : declared_licenses) {
+				ifstream license_file(fname);
+				if (license_file.good()) {
+					verifyLicense(fname);
+				} else {
+					cerr << "license file :" << fname << " not found." << endl;
+				}
+			}
+		} else {
+			cout << "environment variable [" << LCC_LICENSE_LOCATION_ENV_VAR << "] configured but not defined." << endl;
 		}
 	}
 }

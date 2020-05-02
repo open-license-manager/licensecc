@@ -26,7 +26,7 @@
 
 #include "base/base.h"
 #include "LicenseReader.hpp"
-#include "base/StringUtils.h"
+#include "base/string_utils.h"
 #include "base/logger.h"
 #include "locate/LocatorFactory.hpp"
 

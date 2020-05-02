@@ -18,7 +18,7 @@
 #include "../cpu_info.hpp"
 #include "../execution_environment.hpp"
 #include "../../base/file_utils.hpp"
-#include "../../base/StringUtils.h"
+#include "../../base/string_utils.h"
 
 namespace license {
 namespace os {

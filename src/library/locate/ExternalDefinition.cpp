@@ -14,7 +14,7 @@
 
 #include "../base/base64.h"
 #include "../base/EventRegistry.h"
-#include "../base/StringUtils.h"
+#include "../base/string_utils.h"
 
 #include "ExternalDefinition.hpp"
 #include "../base/file_utils.hpp"

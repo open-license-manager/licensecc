@@ -77,8 +77,8 @@ LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, cons
 	string project;
 	size_t str_size;
 	if (callerInformation != nullptr &&
-		(str_size = license::mstrnlen_s(callerInformation->project_name, sizeof callerInformation->project_name)) > 0) {
-		project = string(callerInformation->project_name, str_size);
+		(str_size = license::mstrnlen_s(callerInformation->feature_name, sizeof callerInformation->project_name)) > 0) {
+		project = string(callerInformation->feature_name, str_size);
 	} else {
 		project = string(LCC_PROJECT_NAME);
 	}

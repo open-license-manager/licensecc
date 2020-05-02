@@ -102,11 +102,11 @@ typedef struct {
 	 * <pre>
 	 * [feature_xx]
 	 * sig=AAAA
-	 * [bb]
-	 * expiry-date
+	 * [another_feature]
+	 * expiry-date=20201111
 	 * </pre>
 	 */
-	char feature_name[LCC_API_PROJECT_NAME_SIZE +
+	char feature_name[LCC_API_FEATURE_NAME_SIZE +
 					  1];  // name of the feature you' (must correspond to the name in the license)
 	/**
 	 * this number passed in by the application must correspond to the magic number used when compiling the library.

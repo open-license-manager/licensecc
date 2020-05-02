@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <licensecc_properties_test.h>
+#include <licensecc_properties.h>
 
 #include "../../src/library/base/base.h"
 #include "../../src/library/ini/SimpleIni.h"
@@ -52,7 +53,7 @@ string generate_license(const string& license_name, const vector<string>& other_
 	CSimpleIniA ini;
 	const SI_Error rc = ini.LoadFile(license_fname.c_str());
 	BOOST_CHECK_GE(rc, 0);
-	const int sectionSize = ini.GetSectionSize("DEFAULT");
+	const int sectionSize = ini.GetSectionSize(LCC_PROJECT_NAME);
 	BOOST_CHECK_GT(sectionSize, 0);
 	return license_fname.string();
 }

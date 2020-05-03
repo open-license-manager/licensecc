@@ -47,7 +47,7 @@ find_package(PkgConfig)
 
 if(LCC_LOCATION)
 	find_package(lccgen HINTS ${LCC_LOCATION} CONFIG) #try to find it without looping on this module
-	if(NOT lcc_FOUND)
+	if(NOT lccgen_FOUND)
 		find_program(LCC_EXECUTABLE
 		NAMES ${lcc_names} HINTS ${LCC_LOCATION} DOC "lccgen command line client")
 		FIND_PACKAGE_HANDLE_STANDARD_ARGS(lccgen FOUND_VAR LCC_FOUND
@@ -55,7 +55,7 @@ if(LCC_LOCATION)
             	                           FAIL_MESSAGE "Error finding lcc executable. variable LCC_LOCATION non set correctly.")
     	add_executable(license_generator::lccgen IMPORTED GLOBAL)                                            
 		set_property(TARGET license_generator::lccgen PROPERTY IMPORTED_LOCATION ${LCC_EXECUTABLE})
-	ENDIF(NOT lcc_FOUND)
+	ENDIF(NOT lccgen_FOUND)
 ELSE(LCC_LOCATION)
 	find_package(lccgen HINTS ${CMAKE_BINARY_DIR} CONFIG) #try to find it without looping on this module
 

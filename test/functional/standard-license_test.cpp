@@ -54,23 +54,47 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 /**
  * Pass the license data to the application.
  */
+/* lccgen bug #10 parameter -b is ignored.
+BOOST_AUTO_TEST_CASE(base64_encoded) {
+	const string licLocation("standard_b64.lic");
+	vector<string> extraArgs;
+	extraArgs.push_back("-b");
+	const string lic_location = generate_license(licLocation, extraArgs);
+	const string license_data(license::get_file_contents(lic_location.c_str(), 65536));
+	LicenseInfo license;
+	LicenseLocation licenseLocation;
+	licenseLocation.license_data_type = LICENSE_ENCODED;
+	std::copy(license_data.begin(), license_data.end(), licenseLocation.licenseData);
+	const LCC_EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
+	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::LICENSE_OK);
+	BOOST_CHECK_EQUAL(license.has_expiry, false);
+	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
+}
+*/
 
-// BOOST_AUTO_TEST_CASE( b64_environment_variable ) {
-//	const string licLocation(PROJECT_TEST_TEMP_DIR "/standard_env_license.lic");
-//	const vector<string> extraArgs;
-//	generate_license(licLocation, extraArgs);
-//	const string licensestr(license::get_file_contents(licLocation.c_str(), MAX_LICENSE_LENGTH));
-//	/* */
-//	LicenseInfo license;
-//	LicenseLocation licenseLocation;
-//	licenseLocation.licenseFileLocation = nullptr;
-//	licenseLocation.licenseData = licensestr.c_str();
-//	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
-//			&license);
-//	BOOST_CHECK_EQUAL(result, LICENSE_OK);
-//	BOOST_CHECK_EQUAL(license.has_expiry, false);
-//	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
-//}
+BOOST_AUTO_TEST_CASE(multiple_features) {
+	vector<string> extraArgs;
+	extraArgs.push_back("-f");
+	extraArgs.push_back("feature1,feature2");
+	const fs::path licLocation = fs::path(generate_license("multi_feature", extraArgs));
+	const string licLocationStr = licLocation.string();
+	string license_data = get_file_contents(licLocationStr.c_str(), 65536);
+	LicenseInfo license;
+	LicenseLocation location = {LICENSE_PLAIN_DATA};
+	std::copy(license_data.begin(), license_data.end(), location.licenseData);
+	CallerInformations callInfo;
+	strcpy(callInfo.feature_name, "feature1");
+	callInfo.magic = 0;
+	callInfo.version[0] = '\0';
+	LCC_EVENT_TYPE result = acquire_license(&callInfo, &location, &license);
+	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::LICENSE_OK);
+	strcpy(callInfo.feature_name, "feature2");
+	result = acquire_license(&callInfo, &location, &license);
+	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::LICENSE_OK);
+	strcpy(callInfo.feature_name, "feature3");
+	result = acquire_license(&callInfo, &location, &license);
+	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::PRODUCT_NOT_LICENSED);
+}
 //
 // BOOST_AUTO_TEST_CASE( hw_identifier ) {
 //	const string licLocation(PROJECT_TEST_TEMP_DIR "/hw_identifier.lic");
@@ -87,5 +111,5 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 //	BOOST_CHECK_EQUAL(license.has_expiry, false);
 //	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
 //}
-}
+}  // namespace test
 }  // namespace license

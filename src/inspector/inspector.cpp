@@ -69,7 +69,7 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 	for (CSimpleIniA::Entry section : sections) {
 		const string section_name(section.pItem, 15);
 		if (section_name != LCC_PROJECT_NAME) {
-			std::copy(section_name.begin(), section_name.end(), callerInformation.project_name);
+			std::copy(section_name.begin(), section_name.end(), callerInformation.feature_name);
 			LCC_EVENT_TYPE result = acquire_license(&callerInformation, &licLocation, &licenseInfo);
 			if (result == LICENSE_OK) {
 				cout << "project [" << section.pItem << "]: license OK" << endl;

@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(base64_encoded) {
 BOOST_AUTO_TEST_CASE(multiple_features) {
 	vector<string> extraArgs;
 	extraArgs.push_back("-f");
-	extraArgs.push_back("feature1,feature2");
+	extraArgs.push_back(LCC_PROJECT_NAME ",feature1,feature2");
 	const fs::path licLocation = fs::path(generate_license("multi_feature", extraArgs));
 	const string licLocationStr = licLocation.string();
 	string license_data = get_file_contents(licLocationStr.c_str(), 65536);

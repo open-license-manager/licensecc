@@ -31,8 +31,33 @@ jobs:
              - libboost-date-time-dev
      script: 
          - cmake --build . --target install
-         - src/inspector/lccinspector
-         - ctest -T memcheck        
+         - ctest -T memcheck
+   - os: linux
+     dist: bionic
+     name: "Ubuntu 18.04 - VM - set LCC_PROJECT_NAME"
+     env:
+     - VIRTUAL_ENV=VM
+     - CTEST_OUTPUT_ON_FAILURE=1
+     addons:
+        apt:
+          packages:
+             - cmake
+             - valgrind
+             - libssl-dev
+             - zlib1g-dev
+             - libboost-dev
+             - libboost-test-dev
+             - libboost-filesystem-dev
+             - libboost-iostreams-dev
+             - libboost-program-options-dev
+             - libboost-system-dev
+             - libboost-thread-dev
+             - libboost-date-time-dev
+     before_script:
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
+     script: 
+         - cmake --build . --target install
+         - ctest -T memcheck    
    - os: linux
      dist: xenial
      name: "Ubuntu 16.04 - Travis CI VM"

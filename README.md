@@ -31,8 +31,8 @@ The software is made by 3 main sub-components:
 -   a license generator (github project [lcc-license-generator](https://github.com/open-license-manager/lcc-license-generator)) `lcc` for customizing the library and generate the licenses.
  
 ## How to build
-Below an overview of the basic build procedure, you can find detailed instructions for [linux](http://open-license-manager.github.io/open-license-manager/development/Build-the-library.html) 
-or [windows](http://open-license-manager.github.io/open-license-manager/development/Build-the-library-windows.html) in the project web site. 
+Below an overview of the basic build procedure, you can find detailed instructions for [Linux](http://open-license-manager.github.io/open-license-manager/development/Build-the-library.html) 
+or [Windows](http://open-license-manager.github.io/open-license-manager/development/Build-the-library-windows.html) in the project web site. 
 
 ### Prerequisites
 -   Operating system: Linux(Ubuntu, CentOS), Windows

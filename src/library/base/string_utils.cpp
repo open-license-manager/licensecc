@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <regex>
-#include "StringUtils.h"
+#include "string_utils.h"
 
 #ifdef _WIN32
 #include <time.h>  //mktime under windows

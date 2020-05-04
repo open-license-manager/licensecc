@@ -8,7 +8,7 @@
 #include <windows.h>
 #include "isvm/BIOSReader.h"
 #include "isvm/Native.h"
-#include "../../base/StringUtils.h"
+#include "../../base/string_utils.h"
 #include "../dmi_info.hpp"
 
 namespace license {

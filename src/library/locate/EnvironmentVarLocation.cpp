@@ -7,7 +7,7 @@
 
 #include <licensecc_properties.h>
 
-#include "../base/StringUtils.h"
+#include "../base/string_utils.h"
 #include "EnvironmentVarLocation.hpp"
 #include "../base/file_utils.hpp"
 

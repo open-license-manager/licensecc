@@ -26,7 +26,7 @@
 
 #include "base/base.h"
 #include "LicenseReader.hpp"
-#include "base/StringUtils.h"
+#include "base/string_utils.h"
 #include "base/logger.h"
 #include "locate/LocatorFactory.hpp"
 
@@ -112,7 +112,7 @@ string FullLicenseInfo::printForSign() const {
 	ostringstream oss;
 	oss << toupper_copy(trim_copy(m_project));
 	for (auto &it : m_limits) {
-		if (it.first != LICENSE_VERSION && it.first != LICENSE_SIGNATURE) {
+		if (it.first != LICENSE_SIGNATURE) {
 			oss << trim_copy(it.first) << trim_copy(it.second);
 		}
 	}

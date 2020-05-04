@@ -1,6 +1,6 @@
 
 #include "../../base/file_utils.hpp"
-#include "../../base/StringUtils.h"
+#include "../../base/string_utils.h"
 
 #include "../dmi_info.hpp"
 

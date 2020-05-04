@@ -4,13 +4,17 @@ Build - Windows
 
 This page describes how to build the library under windows. Both MSVC compiler and MinGW are supported.
 
-
-MSVC (2015~2019)
+MSVC (2017~2019)
 *****************
+
+Supported Visual Studio versions are: 
+
+* the latest Visual Studio 2019 (used in development) 
+* Visual Studio 2017 used in `travis.ci <https://docs.travis-ci.com/user/reference/windows/>` for automated tests.
 
 MSVC install prerequisites
 ============================= 
-Git is of course a prerequisite, if you don't have it you can download it from git-scm.com (here is a )
+Git is of course a prerequisite, if you don't have it you can download it from `git-scm.com <https://git-scm.com/download/win>`. 
 
 Pre-compiled `versions of boost <https://sourceforge.net/projects/boost/files/boost-binaries/>`_ for windows are available 
 at SourceForge. Choose the version that matches the desired architecture (eg. for Visual Studio 2019 64 bit you can download

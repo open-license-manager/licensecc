@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <licensecc_properties_test.h>
+#include <licensecc_properties.h>
 
 #include "../../src/library/base/base.h"
 #include "../../src/library/ini/SimpleIni.h"
@@ -48,11 +49,11 @@ string generate_license(const string& license_name, const vector<string>& other_
 	cout << "executing :" << ss.str() << endl;
 	const int retCode = std::system(ss.str().c_str());
 	BOOST_CHECK_EQUAL(retCode, 0);
-	BOOST_ASSERT(fs::exists(license_fname));
+	BOOST_ASSERT_MSG(fs::exists(license_fname), "license exists");
 	CSimpleIniA ini;
 	const SI_Error rc = ini.LoadFile(license_fname.c_str());
 	BOOST_CHECK_GE(rc, 0);
-	const int sectionSize = ini.GetSectionSize("DEFAULT");
+	const int sectionSize = ini.GetSectionSize(LCC_PROJECT_NAME);
 	BOOST_CHECK_GT(sectionSize, 0);
 	return license_fname.string();
 }

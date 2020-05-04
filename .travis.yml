@@ -60,6 +60,8 @@ jobs:
          - ctest -T memcheck    
    - os: linux
      dist: xenial
+     env:
+     - CTEST_OUTPUT_ON_FAILURE=1
      name: "Ubuntu 16.04 - Travis CI VM"
      addons:
         apt:
@@ -124,7 +126,7 @@ jobs:
         - docker commit centos7_toconfigure centos7_configured
      script: 
         - docker run --name centos7_make -v `pwd`:/root/open-license-manager centos7_configured /bin/bash -c 
-            "cd /root/open-license-manager/build && make && make install && VIRTUAL_ENV=CONTAINER make test"
+            "cd /root/open-license-manager/build && make && make install && CTEST_OUTPUT_ON_FAILURE=1 VIRTUAL_ENV=CONTAINER make test"
    - os: linux
      dist: bionic
      name: "CentOS-8 Docker"
@@ -140,13 +142,13 @@ jobs:
         - docker commit centos8_toconfigure centos8_configured
      script: 
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
-            "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && VIRTUAL_ENV=DOCKER make test"
+            "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && CTEST_OUTPUT_ON_FAILURE=1 VIRTUAL_ENV=DOCKER make test"
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
      env:
-        - CTEST_OUTPUT_ON_FAILURE=1      
-        - WINEARCH=win64
+     - CTEST_OUTPUT_ON_FAILURE=1      
+     - WINEARCH=win64
      addons:
         apt:
           packages:
@@ -174,6 +176,8 @@ jobs:
         - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl-1.0.2h-win64-mingw/ ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
+     env:
+     - CTEST_OUTPUT_ON_FAILURE=1   
      cache:
          edge: true
          directories:
@@ -258,11 +262,11 @@ jobs:
         on:
             branch: develop
 env:
-    - CTEST_OUTPUT_ON_FAILURE=1
+  - CTEST_OUTPUT_ON_FAILURE=1
 before_script:
-    - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
+  - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install ..
 
 script: 
-    - cmake --build . --target install --config Release
-    - ctest -C Release
+  - cmake --build . --target install --config Release
+  - ctest -C Release
     

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
 SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
-SET(CMAKE_DISABLE_SOURCE_CHANGES ON) #keys are generated in the source tree by default
+SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 IF(NOT LCC_PROJECT_NAME)

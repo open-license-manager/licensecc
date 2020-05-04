@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
 SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
-SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
+SET(CMAKE_DISABLE_SOURCE_CHANGES ON) #keys are generated in the source tree by default
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 IF(NOT LCC_PROJECT_NAME)
@@ -73,6 +73,9 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+	set(main_lib_dest "lib/${PROJECT_NAME}")
+	#https://cmake.org/cmake/help/latest/command/find_package.html
+	set(pkg_config_dest "lib/cmake/${PROJECT_NAME}")
 else(UNIX)
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(STATUS "Openssl not found, configuring the library without it (running in wine not supported).")
@@ -97,6 +100,9 @@ else(UNIX)
 	        SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libstdc++")
 	    endif(MINGW)
 	endif(MSVC)
+	set(main_lib_dest "${PROJECT_NAME}")  
+	#https://cmake.org/cmake/help/latest/command/find_package.html
+	set(pkg_config_dest "cmake/${PROJECT_NAME}")
 endif(UNIX)
 
 #initialize project
@@ -104,16 +110,14 @@ endif(UNIX)
 set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJECT_NAME}/${LCC_PROJECT_NAME}" )
 set(LCC_PROJECT_PUBLIC_KEY "${LCC_INCLUDE_DIR}/public_key.h" )
 set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/private_key.rsa" )
-set(main_lib_dest "lib/cmake/${PROJECT_NAME}")
 
-add_custom_command(
-  OUTPUT "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}"
+add_custom_target(project_initialize
   COMMAND license_generator::lccgen project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
-  COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY}"
+  COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY} and ${LCC_PROJECT_PRIVATE_KEY} if they don't already exist"
   USES_TERMINAL
 )
+
 include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
-add_custom_target(project_initialize DEPENDS "${LCC_PROJECT_PUBLIC_KEY}" "${LCC_PROJECT_PRIVATE_KEY}")
 
 message( STATUS "CXX compiler        : " ${CMAKE_CXX_COMPILER})
 message( STATUS "CXX compiler flags  : " ${CMAKE_CXX_FLAGS})
@@ -188,10 +192,10 @@ ELSE(Doxygen_FOUND AND Sphinx_FOUND)
 ENDIF(Doxygen_FOUND AND Sphinx_FOUND)
 install(DIRECTORY ${LCC_INCLUDE_DIR} DESTINATION include/${PROJECT_NAME})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
-install(FILES src/cmake/licensecc-config.cmake DESTINATION ${main_lib_dest})
+install(FILES src/cmake/licensecc-config.cmake DESTINATION ${pkg_config_dest})
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/licensecc-config-version.cmake COMPATIBILITY SameMajorVersion)
-install(FILES ${CMAKE_BINARY_DIR}/licensecc-config-version.cmake DESTINATION ${main_lib_dest})
+install(FILES ${CMAKE_BINARY_DIR}/licensecc-config-version.cmake DESTINATION ${pkg_config_dest})
 
 

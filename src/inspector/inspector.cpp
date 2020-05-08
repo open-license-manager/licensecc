@@ -26,6 +26,7 @@ const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtual
 													 {V_XEN, "XEN"},
 													 {KVM, "KVM"},
 													 {HV, "Microsoft Hypervisor"},
+													 {PARALLELS, "Parallels Desktop"},
 													 {V_OTHER, "Other type of vm"}};
 
 const unordered_map<int, string> descByVirt = {{LCC_API_VIRTUALIZATION_SUMMARY::NONE, "No virtualization"},

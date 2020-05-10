@@ -34,6 +34,8 @@ LCC_PROJECT_NAME     | Name of the project (the software where you want to integ
                      | Alternatively it is possible to specify a component name in the component section of find_package.
 ==================== ====================
 
+
+
 Call Licensecc from your code
 *******************************
 The file containing the public api is ``include/licensecc/licensecc.h``. Functions in there are considered stable.

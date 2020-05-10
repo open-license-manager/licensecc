@@ -34,7 +34,7 @@ export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
 export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
 ```
 
-Centos 7 ships with CMake 2.8.11 that's not supported anymore. You need to compile and install a newer (>3.6) version of CMake.
+Centos 7 ships with CMake 2.8.11 that's not supported. You need to compile and install a newer (>3.6) version of CMake.
 
 ```console
 wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz 
@@ -46,7 +46,7 @@ sudo make install
 cmake --version #(check it's 3.11.0) 
 ```
 
-If you don't want to install all these prerequisites you can also build the library in a docker container. Check for the corresponding section in the `.travis.yml` file at the base of the project.
+If you don't want to install all these prerequisites in your machine you can also build the library in a docker container. Check for the corresponding section in the `.travis.yml` file at the base of the project.
 
 ### CentOS 8
 Install prerequisites:
@@ -72,11 +72,10 @@ Open License Manager should compile on any recent (2019) linux distribution. Bei
 Minimum prerequisites
 *   gcc => 4.9, cmake => 3.6
 *   zlib, openssl => 1.0.2 
-*   Boost => 1.53 (If you want to compile your own boost version remember to use the flag `runtime-link=static`)
+*   Boost => 1.57 (If you want to compile your own boost version remember to use the flag `runtime-link=static`)
 
 Optional prerequisites:
-*   Dbus (if you want to enable dbus generated identifiers) 
-*   Doxygen
+*   Doxygen, Sphynx for documentation
 
 ## Download and compile
 

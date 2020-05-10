@@ -21,6 +21,7 @@
 # Cmake generated files
 build/*
 !build/.gitkeep 
+install/*
 
 #eclipse files
 .cproject

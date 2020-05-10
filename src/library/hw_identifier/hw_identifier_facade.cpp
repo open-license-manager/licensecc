@@ -29,6 +29,7 @@ LCC_EVENT_TYPE HwIdentifierFacade::validate_pc_signature(const std::string& str_
 		result = strategy->validate_identifier(pc_id);
 	} catch (logic_error& e) {
 		LOG_ERROR("Error validating identifier %s: %s", str_code.c_str(), e.what());
+		((void)(e));
 	}
 	return result;
 }

@@ -37,7 +37,7 @@ string get_file_contents(const char *filename, size_t max_size) {
 	ifstream in(filename, std::ios::binary);
 	if (in) {
 		string contents;
-		size_t index = in.seekg(0, ios::end).tellg();
+		size_t index = (size_t)in.seekg(0, ios::end).tellg();
 		size_t limited_size = min(index, max_size);
 		contents.resize(limited_size);
 		in.seekg(0, ios::beg);

@@ -49,7 +49,7 @@ string base64(const void* binaryData, size_t len, int lineLenght) {
 	const unsigned char* bin = (const unsigned char*)binaryData;
 
 	int rc = 0;  // result counter
-	int byteNo;  // I need this after the loop
+	unsigned int byteNo;  // I need this after the loop
 
 	int modulusLen = len % 3;
 	int pad = ((modulusLen & 1) << 1) + ((modulusLen & 2) >> 1);  // 2 gives 1 and 1 gives 2, but 0 gives 0.
@@ -109,7 +109,7 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 	const unsigned char* safeAsciiPtr = (const unsigned char*)tmp_str.c_str();
 	std::vector<uint8_t> bin;
 	int cb = 0;
-	int charNo;
+	unsigned int charNo;
 	int pad = 0;
 	size_t len = tmp_str.size();
 

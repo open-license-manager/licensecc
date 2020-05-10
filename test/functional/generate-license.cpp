@@ -43,7 +43,7 @@ string generate_license(const string& license_name, const vector<string>& other_
 	ss << " --" PARAM_LICENSE_OUTPUT " " << license_fname_s;
 	ss << " --" PARAM_PROJECT_FOLDER " " << LCC_TEST_LICENSES_PROJECT;
 
-	for (int i = 0; i < other_args.size(); i++) {
+	for (size_t i = 0; i < other_args.size(); i++) {
 		ss << " " << other_args[i];
 	}
 	cout << "executing :" << ss.str() << endl;

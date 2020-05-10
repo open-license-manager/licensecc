@@ -32,12 +32,12 @@ A good way to start exploring available options is the command:
 | Parameter        | Description                                                                                  |
 |------------------|----------------------------------------------------------------------------------------------|
 |base64,b          | the license is encoded for inclusion in environment variables                                |
-|valid-from        | Specify the start of the validity for this license. Format YYYYMMDD. If not specified defaults to today. |
-|valid-to          | The expire date for this license. Format YYYYMMDD. If not specified the license won't expire |
+|valid-from        | Specify the start of the validity for this license. Format YYYY-MM-DD. If not specified defaults to today. |
+|valid-to          | The expire date for this license. Format YYYY-MM-DD. If not specified the license won't expire |
 |client-signature  | The signature of the pc that requires the license. It should be in the format XXXX-XXXX-XXXX-XXXX. If not specified the license won't be linked to a specific pc. |
 |output-file-name  | License output file path.                                                                    |
 |extra-data        | Application specific data. They'll be returned when calling the `acquire_license` method   |
-
+|feature-names     | Comma separated list of features to license. See `multi-feature` discussion.               |
 
 Note:
 <sup>1</sup> a project is a container for the customizations of open-license-manager. In special way its keys and build parameters. The name should reflect the name of the software you want to add a license to. The project name appears in the license file.

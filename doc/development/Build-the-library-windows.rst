@@ -10,11 +10,11 @@ MSVC (2017~2019)
 Supported Visual Studio versions are: 
 
 * the latest Visual Studio 2019 (used in development) 
-* Visual Studio 2017 used in `travis.ci <https://docs.travis-ci.com/user/reference/windows/>` for automated tests.
+* Visual Studio 2017 used in `travis.ci <https://docs.travis-ci.com/user/reference/windows/>`_ for automated tests.
 
 MSVC install prerequisites
 ============================= 
-Git is of course a prerequisite, if you don't have it you can download it from `git-scm.com <https://git-scm.com/download/win>`. 
+Git is of course a prerequisite, if you don't have it you can download it from `git-scm.com <https://git-scm.com/download/win>`_. 
 
 Pre-compiled `versions of boost <https://sourceforge.net/projects/boost/files/boost-binaries/>`_ for windows are available 
 at SourceForge. Choose the version that matches the desired architecture (eg. for Visual Studio 2019 64 bit you can download
@@ -22,7 +22,6 @@ at SourceForge. Choose the version that matches the desired architecture (eg. fo
 if unsure download the full `boost_1_71_0-bin-msvc-all-32-64.7z <https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-bin-msvc-all-32-64.7z>`_ archive. 
 
 With boost 1.71 it is recommended to download one of the `latest cmake <https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-win64-x64.msi>`_ (>3.16). The version with Visual Studio 2019 isn't the most up to date.
-
 
 Checkout the code
 ==================

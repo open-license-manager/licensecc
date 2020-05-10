@@ -46,7 +46,7 @@ ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(${STATIC_RUNTIME})
-		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static ")
 	ENDIF(${STATIC_RUNTIME})
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
@@ -57,7 +57,7 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
   		list(APPEND EXTERNAL_LIBS "-pthread")
 	else(THREADS_HAVE_PTHREAD_ARG)
 		if(CMAKE_THREAD_LIBS_INIT)
-  			 list(APPEND EXTERNAL_LIBS "${CMAKE_THREAD_LIBS_INIT}")
+  			 list(APPEND EXTERNAL_LIBS "${CMAKE_THREAD_LIBS_INIT} ")
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
 
@@ -65,7 +65,7 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	IF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
 		SET ( ZLIB_USE_STATIC_LIBS ON ) 
 		find_package(ZLIB REQUIRED)
-		list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
+		list(APPEND EXTERNAL_LIBS " ${ZLIB_LIBRARIES}")
 		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
 	ELSE(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
 	    MESSAGE(STATUS "openssl ${OPENSSL_VERSION} zlib not required - licensecc")

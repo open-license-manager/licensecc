@@ -14,7 +14,10 @@
 #include <netdb.h>
 #define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
 #else
+//mingw cross compile for Windows
+#ifdef _MSC_VER
 #include <Windows.h>
+#endif
 #include <iphlpapi.h>
 #define LCC_ADAPTER_DESCRIPTION_LEN MAX_ADAPTER_DESCRIPTION_LENGTH
 #endif

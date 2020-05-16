@@ -9,6 +9,13 @@
 #define SRC_LIBRARY_OS_NETWORK_HPP_
 #include <stdlib.h>
 #include <vector>
+#ifdef __unix__
+#include <netdb.h>
+#define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
+#else
+#include <iphlpapi.h>
+#define LCC_ADAPTER_DESCRIPTION_LEN MAX_ADAPTER_DESCRIPTION_LENGTH
+#endif
 
 #include "../base/base.h"
 
@@ -17,13 +24,6 @@ namespace os {
 
 typedef enum { IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS } IFACE_TYPE;
 
-#ifdef __unix__
-#include <netdb.h>
-#define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
-#else
-#include <iphlpapi.h>
-#define LCC_ADAPTER_DESCRIPTION_LEN MAX_ADAPTER_DESCRIPTION_LENGTH
-#endif
 
 typedef struct {
 	int id;

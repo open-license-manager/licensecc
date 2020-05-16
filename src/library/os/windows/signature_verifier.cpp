@@ -67,7 +67,7 @@ static size_t read_length(uint8_t*& ptr) {
 	cout << (len & 0x80) << endl;
 	if ((len & 0x80) > 0) {
 		size_t blen = len & 0x7F;
-		for (int i = 0; i < blen; i++) {
+		for (size_t i = 0; i < blen; i++) {
 			result += (*(ptr++) << (i * 8));
 		}
 	} else {
@@ -99,7 +99,7 @@ static FUNCTION_RETURN read_integer(uint8_t*& ptr, BYTE* location, const size_t 
 	if (expected_length < length) {
 		return FUNC_RET_ERROR;
 	}
-	for (int i = 0; i < length; i++) {
+	for (size_t i = 0; i < length; i++) {
 		location[i] = *(ptr++);
 	}
 	return FUNC_RET_OK;

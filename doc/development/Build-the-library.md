@@ -22,14 +22,14 @@ sudo apt-get install cmake-gui ninja-build
 
 ### CentOS 7
 
-CentOS 7 ships with gcc 4.8 that isn't working for a bug on regular expression. It's necessary to update to gcc 4.9 or later.
+CentOS 7 ships with gcc 4.8 that isn't compiling for a bug on regular expression. It's necessary to update to gcc 4.9 or later.
 Install prerequisites:
 
 ```console
-yum -y update && yum -y install wget boost boost-devel boost-static openssl openssl-devel glibc-static centos-release-scl-rh
-yum -y install devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel
+yum -y update && yum -y install install centos-release-scl
+yum -y install wget boost boost-devel boost-static openssl openssl-devel openssl-static 
+yum -y install glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel
 
-scl enable devtoolset-7 bash
 export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
 export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
 ```
@@ -46,7 +46,8 @@ sudo make install
 cmake --version #(check it's 3.11.0) 
 ```
 
-If you don't want to install all these prerequisites in your machine you can also build the library in a docker container. Check for the corresponding section in the `.travis.yml` file at the base of the project.
+If you don't want to install all these prerequisites in your machine you can also build the library in a docker container. 
+Check for the corresponding Centos 7 section in the `.travis.yml` file at the base of the project.
 
 ### CentOS 8
 Install prerequisites:

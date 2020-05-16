@@ -15,7 +15,7 @@
 #include <iphlpapi.h>
 #include <unordered_map>
 #include <stdio.h>
-//#pragma comment(lib, "IPHLPAPI.lib")
+#pragma comment(lib, "IPHLPAPI.lib")
 
 #include "../../base/string_utils.h"
 #include "../../base/logger.h"
@@ -50,34 +50,50 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	unordered_map<string, OsAdapterInfo> adapterByName;
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	DWORD dwStatus;
-	int adapter_info_size;
 	PIP_ADAPTER_INFO pAdapterInfo;
 	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
 
-	unsigned int i = 3;
-	do {
+	// Make an initial call to GetAdaptersInfo to get the necessary size into the ulOutBufLen variable
+	pAdapterInfo = (PIP_ADAPTER_INFO)malloc(dwBufLen);
+	if (pAdapterInfo == nullptr) {
+		return FUNC_RET_ERROR;
+	}
+
+	dwStatus = GetAdaptersInfo(	 // Call GetAdapterInfo
+		pAdapterInfo,  // [out] buffer to receive data
+		&dwBufLen  // [in] size of receive data buffer
+	);
+
+	// Incase the buffer was too small, reallocate with the returned dwBufLen
+	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
+		free(pAdapterInfo);
 		pAdapterInfo = (PIP_ADAPTER_INFO)malloc(dwBufLen);
+
+		// Will only fail if buffer cannot be allocated (out of memory)
+		if (pAdapterInfo == nullptr) {
+			return FUNC_RET_BUFFER_TOO_SMALL;
+		}
+
 		dwStatus = GetAdaptersInfo(	 // Call GetAdapterInfo
 			pAdapterInfo,  // [out] buffer to receive data
 			&dwBufLen  // [in] size of receive data buffer
 		);
-		if (dwStatus != NO_ERROR && pAdapterInfo != nullptr) {
-			free(pAdapterInfo);
-			pAdapterInfo = nullptr;
+
+		switch (dwStatus) {
+			case NO_ERROR:
+				break;
+
+			case ERROR_BUFFER_OVERFLOW:
+				free(pAdapterInfo);
+				return FUNC_RET_BUFFER_TOO_SMALL;
+
+			default:
+				free(pAdapterInfo);
+				return FUNC_RET_ERROR;
 		}
-	} while (dwStatus == ERROR_BUFFER_OVERFLOW && i-- > 0);
-
-	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
-		return FUNC_RET_ERROR;
-	}
-
-	adapter_info_size = dwBufLen / sizeof(IP_ADAPTER_INFO);
-	if (adapter_info_size == 0) {
-		return FUNC_RET_NOT_AVAIL;
 	}
 
 	PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-	i = 0;
 	FUNCTION_RETURN result = FUNC_RET_OK;
 	while (pAdapter) {
 		OsAdapterInfo ai = {};
@@ -86,12 +102,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		memcpy(ai.mac_address, pAdapter->Address, 8);
 		translate(pAdapter->IpAddressList.IpAddress.String, ai.ipv4_address);
 		ai.type = IFACE_TYPE_ETHERNET;
-		i++;
 		pAdapter = pAdapter->Next;
-		if (i == adapter_info_size) {
-			result = FUNC_RET_BUFFER_TOO_SMALL;
-			break;
-		}
 		adapterByName[string(ai.description)] = ai;
 	}
 	free(pAdapterInfo);

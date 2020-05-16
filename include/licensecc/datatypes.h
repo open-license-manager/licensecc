@@ -138,7 +138,7 @@ typedef struct {
 	int license_version;  // license file version
 } LicenseInfo;
 
-typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, V_OTHER } LCC_API_VIRTUALIZATION_DETAIL;
+typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, V_XEN, KVM, HV, PARALLELS, V_OTHER } LCC_API_VIRTUALIZATION_DETAIL;
 
 typedef enum {
 	PROV_UNKNOWN = 0,

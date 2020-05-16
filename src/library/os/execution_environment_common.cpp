@@ -20,11 +20,12 @@ using namespace std;
 
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> virtual_cpu_names{
 	{"bhyve bhyve ", V_OTHER}, {"KVM", KVM},	   {"MICROSOFT", HV},		{" lrpepyh vr", HV},
-	{"prl hyperv  ", V_OTHER}, {"VMWARE", VMWARE}, {"XenVMMXenVMM", V_XEN}, {"ACRNACRNACRN", V_OTHER},
+	{"prl hyperv  ", PARALLELS}, {"VMWARE", VMWARE}, {"XenVMMXenVMM", V_XEN}, {"ACRNACRNACRN", V_OTHER},
 	{"VBOX", VIRTUALBOX}};
 
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{{"VMWARE", VMWARE},
-																	  {"MICROSOFT", HV},
+																	  {"MICROSOFT", HV},	
+																	  {"PARALLELS", PARALLELS},
 																	  {"VITRUAL MACHINE", V_OTHER},
 																	  {"INNOTEK GMBH", VIRTUALBOX},
 																	  {"POWERVM", V_OTHER},

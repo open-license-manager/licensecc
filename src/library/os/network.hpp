@@ -17,9 +17,17 @@ namespace os {
 
 typedef enum { IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS } IFACE_TYPE;
 
+#ifdef __unix__
+#include <netdb.h>
+#define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
+#else
+#include <iphlpapi.h>
+#define LCC_ADAPTER_DESCRIPTION_LEN MAX_ADAPTER_DESCRIPTION_LENGTH
+#endif
+
 typedef struct {
 	int id;
-	char description[1024];
+	char description[LCC_ADAPTER_DESCRIPTION_LEN + 1];
 	unsigned char mac_address[8];
 	unsigned char ipv4_address[4];
 	IFACE_TYPE type;

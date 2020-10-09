@@ -209,7 +209,7 @@ jobs:
                echo "Boost already installed"
            else
                echo "Boost not cached, compiling it"
-               wget -q https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
+               wget -q https://versaweb.dl.sourceforge.net/project/boost/boost/1.68.0/boost_1_68_0.7z
                echo "Boost downloaded"
                travis_wait 20 7z x boost_1_68_0.7z -oC:/local
                cd "C:/local/boost_1_68_0"

@@ -30,6 +30,9 @@ the software has been copied to another pc.
 
 A comprehensive :ref:`list of features <analysis/features:Features>`, and their status is available in the project wiki. 
 
+If you're experiencing problems, or you just need informations you can't find here in the documentation,
+please contact us on the `user forum <https://groups.google.com/forum/#!forum/licensecc>`_ (hosted on Google), we'll be happy to help. 
+
 License (BSD)
 **************
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 

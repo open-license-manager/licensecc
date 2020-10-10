@@ -100,8 +100,42 @@ Restart, delete and rebuild the cache a couple of time, until Visual Studio unde
 MINGW
 *****************
 
-
 .. TODO::
    
-   MINGW documentation need to be done. Refer to file .travis.yml to see a list of commands for windows-mingw
+   Describe how to install and configure mingw
+
+Prerequistites:
+
+* Powershell
+* 7zip
+* git
+* cmake
+
+Install and compile boost:
+
+.. code-block:: console
+
+    wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
+    7z x boost_1_68_0.7z -oC:/local
+    cd "C:\local\boost_1_68_0"
+    bootstrap.bat gcc 
+    b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:\local\boost_1_68_0\boost-mingw install
+    cd C:/local/boost_1_68_0/boost-mingw/lib
+    dir 
+
+Verify boost is really compiled. Go to the folder where you want to download `licensecc` 
+
+.. code-block:: console
+
+   git clone --recursive https://github.com/open-license-manager/open-license-manager.git
+   cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost_1_68_0/boost-mingw" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+   cmake --build . --target install --config Release
+
+And then you can test it:
+   
+.. code-block:: console
+
+   ctest -C Release
+    
+
 

@@ -17,8 +17,9 @@ software closed :smirk: . Among other features if it runs on a "real hardware" i
 
 A comprehensive [list of features](http://open-license-manager.github.io/open-license-manager/analysis/features.html), and their status is available in the project site. 
 
-If you plan to use this library or part of it remember to show us your appreciation giving it a 
-<a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
+If you're experiencing problems, or you just need informations you can't find in the [documentation](http://open-license-manager.github.io/open-license-manager)  please contact us on the [user forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), we'll be happy to help. 
+
+Remember to show your appreciation giving us a <a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
 
 ## License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
@@ -92,8 +93,7 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), 
-otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). 
+The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/open-license-manager/issues). 
 Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). 
 Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

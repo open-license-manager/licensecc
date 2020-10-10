@@ -17,9 +17,14 @@ software closed :smirk: . Among other features if it runs on a "real hardware" i
 
 A comprehensive [list of features](http://open-license-manager.github.io/open-license-manager/analysis/features.html), and their status is available in the project site. 
 
+<<<<<<< HEAD
 If you're experiencing problems, or you just need informations you can't find in the [documentation](http://open-license-manager.github.io/open-license-manager)  please contact us on the [user forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), we'll be happy to help. 
 
 Remember to show your appreciation giving us a <a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
+=======
+If you plan to use this library or part of it remember to show us your appreciation giving it a 
+<a class="github-button" href="https://github.com/open-license-manager/open-license-manager" data-icon="octicon-star" aria-label="Star open-license-manager/open-license-manager on GitHub">star</a> here on GitHub.
+>>>>>>> b399ec224144d77d828d877e501331905cf97a70
 
 ## License
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 

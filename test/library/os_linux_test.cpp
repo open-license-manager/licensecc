@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].label, sizeof diskInfos[0].label), 0);
 		bool all_zero = true;
 		for (int i = 0; i < sizeof(diskInfos[0].disk_sn) && all_zero; i++) {
-			all_zero = (diskInfos[0].disk_sn[i] != 0);
+			all_zero = (diskInfos[0].disk_sn[i] == 0);
 		}
 		BOOST_CHECK_MESSAGE(!all_zero, "disksn is not all zero");
 		free(diskInfos);

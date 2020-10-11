@@ -9,6 +9,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Setup Boost (Windows / Linux latest)
+      shell: bash
+      run: echo "BOOST_ROOT=$BOOST_ROOT_1_72_0" >> $GITHUB_ENV
     - name: Compile & Test
       run: |
         mkdir -p build

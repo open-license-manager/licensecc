@@ -1,10 +1,11 @@
 # Build - Linux
 
 ## Install prerequisites
-Below the prerequisites for compiling open-license-manager. For developing it we use Eclipse. Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.
+Below the prerequisites for compiling `open-license-manager`. For developing it we use Eclipse. 
+Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.
  
 ### Ubuntu
-Supported Ubuntu distributions are 18.04 (Bionic Beaver) and 16.04 (Xenial) though it should be possible to build on any recent Ubuntu version.
+Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). It should be possible to build on any recent Ubuntu (debian like) version.
 
 Install prerequisites:
 

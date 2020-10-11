@@ -23,12 +23,16 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		FUNCTION_RETURN result = getDiskInfos(NULL, &disk_info_size);
 		BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 		BOOST_CHECK_GT(disk_info_size, 0);
-		diskInfos = (DiskInfo *)malloc(sizeof(DiskInfo) * disk_info_size);
+		diskInfos = (DiskInfo*) malloc(sizeof(DiskInfo) * disk_info_size);
 		result = getDiskInfos(diskInfos, &disk_info_size);
 		BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].device, sizeof(diskInfos[0].device)), 0);
 		BOOST_CHECK_GT(mstrnlen_s(diskInfos[0].label, sizeof diskInfos[0].label), 0);
-		BOOST_CHECK_GT(diskInfos[0].disk_sn[0], 0);
+		bool all_zero = true;
+		for (int i = 0; i < diskInfos[0].disk_sn && all_zero; i++) {
+			all_zero = (diskInfos[0].disk_sn[i] != 0);
+		}
+		BOOST_CHECK_MESSAGE(!all_zero, "disksn is not all zero");
 		free(diskInfos);
 	} else if (virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
 		// docker or lxc diskInfo is not meaningful
@@ -39,5 +43,5 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 	}
 }
 
-}  // namespace test
-}  // namespace license
+} // namespace test
+} // namespace license

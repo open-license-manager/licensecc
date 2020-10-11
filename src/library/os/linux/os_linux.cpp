@@ -91,7 +91,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	currentDrive = 0;
 	while (NULL != (ent = getmntent(aFile))) {
 		if ((strncmp(ent->mnt_type, "ext", 3) == 0 || strncmp(ent->mnt_type, "xfs", 3) == 0 ||
-			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0) &&
+			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0
+				|| strncmp(ent->mnt_type, "btr", 3) == 0) &&
 			ent->mnt_fsname != NULL && strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
 			if (stat(ent->mnt_fsname, &mount_stat) == 0) {
 				drive_found = -1;

@@ -11,6 +11,7 @@ These are the dependencies of the library you have to link to your code. We try 
 
 | Operating System               | Openssl    | Zlib                        | Boost<sup>2</sup>   |
 |--------------------------------|:----------:|:---------------------------:|:-------------------:| 
+| Ubuntu 20.04     | :heavy_check_mark: v1.1.1f| :question: optional         | optional(test) 1.71 |
 | Ubuntu 18.04     | :heavy_check_mark: v1.1.1| :question: optional         | optional(test) 1.65 |
 | Ubuntu 16.04     | :heavy_check_mark: v1.0.2| :question: req.by openssl   | optional(test)      |
 | Centos 7         | :heavy_check_mark: v1.0.2| :question: req.by openssl   | otpional(test) 1.53 |

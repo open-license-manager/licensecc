@@ -4,18 +4,20 @@ on:
   push:
 
 jobs:
-  build-windows:
+  build-windows-vc2019:
     runs-on: windows-2019
-
     steps:
     - uses: actions/checkout@v1
     - name: Setup Boost (Windows / Linux latest)
       shell: bash
       run: echo "BOOST_ROOT=$BOOST_ROOT_1_72_0" >> $GITHUB_ENV
-    - name: Compile & Test
+    - name: Compile
       run: |
-        mkdir -p build
         cd build
         cmake -G "Visual Studio 16 2019" -DBUILD_TESTING:BOOL=OFF -DLCC_PROJECT_NAME:STRING=geode ..
-        cmake --build . --config Debug
+        cmake --build . --target install --config Debug
       shell: bash
+    - name: Test
+      run: ctest -C Release
+      shell: bash
+      

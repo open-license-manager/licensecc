@@ -54,6 +54,9 @@ jobs:
              - libboost-thread-dev
              - libboost-date-time-dev
      script: 
+         - cat /proc/mounts
+         - cat /proc/filesystems
+         - ls /dev/disk/by-uuid
          - cmake --build . --target install
          - ctest -T memcheck
    - os: linux

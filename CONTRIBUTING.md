@@ -11,7 +11,7 @@ If you're experiencing issues with the project, due to lack of documentation or 
 
 ### Reporting Bugs
 
-Before creating bug reports, please [check the repository](https://github.com/open-license-manager/open-license-manager/issues) to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one. When you are creating a bug report, please [include as many details as possible](#how-to-submit-a-good-bug-report). 
+Before creating bug reports, please [check the repository](https://github.com/open-license-manager/open-license-manager/issues) to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one. When you are creating a bug report, please [include as many details as possible](#how-to-submit-a-good-bug-report).
 
 #### How to submit a good Bug Report
 

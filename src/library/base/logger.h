@@ -3,7 +3,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#define LOG_DISABLED 1
+//#define LOG_DISABLED 1
 
 #ifndef LOG_DISABLED
 #include <errno.h>
@@ -11,7 +11,7 @@ extern "C" {
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 #define LOG_DEBUG(M, ...) _log("[DEBUG] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define LOG_DEBUG(M,...)

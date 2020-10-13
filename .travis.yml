@@ -57,8 +57,8 @@ jobs:
          - cat /proc/mounts
          - cat /proc/filesystems
          - ls /dev/disk/by-uuid
-         - cmake --build . --target install
-         - ctest -T memcheck
+         - cmake --build . --target install -DCMAKE_BUILD_TYPE=DEBUG
+         - ctest -T memcheck; cat /tmp/open-license.log
    - os: linux
      dist: bionic
      name: "Ubuntu 18.04 - VM - set LCC_PROJECT_NAME"

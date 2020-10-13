@@ -223,7 +223,7 @@
 # include <iostream>
 #endif // SI_SUPPORT_IOSTREAMS
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 # ifndef assert
 #  include <cassert>
 # endif
@@ -2488,7 +2488,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         bNeedNewLine = true;
     }
-    
+
     // Append new empty line
     a_oOutput.Write(SI_NEWLINE_A);
 

@@ -38,7 +38,7 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
-#ifdef _DEBUG
+#ifndef NDEBUG
 			cout << "Error occurred: " << ex.what() << std::endl;
 #endif
 		}
@@ -122,7 +122,7 @@ LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, cons
 			license_out->days_left = 0;
 		}
 	}
-#ifdef _DEBUG
+#ifndef NDEBUG
 	cout << er << endl;
 #endif
 

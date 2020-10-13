@@ -29,7 +29,7 @@ namespace os {
 using namespace std;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
-static const void formatError(DWORD status, const char* description) {
+static const void formatError(DWORD status, const char *description) {
 	char msgBuffer[256];
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, status, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &msgBuffer[0],
 				  sizeof(msgBuffer) - 1, nullptr);
@@ -124,7 +124,7 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 												sizeof(pubk), 0))) {
 		result = FUNC_RET_OK;
 	} else {
-#ifdef _DEBUG
+#ifndef NDEBUG
 		formatError(status, "error importing public key");
 #endif
 	}
@@ -152,7 +152,7 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 				result = FUNC_RET_OK;
 			} else {
 				result = FUNC_RET_ERROR;
-#ifdef _DEBUG
+#ifndef NDEBUG
 				formatError(status, "error verifying signature");
 #endif
 			}
@@ -162,7 +162,7 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	}
 	else {
 		result = FUNC_RET_NOT_AVAIL;
-#ifdef _DEBUG
+#ifndef NDEBUG
 		formatError(status, "error opening RSA provider");
 #endif
 	}
@@ -207,13 +207,13 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 					result = verifyHash(pbHashData, cbHashDataLenght, signatureB64);
 				} else {
 					result = FUNC_RET_NOT_AVAIL;
-#ifdef _DEBUG
+#ifndef NDEBUG
 					formatError(status, "error hashing data");
 #endif
 				}
 			} else {
 				result = FUNC_RET_NOT_AVAIL;
-#ifdef _DEBUG
+#ifndef NDEBUG
 				formatError(status, "error creating hash");
 #endif
 			}
@@ -223,7 +223,7 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 		}
 	} else {
 		result = FUNC_RET_NOT_AVAIL;
-#ifdef _DEBUG
+#ifndef NDEBUG
 		formatError(status, "**** Error returned by BCryptGetProperty");
 #endif
 	}

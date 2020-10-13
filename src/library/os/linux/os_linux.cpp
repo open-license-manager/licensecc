@@ -1,13 +1,15 @@
 #include <paths.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <cerrno>
+#include <cstring>
 #include "../os.h"
 #include "../../base/logger.h"
 
 #include <mntent.h>
 #include <dirent.h>
 #include <sys/utsname.h>
-#ifdef _DEBUG
+#ifndef NDEBUG
 #include <valgrind/memcheck.h>
 #endif
 
@@ -52,7 +54,7 @@ static void parseUUID(const char *uuid, unsigned char *buffer_out, unsigned int 
 	free(hexuuid);
 }
 
-#define MAX_UNITS 20
+#define MAX_UNITS 40
 FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	struct stat mount_stat, sym_stat;
 	/*static char discard[1024];
@@ -89,7 +91,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	}
 
 	currentDrive = 0;
-	while (NULL != (ent = getmntent(aFile))) {
+	while (NULL != (ent = getmntent(aFile)) && currentDrive < maxDrives) {
 		if ((strncmp(ent->mnt_type, "ext", 3) == 0 || strncmp(ent->mnt_type, "xfs", 3) == 0 ||
 			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0
 				|| strncmp(ent->mnt_type, "btr", 3) == 0) &&
@@ -116,6 +118,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 				} else {
 					tmpDrives[drive_found].preferred = 0;
 				}
+			} else {
+				LOG_DEBUG("Error %s during stat of %s \n", std::strerror(errno), ent->mnt_fsname);
 			}
 		}
 	}
@@ -141,7 +145,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 				for (i = 0; i < currentDrive; i++) {
 					if (sym_stat.st_ino == statDrives[i]) {
 						parseUUID(dir->d_name, tmpDrives[i].disk_sn, sizeof(tmpDrives[i].disk_sn));
-#ifdef _DEBUG
+#ifndef NDEBUG
 						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
 
 						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i, tmpDrives[i].device, tmpDrives[i].disk_sn[0],
@@ -162,7 +166,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 					for (i = 0; i < currentDrive; i++) {
 						if (sym_stat.st_ino == statDrives[i]) {
 							strncpy(tmpDrives[i].label, dir->d_name, 255 - 1);
-							printf("label %d %s %s\n", i, tmpDrives[i].label, tmpDrives[i].device);
+							LOG_DEBUG("label %d %s %s\n", i, tmpDrives[i].label, tmpDrives[i].device);
 						}
 					}
 				}

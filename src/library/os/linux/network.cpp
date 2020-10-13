@@ -76,7 +76,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		family = ifa->ifa_addr->sa_family;
 		/* Display interface name and family (including symbolic
 		 form of the latter for the common families) */
-#ifdef _DEBUG
+#ifndef NDEBUG
 		printf("%-8s %s (%d)\n", ifa->ifa_name,
 			   (family == AF_PACKET) ? "AF_PACKET"
 									 : (family == AF_INET) ? "AF_INET" : (family == AF_INET6) ? "AF_INET6" : "???",
@@ -97,11 +97,11 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 			int i;
 			for (i = 0; i < 6; i++) {
 				currentAdapter->mac_address[i] = s1->sll_addr[i];
-#ifdef _DEBUG
+#ifndef NDEBUG
 				printf("%02x:", s1->sll_addr[i]);
 #endif
 			}
-#ifdef _DEBUG
+#ifndef NDEBUG
 			printf("\t %s\n", ifa->ifa_name);
 #endif
 		}

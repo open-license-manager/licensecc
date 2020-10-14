@@ -34,7 +34,7 @@ jobs:
          - ctest -T memcheck
    - os: linux
      dist: focal
-     name: "Ubuntu 20.04 - Travis CI VM"
+     name: "Ubuntu 20.04 - Travis CI VM - Debug"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1

@@ -67,9 +67,12 @@ std::vector<HwIdentifier> DefaultStrategy::alternative_ids() const {
 	}
 	return identifiers;
 }
-
+/**
+* default strategy should never be used to validate an identifier. The strategy that was used in the first place to generate it
+* should handle it. DefaultStrategy is just a switch.
+*/
 LCC_EVENT_TYPE DefaultStrategy::validate_identifier(const HwIdentifier& identifier) const {
-	// default strategy should always realize itself as a concrete strategy
+	// 
 	return IDENTIFIERS_MISMATCH;
 }
 

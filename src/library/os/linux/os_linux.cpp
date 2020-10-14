@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cerrno>
 #include <cstring>
+#include <string>
 #include "../os.h"
 #include "../../base/logger.h"
 
@@ -93,8 +94,8 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	currentDrive = 0;
 	while (NULL != (ent = getmntent(aFile)) && currentDrive < maxDrives) {
 		if ((strncmp(ent->mnt_type, "ext", 3) == 0 || strncmp(ent->mnt_type, "xfs", 3) == 0 ||
-			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0
-				|| strncmp(ent->mnt_type, "btr", 3) == 0) &&
+			 strncmp(ent->mnt_type, "vfat", 4) == 0 || strncmp(ent->mnt_type, "ntfs", 4) == 0 ||
+			 strncmp(ent->mnt_type, "btr", 3) == 0) &&
 			ent->mnt_fsname != NULL && strncmp(ent->mnt_fsname, "/dev/", 5) == 0) {
 			if (stat(ent->mnt_fsname, &mount_stat) == 0) {
 				drive_found = -1;
@@ -104,7 +105,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 					}
 				}
 				if (drive_found == -1) {
-					LOG_DEBUG("mntent: %s %s %d\n", ent->mnt_fsname, ent->mnt_dir,
+					LOG_DEBUG("mntent fs:[%s],dir:[%s],inode:[%d]\n", ent->mnt_fsname, ent->mnt_dir,
 							  (unsigned long int)mount_stat.st_ino);
 					strncpy(tmpDrives[currentDrive].device, ent->mnt_fsname, 255 - 1);
 					statDrives[currentDrive] = mount_stat.st_ino;
@@ -131,28 +132,36 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 		result = (currentDrive > 0) ? FUNC_RET_OK : FUNC_RET_NOT_AVAIL;
 	} else if (*disk_info_size >= currentDrive) {
 		disk_by_uuid_dir = opendir("/dev/disk/by-uuid");
-		if (disk_by_uuid_dir == NULL) {
+		if (disk_by_uuid_dir == nullptr) {
 			LOG_WARN("Open /dev/disk/by-uuid fail");
 			free(statDrives);
 			return FUNC_RET_ERROR;
 		}
 		result = FUNC_RET_OK;
 		*disk_info_size = currentDrive;
-		while ((dir = readdir(disk_by_uuid_dir)) != NULL) {
-			strcpy(cur_dir, "/dev/disk/by-uuid/");
-			strncat(cur_dir, dir->d_name, 200);
-			if (stat(cur_dir, &sym_stat) == 0) {
+
+		while ((dir = readdir(disk_by_uuid_dir)) != nullptr) {
+			std::string cur_dir("/dev/disk/by-uuid/");
+			cur_dir += dir->d_name;
+			bool found = false;
+			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
 				for (i = 0; i < currentDrive; i++) {
 					if (sym_stat.st_ino == statDrives[i]) {
+						found = true;
 						parseUUID(dir->d_name, tmpDrives[i].disk_sn, sizeof(tmpDrives[i].disk_sn));
 #ifndef NDEBUG
 						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
-
 						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i, tmpDrives[i].device, tmpDrives[i].disk_sn[0],
 								  tmpDrives[i].disk_sn[1], tmpDrives[i].disk_sn[2], tmpDrives[i].disk_sn[3]);
 #endif
 					}
 				}
+				if (!found) {
+					LOG_DEBUG("Drive [%s] inode [%d] did not match any existing drive\n", cur_dir,
+							  (unsigned long int)sym_stat.st_ino);
+				}
+			} else {
+				LOG_DEBUG("Error %s during stat of %s \n", std::strerror(errno), cur_dir);
 			}
 		}
 		closedir(disk_by_uuid_dir);
@@ -179,7 +188,6 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 	free(statDrives);
 	return result;
 }
-
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	static struct utsname u;

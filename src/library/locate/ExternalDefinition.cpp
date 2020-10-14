@@ -54,7 +54,7 @@ const std::string ExternalDefinition::retrieve_license_content(const std::string
 	if (licenseLocation == get_strategy_name()) {
 		string licData(m_location->licenseData, mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 		if (m_location->license_data_type == LICENSE_ENCODED) {
-			// FIXME what if license is wrong
+			// FIXME what if license content is not base64
 			vector<uint8_t> raw = unbase64(licData);
 			string str = string(reinterpret_cast<char *>(raw.data()));
 			return str;

@@ -143,6 +143,7 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 		while ((dir = readdir(disk_by_uuid_dir)) != nullptr) {
 			std::string cur_dir("/dev/disk/by-uuid/");
 			cur_dir += dir->d_name;
+
 			bool found = false;
 			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
 				for (i = 0; i < currentDrive; i++) {
@@ -151,31 +152,31 @@ FUNCTION_RETURN getDiskInfos(DiskInfo *diskInfos, size_t *disk_info_size) {
 						parseUUID(dir->d_name, tmpDrives[i].disk_sn, sizeof(tmpDrives[i].disk_sn));
 #ifndef NDEBUG
 						VALGRIND_CHECK_VALUE_IS_DEFINED(tmpDrives[i].device);
-						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x\n", i, tmpDrives[i].device, tmpDrives[i].disk_sn[0],
+						LOG_DEBUG("uuid %d %s %02x%02x%02x%02x", i, tmpDrives[i].device, tmpDrives[i].disk_sn[0],
 								  tmpDrives[i].disk_sn[1], tmpDrives[i].disk_sn[2], tmpDrives[i].disk_sn[3]);
 #endif
 					}
 				}
 				if (!found) {
-					LOG_DEBUG("Drive [%s] inode [%d] did not match any existing drive\n", cur_dir,
+					LOG_DEBUG("Drive [%s], num [%d] inode [%d] did not match any existing drive", cur_dir.c_str(),
 							  (unsigned long int)sym_stat.st_ino);
 				}
 			} else {
-				LOG_DEBUG("Error %s during stat of %s \n", std::strerror(errno), cur_dir);
+				LOG_DEBUG("Error %s during stat of %s", std::strerror(errno), cur_dir.c_str());
 			}
 		}
 		closedir(disk_by_uuid_dir);
 
 		disk_by_label = opendir("/dev/disk/by-label");
-		if (disk_by_label != NULL) {
-			while ((dir = readdir(disk_by_label)) != NULL) {
+		if (disk_by_label != nullptr) {
+			while ((dir = readdir(disk_by_label)) != nullptr) {
 				strcpy(cur_dir, "/dev/disk/by-label/");
 				strcat(cur_dir, dir->d_name);
 				if (stat(cur_dir, &sym_stat) == 0) {
 					for (i = 0; i < currentDrive; i++) {
 						if (sym_stat.st_ino == statDrives[i]) {
 							strncpy(tmpDrives[i].label, dir->d_name, 255 - 1);
-							LOG_DEBUG("label %d %s %s\n", i, tmpDrives[i].label, tmpDrives[i].device);
+							LOG_DEBUG("label %d %s %s", i, tmpDrives[i].label, tmpDrives[i].device);
 						}
 					}
 				}

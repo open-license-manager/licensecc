@@ -59,7 +59,7 @@ jobs:
          - cat /proc/mounts
          - ls -lLai /dev/disk/by-uuid
          - ls -lLai /dev/disk/by-label
-         - ls -la /dev
+         - ls -lai /dev
          - ls -la /run
          - cmake --build . --target install
          - ctest -T memcheck; cat /tmp/open-license.log

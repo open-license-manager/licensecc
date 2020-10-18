@@ -57,8 +57,10 @@ jobs:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
      script: 
          - cat /proc/mounts
-         - cat /proc/filesystems
-         - ls /dev/disk/by-uuid
+         - ls -lLai /dev/disk/by-uuid
+         - ls -lLai /dev/disk/by-label
+         - ls -la /dev
+         - ls -la /run
          - cmake --build . --target install
          - ctest -T memcheck; cat /tmp/open-license.log
    - os: linux

@@ -56,7 +56,6 @@ void _log(const char* format, ...) {
 	}
 	buffer = (char *) malloc(sizeof(char) * strlen(format) + 64);
 	timenow(buffer);
-	sprintf(&buffer[strlen(buffer) - 1], "-[%d]-", getpid());
 	strcat(buffer, format);
 	va_start(args, format);
 	vfprintf(logFile, buffer, args);

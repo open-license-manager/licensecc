@@ -14,10 +14,8 @@ namespace license {
 namespace hw_identifier {
 
 class DiskStrategy : public IdentificationStrategy {
-private:
-	bool m_use_id;
 public:
-	DiskStrategy(bool use_id);
+	inline DiskStrategy(){};
 	virtual ~DiskStrategy();
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const;
 	virtual std::vector<HwIdentifier> alternative_ids() const;

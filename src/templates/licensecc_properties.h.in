@@ -78,8 +78,9 @@ This definition allows to specify a custom expression to verify the magic number
 enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	/**
 	 * \brief Default strategy.
-	 *
-	 * This strategy try to detect which virtual environment the software is running in.
+	 * 
+	 * This strategy first checks the content of the environment variable `IDENTIFICATION_STRATEGY`. If the variable is defined it will use the 
+	 * strategy specified in there, if not defined it will try to detect which virtual environment the software is running in.
 	 *  - If no virtual environment is detected it will try the strategies defined in ::LCC_BARE_TO_METAL_STRATEGIES
 	 *  - If it detects the software is running in a virtual machine it will use ::LCC_VM_STRATEGIES
 	 *  - If it detects the software is running in a docker or in an LXC it will use ::LCC_DOCKER_STRATEGIES or
@@ -89,10 +90,15 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	STRATEGY_DEFAULT = -1,
 	STRATEGY_ETHERNET = 0,
 	STRATEGY_IP_ADDRESS = 1,
-	STRATEGY_DISK_NUM = 2,
-	STRATEGY_DISK_LABEL = 3,
-	STRATEGY_MEMORY_CPU_SIZE = 4,
-	STRATEGY_HOST_NAME = 5,
+	STRATEGY_DISK = 2,
+	/**
+	* Not yet implemented
+	*/
+	STRATEGY_CPU_SIZE = 3,
+	/**
+	* Not yet implemented
+	*/
+	STRATEGY_HOST_NAME = 4,
 	STRATEGY_NONE = -2
 };
 
@@ -103,7 +109,7 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 /**
  * List the strategies used when no virtual envrionment is detected
  */
-#define LCC_BARE_TO_METAL_STRATEGIES { STRATEGY_ETHERNET, STRATEGY_DISK_LABEL, STRATEGY_NONE }
+#define LCC_BARE_TO_METAL_STRATEGIES { STRATEGY_DISK, STRATEGY_HOST_NAME, STRATEGY_NONE }
 /**
  * List the strategies used when the software is executing in a virtual machine
  */

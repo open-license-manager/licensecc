@@ -44,16 +44,48 @@ Depending on how containers are used having hardware identifiers may make sense 
 For instance if containers are used to avoid to pollute the external distribution it makes perfect sense to have an 
 hardware identifier, if users are running dockers in a kubernetes cluster in the cloud it makes no sense at all.
 
-************************
-Identifier Generation
-************************
-`Licensecc` is able to identify which virtual environment the user is running in and select the appropriate generation
-strategy. Below the identifier generation workflow used by the :ref:`identify_pc <api/public_api:Public api>` method. 
+*************************************************
+Hardware Identifier Generation
+*************************************************
+
+The licensed application will call the api method :ref:`identify_pc <api/public_api:Public api>` to generate an hardware 
+identifier and print it out to the user, the user then will contact the software licensor to get an appropriate license.
+
+The licensed application can either decide an identification strategy by passing it in the ``identify_pc`` parameter ``hw_id_method``
+(see: :cpp:enum:`LCC_API_HW_IDENTIFICATION_STRATEGY` ) or let `licensecc` automatically choose how to generate the 
+identifier (by passing `hw_id_method=STRATEGY_DEFAULT`).   
+In this case `licensecc` is able to identify which virtual environment the user is running in and select the appropriate generation
+strategy. 
+
+Below the full identifier generation workflow used by the :ref:`identify_pc <api/public_api:Public api>` method. 
 
 .. figure:: ../_static/pc-id-selection.png
 
 
-First of all it takes in account the application specified parameter 
-If the licensed software uses `STRATEGY_DEFAULT` and the strategy generates an unstable identifier it is possible to ask the user to 
-set the environemnt variable.
+Default identifier generation (implementation details)
+=======================================================
 
+This section describes the inner working of the default hardware identifer strategy.
+
+When the licensed software calls :ref:`identify_pc <api/public_api:Public api>` with :cpp:enumerator:`LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT` 
+the identifier generation will follow these steps:
+
+ - It will first look to the environment variable ``IDENTIFICATION_STRATEGY``. If set it will use the identification strategy in that variable.
+ - It will try to determine which virtual environment the licensed software is running in. 
+    * If no virtual environment found it will use the strategies in :c:macro:`LCC_BARE_TO_METAL_STRATEGIES`, it will try them one by one until the first one succeeds.
+    * If it detects it's running in a Virtual Machine it will try the strategies in :c:macro:`LCC_VM_STRATEGIES`, it will try them one by one until the first one succeeds.
+
+if you're interested in implementing your own hardware identification strategy you can have a look to the library
+ :ref:`extension points <api/extend:Tweak hardware signature generator>`.
+
+.. TIP:
+
+    If `licensecc` is generating a bad hardware identifier (eg. 'AAAA-AAAA-AAAA') software licensor can ask the user 
+    to set the environment variable ``IDENTIFICATION_STRATEGY`` and try again. Or he can send the user the `lccinspector`
+    to generate all the possible identifiers for that machine.
+
+
+.. NOTE::
+    
+    `licensecc` will try to validate the identifier using the same strategy that was used to generate it, regardless  
+    of what is the default method now in use. eg: disk identifiers will always be validated by ``DiskStrategy``.

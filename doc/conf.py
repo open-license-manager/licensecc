@@ -39,6 +39,7 @@ autosectionlabel_prefix_document = True
 
 # Breathe Configuration
 breathe_default_project = "licensecc"
+breathe_domain_by_extension = {"h" : "cpp"}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

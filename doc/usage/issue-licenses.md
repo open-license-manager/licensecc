@@ -40,7 +40,7 @@ Once you have the hardware identifier you can issue the command:
 
 ```
 cd projects/DEFAULT #(or whatever your project name is) 
-lcc license issue --client-signature XXXX-XXXX-XXXX-XXXX -o licenses/{license-file-name}.lic
+lcc license issue --client-signature XXXX-XXXX-XXXX -o licenses/{license-file-name}.lic
 ```
 usually this command is issued in the host machine where you compiled `licensecc`
 
@@ -52,7 +52,7 @@ A good way to start exploring available options is the command: `lcc license iss
 |base64,b          | the license is encoded for inclusion in environment variables                                |
 |valid-from        | Specify the start of the validity for this license. Format YYYY-MM-DD. If not specified defaults to today. |
 |valid-to          | The expire date for this license. Format YYYY-MM-DD. If not specified the license won't expire |
-|client-signature  | The signature of the hardware where the licensed software will run. It should be in the format XXXX-XXXX-XXXX-XXXX. If not specified the license won't be linked to a specific pc. |
+|client-signature  | The signature of the hardware where the licensed software will run. It should be in the format XXXX-XXXX-XXXX. If not specified the license won't be linked to a specific pc. |
 |output-file-name  | License output file path.                                                                    |
 |extra-data        | Application specific data. They'll be returned when calling the `acquire_license` method   |
 |feature-names     | Comma separated list of features to license. See `multi-feature` discussion.               |

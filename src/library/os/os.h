@@ -8,31 +8,32 @@
 #ifndef OS_DEPENDENT_HPP_
 #define OS_DEPENDENT_HPP_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
 // definition of size_t
 #include <stdlib.h>
+#include <vector>
 #ifdef __unix__
 #include <unistd.h>
 #include <stdbool.h>
 #endif
+
+#include <licensecc/datatypes.h>
 #include "../base/base.h"
 
 typedef struct {
 	int id;
 	char device[MAX_PATH];
 	unsigned char disk_sn[8];
+	bool sn_initialized;
 	char label[255];
-	int preferred;
+	bool label_initialized;
+	bool preferred;
 } DiskInfo;
 
-FUNCTION_RETURN getDiskInfos(DiskInfo* diskInfos, size_t* disk_info_size);
+FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]);
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
@@ -56,7 +57,6 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
  */
 FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 
-// FUNCTION_RETURN verifySignature(const char* stringToVerify, const char* signatureB64);
 
 #ifdef _WIN32
 #define SETENV(VAR, VAL) _putenv_s(VAR, VAL);
@@ -64,10 +64,6 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
 #else
 #define SETENV(VAR, VAL) setenv(VAR, VAL, 1);
 #define UNSETENV(P) unsetenv(P);
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif /* OS_DEPENDENT_HPP_ */

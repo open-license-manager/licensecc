@@ -10,15 +10,13 @@
 #include "../library/os/dmi_info.hpp"
 #include "../library/os/cpu_info.hpp"
 #include "../library/os/dmi_info.hpp"
+#include "../library/os/network.hpp"
 
 using namespace std;
 using namespace license::os;
 
-const map<int, string> stringByStrategyId = {{STRATEGY_DEFAULT, "DEFAULT"},
-											 {STRATEGY_ETHERNET, "MAC"},
-											 {STRATEGY_IP_ADDRESS, "IP"},
-											 {STRATEGY_DISK_NUM, "Disk1"},
-											 {STRATEGY_DISK_LABEL, "Disk2"}};
+const map<int, string> stringByStrategyId = {
+	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"}, {STRATEGY_IP_ADDRESS, "IP"}, {STRATEGY_DISK, "Disk"}};
 
 const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtualization"},
 													 {VMWARE, "Vmware"},
@@ -97,6 +95,24 @@ int main(int argc, char* argv[]) {
 	cout << "Virtualiz. class :" << descByVirt.find(exec_env_info.virtualization)->second << endl;
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
 	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl;
+
+	std::vector<license::os::OsAdapterInfo> adapterInfos;
+	FUNCTION_RETURN ret = license::os::getAdapterInfos(adapterInfos);
+	if (ret == FUNCTION_RETURN::FUNC_RET_OK) {
+		for (auto osAdapter : adapterInfos) {
+			cout << "Network adapter [" << osAdapter.id << "]: " << osAdapter.description << endl;
+			cout << "   ip address [" << static_cast<unsigned int>(osAdapter.ipv4_address[3]) << "-"
+				 << static_cast<unsigned int>(osAdapter.ipv4_address[2]) << "-"
+				 << static_cast<unsigned int>(osAdapter.ipv4_address[1]) << "-"
+				 << static_cast<unsigned int>(osAdapter.ipv4_address[0]) << "]" << endl;
+			cout << "   mac address [";
+			for (int i = 0; i < 8; i++) {
+				// print mac
+			}
+		}
+	} else {
+		cout << "problem in getting adapter informations:" << ret << endl;
+	}
 
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;

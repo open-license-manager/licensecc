@@ -36,3 +36,4 @@ projects/*
 **/CMakeCache.txt
 **/CMakeFiles
 /CMakeSettings.json
+/.venv/

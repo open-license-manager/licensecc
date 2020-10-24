@@ -18,6 +18,8 @@ jobs:
         cmake --build . --target install --config Debug
       shell: bash
     - name: Test
-      run: ctest -C Release
+      run: |
+        cd build 
+        ctest -C Debug
       shell: bash
       

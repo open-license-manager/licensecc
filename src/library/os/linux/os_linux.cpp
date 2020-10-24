@@ -22,10 +22,10 @@
 
 #ifdef USE_DISK_MODEL
 #define PARSE_ID_FUNC parse_disk_id
-#define ID_FOLDER "/dev/disk/by-id/"
+#define ID_FOLDER "/dev/disk/by-id"
 #else
 #define PARSE_ID_FUNC parseUUID
-#define ID_FOLDER "/dev/disk/by-uuid/"
+#define ID_FOLDER "/dev/disk/by-uuid"
 #endif
 #ifdef USE_DBUS
 #include <dbus-1.0/dbus/dbus.h>
@@ -148,7 +148,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &diskInfos) {
 
 	DIR *disk_by_uuid_dir = opendir(ID_FOLDER);
 	if (disk_by_uuid_dir == nullptr) {
-		LOG_DEBUG("Open " ID_FOLDER " fail");
+		LOG_DEBUG("Open " ID_FOLDER " fail: %s", std::strerror(errno));
 	} else {
 		const std::string base_dir(ID_FOLDER "/");
 		while ((dir = readdir(disk_by_uuid_dir)) != nullptr && diskInfos.size() < MAX_UNITS) {
@@ -176,6 +176,8 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &diskInfos) {
 						}
 					}
 					if (!found) {
+						LOG_DEBUG("Found disk inode %d device %s, sn %s", sym_stat.st_ino, tmpDiskInfo.device,
+								  dir->d_name);
 						diskInfos.push_back(tmpDiskInfo);
 					}
 				} else {
@@ -207,12 +209,12 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &diskInfos) {
 					}
 				}
 			} else {
-				LOG_DEBUG("Stat %s for fail:F %s", cur_disk_label, std::strerror(errno));
+				LOG_DEBUG("Stat %s for fail:F %s", cur_disk_label.c_str(), std::strerror(errno));
 			}
 		}
 		closedir(disk_by_label);
 	} else {
-		LOG_DEBUG("Open %s for reading disk labels fail", label_dir);
+		LOG_DEBUG("Open %s for reading disk labels fail: %s", label_dir.c_str(), std::strerror(errno));
 	}
 
 	return result;

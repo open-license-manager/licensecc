@@ -254,13 +254,14 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &disk_infos,
 static void set_preferred_disks(std::vector<DiskInfo> &diskInfos, std::unordered_map<std::string, int> &disk_by_uuid) {
 	FILE *fstabFile = setmntent("/etc/fstab", "r");
 	if (fstabFile == nullptr) {
-		/*fstab not accessible*/
+		LOG_DEBUG("/etc/fstab not accessible");
 		return;
 	}
 	struct mntent *ent;
 	while (nullptr != (ent = getmntent(fstabFile))) {
 		bool found = false;
 		std::string device_name_s(ent->mnt_fsname);
+		LOG_DEBUG("found fstab entry %s ", ent->mnt_fsname);
 		if (strncmp("UUID=", ent->mnt_fsname, 5) == 0) {
 			// fstab entry is uuid
 			device_name_s = device_name_s.substr(5);

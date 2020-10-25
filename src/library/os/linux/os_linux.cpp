@@ -277,6 +277,16 @@ static void set_preferred_disks(std::vector<DiskInfo> &diskInfos, std::unordered
 			} else {
 				LOG_DEBUG("fstab device %s found, but no corresponding diskInfo", ent->mnt_fsname);
 			}
+		} else if (strncmp("LABEL=", ent->mnt_fsname, 6) == 0) {
+			// fstab entry is uuid
+			device_name_s = device_name_s.substr(6);
+			for (auto &disk_info : diskInfos) {
+				if (device_name_s == disk_info.label) {
+					disk_info.preferred = true;
+					LOG_DEBUG("Disk %d device %s set as preferred", disk_info.id, disk_info.device);
+					break;
+				}
+			}
 		} else {
 			// fstab entry is a device
 			auto pos = device_name_s.find_last_of("/");

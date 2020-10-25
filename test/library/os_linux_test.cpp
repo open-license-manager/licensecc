@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE os_linux_test
 #include <string>
 #include <iostream>
+#include <unordered_map>
 #include <boost/test/unit_test.hpp>
 
 #include <licensecc_properties.h>
@@ -9,7 +10,8 @@
 #include "../../src/library/os/os.h"
 #include "../../src/library/os/execution_environment.hpp"
 
-FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<DiskInfo> &diskInfos_out);
+FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<DiskInfo> &diskInfos_out,
+							std::unordered_map<std::string, int> &disk_by_uuid);
 
 namespace license {
 namespace test {
@@ -29,9 +31,9 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		bool label_found = false;
 
 		for (auto disk_info : disk_infos) {
-			uuid_found |= disk_info.sn_initialized;
-			preferred_found |= disk_info.preferred;
-			label_found |= disk_info.label_initialized;
+			uuid_found = uuid_found || disk_info.sn_initialized;
+			preferred_found = preferred_found || disk_info.preferred;
+			label_found = label_found || disk_info.label_initialized;
 
 			if (disk_info.sn_initialized) {
 				bool all_zero = true;
@@ -43,7 +45,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		}
 		BOOST_CHECK_MESSAGE(uuid_found, "At least one UUID initialized");
 		BOOST_CHECK_MESSAGE(label_found, "At least one label found");
-		BOOST_CHECK_MESSAGE(preferred_found, "At least one standard 'root' file system");
+		BOOST_CHECK_MESSAGE(preferred_found, "At least one standard mounted file system");
 	} else if (virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
 		// in docker or lxc diskInfo is very likely not to find any good disk.
 		BOOST_CHECK_EQUAL(result, FUNC_RET_NOT_AVAIL);
@@ -60,7 +62,8 @@ BOOST_AUTO_TEST_CASE(parse_blkid_file) {
 		"TYPE=\"ext4\" PARTLABEL=\"Linux filesystem\" PARTUUID=\"3d742821-3167-43fa-9f22-e9bea9a9ce64\">"
 		"/dev/nvme0n1p2</device>";
 	vector<DiskInfo> disk_infos;
-	FUNCTION_RETURN result = parse_blkid(blkid_content, disk_infos);
+	std::unordered_map<std::string, int> disk_by_uuid;
+	FUNCTION_RETURN result = parse_blkid(blkid_content, disk_infos, disk_by_uuid);
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
 	BOOST_CHECK_MESSAGE(disk_infos.size() == 2, "Two disks found");
 	BOOST_CHECK_MESSAGE(string("Linux swap") == disk_infos[0].label, "Label parsed OK");

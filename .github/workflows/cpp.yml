@@ -14,7 +14,7 @@ jobs:
     - name: Compile
       run: |
         cd build
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTING:BOOL=OFF -DLCC_PROJECT_NAME:STRING=geode ..
+        cmake -G "Visual Studio 16 2019" -DLCC_PROJECT_NAME:STRING=test ..
         cmake --build . --target install --config Debug
       shell: bash
     - name: Test

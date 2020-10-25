@@ -47,17 +47,17 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 				BOOL success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH, &volSerial, &fileMaxLen,
 													&fileFlags, fileSysName, MAX_PATH);
 				if (success) {
-					LOG_INFO("drive         : %s", szSingleDrive);
-					LOG_INFO("Volume Name   : %s", volName);
-					LOG_INFO("Volume Serial : 0x%x", volSerial);
-					LOG_DEBUG("Max file length : %d", fileMaxLen);
-					LOG_DEBUG("Filesystem      : %s", fileSysName);
+					LOG_DEBUG("drive: %s,volume Name: %s, Volume Serial: 0x%x,Filesystem: %s", szSingleDrive, volName,
+							  volSerial, fileSysName);
 					DiskInfo diskInfo;
+					memset(&diskInfo, 0, sizeof(diskInfo));
 					diskInfo.id = (int)ndrives;
+					diskInfo.label_initialized = true;
 					strncpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)) - 1);
 					strncpy(diskInfo.label, fileSysName,
 							min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
 					memcpy(diskInfo.disk_sn, &volSerial, sizeof(DWORD));
+					diskInfo.sn_initialized = true;
 					diskInfo.preferred = (szSingleDrive[0] == 'C');
 					diskInfos.push_back(diskInfo);
 					ndrives++;

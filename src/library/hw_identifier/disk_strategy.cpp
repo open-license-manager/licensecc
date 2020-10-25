@@ -41,7 +41,7 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 	v_disk_id.reserve(disk_infos.size() * 2);
 	for (int j = 0; j < 2; j++) {
 		bool preferred = (j == 0);
-		for (unsigned int i = 0; i < disk_infos.size(); i++) {
+		for (size_t i = 0; i < disk_infos.size(); i++) {
 			if (disk_infos[i].preferred == preferred) {
 				if (disk_infos[i].sn_initialized) {
 					array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id = generate_id_by_sn(disk_infos[i]);
@@ -51,13 +51,10 @@ static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_P
 					array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> l_disk_id = generate_id_by_label(disk_infos[i]);
 					v_disk_id.push_back(l_disk_id);
 				}
-				if (preferred) {
-					break;
-				}
 			}
 		}
 	}
-	return FUNC_RET_OK;
+	return v_disk_id.size() > 0 ? FUNC_RET_OK : FUNC_RET_NOT_AVAIL;
 }
 
 DiskStrategy::~DiskStrategy() {}

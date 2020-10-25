@@ -12,6 +12,8 @@ jobs:
       shell: bash
       run: echo "BOOST_ROOT=$BOOST_ROOT_1_72_0" >> $GITHUB_ENV
     - name: Compile
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
       run: |
         cd build
         cmake -G "Visual Studio 16 2019" -DLCC_PROJECT_NAME:STRING=test ..
@@ -22,4 +24,6 @@ jobs:
         cd build 
         ctest -C Debug
       shell: bash
-      
+    - name: The job has failed
+      if: ${{ failure() }}
+      run: type %TMP%\open-license.log

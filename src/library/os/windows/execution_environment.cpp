@@ -20,7 +20,8 @@ namespace license {
 namespace os {
 using namespace std;
 
-ExecutionEnvironment::ExecutionEnvironment() : m_container_type(CONTAINER_TYPE::NONE) {}
+ExecutionEnvironment::ExecutionEnvironment() : 
+	m_container_type(CONTAINER_TYPE::NONE) {}
 
 #define MAX_UNITS 20
 CONTAINER_TYPE wine_container() {

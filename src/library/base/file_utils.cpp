@@ -10,7 +10,8 @@
 #include <cerrno>
 #include <iostream>
 #include <algorithm>
-
+#include <errno.h>
+#include <cstring>
 #include "file_utils.hpp"
 
 namespace license {
@@ -34,17 +35,19 @@ vector<string> filter_existing_files(const vector<string> &fileList,
 }
 
 string get_file_contents(const char *filename, size_t max_size) {
+	string contents;
 	ifstream in(filename, std::ios::binary);
 	if (in) {
-		string contents;
 		size_t index = (size_t)in.seekg(0, ios::end).tellg();
 		size_t limited_size = min(index, max_size);
 		contents.resize(limited_size);
 		in.seekg(0, ios::beg);
 		in.read(&contents[0], limited_size);
-		return contents;
+		in.close();
+	} else {
+		throw(std::strerror(errno));
 	}
-	throw(errno);
+	return contents;
 }
 
 string remove_extension(const string& path) {

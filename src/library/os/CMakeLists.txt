@@ -16,7 +16,6 @@ IF(UNIX OR OPENSSL_FOUND)
   	    openssl/signature_verifier.cpp 
         execution_environment_common.cpp 
         windows/execution_environment.cpp
-  	    windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
   	    windows/os_win.cpp
   	    windows/network.cpp)
@@ -30,7 +29,6 @@ ELSE(UNIX OR OPENSSL_FOUND)
         windows/signature_verifier.cpp 
         execution_environment_common.cpp 
         windows/execution_environment.cpp
-        windows/isvm/Native.cpp
         windows/isvm/BIOSReader.cpp
         windows/os_win.cpp
         windows/network.cpp)

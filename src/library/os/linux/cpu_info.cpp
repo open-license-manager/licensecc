@@ -16,9 +16,9 @@ namespace os {
 using namespace std;
 
 struct CPUVendorID {
-	unsigned int ebx;
-	unsigned int edx;
-	unsigned int ecx;
+	uint32_t ebx;
+	uint32_t edx;
+	uint32_t ecx;
 
 	string toString() const { return string(reinterpret_cast<const char *>(this), 12); }
 };
@@ -56,7 +56,7 @@ CpuInfo::~CpuInfo() {}
  * @return true if the cpu hypervisor bit is set to 1
  */
 bool CpuInfo::is_hypervisor_set() const {
-	unsigned int level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
+	uint32_t level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
 
 	bool is_virtual = (((ecx >> 31) & 1) == 1);  // hypervisor flag
@@ -64,7 +64,7 @@ bool CpuInfo::is_hypervisor_set() const {
 }
 
 uint32_t CpuInfo::model() const {
-	unsigned int level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
+	uint32_t level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
 	// ax bits 0-3 stepping,4-7 model,8-11 family id,12-13 processor type
 	//        14-15 reserved, 16-19 extended model, 20-27 extended family, 27-31 reserved

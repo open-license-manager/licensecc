@@ -1,8 +1,9 @@
-#include "BIOSReader.h"
-
+#include <windows.h>
 #include <cstdint>
-
-#include "Native.h"
+#include <vector>
+#include <stdint.h>
+#include "BIOSReader.h"
+#include "../../../base/logger.h"
 
 struct smbios_structure_header {
 	uint8_t type;
@@ -96,26 +97,50 @@ void read_smbios_type_1(int8_t *addr, SystemInformation *info) {
 	if (0 != t1->family_str) info->family = (std::string::traits_type::char_type *)string_addr[t1->family_str - 1];
 }
 
+struct RawSMBIOSData {
+	BYTE Used20CallingMethod;
+	BYTE SMBIOSMajorVersion;
+	BYTE SMBIOSMinorVersion;
+	BYTE DmiRevision;
+	DWORD Length;
+	BYTE SMBIOSTableData[];
+};
+
+
+bool readSMBIOS(std::vector<uint8_t> &buffer) {
+	const DWORD tableSignature = ('R' << 24) | ('S' << 16) | ('M' << 8) | 'B';
+	bool can_read = false;
+	uint32_t size = GetSystemFirmwareTable(tableSignature, 0, NULL, 0);
+	if (size > 0) {
+		buffer.resize(size);
+		if (GetSystemFirmwareTable(tableSignature, 0, buffer.data(), size) > 0) {
+			can_read = true;
+		}
+	}
+	return can_read;
+}
+
 SystemInformation BIOSReader::readSystemInfo() {
-	SystemInformation info;
+	SystemInformation info = {};
+	std::vector<uint8_t> buffer;
 
-	uint32_t size = 0;
-	RawSMBIOSData *data = (RawSMBIOSData *)(LocateSMBIOS(&size));
+	if (readSMBIOS(buffer)) {
 
-	if (NULL == data || 0 == size) return info;
+		/*RawSMBIOSData *data = (RawSMBIOSData *)(buffer.data());
 
 	smbios_structure_header *header = (smbios_structure_header *)(data->SMBIOSTableData);
 
-	while (NULL != header) {
+	while (nullptr != header) {
 		if (1 == header->type) {
 			read_smbios_type_1((int8_t *)header, &info);
-			header = NULL;	//!	stop
+			header = nullptr;  //!	stop
 		} else {
 			int32_t offset = ((0x0F) & (header->length >> 4)) * 16 + (header->length & 0x0F);
 			header = (smbios_structure_header *)parse_smbiod_content((int8_t *)header + offset, NULL, NULL);
 		}
+		 }*/
+	} else {
+		LOG_DEBUG("Can't read smbios table");
 	}
-
-	free(data);
 	return info;
 }

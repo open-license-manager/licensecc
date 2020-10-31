@@ -5,6 +5,7 @@
 #include <licensecc/licensecc.h>
 #include <fstream>
 #include <string.h>
+#include <iomanip>
 #include "../library/base/string_utils.h"
 #include "../library/ini/SimpleIni.h"
 #include "../library/os/dmi_info.hpp"
@@ -105,10 +106,14 @@ int main(int argc, char* argv[]) {
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[2]) << "-"
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[1]) << "-"
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[0]) << "]" << endl;
-			cout << "   mac address [";
+			cout << "   mac address [" << std::hex;
 			for (int i = 0; i < 8; i++) {
-				// print mac
+				if (i != 0) {
+					cout << ":";
+				}
+				cout << static_cast<unsigned int>(osAdapter.mac_address[i]);
 			}
+			cout << "]" << std::dec << endl;
 		}
 	} else {
 		cout << "problem in getting adapter informations:" << ret << endl;

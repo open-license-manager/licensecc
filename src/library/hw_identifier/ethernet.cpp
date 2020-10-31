@@ -33,17 +33,25 @@ static FUNCTION_RETURN generate_ethernet_pc_id(vector<array<uint8_t, HW_IDENTIFI
 
 	for (auto &it : adapters) {
 		unsigned int k, data_len;
-		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> identifier;
+		array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> identifier = {};
 		data_len = use_ip ? sizeof(os::OsAdapterInfo::ipv4_address) : sizeof(os::OsAdapterInfo::mac_address);
-
-		for (k = 0; k < HW_IDENTIFIER_PROPRIETARY_DATA; k++) {
-			if (k < data_len) {
-				identifier[k] = use_ip ? it.ipv4_address[k] : it.mac_address[k];
+		bool all_zero = true;
+		for (k = 0; k < data_len && all_zero;k++) {
+			all_zero = all_zero && ((use_ip ? it.ipv4_address[k] : it.mac_address[k]) == 0);
+		}
+		if (all_zero) {
+			continue;
+		}
+		for (k = 1; k < HW_IDENTIFIER_PROPRIETARY_DATA; k++) {
+			if ((k - 1) < data_len) {
+				identifier[k] =
+						use_ip ? it.ipv4_address[k - 1] : it.mac_address[k - 1];
 			} else {
 				identifier[k] = 42;
 			}
 		}
-		identifier[0] = identifier[0] & 0x1F;
+		//identifier[0] = identifier[0] & 0x1F;
+		identifier[0] = 0;
 		data.push_back(identifier);
 	}
 

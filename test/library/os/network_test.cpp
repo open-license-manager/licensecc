@@ -18,8 +18,8 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE(read_network_adapters) {
 	std::vector<license::os::OsAdapterInfo> adapters;
-	// we can suppose every test environment  other than docker has at least one network interface (it's hard to
-	// download this source code)
+	// we can suppose every test environment other than docker has at least
+	// one network interface
 	FUNCTION_RETURN result = getAdapterInfos(adapters);
 	ExecutionEnvironment exec_env;
 	if (result != FUNC_RET_OK && exec_env.is_docker()) {
@@ -27,6 +27,7 @@ BOOST_AUTO_TEST_CASE(read_network_adapters) {
 		return;
 	}
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
+	BOOST_CHECK_GT(adapters.size(),0);
 	for (auto& it : adapters) {
 		cout << "Interface found: " << string(it.description) << endl;
 		BOOST_CHECK_GT(strlen(it.description), 0);

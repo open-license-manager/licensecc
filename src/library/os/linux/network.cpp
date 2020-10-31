@@ -64,7 +64,6 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		// if_name_position = ifname_position(ifnames, ifa->ifa_name, if_num);
 		// interface name not seen en advance
 		OsAdapterInfo *currentAdapter;
-		// FIXME not working
 		if (adapterByName.find(if_name) == adapterByName.end()) {
 			OsAdapterInfo newAdapter;
 			memset(&newAdapter, 0, sizeof(OsAdapterInfo));

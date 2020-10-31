@@ -9,26 +9,34 @@
  * Responsibility of this module is to fill OsAdapterInfo structures, in a predictable way (skip loopback/vpn interfaces)
  */
 
+#define _CRTDBG_MAP_ALLOC
+#define NOMINMAX
+
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
 #include <iphlpapi.h>
 #include <unordered_map>
 #include <stdio.h>
+#include <algorithm>
+#include <cctype>
 #pragma comment(lib, "IPHLPAPI.lib")
 
 #include "../../base/string_utils.h"
 #include "../../base/logger.h"
 #include "../network.hpp"
 
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
 namespace license {
 namespace os {
 using namespace std;
 
-static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
+static int translate(const char ipStringIn[16], unsigned char ipv4[4]) {
 	size_t index = 0;
 
-	char *str2 = ipStringIn; /* save the pointer */
+	const char *str2 = ipStringIn; /* save the pointer */
 	while (*str2) {
 		if (isdigit((unsigned char)*str2)) {
 			ipv4[index] *= 10;
@@ -40,34 +48,59 @@ static int translate(char ipStringIn[16], unsigned char ipv4[4]) {
 	}
 	return 0;
 }
-/**
+
+int score(const OsAdapterInfo &a) {
+	int score = 0;
+	bool allzero = true;
+	const char *bads[] = {"virtual", "ppp", "tunnel", "vpn"};
+	const char *goods[] = {"realtek", "intel", "wireless"};
+
+	for (int i = 0; i < sizeof(a.description) && allzero; i++) {
+		allzero = allzero && (a.description[i] == 0);
+	}
+	if (!allzero) {
+		score++;
+	}
+
+	string descr=string(a.description);
+	std::transform(descr.begin(), descr.end(), descr.begin(), [](unsigned char c) { return std::tolower(c); });
+	for (auto bad: bads) {
+		score += descr.find(bad) == std::string::npos ? 1 : -1;
+	}
+	for (auto good : goods) {
+		score += descr.find(good) == std::string::npos ? -1 : 1;
+	}
+	return score;
+}
+
+bool cmp(const OsAdapterInfo &a, const OsAdapterInfo &b) { return score(a) >= score(b); }
+	/**
  *
  * @param adapterInfos
  * @param adapter_info_size
  * @return
  */
 FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
-	unordered_map<string, OsAdapterInfo> adapterByName;
+	vector<OsAdapterInfo> tmpAdapters;
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	DWORD dwStatus;
-	PIP_ADAPTER_INFO pAdapterInfo;
-	DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
 
-	// Make an initial call to GetAdaptersInfo to get the necessary size into the ulOutBufLen variable
-	pAdapterInfo = (PIP_ADAPTER_INFO)malloc(dwBufLen);
+	ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO) *10;
+	IP_ADAPTER_INFO *pAdapterInfo = (IP_ADAPTER_INFO *)MALLOC(sizeof(IP_ADAPTER_INFO) * 10);
+
 	if (pAdapterInfo == nullptr) {
 		return FUNC_RET_ERROR;
 	}
 
-	dwStatus = GetAdaptersInfo(	 // Call GetAdapterInfo
+	dwStatus = GetAdaptersInfo(
 		pAdapterInfo,  // [out] buffer to receive data
-		&dwBufLen  // [in] size of receive data buffer
+		&ulOutBufLen  // [in] size of receive data buffer
 	);
 
 	// Incase the buffer was too small, reallocate with the returned dwBufLen
 	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
-		free(pAdapterInfo);
-		pAdapterInfo = (PIP_ADAPTER_INFO)malloc(dwBufLen);
+		FREE(pAdapterInfo);
+		pAdapterInfo = (IP_ADAPTER_INFO *)MALLOC(ulOutBufLen);
 
 		// Will only fail if buffer cannot be allocated (out of memory)
 		if (pAdapterInfo == nullptr) {
@@ -76,7 +109,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 
 		dwStatus = GetAdaptersInfo(	 // Call GetAdapterInfo
 			pAdapterInfo,  // [out] buffer to receive data
-			&dwBufLen  // [in] size of receive data buffer
+			&ulOutBufLen  // [in] size of receive data buffer
 		);
 
 		switch (dwStatus) {
@@ -84,38 +117,48 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 				break;
 
 			case ERROR_BUFFER_OVERFLOW:
-				free(pAdapterInfo);
+				FREE(pAdapterInfo);
 				return FUNC_RET_BUFFER_TOO_SMALL;
 
 			default:
-				free(pAdapterInfo);
+				FREE(pAdapterInfo);
 				return FUNC_RET_ERROR;
 		}
 	}
 
-	PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
+	IP_ADAPTER_INFO* pAdapter = pAdapterInfo;
 	FUNCTION_RETURN result = FUNC_RET_OK;
 	while (pAdapter) {
-		OsAdapterInfo ai = {};
-		strncpy(ai.description, pAdapter->Description,
-				min((int)sizeof(ai.description), MAX_ADAPTER_DESCRIPTION_LENGTH));
-		memcpy(ai.mac_address, pAdapter->Address, 8);
-		translate(pAdapter->IpAddressList.IpAddress.String, ai.ipv4_address);
-		ai.type = IFACE_TYPE_ETHERNET;
+		if (pAdapter->Type == MIB_IF_TYPE_ETHERNET) {
+			OsAdapterInfo ai = {};
+			LOG_DEBUG("Ethernet found %s, %s, mac_l: %d", pAdapter->AdapterName, pAdapter->Description, pAdapter->AddressLength);
+			if (pAdapter->AddressLength > 0) {
+				bool allzero = true;
+				const size_t size_to_be_copied = std::min(sizeof(ai.mac_address), (size_t)pAdapter->AddressLength);
+				for (int i = 0; i < size_to_be_copied && allzero; i++) {
+					allzero = allzero && (pAdapter->Address[i] == 0);
+				}
+				if (!allzero) {
+					strncpy(ai.description, pAdapter->Description,
+						min(sizeof(ai.description) - 1, (size_t)MAX_ADAPTER_DESCRIPTION_LENGTH));
+					memcpy(ai.mac_address, pAdapter->Address, size_to_be_copied);
+					translate(pAdapter->IpAddressList.IpAddress.String, ai.ipv4_address);
+					ai.type = IFACE_TYPE_ETHERNET;
+					tmpAdapters.push_back(ai);
+				}
+			}
+		}
 		pAdapter = pAdapter->Next;
-		adapterByName[string(ai.description)] = ai;
 	}
-	free(pAdapterInfo);
+	if (pAdapterInfo!=nullptr) {
+		FREE(pAdapterInfo);
+	}
 
-	// FIXME sort by eth , enps, wlan
-	if (adapterByName.size() == 0) {
+	if (tmpAdapters.size() == 0) {
 		f_return = FUNC_RET_NOT_AVAIL;
 	} else {
-		f_return = FUNC_RET_OK;
-		adapterInfos.reserve(adapterByName.size());
-		for (auto &it : adapterByName) {
-			adapterInfos.push_back(it.second);
-		}
+		std::sort(tmpAdapters.begin(), tmpAdapters.end(), cmp);
+		adapterInfos = std::move(tmpAdapters);
 	}
 	return f_return;
 }

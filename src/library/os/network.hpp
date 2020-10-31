@@ -33,7 +33,7 @@ typedef enum { IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS } IFACE_TYPE;
 typedef struct {
 	int id;
 	char description[LCC_ADAPTER_DESCRIPTION_LEN + 1];
-	unsigned char mac_address[8];
+	unsigned char mac_address[6];
 	unsigned char ipv4_address[4];
 	IFACE_TYPE type;
 } OsAdapterInfo;

@@ -48,7 +48,7 @@ static void add_CR_if_needed(string& encodeBuffer, int lineLenght) {
 string base64(const void* binaryData, size_t len, int lineLenght) {
 	const unsigned char* bin = (const unsigned char*)binaryData;
 
-	int rc = 0;  // result counter
+	// int rc = 0;  // result counter
 	unsigned int byteNo;  // I need this after the loop
 
 	int modulusLen = len % 3;
@@ -108,7 +108,7 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 	tmp_str.erase(std::remove(tmp_str.begin(), tmp_str.end(), '\n'), tmp_str.end());
 	const unsigned char* safeAsciiPtr = (const unsigned char*)tmp_str.c_str();
 	std::vector<uint8_t> bin;
-	int cb = 0;
+	// int cb = 0;
 	unsigned int charNo;
 	int pad = 0;
 	size_t len = tmp_str.size();

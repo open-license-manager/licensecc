@@ -127,7 +127,6 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	}
 
 	IP_ADAPTER_INFO* pAdapter = pAdapterInfo;
-	FUNCTION_RETURN result = FUNC_RET_OK;
 	while (pAdapter) {
 		if (pAdapter->Type == MIB_IF_TYPE_ETHERNET) {
 			OsAdapterInfo ai = {};

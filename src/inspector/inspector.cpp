@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[1]) << "-"
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[0]) << "]" << endl;
 			cout << "   mac address [" << std::hex;
-			for (int i = 0; i < 8; i++) {
+			for (int i = 0; i < sizeof(osAdapter.mac_address); i++) {
 				if (i != 0) {
 					cout << ":";
 				}

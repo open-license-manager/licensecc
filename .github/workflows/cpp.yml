@@ -1,4 +1,4 @@
-name: Github_Actions
+name: Github_CI
 on:
    push: 
 jobs:

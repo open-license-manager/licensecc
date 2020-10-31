@@ -11,8 +11,10 @@ Copy protect, restrict the usage of your C++ software with a license file using 
 .. _unstable: http://github.com/badges/stability-badges
 .. |License| image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
 .. _License: ttps://opensource.org/licenses/BSD-3-Clause
-.. |BuildStatus| image:: https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop
-.. _BuildStatus: https://travis-ci.org/open-license-manager/open-license-manager
+.. |TravisBuild| image:: https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop
+.. _TravisBuild: https://travis-ci.org/open-license-manager/open-license-manager
+.. |GithubCI| image:: https://github.com/open-license-manager/open-license-manager/workflows/Github_CI/badge.svg
+.. _GithubCI: https://github.com/open-license-manager/open-license-manager/actions
 .. |CodacyBadge| image:: https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a
 .. _CodacyBadge: https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade
 .. |codecov| image:: https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg

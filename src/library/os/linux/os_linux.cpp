@@ -97,7 +97,7 @@ static std::string getAttribute(const std::string &source, const std::string &at
 
 FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<DiskInfo> &diskInfos_out,
 							std::unordered_map<std::string, int> &disk_by_uuid) {
-	DiskInfo diskInfo;
+	DiskInfo diskInfo = {};
 	int diskNum = 0;
 	for (std::size_t oldpos = 0, pos = 0; (pos = blkid_file_content.find("</device>", oldpos)) != std::string::npos;
 		 oldpos = pos + 1) {
@@ -111,6 +111,8 @@ FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<D
 		parseUUID(disk_sn.c_str(), diskInfo.disk_sn, sizeof(diskInfo.disk_sn));
 		std::string disk_type = getAttribute(cur_dev, "TYPE");
 		disk_by_uuid.insert(std::pair<std::string, int>(disk_sn, diskInfo.id));
+		diskInfo.label_initialized = true;
+		diskInfo.sn_initialized = true;
 		// unlikely that somebody put the swap on a removable disk.
 		// this is a first rough guess on what can be a preferred disk for blkid devices
 		// just in case /etc/fstab can't be accessed or it is not up to date.

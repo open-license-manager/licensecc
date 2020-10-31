@@ -1,9 +1,10 @@
 /*
- * virtualization.cpp
+ * execution_environment.cpp
  *
  *  Created on: Dec 15, 2019
  *      Author: GC
  */
+#define __STDC_WANT_LIB_EXT1__1
 #include <paths.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -31,10 +32,10 @@ static CONTAINER_TYPE checkContainerProc() {
 	char path[MAX_PATH] = {0};
 	char proc_path[MAX_PATH], pidStr[64];
 	pid_t pid = getpid();
-	sprintf(pidStr, "%d", pid);
-	strcpy(proc_path, "/proc/");
-	strcat(proc_path, pidStr);
-	strcat(proc_path, "/cgroup");
+	snprintf(pidStr, sizeof(pidStr), "%d", pid);
+	strncpy(proc_path, "/proc/", sizeof(proc_path));
+	strncat(proc_path, pidStr, sizeof(proc_path));
+	strncpy(proc_path, "/cgroup", sizeof(proc_path));
 
 	FILE *fp;
 	char *line = NULL;
@@ -48,9 +49,6 @@ static CONTAINER_TYPE checkContainerProc() {
 	}
 
 	while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
-		// line[len]=0;
-		// printf("Retrieved line of length %zu:\n", read);
-		// printf("%s", line);
 		if (strstr(line, "docker") != NULL) {
 			result = CONTAINER_TYPE::DOCKER;
 		}

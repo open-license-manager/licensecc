@@ -53,6 +53,7 @@ std::string HwIdentifierFacade::generate_user_pc_signature(LCC_API_HW_IDENTIFICA
 	unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strategy);
 	HwIdentifier pc_id;
 	FUNCTION_RETURN result = strategy_ptr->generate_pc_id(pc_id);
+	pc_id.set_use_environment_var(use_env_var);
 	if (result != FUNC_RET_OK) {
 		throw logic_error("strategy " + to_string(strategy_ptr->identification_strategy()) + " failed");
 	}

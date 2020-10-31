@@ -13,17 +13,16 @@ namespace license {
 namespace hw_identifier {
 
 static array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> generate_id_by_sn(const DiskInfo &disk_info) {
-	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
-	a_disk_id.fill(0);
-	size_t size = min(a_disk_id.size(), sizeof(disk_info.disk_sn));
+	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id = {};
+	size_t size = min((size_t) HW_IDENTIFIER_PROPRIETARY_DATA,
+			sizeof(disk_info.disk_sn));
 	memcpy(&a_disk_id[0], disk_info.disk_sn, size);
 
 	return a_disk_id;
 }
 
 static array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> generate_id_by_label(const DiskInfo &disk_info) {
-	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id;
-	a_disk_id.fill(0);
+	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> a_disk_id = {};
 	strncpy((char *)&a_disk_id[0], disk_info.label, a_disk_id.size() - 1);
 	return a_disk_id;
 }
@@ -31,7 +30,7 @@ static array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> generate_id_by_label(const
 static FUNCTION_RETURN generate_disk_pc_id(vector<array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>> &v_disk_id) {
 	std::vector<DiskInfo> disk_infos;
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(disk_infos);
-	if (result_diskinfos != FUNC_RET_OK && result_diskinfos != FUNC_RET_BUFFER_TOO_SMALL) {
+	if (result_diskinfos != FUNC_RET_OK) {
 		return result_diskinfos;
 	}
 	if (disk_infos.size() == 0) {

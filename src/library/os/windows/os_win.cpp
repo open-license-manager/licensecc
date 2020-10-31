@@ -23,11 +23,11 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 
 // http://www.ok-soft-gmbh.com/ForStackOverflow/EnumMassStorage.c
 // http://stackoverflow.com/questions/3098696/same-code-returns-diffrent-result-on-windows7-32-bit-system
-#define MAX_UNITS 30
+#define MAX_UNITS 40
 // bug check return with diskinfos == null func_ret_ok
 FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 	DWORD fileMaxLen;
-	size_t ndrives = 0;
+	size_t ndrives = 0, drives_scanned = 0;
 	DWORD fileFlags;
 	char volName[MAX_PATH], fileSysName[MAX_PATH];
 	DWORD volSerial = 0;
@@ -40,7 +40,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 	if (dwResult > 0) {
 		return_value = FUNC_RET_OK;
 		char* szSingleDrive = szLogicalDrives;
-		while (*szSingleDrive && ndrives < MAX_UNITS) {
+		while (*szSingleDrive && drives_scanned < MAX_UNITS) {
 			// get the next drive
 			UINT driveType = GetDriveType(szSingleDrive);
 			if (driveType == DRIVE_FIXED) {
@@ -49,8 +49,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 				if (success) {
 					LOG_DEBUG("drive: %s,volume Name: %s, Volume Serial: 0x%x,Filesystem: %s", szSingleDrive, volName,
 							  volSerial, fileSysName);
-					DiskInfo diskInfo;
-					memset(&diskInfo, 0, sizeof(diskInfo));
+					DiskInfo diskInfo = {};
 					diskInfo.id = (int)ndrives;
 					diskInfo.label_initialized = true;
 					strncpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)) - 1);
@@ -67,6 +66,8 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 			} else {
 				LOG_DEBUG("This volume is not fixed : %s, type: %d", szSingleDrive);
 			}
+			szSingleDrive += strlen(szSingleDrive) + 1;
+			drives_scanned++;
 		}
 	}
 	if (diskInfos.size() > 0) {

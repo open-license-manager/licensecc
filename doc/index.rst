@@ -1,7 +1,7 @@
 #######################################
 C++ software protection with Licensecc
 #######################################
-Copy protect, restrict the usage of your C++ software with a license file using this library.
+Copy protect, restrict the usage of your C++ software with a license file.
 
 |c11|_ |License|_ |unstable|_ |BuildStatus|_ |CodacyBadge|_ |codecov|_ |forum|_ 
 

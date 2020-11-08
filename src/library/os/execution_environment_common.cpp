@@ -24,7 +24,7 @@ const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> virtual_cpu_names{
 	{"VBOX", VIRTUALBOX}};
 
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{{"VMWARE", VMWARE},
-																	  {"MICROSOFT", HV},	
+																	  {"MICROSOFT", HV},
 																	  {"PARALLELS", PARALLELS},
 																	  {"VITRUAL MACHINE", V_OTHER},
 																	  {"INNOTEK GMBH", VIRTUALBOX},
@@ -98,8 +98,8 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 		} else if (bios_vendor.find("AWS") != string::npos || bios_description.find("AMAZON") != string::npos ||
 				   sys_vendor.find("AWS") != string::npos) {
 			result = AWS;
-		} else if (bios_description.find("HP-COMPAQ") != string::npos || bios_description.find("ASUS") ||
-				   bios_description.find("DELL")) {
+		} else if (bios_description.find("HP-COMPAQ") != string::npos ||
+				   bios_description.find("ASUS") != string::npos || bios_description.find("DELL") != string::npos) {
 			result = ON_PREMISE;
 		}
 	}

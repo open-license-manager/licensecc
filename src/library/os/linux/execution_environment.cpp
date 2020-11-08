@@ -4,14 +4,14 @@
  *  Created on: Dec 15, 2019
  *      Author: GC
  */
-#define __STDC_WANT_LIB_EXT1__1
+
 #include <paths.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
-#include <string.h>
+#include <cstring>
 #include <dirent.h>
 #include <sys/utsname.h>
 
@@ -29,26 +29,20 @@ using namespace std;
 static CONTAINER_TYPE checkContainerProc() {
 	// in docer /proc/self/cgroups contains the "docker" or "lxc" string
 	// https://stackoverflow.com/questions/23513045/how-to-check-if-a-process-is-running-inside-docker-container
-	char path[MAX_PATH] = {0};
-	char proc_path[MAX_PATH], pidStr[64];
-	pid_t pid = getpid();
-	snprintf(pidStr, sizeof(pidStr), "%d", pid);
-	strncpy(proc_path, "/proc/", sizeof(proc_path));
-	strncat(proc_path, pidStr, sizeof(proc_path));
-	strncpy(proc_path, "/cgroup", sizeof(proc_path));
 
 	FILE *fp;
-	char *line = NULL;
+	char *line = nullptr;
 	size_t len = 0;
 	ssize_t read;
 	CONTAINER_TYPE result = CONTAINER_TYPE::NONE;
 
-	fp = fopen(proc_path, "r");
-	if (fp == NULL) {
+	fp = fopen("/proc/self/cgroup", "r");
+	if (fp == nullptr) {
 		return CONTAINER_TYPE::NONE;
 	}
 
-	while ((read = getline(&line, &len, fp)) != -1 && result == 0) {
+	while ((read = getline(&line, &len, fp)) != -1
+			&& result == CONTAINER_TYPE::NONE) {
 		if (strstr(line, "docker") != NULL) {
 			result = CONTAINER_TYPE::DOCKER;
 		}
@@ -57,8 +51,10 @@ static CONTAINER_TYPE checkContainerProc() {
 		}
 	}
 
+	if (line) {
+		free(line);
+	}
 	fclose(fp);
-	if (line) free(line);
 	return result;
 }
 

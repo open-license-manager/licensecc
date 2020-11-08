@@ -37,3 +37,4 @@ projects/*
 **/CMakeFiles
 /CMakeSettings.json
 /.venv/
+/Pipfile

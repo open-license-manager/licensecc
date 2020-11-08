@@ -6,8 +6,8 @@ SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by 
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 IF(NOT LCC_PROJECT_NAME)
-	message(WARNING "You should define a variable LCC_PROJECT_NAME containing the name of the software you want to add a license to."
-		"A mock product named DEFAULT has been added for you.")
+	message(STATUS "You should define a variable LCC_PROJECT_NAME containing the name of the software you want to add a license to."
+		"A mock project named DEFAULT has been added for you.")
 	set(LCC_PROJECT_NAME "DEFAULT" CACHE STRING "Project name (name of the software for which you want to issue a license)") 
 ENDIF(NOT LCC_PROJECT_NAME)
 

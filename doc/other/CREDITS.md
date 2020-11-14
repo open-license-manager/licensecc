@@ -1,5 +1,5 @@
 # Credits 
-The following open source code has been used in OpenLicenseManager. 
+The following open source code has been used in licensecc. 
 Thanks to every one of the authors of such projects. Without you open license manager would never have been released.  
 
 ## [inja](https://github.com/pantor/inja)
@@ -9,11 +9,10 @@ MIT License
 Copyright (c) 2013-2017 Niels Lohmann
 
 
-## [isVM](https://github.com/0of/isvm)
+## [hwid generation](https://github.com/789sdf987s/hwid_generation)
 Thanks for the great smbios parsing code. It saved me days.
 
 MIT License
-Copyright (c) 2015 Magnus
 
 
 ## [SimpleIni](https://github.com/brofield/simpleini)

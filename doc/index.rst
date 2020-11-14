@@ -46,7 +46,7 @@ Project Structure
 *******************
 The software is made by 4 main sub-components:
 
-* `licensecc`    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies. This is the project you're currently looking at.
+* ``licensecc``    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies. This is the project you're currently looking at.
 * ``lccinspector`` : a license debugger to be sent to the final customer to diagnose licensing problems or for calculating the hardware id before issuing the license.
 * ``lccgen``       : a license generator (github project `lcc-license-generator`_ ) to initialize the library and generate the licenses.
 * ``examples``     : usage samples (github project `examples <https://github.com/open-license-manager/examples>`_ ).

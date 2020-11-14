@@ -127,7 +127,9 @@ int main(int argc, char* argv[]) {
 	license::os::DmiInfo dmi_info;
 	cout << "Bios vendor      :" << dmi_info.bios_vendor() << endl;
 	cout << "Bios description :" << dmi_info.bios_description() << endl;
-	cout << "System vendor    :" << dmi_info.sys_vendor() << endl << endl;
+	cout << "System vendor    :" << dmi_info.sys_vendor() << endl;
+	cout << "Cpu Vendor (dmi) :" << dmi_info.cpu_manufacturer() << endl;
+	cout << "Cpu Cores  (dmi) :" << dmi_info.cpu_cores() << endl;
 	cout << "==================" << endl;
 	if (argc == 2) {
 		const string fname(argv[1]);

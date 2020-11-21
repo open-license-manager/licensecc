@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Q&amp;A &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/other/QA.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Glossary" href="glossary.html" />
+    <link rel="prev" title="Credits" href="CREDITS.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="CREDITS.html">Credits</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Q&amp;A</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#development">Development</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-do-i-have-to-build-from-source-can-you-release-a-pre-compiled-version-of-the-library">Why do i have to build from source? Can you release a pre-compiled version of the library?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#help-it-doesn-t-compile">Help! it doesn’t compile!</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#help-it-used-to-compile-but-now-it-gives-me-error">Help! it used to compile but now it gives me error.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#project-statuss">Project statuss</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-general-context-is-the-project-still-maintained">Project general context (is the project still maintained?)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#is-it-production-ready">Is it production ready?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#challenges">Challenges.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-license-manager-and-the-community">Open License Manager and “the community”</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Q&amp;A</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="q-a">
+<h1>Q&amp;A<a class="headerlink" href="#q-a" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="development">
+<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
+<p>Development related questions.</p>
+<div class="section" id="why-do-i-have-to-build-from-source-can-you-release-a-pre-compiled-version-of-the-library">
+<h3>Why do i have to build from source? Can you release a pre-compiled version of the library?<a class="headerlink" href="#why-do-i-have-to-build-from-source-can-you-release-a-pre-compiled-version-of-the-library" title="Permalink to this headline">¶</a></h3>
+<p>No we can’t release pre-compiled binaries of the library.
+In the early phases of the build the library is customized: among other things a private and public key pair is
+generated and the public key is included into the compiled code, in a way that every project gets its own signature keys.
+See <a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html"><span class="doc">Development and Usage</span></a></p>
+</div>
+<div class="section" id="help-it-doesn-t-compile">
+<h3>Help! it doesn’t compile!<a class="headerlink" href="#help-it-doesn-t-compile" title="Permalink to this headline">¶</a></h3>
+<p>Every <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> release is tested in the following environments:</p>
+<ul class="simple">
+<li><p>Centos 7-8</p></li>
+<li><p>Ubuntu 16.04-18.04 (boost 1.65~1.71, openssl 1.1)</p></li>
+<li><p>Windows server 1809 (MSVC 2017, boost 1.71)</p></li>
+<li><p>Windows 7-10 (MSVC 2019, boost 1.71)</p></li>
+</ul>
+<p>Tests are carried out automatically every commit. You can see the current build status on <a class="reference external" href="https://travis-ci.org/open-license-manager/open-license-manager">travis-ci</a>.</p>
+<p>If you can’t get it compiling:</p>
+<ul class="simple">
+<li><p>be sure to follow the compilation instructions for <a class="reference internal" href="../development/Build-the-library-windows.html"><span class="doc">Windows</span></a> or <a class="reference internal" href="../development/Build-the-library.html"><span class="doc">Linux</span></a>.</p></li>
+<li><p>post a question on the <a class="reference external" href="https://groups.google.com/forum/#%21forum/licensecc">user forum</a></p></li>
+</ul>
+</div>
+<div class="section" id="help-it-used-to-compile-but-now-it-gives-me-error">
+<h3>Help! it used to compile but now it gives me error.<a class="headerlink" href="#help-it-used-to-compile-but-now-it-gives-me-error" title="Permalink to this headline">¶</a></h3>
+<p>Updating <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> may pose some issue, since it’s still in alpha stage and we may take non-backward compatible changes.
+We suggest after every update, if you’re building from <code class="docutils literal notranslate"><span class="pre">develop</span></code> to clean the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder and run the cmake configuration from beginning.
+If this is not enough, move/backup the contents of your <code class="docutils literal notranslate"><span class="pre">projects</span></code> folder. Let <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> to generate it new. Later
+you need to merge the newly generated folder with the one you saved.</p>
+</div>
+</div>
+<div class="section" id="project-statuss">
+<h2>Project statuss<a class="headerlink" href="#project-statuss" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="project-general-context-is-the-project-still-maintained">
+<h3>Project general context (is the project still maintained?)<a class="headerlink" href="#project-general-context-is-the-project-still-maintained" title="Permalink to this headline">¶</a></h3>
+<p>This project started as a week-end project in 2014, donated and almost forgotten. This doesn’t necessarily meant bad. It was “functional”. Thanks to the effort of some people that are using it, and to the help of many of you it has been kept up to date (2020). Now it has got a <em>refresh</em> due to some project having interest in it..</p>
+</div>
+<div class="section" id="is-it-production-ready">
+<h3>Is it production ready?<a class="headerlink" href="#is-it-production-ready" title="Permalink to this headline">¶</a></h3>
+<p>Let’s be honest It is still in alhpa <img alt="experimental" src="http://badges.github.io/stability-badges/dist/experimental.svg" />
+stage. This means it’s usable with some effort. Some companies are actively using it in production to issue demo licenses and few production licenses.
+If you plan to use it in a scenario where you need to issue hundreds of licenses plan some maintaining effort, or better use a more mature or commercial licensing software.</p>
+</div>
+<div class="section" id="challenges">
+<h3>Challenges.<a class="headerlink" href="#challenges" title="Permalink to this headline">¶</a></h3>
+<p>The most challenging aspect is the number of environment/libraries we must work with.
+We’ve set up automated tests on Travis CI in about 10 different configurations to help contributors to verify their code automatically in conditions they’ve not thought about.
+If you plan to contribute you can quickly check your pull requests are compiling before notifying us by visiting the <a class="reference external" href="https://travis-ci.org/open-license-manager/open-license-manager">travis-ci website</a>.</p>
+</div>
+<div class="section" id="open-license-manager-and-the-community">
+<h3>Open License Manager and “the community”<a class="headerlink" href="#open-license-manager-and-the-community" title="Permalink to this headline">¶</a></h3>
+<p>Open License Manager has a very strange relationship with “the community”, its aim is to protect proprietary software
+from copy and unintended usage. But out there, there are people that think that all the software should be licensed as AGPL…
+StackOverflow and its fellow sites turned out to be not such a collaborative place to talk about software protection.
+Remember to choose your questions carefully. :speak_no_evil:</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="CREDITS.html" class="btn btn-neutral float-left" title="Credits" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

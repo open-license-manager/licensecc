@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Build - Linux &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/development/Build-the-library.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Build - Windows" href="Build-the-library-windows.html" />
+    <link rel="prev" title="C++ software protection with Licensecc" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build - Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-prerequisites">Install prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-7">CentOS 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-8">CentOS 8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-linux">Other linux</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#download-and-compile">Download and compile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download">Download:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure">Configure:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-and-test">Compile and test:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cmake-useful-flags">cmake useful flags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-compile-on-linux-for-windows">Cross compile on Linux for Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Build - Linux</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="build-linux">
+<h1>Build - Linux<a class="headerlink" href="#build-linux" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install-prerequisites">
+<h2>Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Below the prerequisites for compiling <code class="docutils literal notranslate"><span class="pre">open-license-manager</span></code>. For developing it we use Eclipse.
+Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.</p>
+<div class="section" id="ubuntu">
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this headline">¶</a></h3>
+<p>Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). It should be possible to build on any recent Ubuntu (debian like) version.</p>
+<p>Install prerequisites:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev \</span>
+<span class="go">     libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev \</span>
+<span class="go">     libboost-date-time-dev build-essential</span>
+</pre></div>
+</div>
+<p>For development with eclipse:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake-gui ninja-build</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="centos-7">
+<h3>CentOS 7<a class="headerlink" href="#centos-7" title="Permalink to this headline">¶</a></h3>
+<p>CentOS 7 ships with gcc 4.8 that isn’t compiling for a bug on regular expression. It’s necessary to update to gcc 4.9 or later.
+Install prerequisites:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">yum -y update &amp;&amp; yum -y install install centos-release-scl</span>
+<span class="go">yum -y install wget boost boost-devel boost-static openssl openssl-devel openssl-static </span>
+<span class="go">yum -y install glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel</span>
+
+<span class="go">export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc</span>
+<span class="go">export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++</span>
+</pre></div>
+</div>
+<p>Centos 7 ships with CMake 2.8.11 that’s not supported. You need to compile and install a newer (&gt;3.6) version of CMake.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz </span>
+<span class="go">tar zxvf cmake-3.11.0.tar.gz </span>
+<span class="go">cd cmake-3.11.0</span>
+<span class="go">./bootstrap </span>
+<span class="go">make </span>
+<span class="go">sudo make install</span>
+<span class="go">cmake --version #(check it&#39;s 3.11.0) </span>
+</pre></div>
+</div>
+<p>If you don’t want to install all these prerequisites in your machine you can also build the library in a docker container.
+Check for the corresponding Centos 7 section in the <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file at the base of the project.</p>
+</div>
+<div class="section" id="centos-8">
+<h3>CentOS 8<a class="headerlink" href="#centos-8" title="Permalink to this headline">¶</a></h3>
+<p>Install prerequisites:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">yum -y update &amp;&amp; yum -y groupinstall &#39;Development Tools&#39; </span>
+<span class="go">yum -y install wget cmake boost boost-devel openssl-devel zlib-devel  </span>
+<span class="go">dnf -y --enablerepo=PowerTools install boost-static </span>
+</pre></div>
+</div>
+<p>CentOS 8 doesn’t ship with a static version of openssl. It is necessary to compile it from sources.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz </span>
+<span class="go">tar xzf OpenSSL_1_1_1d.tar.gz &amp;&amp; cd openssl-OpenSSL_1_1_1d </span>
+<span class="go">./config &amp;&amp; make -j 8</span>
+<span class="go">sudo make install </span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-linux">
+<h3>Other linux<a class="headerlink" href="#other-linux" title="Permalink to this headline">¶</a></h3>
+<p>Open License Manager should compile on any recent (2019) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with.</p>
+<p>Minimum prerequisites</p>
+<ul class="simple">
+<li><p>gcc =&gt; 4.9, cmake =&gt; 3.6</p></li>
+<li><p>zlib, openssl =&gt; 1.0.2</p></li>
+<li><p>Boost =&gt; 1.57 (If you want to compile your own boost version remember to use the flag <code class="docutils literal notranslate"><span class="pre">runtime-link=static</span></code>)</p></li>
+</ul>
+<p>Optional prerequisites:</p>
+<ul class="simple">
+<li><p>Doxygen, Sphynx for documentation</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="download-and-compile">
+<h2>Download and compile<a class="headerlink" href="#download-and-compile" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download">
+<h3>Download:<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h3>
+<p>This project has a submodule (the license generator). Remember to add the option <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> to clone it.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/open-license-manager.git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure">
+<h3>Configure:<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd open-license-manager/build</span>
+<span class="go">cmake .. -DCMAKE_INSTALL_PREFIX=../install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compile-and-test">
+<h3>Compile and test:<a class="headerlink" href="#compile-and-test" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make</span>
+<span class="go">make install</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make test</span>
+<span class="go">ctest -T memcheck</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cmake-useful-flags">
+<h3>cmake useful flags<a class="headerlink" href="#cmake-useful-flags" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Definition name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LCC_PROJECT_NAME=<str></td>
+<td>This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named <code>DEFAULT</code> for you</td>
+</tr>
+<tr>
+<td>LCC_LOCATION=<path></td>
+<td>In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found</td>
+</tr>
+<tr>
+<td>CMAKE_BUILD_TYPE=Release</td>
+<td>generate a release version of the library (should be used as default)</td>
+</tr>
+<tr>
+<td>CMAKE_INSTALL_PREFIX</td>
+<td>folder where to install compiled libraries and headers. (default: /usr/local)</td>
+</tr>
+<tr>
+<td>BOOST_ROOT</td>
+<td>Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary)</td>
+</tr>
+<tr>
+<td>OPENSSL_ROOT</td>
+<td>Folder where OpenSSL was installed (optional: if you installed openssl as system package this should not be necessary)</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="cross-compile-on-linux-for-windows">
+<h2>Cross compile on Linux for Windows<a class="headerlink" href="#cross-compile-on-linux-for-windows" title="Permalink to this headline">¶</a></h2>
+<p>Tested on host: Ubuntu 18.04</p>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake valgrind binutils-mingw-w64 mingw-w64 mingw-w64-tools \ </span>
+<span class="go">	mingw-w64-x86-64-dev libz-mingw-w64-dev wine-stable wine-binfmt p7zip-full</span>
+</pre></div>
+</div>
+<p>Download and compile boost:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export CUR_PATH=$(pwd)</span>
+<span class="go">wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2</span>
+<span class="go">tar xjf boost_1_71_0.tar.bz2</span>
+<span class="go">rm boost_1_71_0.tar.bz2</span>
+<span class="go">cd boost_1_71_0</span>
+<span class="go">sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw </span>
+<span class="go">./bootstrap.sh</span>
+<span class="go">./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install</span>
+</pre></div>
+</div>
+<p>Install OpenSSL:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z</span>
+<span class="go">7z x openssl.7z</span>
+<span class="go">rm openssl.7z</span>
+</pre></div>
+</div>
+<p>Configure and compile:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DOPENSSL_ROOT_DIR=$CUR_PATH/openssl-OpenSSL_1_1_1d/dist -DCMAKE_FIND_DEBUG_MODE=ON -DOPENSSL_USE_STATIC_LIBS=ON -DBOOST_ROOT=$CUR_PATH/boost_1_71_0/dist  ..
+</pre></div>
+</div>
+<p>###Build documentation</p>
+<p>Setup the python virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+
+<span class="o">.</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">wheel</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Build the docs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="n">documentation</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Build-the-library-windows.html" class="btn btn-neutral float-right" title="Build - Windows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="C++ software protection with Licensecc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hardware Identifiers &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/usage/Hardware-identifiers.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License retrieval" href="License-retrieval.html" />
+    <link rel="prev" title="Developer’s environment setup" href="../development/Development-Environment-Setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware Identifiers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage-scenarios">Usage scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#execution-in-a-physical-hardware">Execution in a physical hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execution-in-a-virtual-machine">Execution in a virtual machine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#execution-in-a-container">Execution in a container</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-identifier-generation">Hardware Identifier Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#default-identifier-generation-implementation-details">Default identifier generation (implementation details)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Hardware Identifiers</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hardware-identifiers">
+<h1>Hardware Identifiers<a class="headerlink" href="#hardware-identifiers" title="Permalink to this headline">¶</a></h1>
+<p>Hardware identifiers are used to link the execution of the software to a physical hardware (a pc).
+The software executing on client’s hardware, when it finds the license is missing, calls the api
+<a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a>
+and generates an hardware identifier. The client has to communicate the hardware id back to the software publisher that
+will issue a license for him (for details see: <a class="reference internal" href="issue-licenses.html#issue-licenses"><span class="std std-ref">issue licenses</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Licensecc will guess the environment where the user is trying to launch the software (eg. a Virtual Machine),
+embed the information into the hardware id and report it to the software publisher before he is issuing the license.</p>
+</div>
+<div class="section" id="usage-scenarios">
+<h2>Usage scenarios<a class="headerlink" href="#usage-scenarios" title="Permalink to this headline">¶</a></h2>
+<p>With the recent coming of virtualized environments the installation of software directly on the machine has been less and less.</p>
+<div class="section" id="execution-in-a-physical-hardware">
+<h3>Execution in a physical hardware<a class="headerlink" href="#execution-in-a-physical-hardware" title="Permalink to this headline">¶</a></h3>
+<p>If the client executes the software on a physical hardware it is possible to identify the
+hardware by various parameters (cpu type/memory/disk label/mac address) see <a class="reference internal" href="../analysis/features.html#features"><span class="std std-ref">features</span></a>
+for detail of supported identification strageties.</p>
+</div>
+<div class="section" id="execution-in-a-virtual-machine">
+<h3>Execution in a virtual machine<a class="headerlink" href="#execution-in-a-virtual-machine" title="Permalink to this headline">¶</a></h3>
+<p>If you’re allowing software users to generate pc identifiers in a virtual machine
+you should ask yourself what’s the real use of it, since the vm can be copied as a whole elsewhere
+and there are few ways to detect this (without using an external license server that’s not yet supported by this library).</p>
+<ul class="simple">
+<li><p>Usually when the machine is copied the MAC address is changed. But sometimes it changes on its own. Software publishers may want to use this as a last resort to prevent the vm for being cloned. It has to be verified case by case.</p></li>
+<li><p>Software editors may want to prevent people from extracting the software from the VM. They can use an hidden registry key or a specific file in a location outside the installation directory to verify the software is distributed in the original VM. Or they can link the execution to a specific kind of virtualization (this is supported by OpenLicenseManager).</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In this case issuing a <cite>demo</cite> license with just a date limitation is advised.</p>
+</div>
+</div>
+<div class="section" id="execution-in-a-container">
+<h3>Execution in a container<a class="headerlink" href="#execution-in-a-container" title="Permalink to this headline">¶</a></h3>
+<p>Depending on how containers are used having hardware identifiers may make sense or no sense at all.
+For instance if containers are used to avoid to pollute the external distribution it makes perfect sense to have an
+hardware identifier, if users are running dockers in a kubernetes cluster in the cloud it makes no sense at all.</p>
+</div>
+</div>
+<div class="section" id="hardware-identifier-generation">
+<h2>Hardware Identifier Generation<a class="headerlink" href="#hardware-identifier-generation" title="Permalink to this headline">¶</a></h2>
+<p>The licensed application will call the api method <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a> to generate an hardware
+identifier and print it out to the user, the user then will contact the software licensor to get an appropriate license.</p>
+<p>The licensed application can either decide an identification strategy by passing it in the <code class="docutils literal notranslate"><span class="pre">identify_pc</span></code> parameter <code class="docutils literal notranslate"><span class="pre">hw_id_method</span></code>
+(see: <a class="reference internal" href="../api/public_api.html#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY</span></code></a> ) or let <cite>licensecc</cite> automatically choose how to generate the
+identifier (by passing <cite>hw_id_method=STRATEGY_DEFAULT</cite>).
+In this case <cite>licensecc</cite> is able to identify which virtual environment the user is running in and select the appropriate generation
+strategy.</p>
+<p>Below the full identifier generation workflow used by the <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a> method.</p>
+<div class="figure align-default">
+<img alt="../_images/pc-id-selection.png" src="../_images/pc-id-selection.png" />
+</div>
+<div class="section" id="default-identifier-generation-implementation-details">
+<h3>Default identifier generation (implementation details)<a class="headerlink" href="#default-identifier-generation-implementation-details" title="Permalink to this headline">¶</a></h3>
+<p>This section describes the inner working of the default hardware identifer strategy.</p>
+<p>When the licensed software calls <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a> with <a class="reference internal" href="../api/public_api.html#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE" title="LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT</span></code></a>
+the identifier generation will follow these steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It will first look to the environment variable <code class="docutils literal notranslate"><span class="pre">IDENTIFICATION_STRATEGY</span></code>. If set it will use the identification strategy in that variable.</p></li>
+<li><dl class="simple">
+<dt>It will try to determine which virtual environment the licensed software is running in.</dt><dd><ul>
+<li><p>If no virtual environment found it will use the strategies in <a class="reference internal" href="../api/public_api.html#c.LCC_BARE_TO_METAL_STRATEGIES" title="LCC_BARE_TO_METAL_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_BARE_TO_METAL_STRATEGIES</span></code></a>, it will try them one by one until the first one succeeds.</p></li>
+<li><p>If it detects it’s running in a Virtual Machine it will try the strategies in <a class="reference internal" href="../api/public_api.html#c.LCC_VM_STRATEGIES" title="LCC_VM_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_VM_STRATEGIES</span></code></a>, it will try them one by one until the first one succeeds.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>if you’re interested in implementing your own hardware identification strategy you can have a look to the library</dt><dd><p><a class="reference internal" href="../api/extend.html#tweak-hardware-signature-generator"><span class="std std-ref">extension points</span></a>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><cite>licensecc</cite> will try to validate the identifier using the same strategy that was used to generate it, regardless
+of what is the default method now in use. eg: disk identifiers will always be validated by <code class="docutils literal notranslate"><span class="pre">DiskStrategy</span></code>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="License-retrieval.html" class="btn btn-neutral float-right" title="License retrieval" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../development/Development-Environment-Setup.html" class="btn btn-neutral float-left" title="Developer’s environment setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

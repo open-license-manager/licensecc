@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Integrate Licensecc in your application &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/usage/integration.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Issue licenses" href="issue-licenses.html" />
+    <link rel="prev" title="License retrieval" href="License-retrieval.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integrate Licensecc in your application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-system-locate-and-link-the-licensecc">Build System - locate and link the licensecc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#call-licensecc-from-your-code">Call Licensecc from your code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Integrate Licensecc in your application</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="integrate-licensecc-in-your-application">
+<h1>Integrate Licensecc in your application<a class="headerlink" href="#integrate-licensecc-in-your-application" title="Permalink to this headline">¶</a></h1>
+<p>This short guide explain how to integrate <cite>open-license-manager</cite> in your application.</p>
+<p>Working examples are provided in the <a class="reference external" href="https://github.com/open-license-manager/examples">examples</a> project.</p>
+<div class="section" id="build-system-locate-and-link-the-licensecc">
+<h2>Build System - locate and link the licensecc<a class="headerlink" href="#build-system-locate-and-link-the-licensecc" title="Permalink to this headline">¶</a></h2>
+<p>We strongly recommend to use CMake as a build system.
+If this is the case, the easiest way to compile is to configure LicenseCC as a git submodule of your project.</p>
+<p>Then you can copy the cmake module <code class="docutils literal notranslate"><span class="pre">Findlicensecc.cmake</span></code> into your cmake modules directory in order to be able to
+locate the compiled library.</p>
+<p>Adding the following lines to your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">find_package(licensecc 2.0.0 REQUIRED)</span>
+</pre></div>
+</div>
+<p>will make the external target <code class="docutils literal notranslate"><span class="pre">licensecc::licensecc_static</span></code> to be available for linking.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Findlicensecc.cmake</span></code> takes the following CMake variables as input.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Cmake variable</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>LICENSECC_LOCATION</p></td>
+<td><div class="line-block">
+<div class="line">If licensecc was not checked out as a git submodule, in this variable you can provide an hint</div>
+<div class="line">to locate the library. It may point to the installation folder or the source folder.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>LCC_PROJECT_NAME</p></td>
+<td><div class="line-block">
+<div class="line">Name of the project (the software where you want to integrate licensecc).</div>
+<div class="line">Alternatively it is possible to specify a component name in the component section of find_package.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="call-licensecc-from-your-code">
+<h2>Call Licensecc from your code<a class="headerlink" href="#call-licensecc-from-your-code" title="Permalink to this headline">¶</a></h2>
+<p>The file containing the public api is <code class="docutils literal notranslate"><span class="pre">include/licensecc/licensecc.h</span></code>. Functions in there are considered stable.</p>
+<p>refer to <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">public api</span></a> to understand how to generate an hardware identifer or validate a license.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="issue-licenses.html" class="btn btn-neutral float-right" title="Issue licenses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="License-retrieval.html" class="btn btn-neutral float-left" title="License retrieval" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Features &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/analysis/features.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Credits" href="../other/CREDITS.html" />
+    <link rel="prev" title="Development and usage workflow" href="Development-And-Usage-Workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features-and-their-status">Features and their status</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#issue-a-demo-license-with-only-expiry-date">Issue a “demo” license with only expiry date.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#licenses-linked-to-physical-hardware-id">Licenses linked to “physical” hardware id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virtual-machine-detection-in-progress">Virtual machine detection (in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#licenses-retrieval">Licenses retrieval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#licensed-software-features-partially-implemented">Licensed software features (partially implemented)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license-management-planned">License Management (planned)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#customizable-execution-limits-planned">Customizable execution limits (planned)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#java-c-bindings-planned">Java/C# bindings (planned)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#floating-licenses-planned">Floating licenses (planned)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implemented-planned-execution-limits">Implemented/Planned Execution limits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#date">Date</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disk-label-disk-id">Disk label/Disk id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ip-address-mac-address">Ip address/Mac address</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cpu-number-machine-memory">Cpu Number/Machine memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virtualization-type">Virtualization type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#licensed-software-version">Licensed software version</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Features</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<p>Licensecc is suitable  for your project if it is relatively small, you plan to distribute it in a demo version and you
+estimate there will be a “limited” number of clients:</p>
+<ul class="simple">
+<li><p>The management of licenses is command-line. If you plan to issue hundreds of licenses you should consider more advanced licensing systems.</p></li>
+<li><p>Open License Manager doesn’t offer professional support.</p></li>
+</ul>
+<div class="section" id="features-and-their-status">
+<h2>Features and their status<a class="headerlink" href="#features-and-their-status" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 61%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Implementation status</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Trial license with expiry date</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-odd"><td><p>Link software to “physical” hardware</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p>Virtual machine detection</p></td>
+<td><p>In progress</p></td>
+</tr>
+<tr class="row-odd"><td><p>Easy license retrieval</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p>Manage licenses</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-odd"><td><p>Easy Customizable limits</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-even"><td><p>Java/C# bindings</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-odd"><td><p>Floating/network licenses</p></td>
+<td><p>Planned</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="issue-a-demo-license-with-only-expiry-date">
+<h3>Issue a “demo” license with only expiry date.<a class="headerlink" href="#issue-a-demo-license-with-only-expiry-date" title="Permalink to this headline">¶</a></h3>
+<p>Software editors often want to release a trial license that is not linked to a specified machine, but just limit the usage in time or to some other feature (number of cpu, process memory).
+See <a class="reference internal" href="#execution-limits"><span class="std std-ref">execution limits</span></a> section.</p>
+</div>
+<div class="section" id="licenses-linked-to-physical-hardware-id">
+<h3>Licenses linked to “physical” hardware id<a class="headerlink" href="#licenses-linked-to-physical-hardware-id" title="Permalink to this headline">¶</a></h3>
+<p>Link the software to a physical hardware (a pc). In this scenario the software editor wants his software to be executed on a specific piece of hardware. We suppose the operating system is installed “bare to metal” and we’re able to calculate an identifier of that hardware. This isn’t always true for virtualized environments for which alternative strategies must be planned [eg. floating licenses (not yet implemented)]. See the section on [hardware identifiers](../usage/Hardware-identifiers) for a detailed discussion of the use cases.</p>
+<p>Depending on the situation there are are different kinds of hardware id that can be used. See <a class="reference internal" href="#execution-limits"><span class="std std-ref">execution limits</span></a> section.</p>
+</div>
+<div class="section" id="virtual-machine-detection-in-progress">
+<h3>Virtual machine detection (in progress)<a class="headerlink" href="#virtual-machine-detection-in-progress" title="Permalink to this headline">¶</a></h3>
+<p>Detect if the software is running in a virtualized environment and (optionally) forbid the execution. This is useful if software editors want to prevent the execution in virtual machines (lxc/dockers…) and be able to compute a meaningful hardware id.
+Another use case is the software is to be used only in a specific class of virtualized environments. For instance it was initially packaged as a docker image, the software editor don’t want it to be “extracted” and placed elsewhere.</p>
+</div>
+<div class="section" id="licenses-retrieval">
+<h3>Licenses retrieval<a class="headerlink" href="#licenses-retrieval" title="Permalink to this headline">¶</a></h3>
+<p>Open License Manager, when integrated into a licensed software will find its license file based on many different strategies.
+It can handle multiple licenses at the same time. See the wiki page about <a class="reference internal" href="../usage/License-retrieval.html#license-retrieval"><span class="std std-ref">license retrieval</span></a> for details.</p>
+</div>
+<div class="section" id="licensed-software-features-partially-implemented">
+<h3>Licensed software features (partially implemented)<a class="headerlink" href="#licensed-software-features-partially-implemented" title="Permalink to this headline">¶</a></h3>
+<p>A licensed software may be composed by many features (functions) each one activable independently. Licensing system tells the licensed software which features are enabled, and which features are disabled.</p>
+</div>
+<div class="section" id="license-management-planned">
+<h3>License Management (planned)<a class="headerlink" href="#license-management-planned" title="Permalink to this headline">¶</a></h3>
+<p>It is necessary to keep track of the licenses that have been issued, of the clients, and their hardware identifier.
+A web application is planned that will provide integration with payment systems to allow licensed software customers to buy licenses.</p>
+</div>
+<div class="section" id="customizable-execution-limits-planned">
+<h3>Customizable execution limits (planned)<a class="headerlink" href="#customizable-execution-limits-planned" title="Permalink to this headline">¶</a></h3>
+<p>It should be easy to add and implement your own “execution limit”: that is require/forbid some feature in the application execution environment.</p>
+</div>
+<div class="section" id="java-c-bindings-planned">
+<h3>Java/C# bindings (planned)<a class="headerlink" href="#java-c-bindings-planned" title="Permalink to this headline">¶</a></h3>
+<p>The application should support bindings to java language. The library has to be compiled as a .dll for use with JNI or C# integration layer. This is especially challenging on the api side.
+Since the api is public, and the library is packaged as a separate .dll/.so everybody can compile a version of it always returning LICENSE_OK easily defeating the license schema.</p>
+</div>
+<div class="section" id="floating-licenses-planned">
+<h3>Floating licenses (planned)<a class="headerlink" href="#floating-licenses-planned" title="Permalink to this headline">¶</a></h3>
+<p>Limit the execution of the licensed software to a certain number of instances per license.
+This can be done in multiple ways:
+* without a central server, using broadcast or scanning the local network to find peers.
+* with a central server installed in the client’s network.
+* with a central server on internet.
+Status of this implementation is tracked in <a class="reference external" href="https://github.com/open-license-manager/open-license-manager/issues/4">issue #4</a></p>
+</div>
+</div>
+<div class="section" id="implemented-planned-execution-limits">
+<span id="execution-limits"></span><h2>Implemented/Planned Execution limits<a class="headerlink" href="#implemented-planned-execution-limits" title="Permalink to this headline">¶</a></h2>
+<p>Open License Manager can limit execution of licensed software based on some criteria, called “execution limits”.
+Depending on the execution environment some criteria may not be applicable:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 25%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>feature ⬇️ system-&gt;</p></th>
+<th class="head"><div class="line-block">
+<div class="line">Windows</div>
+<div class="line">BareToMetal</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Linux</div>
+<div class="line">BareToMetal</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Linux container</div>
+<div class="line">(lxc/docker)</div>
+</div>
+</th>
+<th class="head"><p>Virtual Machine</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>date</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-odd"><td><p>disk label</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌<sup>1</sup></p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p>disk id</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌<sup>1</sup></p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-odd"><td><p>ip address</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>⁉️<sup>2</sup></p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p>mac address</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>⁉️<sup>2</sup></p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-odd"><td><p>cpu number</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-even"><td><p>process memory</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-odd"><td><p>machine memory</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-even"><td><p>virtualization type</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-odd"><td><p>concurrent execution</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+<tr class="row-even"><td><p>licensed sw version</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+<td><p>Planned</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="date">
+<h3>Date<a class="headerlink" href="#date" title="Permalink to this headline">¶</a></h3>
+<p>This is the most common limit set on a license, allow the software to expire after the defined date.</p>
+</div>
+<div class="section" id="disk-label-disk-id">
+<h3>Disk label/Disk id<a class="headerlink" href="#disk-label-disk-id" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to limit the execution to a computer that has a certain disk connected.
+This feature has been implemented in <code class="docutils literal notranslate"><span class="pre">hardware</span> <span class="pre">identifier</span></code>.</p>
+<p>N.B.<sup>1</sup> This kind of limitation doesn’t make sense in containerized environments. For an extensive discussion see the
+<a class="reference internal" href="../usage/Hardware-identifiers.html#hardware-identifiers"><span class="std std-ref">hardware identifiers</span></a> section.</p>
+</div>
+<div class="section" id="ip-address-mac-address">
+<h3>Ip address/Mac address<a class="headerlink" href="#ip-address-mac-address" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to limit the execution to a computer that has a network card with a spefified MAC address
+(or even we can force to have a specific ip address).
+This feature has been implemented in <code class="docutils literal notranslate"><span class="pre">hardware</span> <span class="pre">identifier</span></code>.</p>
+<p>N.B.<sup>2</sup> This kind of limitation,though it is supported, may not make sense in most of containerized environments.
+For an extensive discussion see the <a class="reference internal" href="../usage/Hardware-identifiers.html#hardware-identifiers"><span class="std std-ref">hardware identifiers</span></a> section.</p>
+</div>
+<div class="section" id="cpu-number-machine-memory">
+<h3>Cpu Number/Machine memory<a class="headerlink" href="#cpu-number-machine-memory" title="Permalink to this headline">¶</a></h3>
+<p>Allow to restrict the execution only to a machine with the specified amount of cpu or memory or less.
+This is useful in virtualized environments, to create a licensed software demo version with limited performaces or with limited scalability.
+Status of this implementation is tracked in <a class="reference external" href="https://github.com/open-license-manager/open-license-manager/issues/3">issue #3</a></p>
+</div>
+<div class="section" id="virtualization-type">
+<h3>Virtualization type<a class="headerlink" href="#virtualization-type" title="Permalink to this headline">¶</a></h3>
+<p>Allow the execution of the licensed software only on some type of hardware or virtualized environment
+eg. only bare to metal, only in virtual machine, only in docker.
+This feature is being implemented.</p>
+</div>
+<div class="section" id="licensed-software-version">
+<h3>Licensed software version<a class="headerlink" href="#licensed-software-version" title="Permalink to this headline">¶</a></h3>
+<p>A licensed software may declare a version (eg 1.0.0). A license may span multiple releases of the software e.g. allow version 1.1.1 but not 2.0.0.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../other/CREDITS.html" class="btn btn-neutral float-right" title="Credits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Development-And-Usage-Workflow.html" class="btn btn-neutral float-left" title="Development and usage workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

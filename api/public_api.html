@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Public api &mdash; Licensecc 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+  
+  
+  
+    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/api/public_api.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script src="https://buttons.github.io/buttons.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extension points" href="extend.html" />
+    <link rel="prev" title="Multi-component software" href="../usage/multi-feature.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Licensecc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/multi-feature.html">Multi-component software</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Public api</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#print-hardware-identifier">Print hardware identifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verify-a-license">Verify a license</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">Extension points</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Public api</li>
+    
+    
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/open-license-manager/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+</li>
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="public-api">
+<h1>Public api<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h1>
+<p>The public api of the library can be found in <code class="docutils literal notranslate"><span class="pre">include/licensecc/licensecc.h</span></code> that is the only file you should
+include when you want to use the library.</p>
+<div class="section" id="print-hardware-identifier">
+<h2>Print hardware identifier<a class="headerlink" href="#print-hardware-identifier" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp function">
+<dt id="_CPPv411identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo">
+<span id="_CPPv311identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="_CPPv211identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="identify_pc__LCC_API_HW_IDENTIFICATION_STRATEGY.cP.sP.ExecutionEnvironmentInfoP"></span><span class="target" id="group__api_1gafcae753aa2022a427945492f27e85cb1"></span>bool <code class="sig-name descname">identify_pc</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY">LCC_API_HW_IDENTIFICATION_STRATEGY</a> <em>hw_id_method</em>, char *<em>identifier_out</em>, size_t *<em>buf_size</em>, ExecutionEnvironmentInfo *<em>execution_environment_info</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates the hardware identifier associated with a specific pc. </p>
+<p>The software, when it doesn’t find a valid license should show to the user the calculated identifier. The user should report the pc_identifier to the software editor that will in turn use it to issue a license.</p>
+<p>pc_id_method = <a class="reference internal" href="#group__api_1gga8dfabc04d0890403d7f358a157301a8fa80f560d08ffb72360ca77c508410d4b2"><span class="std std-ref">STRATEGY_DEFAULT</span></a> is usually the best choice.</p>
+<p>First call this method with <code class="docutils literal notranslate"><span class="pre">identifier_out</span></code> = nullptr and <code class="docutils literal notranslate"><span class="pre">buf_size</span></code> = 0 , it will return the requested buffer size in <code class="docutils literal notranslate"><span class="pre">buf_size</span></code> parameter.</p>
+<p>Then allocate the necessary memory, and call the method again.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>true if successful, false if failure (because it is not possible to identify or buffer too small). </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hw_id_method[in]</span></code>: specifies a preferred identification method. Usually <a class="reference internal" href="#group__api_1gga8dfabc04d0890403d7f358a157301a8fa80f560d08ffb72360ca77c508410d4b2"><span class="std std-ref">STRATEGY_DEFAULT</span></a> works well. See the wiki for more informations. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">identifier_out[out]</span></code>: buffer where the identification string will be placed. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf_size[in-out]</span></code>: size of the buffer where the identification string will be placed. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_environment_info[out]</span></code>: if not null will contain the informations about the execution environment. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp enum">
+<dt id="_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY">
+<span id="_CPPv334LCC_API_HW_IDENTIFICATION_STRATEGY"></span><span id="_CPPv234LCC_API_HW_IDENTIFICATION_STRATEGY"></span><span class="target" id="group__api_1ga8dfabc04d0890403d7f358a157301a8f"></span><em class="property">enum </em><code class="sig-name descname">LCC_API_HW_IDENTIFICATION_STRATEGY</code><a class="headerlink" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This enum list all the possible pc identification strategy. It is to be used as a parameter of <a class="reference internal" href="#group__api_1gafcae753aa2022a427945492f27e85cb1"><span class="std std-ref">identify_pc</span></a></p>
+<p><a class="reference internal" href="#group__api_1gga8dfabc04d0890403d7f358a157301a8fa80f560d08ffb72360ca77c508410d4b2"><span class="std std-ref">STRATEGY_DEFAULT</span></a> Should be used in most cases. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fa80f560d08ffb72360ca77c508410d4b2"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_DEFAULT</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Default strategy. </p>
+<p>This strategy first checks the content of the environment variable <code class="docutils literal notranslate"><span class="pre">IDENTIFICATION_STRATEGY</span></code>. If the variable is defined it will use the strategy specified in there, if not defined it will try to detect which virtual environment the software is running in.<ul class="simple">
+<li><p>If no virtual environment is detected it will try the strategies defined in <a class="reference internal" href="#group__strategies_1gab5d0aed0e2902b1fa9cba63407c4c5a1"><span class="std std-ref">LCC_BARE_TO_METAL_STRATEGIES</span></a></p></li>
+<li><p>If it detects the software is running in a virtual machine it will use <a class="reference internal" href="#group__strategies_1ga79be7fdb25c7333a76eb3c0fdd153990"><span class="std std-ref">LCC_VM_STRATEGIES</span></a></p></li>
+<li><p>If it detects the software is running in a docker or in an LXC it will use ::LCC_DOCKER_STRATEGIES or ::LCC_DOCKER_STRATEGIES</p></li>
+<li><p>If it detects the software is running in a virtual machine in the cloud it will use <a class="reference internal" href="#group__strategies_1ga2b46bed3a3b22fc62b78384373e25f06"><span class="std std-ref">LCC_CLOUD_STRATEGIES</span></a> </p></li>
+</ul>
+</p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_ETHERNETE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_ETHERNETE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_ETHERNETE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fa3a3742adbb1a75420d49db768466ad8e"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_ETHERNET</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_ETHERNETE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY19STRATEGY_IP_ADDRESSE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY19STRATEGY_IP_ADDRESSE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY19STRATEGY_IP_ADDRESSE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fab0df271e28f6ab7fab541e5f3bfb4f8d"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_IP_ADDRESS</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY19STRATEGY_IP_ADDRESSE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_DISKE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_DISKE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_DISKE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fab9a0768cd362a5ee414a45285dd5084c"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_DISK</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_DISKE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_CPU_SIZEE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_CPU_SIZEE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_CPU_SIZEE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8faacfca1048cae1922aad216d8bb5e979c"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_CPU_SIZE</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY17STRATEGY_CPU_SIZEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Not yet implemented </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY18STRATEGY_HOST_NAMEE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY18STRATEGY_HOST_NAMEE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY18STRATEGY_HOST_NAMEE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fa761aaba98c32d9d2e8935f063ca15c18"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_HOST_NAME</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY18STRATEGY_HOST_NAMEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Not yet implemented </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt id="_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_NONEE">
+<span id="_CPPv3N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_NONEE"></span><span id="_CPPv2N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_NONEE"></span><span class="target" id="group__api_1gga8dfabc04d0890403d7f358a157301a8fa4c5b29fb2dcb279df6a35825f64a6b47"></span><em class="property">enumerator </em><code class="sig-name descname">STRATEGY_NONE</code><a class="headerlink" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_NONEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LCC_BARE_TO_METAL_STRATEGIES">
+<span class="target" id="group__strategies_1gab5d0aed0e2902b1fa9cba63407c4c5a1"></span><code class="sig-name descname">LCC_BARE_TO_METAL_STRATEGIES</code><a class="headerlink" href="#c.LCC_BARE_TO_METAL_STRATEGIES" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>List the strategies used when no virtual envrionment is detected </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LCC_VM_STRATEGIES">
+<span class="target" id="group__strategies_1ga79be7fdb25c7333a76eb3c0fdd153990"></span><code class="sig-name descname">LCC_VM_STRATEGIES</code><a class="headerlink" href="#c.LCC_VM_STRATEGIES" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>List the strategies used when the software is executing in a virtual machine </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LCC_LXC_STRATEGIES">
+<span class="target" id="group__strategies_1ga60cafd372693169fad0fecf77d3ad426"></span><code class="sig-name descname">LCC_LXC_STRATEGIES</code><a class="headerlink" href="#c.LCC_LXC_STRATEGIES" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LCC_DOCKER_STRATEGIES">
+<span class="target" id="group__strategies_1gaa887b746b8eba1162e127239f29e586a"></span><code class="sig-name descname">LCC_DOCKER_STRATEGIES</code><a class="headerlink" href="#c.LCC_DOCKER_STRATEGIES" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LCC_CLOUD_STRATEGIES">
+<span class="target" id="group__strategies_1ga2b46bed3a3b22fc62b78384373e25f06"></span><code class="sig-name descname">LCC_CLOUD_STRATEGIES</code><a class="headerlink" href="#c.LCC_CLOUD_STRATEGIES" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>List the strategies used when it’s detected an execution in the cloud </p>
+</dd></dl>
+
+</div>
+<div class="section" id="verify-a-license">
+<h2>Verify a license<a class="headerlink" href="#verify-a-license" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp function">
+<dt id="_CPPv415acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo">
+<span id="_CPPv315acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="_CPPv215acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="acquire_license__CallerInformationsCP.LicenseLocationCP.LicenseInfoP"></span><span class="target" id="group__api_1gae5bfe7892a7f878a29cb8da209d87f81"></span>LCC_EVENT_TYPE <code class="sig-name descname">acquire_license</code><span class="sig-paren">(</span><em class="property">const</em> CallerInformations *<em>callerInformation</em>, <em class="property">const</em> LicenseLocation *<em>licenseLocation</em>, LicenseInfo *<em>license_out</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This method is used to request the use of one license for a product. In case of local license it’s used to check if the product is licensed.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>::LICENSE_OK(0) if successful. Other values if there are errors.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">callerInformation[in]</span></code>: a vendor defined string containing the name of the product we want to request. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">licenseLocation[in]</span></code>: otpional, can be NULL. licenseLocation, either the name of the file or the name of the environment variable should be !=’\0’ </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">license_out[out]</span></code>: optional, can be NULL, if set it will return extra informations about the license. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="extend.html" class="btn btn-neutral float-right" title="Extension points" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../usage/multi-feature.html" class="btn btn-neutral float-left" title="Multi-component software" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Open License Manager
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-160839650-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

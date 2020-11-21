@@ -36,7 +36,7 @@ void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licens
  * @param hw_id_method[in] specifies a preferred identification method. Usually #STRATEGY_DEFAULT works well. See the
  * wiki for more informations.
  * @param identifier_out[out] buffer where the identification string will be placed.
- * @param identifier_out[in-out] size of the buffer where the identification string will be placed.
+ * @param buf_size[in-out] size of the buffer where the identification string will be placed.
  * @param execution_environment_info[out] if not null will contain the informations about the execution environment.
  */
 bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,

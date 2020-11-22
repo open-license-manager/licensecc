@@ -13,8 +13,8 @@ Copy protect, restrict the usage of your C++ software with a license file.
 .. _License: ttps://opensource.org/licenses/BSD-3-Clause
 .. |TravisBuild| image:: https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop
 .. _TravisBuild: https://travis-ci.org/open-license-manager/open-license-manager
-.. |GithubCI| image:: https://github.com/open-license-manager/open-license-manager/workflows/Github_CI/badge.svg
-.. _GithubCI: https://github.com/open-license-manager/open-license-manager/actions
+.. |GithubCI| image:: https://github.com/open-license-manager/licensecc/workflows/Github_CI/badge.svg
+.. _GithubCI: https://github.com/open-license-manager/licensecc/actions
 .. |CodacyBadge| image:: https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a
 .. _CodacyBadge: https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade
 .. |codecov| image:: https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg
@@ -35,6 +35,11 @@ A comprehensive :ref:`list of features <analysis/features:Features>`, and their 
 If you're experiencing problems, or you just need informations you can't find here in the documentation,
 please contact us on the `user forum <https://groups.google.com/forum/#!forum/licensecc>`_ (hosted on Google), we'll be happy to help. 
 
+Notice
+****************
+We're in the process of renaming the repository from `open-license-manager` to `licensecc`. 
+Please update your project references and github remotes. Some link on the website may be broken.
+
 License (BSD)
 **************
 The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
@@ -46,7 +51,7 @@ Project Structure
 *******************
 The software is made by 4 main sub-components:
 
-* ``licensecc``    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies. This is the project you're currently looking at.
+* ``licensecc``    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies. 
 * ``lccinspector`` : a license debugger to be sent to the final customer to diagnose licensing problems or for calculating the hardware id before issuing the license.
 * ``lccgen``       : a license generator (github project `lcc-license-generator`_ ) to initialize the library and generate the licenses.
 * ``examples``     : usage samples (github project `examples <https://github.com/open-license-manager/examples>`_ ).
@@ -74,8 +79,8 @@ Clone the project.
 
 .. code-block:: console
 
-  git clone --recursive https://github.com/open-license-manager/open-license-manager.git
-  cd open-license-manager/
+  git clone --recursive https://github.com/open-license-manager/licensecc.git
+  cd licensecc/
   cd build
 
 Build on Linux
@@ -142,8 +147,8 @@ Otherwise you can open an issue in the `issue system`_. Have a look to the `cont
 We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow git plugin and use ``develop`` as default branch for your pull requests. 
 
 .. _forums: https://groups.google.com/forum/#!forum/licensecc
-.. _issue system: https://github.com/open-license-manager/open-license-manager/issues
-.. _contribution guidelines: https://github.com/open-license-manager/open-license-manager/blob/develop/CONTRIBUTING.md
+.. _issue system: https://github.com/open-license-manager/licensecc/issues
+.. _contribution guidelines: https://github.com/open-license-manager/licensecc/blob/develop/CONTRIBUTING.md
 .. _GitFlow: https://datasift.github.io/gitflow/IntroducingGitFlow.html
 
 * :ref:`genindex`

@@ -1,7 +1,7 @@
 # Issue licenses
 
 The easiest way to issue licenses is to enter the project library and create the following project structure:
-The projects folder can be anyware. We created one in `open-license-manager/projects` for your convenience (and for testing purposes). A default project<sup>1</sup> named `DEFAULT` has been created for you when you configured the project with cmake.
+The projects folder can be anyware. We created one in `licensecc/projects` for your convenience (and for testing purposes). A default project<sup>1</sup> named `DEFAULT` has been created for you when you configured the project with cmake.
 You can re-configure the project with the `LCC_PROJECT_NAME` cmake variable to create a new project.
  
 ```
@@ -58,4 +58,5 @@ A good way to start exploring available options is the command: `lcc license iss
 |feature-names     | Comma separated list of features to license. See `multi-feature` discussion.               |
 
 Note:
-<sup>1</sup> a project is a container for the customizations of open-license-manager. In special way its keys and build parameters. The name should reflect the name of the software you want to add a license to. The project name appears in the license file.
+<sup>1</sup> a project is a container for the customizations of licensecc. In special way its keys and build parameters. 
+The name should reflect the name of the software you want to add a license to. The project name appears in the license file.

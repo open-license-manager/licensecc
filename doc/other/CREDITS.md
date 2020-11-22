@@ -1,6 +1,6 @@
 # Credits 
 The following open source code has been used in licensecc. 
-Thanks to every one of the authors of such projects. Without you open license manager would never have been released.  
+Thanks to every one of the authors of such projects. Without you `licensecc` would never have been released.  
 
 ## [inja](https://github.com/pantor/inja)
 A very nice template rendering library used to customize the code.

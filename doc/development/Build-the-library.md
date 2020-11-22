@@ -1,11 +1,12 @@
 # Build - Linux
 
 ## Install prerequisites
-Below the prerequisites for compiling `open-license-manager`. For developing it we use Eclipse. 
+Below the prerequisites for compiling `licensecc`. For developing it we use Eclipse. 
 Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.
  
 ### Ubuntu
-Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). It should be possible to build on any recent Ubuntu (debian like) version.
+Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). 
+It should be possible to build on any recent Debian-derivate distribution.
 
 Install prerequisites:
 
@@ -69,7 +70,7 @@ sudo make install
 ```
 
 ### Other linux
-Open License Manager should compile on any recent (2019) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with. 
+Licensecc should compile on any recent (2020) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with. 
 
 Minimum prerequisites
 *   gcc => 4.9, cmake => 3.6
@@ -85,13 +86,13 @@ Optional prerequisites:
 This project has a submodule (the license generator). Remember to add the option `--recursive` to clone it.
 
 ```console
-git clone --recursive https://github.com/open-license-manager/open-license-manager.git
+git clone --recursive https://github.com/open-license-manager/licensecc.git
 ```
 
 ### Configure:
 
 ```console
-cd open-license-manager/build
+cd licensecc/build
 cmake .. -DCMAKE_INSTALL_PREFIX=../install
 ```
 

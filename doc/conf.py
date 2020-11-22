@@ -98,7 +98,7 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 #
 html_theme_options = {
-  'canonical_url': 'http://open-license-manager.github.io/open-license-manager/',
+  'canonical_url': 'http://open-license-manager.github.io/licensecc/',
   'analytics_id': 'UA-160839650-1',  #  Provided by Google in your dashboard
   'titles_only': False
 }
@@ -185,7 +185,7 @@ texinfo_documents = [
 ]
 
 # Sitemap plugin
-html_baseurl = 'http://open-license-manager.github.io/open-license-manager'
+html_baseurl = 'http://open-license-manager.github.io/licensecc'
 #sitemap_url_scheme = "{lang}{version}subdir/{link}"
 sitemap_url_scheme = "{link}"
 

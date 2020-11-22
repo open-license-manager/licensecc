@@ -70,7 +70,7 @@ This can be done in multiple ways:
 * without a central server, using broadcast or scanning the local network to find peers.
 * with a central server installed in the client's network. 
 * with a central server on internet.
-Status of this implementation is tracked in `issue #4 <https://github.com/open-license-manager/open-license-manager/issues/4>`_
+Status of this implementation is tracked in `issue #4 <https://github.com/open-license-manager/licensecc/issues/4>`_
 
 .. _Execution Limits:
 
@@ -122,7 +122,7 @@ Cpu Number/Machine memory
 ===============================
 Allow to restrict the execution only to a machine with the specified amount of cpu or memory or less. 
 This is useful in virtualized environments, to create a licensed software demo version with limited performaces or with limited scalability.
-Status of this implementation is tracked in `issue #3 <https://github.com/open-license-manager/open-license-manager/issues/3>`_
+Status of this implementation is tracked in `issue #3 <https://github.com/open-license-manager/licensecc/issues/3>`_
 
 Virtualization type
 ==========================

@@ -107,4 +107,17 @@ size_t mstrnlen_s(const char *szptr, size_t maxsize) {
 	return count;
 }
 
+size_t mstrlcpy(char *dst, const char *src, size_t n) {
+	size_t n_orig = n;
+	if (n > 0) {
+		char *pd;
+		const char *ps;
+
+		for (--n, pd = dst, ps = src; n > 0 && *ps != '\0'; --n, ++pd, ++ps) *pd = *ps;
+
+		*pd = '\0';
+	}
+
+	return n_orig - n;
+}
 } /* namespace license */

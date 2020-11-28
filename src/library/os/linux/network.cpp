@@ -67,7 +67,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		if (adapterByName.find(if_name) == adapterByName.end()) {
 			OsAdapterInfo newAdapter;
 			memset(&newAdapter, 0, sizeof(OsAdapterInfo));
-			strncpy(&newAdapter.description[0], ifa->ifa_name, LCC_ADAPTER_DESCRIPTION_LEN);
+			mstrlcpy(&newAdapter.description[0], ifa->ifa_name, LCC_ADAPTER_DESCRIPTION_LEN);
 			adapterByName[if_name] = newAdapter;
 		}
 		auto it = adapterByName.find(if_name);

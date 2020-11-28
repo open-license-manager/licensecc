@@ -18,6 +18,7 @@
 #include <licensecc_properties.h>
 
 #include "base/logger.h"
+#include "base/string_utils.h"
 #include "hw_identifier/hw_identifier_facade.hpp"
 #include "os/execution_environment.hpp"
 #include "limits/license_verifier.hpp"
@@ -34,7 +35,7 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
 			const string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
-			strncpy(chbuffer, pc_id.c_str(), *bufSize);
+			license::mstrlcpy(chbuffer, pc_id.c_str(), *bufSize);
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
@@ -45,8 +46,8 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer
 	} else {
 		*bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
 	}
+	static const license::os::ExecutionEnvironment exec_env;
 	if (execution_environment_info != nullptr) {
-		const license::os::ExecutionEnvironment exec_env;
 		execution_environment_info->cloud_provider = exec_env.cloud_provider();
 		execution_environment_info->virtualization = exec_env.virtualization();
 		execution_environment_info->virtualization_detail = exec_env.virtualization_detail();

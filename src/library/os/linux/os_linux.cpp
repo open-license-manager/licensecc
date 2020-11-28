@@ -12,6 +12,7 @@
 #include <sstream>
 #include "../os.h"
 #include "../../base/logger.h"
+#include "../../base/string_utils.h"
 
 #include <mntent.h>
 #include <dirent.h>
@@ -30,6 +31,8 @@
 #ifdef USE_DBUS
 #include <dbus-1.0/dbus/dbus.h>
 #endif
+
+using namespace license;
 
 /**
  *Usually uuid are hex number separated by "-". this method read up to 8 hex
@@ -104,9 +107,9 @@ FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<D
 		std::string cur_dev = blkid_file_content.substr(oldpos, pos);
 		diskInfo.id = diskNum++;
 		std::string device = cur_dev.substr(cur_dev.find_last_of(">") + 1);
-		strncpy(diskInfo.device, device.c_str(), MAX_PATH);
+		mstrlcpy(diskInfo.device, device.c_str(), MAX_PATH);
 		std::string label = getAttribute(cur_dev, "PARTLABEL");
-		strncpy(diskInfo.label, label.c_str(), 255);
+		mstrlcpy(diskInfo.label, label.c_str(), 255);
 		std::string disk_sn = getAttribute(cur_dev, "UUID");
 		parseUUID(disk_sn.c_str(), diskInfo.disk_sn, sizeof(diskInfo.disk_sn));
 		std::string disk_type = getAttribute(cur_dev, "TYPE");
@@ -167,7 +170,7 @@ static void read_disk_labels(std::vector<DiskInfo> &disk_infos) {
 				bool found = false;
 				for (auto &diskInfo : disk_infos) {
 					if (((int)(sym_stat.st_ino)) == diskInfo.id) {
-						strncpy(diskInfo.label, dir->d_name, 255 - 1);
+						mstrlcpy(diskInfo.label, dir->d_name, 255);
 						diskInfo.label_initialized = true;
 						LOG_DEBUG("Label for disk ino %d device %s, set to %s", sym_stat.st_ino, diskInfo.device,
 								  diskInfo.label);
@@ -214,7 +217,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &disk_infos,
 					if (pos != std::string::npos) {
 						device_name_s = device_name_s.substr(pos + 1);
 					}
-					strncpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
+					mstrlcpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
 					PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
 					tmpDiskInfo.sn_initialized = true;
 					tmpDiskInfo.label_initialized = false;
@@ -365,12 +368,11 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 	strcat(proc_path, "/exe");
 
 	int ch = readlink(proc_path, path, MAX_PATH - 1);
-	if (ch != -1) {
-		path[ch] = '\0';
-		strncpy(buffer, path, ch);
-		result = FUNC_RET_OK;
-	} else {
+	if (ch > MAX_PATH || ch < 0) {
 		result = FUNC_RET_ERROR;
+	} else {
+		mstrlcpy(buffer, path, ch + 1);
+		result = FUNC_RET_OK;
 	}
 	return result;
 }

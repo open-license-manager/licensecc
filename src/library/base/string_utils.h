@@ -33,6 +33,9 @@ const std::vector<std::string> split_string(const std::string& stringToBeSplit, 
 // strnln_s is not well supported and strlen is marked unsafe..
 size_t mstrnlen_s(const char* szptr, size_t maxsize);
 
+// strlcpy is not a standard function but it's the safest way to copy to c strings...
+// let's provide a custom implementation
+size_t mstrlcpy(char* dst, const char* src, size_t n);
 typedef enum {
 	INI, BASE64, UNKNOWN
 } FILE_FORMAT;

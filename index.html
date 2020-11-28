@@ -4,10 +4,13 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta content="open source license manager, copy protection library in C++." name="description" />
+<meta content="license manager, c++, open source, copy protection, hardware identifcation" name="keywords" />
+<meta content="a" name="title" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>C++ software protection with Licensecc &mdash; Licensecc 2.0.0 documentation</title>
+  <title>Licensecc: a C++ software license manager &mdash; Licensecc 2.0.0 documentation</title>
   
 
   
@@ -105,9 +108,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/concepts.html">Projects, features and versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/integration.html">Integrate Licensecc in your application</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/issue-licenses.html">Issue licenses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage/multi-feature.html">Multi-component software</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API:</span></p>
 <ul>
@@ -170,7 +173,7 @@
     
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>C++ software protection with Licensecc</li>
+      <li>Licensecc: a C++ software license manager</li>
     
     
 <li class="breadcrumbs-aside wy-breadcrumbs-aside">
@@ -199,23 +202,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="c-software-protection-with-licensecc">
-<h1>C++ software protection with Licensecc<a class="headerlink" href="#c-software-protection-with-licensecc" title="Permalink to this headline">¶</a></h1>
-<p>Copy protect, restrict the usage of your C++ software with a license file.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/C%2B%2B#Standardization"><img alt="c11" src="https://img.shields.io/badge/c%2B%2B-11-blue.svg" /></a> <a class="reference external" href="ttps://opensource.org/licenses/BSD-3-Clause"><img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a> <a class="reference external" href="http://github.com/badges/stability-badges"><img alt="unstable" src="http://badges.github.io/stability-badges/dist/unstable.svg" /></a> <a href="#id4"><span class="problematic" id="id5">|BuildStatus|_</span></a> <a class="reference external" href="https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=open-license-manager/open-license-manager&amp;amp;utm_campaign=Badge_Grade"><img alt="CodacyBadge" src="https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a" /></a> <a class="reference external" href="https://codecov.io/gh/open-license-manager/open-license-manager"><img alt="codecov" src="https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg" /></a> <a class="reference external" href="https://groups.google.com/d/forum/licensecc"><img alt="forum" src="https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat" /></a></p>
+  <div class="section" id="licensecc-a-c-software-license-manager">
+<h1>Licensecc: a C++ software license manager<a class="headerlink" href="#licensecc-a-c-software-license-manager" title="Permalink to this headline">¶</a></h1>
+<p>Copy protect, limit the usage of your C++ software with a license.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/C%2B%2B#Standardization"><img alt="c11" src="https://img.shields.io/badge/c%2B%2B-11-blue.svg" /></a> <a class="reference external" href="ttps://opensource.org/licenses/BSD-3-Clause"><img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a> <a class="reference external" href="http://github.com/badges/stability-badges"><img alt="unstable" src="http://badges.github.io/stability-badges/dist/unstable.svg" /></a> <a class="reference external" href="https://travis-ci.org/open-license-manager/licensecc"><img alt="TravisBuild" src="https://travis-ci.org/open-license-manager/licensecc.svg?branch=develop" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/actions"><img alt="GithubCI" src="https://github.com/open-license-manager/licensecc/workflows/Github_CI/badge.svg" /></a> <a class="reference external" href="https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=open-license-manager/licensecc&amp;amp;utm_campaign=Badge_Grade"><img alt="CodacyBadge" src="https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206" /></a> <a class="reference external" href="https://codecov.io/gh/open-license-manager/licensecc"><img alt="codecov" src="https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg" /></a> <a class="reference external" href="https://groups.google.com/d/forum/licensecc"><img alt="forum" src="https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat" /></a></p>
 <p>Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of
-machines, or prevent the usage in  virtualized environments. It is an open source license management system that helps to keep your
-software closed 😏 . Among the other features the most notable one is: if it runs on a “real hardware”
+machines, or prevent the usage in  virtualized environments. <cite>Licensecc</cite> is an open source license management system
+that helps to keep your software closed 😏 .
+Among the other features the most notable one is: if it runs on a “real hardware” (not a container/vm)
 it can generate a signature of that hardware and report if the signature doesn’t match, because for instance
-the software has been copied to another pc.</p>
+the software has been copied to another place.</p>
 <p>A comprehensive <a class="reference internal" href="analysis/features.html#features"><span class="std std-ref">list of features</span></a>, and their status is available in the project wiki.</p>
 <p>If you’re experiencing problems, or you just need informations you can’t find here in the documentation,
 please contact us on the <a class="reference external" href="https://groups.google.com/forum/#!forum/licensecc">user forum</a> (hosted on Google), we’ll be happy to help.</p>
-<div class="section" id="notice">
-<h2>Notice<a class="headerlink" href="#notice" title="Permalink to this headline">¶</a></h2>
-<p>We’re in the process of renaming the repository from <cite>open-license-manager</cite> to <cite>licensecc</cite>.
-Please update your project references and github remotes. Some link on the website may be broken.</p>
-</div>
 <div class="section" id="license-bsd">
 <h2>License (BSD)<a class="headerlink" href="#license-bsd" title="Permalink to this headline">¶</a></h2>
 <p>The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be.
@@ -225,7 +224,7 @@ It uses a <a class="reference external" href="https://opensource.org/licenses/BS
 <h2>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h2>
 <p>The software is made by 4 main sub-components:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">licensecc</span></code>    : the C++ library with a C api (the part you have to integrate in your software) with minimal (or no) external dependencies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">licensecc</span></code>    : the C++ library with a C api (the part you have to integrate in your software) with minimal external dependencies. (github project <a class="reference external" href="https://github.com/open-license-manager/licensecc">licensecc</a> )</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lccinspector</span></code> : a license debugger to be sent to the final customer to diagnose licensing problems or for calculating the hardware id before issuing the license.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lccgen</span></code>       : a license generator (github project <a class="reference external" href="https://github.com/open-license-manager/lcc-license-generator">lcc-license-generator</a> ) to initialize the library and generate the licenses.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">examples</span></code>     : usage samples (github project <a class="reference external" href="https://github.com/open-license-manager/examples">examples</a> ).</p></li>

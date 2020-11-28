@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Issue licenses &mdash; Licensecc 2.0.0 documentation</title>
+  <title>Projects, features and versions &mdash; Licensecc 2.0.0 documentation</title>
   
 
   
@@ -22,7 +22,7 @@
   
   
   
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/usage/issue-licenses.html"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/usage/concepts.html"/>
   
 
   
@@ -45,8 +45,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Public api" href="../api/public_api.html" />
-    <link rel="prev" title="Integrate Licensecc in your application" href="integration.html" /> 
+    <link rel="next" title="Integrate Licensecc in your application" href="integration.html" />
+    <link rel="prev" title="License retrieval" href="License-retrieval.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,13 +106,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Hardware-identifiers.html">Hardware Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="License-retrieval.html">License retrieval</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts.html"><cite>licensecc</cite> concepts and names</a></li>
-<li class="toctree-l1"><a class="reference internal" href="integration.html">Integrate Licensecc in your application</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Issue licenses</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#licensing-software-with-hardware-identifier">Licensing software with hardware identifier</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#full-set-of-options">Full set of options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Projects, features and versions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#versions">Versions</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API:</span></p>
 <ul>
@@ -175,7 +176,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Issue licenses</li>
+      <li>Projects, features and versions</li>
     
     
 <li class="breadcrumbs-aside wy-breadcrumbs-aside">
@@ -204,11 +205,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="issue-licenses">
-<h1>Issue licenses<a class="headerlink" href="#issue-licenses" title="Permalink to this headline">¶</a></h1>
-<p>The easiest way to issue licenses is to enter the project library and create the following project structure:
-The projects folder can be anyware. We created one in <code class="docutils literal notranslate"><span class="pre">licensecc/projects</span></code> for your convenience (and for testing purposes). A default project<sup>1</sup> named <code class="docutils literal notranslate"><span class="pre">DEFAULT</span></code> has been created for you when you configured the project with cmake.
-You can re-configure the project with the <code class="docutils literal notranslate"><span class="pre">LCC_PROJECT_NAME</span></code> cmake variable to create a new project.</p>
+  <div class="section" id="projects-features-and-versions">
+<h1>Projects, features and versions<a class="headerlink" href="#projects-features-and-versions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="projects">
+<h2>Projects<a class="headerlink" href="#projects" title="Permalink to this headline">¶</a></h2>
+<p>Licensecc is a library to protect your software from unauthorized copies. It does so generating a private key
+to sign the licenses and a public key to verify the signatures. The public key is included in binary form in the
+compiled <cite>licensecc-static-lib</cite> library at compile time.</p>
+<p>Since we’re open source the keys can’t be generated once and committed to github, we need to generate them before the
+compilation of the library.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">project</span></code> in <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> terms refers to a folder containing a private key, a public key and a file containing customizations.
+Licensecc source tree can host multiple projects simultaneously, but can compile only one project at once.</p>
+<p>Projects are stored by default in the <code class="docutils literal notranslate"><span class="pre">licensecc\projects</span></code> folder, though you can place them elsewhere.
+Below the structure that is automatically created for you at compile time: there is one project named ‘DEFAULT’ used to compile and run tests.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>projects
 └── DEFAULT       #(your project name)
     ├── include
@@ -221,70 +230,51 @@ You can re-configure the project with the <code class="docutils literal notransl
     └── private_key.rsa
 </pre></div>
 </div>
-<p>Place the <code class="docutils literal notranslate"><span class="pre">lcc</span></code> executable in your path (this is the executable needed to issue licenses). This executable is compiled
-together with the library, you should find it somewhere in your build tree or where you installed the library.</p>
-<p>The lines below will create a perpetual unlimited license for your software:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">projects</span><span class="o">/</span><span class="n">DEFAULT</span> <span class="c1">#(or whatever your project name is) </span>
-<span class="n">lcc</span> <span class="n">license</span> <span class="n">issue</span> <span class="o">-</span><span class="n">o</span> <span class="n">licenses</span><span class="o">/</span><span class="p">{</span><span class="n">license</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">name</span><span class="p">}</span><span class="o">.</span><span class="n">lic</span>
+<p>If you want to use or create a new project in the configure phase of cmake specify the parameter ‘-DLCC_PROJECT_NAME’.</p>
+<p>A <cite>licensecc-project</cite> corresponds to one executable it has to be licensed. So for instance suppose you have two executables “Foo” and “Bar”
+and you want to issue licenses separately (licenses of “Foo” incompatible with “Bar”) you need to:</p>
+<ul class="simple">
+<li><p>create two <cite>licensecc-projects</cite> eg. “FooLicensecc” and “BarLicensecc” (names are for example here, you can choose them as you like, remember they will appear in the license file).</p></li>
+<li><dl class="simple">
+<dt>for each project:</dt><dd><ul>
+<li><p>configure, compile and install <cite>licensecc</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>In “Foo” and “Bar” (your original software) be sure to locate and link the right version of <cite>licensecc-static-lib</cite>. Eg. in your “Foo” CmakeLists.txt:</p>
+<p>Copy <code class="docutils literal notranslate"><span class="pre">Findlicensecc.cmake</span></code> from examples project in your project <code class="docutils literal notranslate"><span class="pre">./cmake/</span></code> folder.
+Add the following lines to your <code class="docutils literal notranslate"><span class="pre">CmakeLists.txt</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} &quot;${CMAKE_CURRENT_SOURCE_DIR}/cmake/&quot;)
+find_package(licensecc 2.0.0 REQUIRED COMPONENTS &quot;FooLicensecc&quot;)
 </pre></div>
 </div>
-<div class="section" id="licensing-software-with-hardware-identifier">
-<h2>Licensing software with hardware identifier<a class="headerlink" href="#licensing-software-with-hardware-identifier" title="Permalink to this headline">¶</a></h2>
-<p>To issue a license linked to a specific machine you first need to retrieve an hardware identifier for it.
-This can be done running an executable in the destination machine (usually it is your own software,
-that calls <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> api and prints out the required identifier).</p>
-<p>If you are just experimenting the library you can compile and use the <a class="reference external" href="#">examples project</a> to print out such hardware signature or
-you can run <code class="docutils literal notranslate"><span class="pre">lccinspector</span></code> in the destination machine.</p>
-<p>Once you have the hardware identifier you can issue the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">projects</span><span class="o">/</span><span class="n">DEFAULT</span> <span class="c1">#(or whatever your `lcc-project` is) </span>
-<span class="n">lcc</span> <span class="n">license</span> <span class="n">issue</span> <span class="o">--</span><span class="n">client</span><span class="o">-</span><span class="n">signature</span> <span class="n">XXXX</span><span class="o">-</span><span class="n">XXXX</span><span class="o">-</span><span class="n">XXXX</span> <span class="o">-</span><span class="n">o</span> <span class="n">licenses</span><span class="o">/</span><span class="p">{</span><span class="n">license</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">name</span><span class="p">}</span><span class="o">.</span><span class="n">lic</span>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<p>A licensed software can have multiple functions that can be enabled or disabled independently using license files.
+Each software function takes the name of <cite>feature</cite> in Licensecc.
+Each feature can (need to) be licensed separately, the licenses then are merged in one license file and sent to the customer.</p>
+<p>There are parameters in <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> to produce a multi-feature license directly avoiding the manual merge:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lccgen</span> <span class="n">license</span> <span class="n">issue</span> <span class="o">-</span><span class="n">f</span> <span class="n">PROJECT_NAME</span><span class="p">,</span><span class="n">MY_AWESOME_FEATURE</span> <span class="o">-</span><span class="n">o</span> <span class="n">example</span><span class="o">.</span><span class="n">lic</span>
 </pre></div>
 </div>
-<p>to create the license file (usually this command is issued in the host machine where you compiled <code class="docutils literal notranslate"><span class="pre">licensecc</span></code>).</p>
+<p>To verify a feature pass the feature name in the <code class="docutils literal notranslate"><span class="pre">CallerInformations</span></code> structure
+(see: <a class="reference internal" href="../api/public_api.html#verify-a-license"><span class="std std-ref">verify license</span></a>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">CallerInformations</span> <span class="n">callerInfo</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;MY_AWESOME_FEATURE&quot;</span><span class="p">};</span>
+<span class="n">LCC_EVENT_TYPE</span> <span class="n">result</span> <span class="o">=</span> <span class="n">acquire_license</span><span class="p">(</span><span class="o">&amp;</span><span class="n">callerInfo</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">licenseInfo</span><span class="p">);</span>
+</pre></div>
 </div>
-<div class="section" id="full-set-of-options">
-<h2>Full set of options<a class="headerlink" href="#full-set-of-options" title="Permalink to this headline">¶</a></h2>
-<p>A good way to start exploring available options is the command: <code class="docutils literal notranslate"><span class="pre">lcc</span> <span class="pre">license</span> <span class="pre">issue</span> <span class="pre">--help</span></code></p>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>base64,b</td>
-<td>the license is encoded for inclusion in environment variables</td>
-</tr>
-<tr>
-<td>valid-from</td>
-<td>Specify the start of the validity for this license. Format YYYY-MM-DD. If not specified defaults to today.</td>
-</tr>
-<tr>
-<td>valid-to</td>
-<td>The expire date for this license. Format YYYY-MM-DD. If not specified the license won't expire</td>
-</tr>
-<tr>
-<td>client-signature</td>
-<td>The signature of the hardware where the licensed software will run. It should be in the format XXXX-XXXX-XXXX. If not specified the license won't be linked to a specific pc.</td>
-</tr>
-<tr>
-<td>output-file-name</td>
-<td>License output file path.</td>
-</tr>
-<tr>
-<td>extra-data</td>
-<td>Application specific data. They'll be returned when calling the <code>acquire_license</code> method</td>
-</tr>
-<tr>
-<td>feature-names</td>
-<td>Comma separated list of features to license. See <code>multi-feature</code> discussion.</td>
-</tr>
-</tbody>
-</table><p>Note:
-<sup>1</sup> a project is a container for the customizations of licensecc. In special way its keys and build parameters.
-The name should reflect the name of the software you want to add a license to. The project name appears in the license file.</p>
+<p>For a working example see <a class="reference external" href="https://github.com/open-license-manager/examples/program_features">program_features</a> in
+examples project.</p>
+</div>
+<div class="section" id="versions">
+<h2>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Versions are not yet implemented.</p>
+</div>
 </div>
 </div>
 
@@ -296,10 +286,10 @@ The name should reflect the name of the software you want to add a license to. T
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../api/public_api.html" class="btn btn-neutral float-right" title="Public api" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="integration.html" class="btn btn-neutral float-right" title="Integrate Licensecc in your application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="integration.html" class="btn btn-neutral float-left" title="Integrate Licensecc in your application" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="License-retrieval.html" class="btn btn-neutral float-left" title="License retrieval" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

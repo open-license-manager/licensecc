@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Extension points" href="extend.html" />
-    <link rel="prev" title="Multi-component software" href="../usage/multi-feature.html" /> 
+    <link rel="prev" title="Issue licenses" href="../usage/issue-licenses.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,9 +106,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/License-retrieval.html">License retrieval</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/concepts.html">Projects, features and versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/multi-feature.html">Multi-component software</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API:</span></p>
 <ul class="current">
@@ -214,7 +214,7 @@ include when you want to use the library.</p>
 <dt id="_CPPv411identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo">
 <span id="_CPPv311identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="_CPPv211identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="identify_pc__LCC_API_HW_IDENTIFICATION_STRATEGY.cP.sP.ExecutionEnvironmentInfoP"></span><span class="target" id="group__api_1gafcae753aa2022a427945492f27e85cb1"></span>bool <code class="sig-name descname">identify_pc</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY">LCC_API_HW_IDENTIFICATION_STRATEGY</a> <em>hw_id_method</em>, char *<em>identifier_out</em>, size_t *<em>buf_size</em>, ExecutionEnvironmentInfo *<em>execution_environment_info</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411identify_pc34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Calculates the hardware identifier associated with a specific pc. </p>
-<p>The software, when it doesn’t find a valid license should show to the user the calculated identifier. The user should report the pc_identifier to the software editor that will in turn use it to issue a license.</p>
+<p>The caller, when it doesn’t find a valid license (see <code class="docutils literal notranslate"><span class="pre">acquire_license</span></code> below) should show to the user the calculated identifier. The user should report the pc_identifier to the software editor that will in turn use it to issue a license.</p>
 <p>pc_id_method = <a class="reference internal" href="#group__api_1gga8dfabc04d0890403d7f358a157301a8fa80f560d08ffb72360ca77c508410d4b2"><span class="std std-ref">STRATEGY_DEFAULT</span></a> is usually the best choice.</p>
 <p>First call this method with <code class="docutils literal notranslate"><span class="pre">identifier_out</span></code> = nullptr and <code class="docutils literal notranslate"><span class="pre">buf_size</span></code> = 0 , it will return the requested buffer size in <code class="docutils literal notranslate"><span class="pre">buf_size</span></code> parameter.</p>
 <p>Then allocate the necessary memory, and call the method again.</p>
@@ -318,19 +318,73 @@ include when you want to use the library.</p>
 <h2>Verify a license<a class="headerlink" href="#verify-a-license" title="Permalink to this headline">¶</a></h2>
 <dl class="cpp function">
 <dt id="_CPPv415acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo">
-<span id="_CPPv315acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="_CPPv215acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="acquire_license__CallerInformationsCP.LicenseLocationCP.LicenseInfoP"></span><span class="target" id="group__api_1gae5bfe7892a7f878a29cb8da209d87f81"></span>LCC_EVENT_TYPE <code class="sig-name descname">acquire_license</code><span class="sig-paren">(</span><em class="property">const</em> CallerInformations *<em>callerInformation</em>, <em class="property">const</em> LicenseLocation *<em>licenseLocation</em>, LicenseInfo *<em>license_out</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv315acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="_CPPv215acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="acquire_license__CallerInformationsCP.LicenseLocationCP.LicenseInfoP"></span><span class="target" id="group__api_1gae5bfe7892a7f878a29cb8da209d87f81"></span>LCC_EVENT_TYPE <code class="sig-name descname">acquire_license</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv418CallerInformations" title="CallerInformations">CallerInformations</a> *<em>callerInformation</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv415LicenseLocation" title="LicenseLocation">LicenseLocation</a> *<em>licenseLocation</em>, <a class="reference internal" href="#_CPPv411LicenseInfo" title="LicenseInfo">LicenseInfo</a> *<em>license_out</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415acquire_licensePK18CallerInformationsPK15LicenseLocationP11LicenseInfo" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>This method is used to request the use of one license for a product. In case of local license it’s used to check if the product is licensed.</p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>::LICENSE_OK(0) if successful. Other values if there are errors.</p>
+<dt><strong>Return</strong></dt><dd><p>LCC_EVENT_TYPE::LICENSE_OK(0) if successful. Other values if there are errors.</p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">callerInformation[in]</span></code>: a vendor defined string containing the name of the product we want to request. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">licenseLocation[in]</span></code>: otpional, can be NULL. licenseLocation, either the name of the file or the name of the environment variable should be !=’\0’ </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">callerInformation[in]</span></code>: optional, can be NULL. contains informations on the software that is requesting the license verification. Let the software specify its version or request verification for features that need to be enabled separately. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">licenseLocation[in]</span></code>: optional, can be NULL. licenseLocation, either the name of the file or the name of the environment variable should be !=’\0’ </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">license_out[out]</span></code>: optional, can be NULL, if set it will return extra informations about the license. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt id="_CPPv418CallerInformations">
+<span id="_CPPv318CallerInformations"></span><span id="_CPPv218CallerInformations"></span><span id="CallerInformations"></span><span class="target" id="structCallerInformations"></span><em class="property">struct </em><code class="sig-name descname">CallerInformations</code><a class="headerlink" href="#_CPPv418CallerInformations" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Informations about the software requesting the license verification (eg, software version, feature to verify). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="cpp var">
+<dt id="_CPPv4N18CallerInformations7versionE">
+<span id="_CPPv3N18CallerInformations7versionE"></span><span id="_CPPv2N18CallerInformations7versionE"></span><span id="CallerInformations::version__cA"></span><span class="target" id="structCallerInformations_1a9fc1a425df285ce2d7ff46a3aaec6a70"></span>char <code class="sig-name descname">version</code>[<code class="sig-name descname">LCC_API_VERSION_LENGTH</code> + 1]<a class="headerlink" href="#_CPPv4N18CallerInformations7versionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>software version in format xxxx[.xxxx.xxxx] NOT IMPLEMENTED pass ‘\0’ </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N18CallerInformations12feature_nameE">
+<span id="_CPPv3N18CallerInformations12feature_nameE"></span><span id="_CPPv2N18CallerInformations12feature_nameE"></span><span id="CallerInformations::feature_name__cA"></span><span class="target" id="structCallerInformations_1aed7ad03909a51e4e09e4f09c9b77118d"></span>char <code class="sig-name descname">feature_name</code>[<code class="sig-name descname">LCC_API_FEATURE_NAME_SIZE</code> + 1]<a class="headerlink" href="#_CPPv4N18CallerInformations12feature_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Name of the feature you want to verify. If empty (‘\0’) the ‘default’ feature will be verified. (every project has a default feature that is equal to the project name). Every feature has a separate section in the license file:  </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N18CallerInformations5magicE">
+<span id="_CPPv3N18CallerInformations5magicE"></span><span id="_CPPv2N18CallerInformations5magicE"></span><span id="CallerInformations::magic__unsigned-i"></span><span class="target" id="structCallerInformations_1a6e4416974e71111f2690f01a25a6ea17"></span>unsigned int <code class="sig-name descname">magic</code><a class="headerlink" href="#_CPPv4N18CallerInformations5magicE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>this number passed in by the application must correspond to the magic number used when compiling the library. See cmake parameter -DLCC_PROJECT_MAGIC_NUM and licensecc_properties.h macro VERIFY_MAGIC </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt id="_CPPv415LicenseLocation">
+<span id="_CPPv315LicenseLocation"></span><span id="_CPPv215LicenseLocation"></span><span id="LicenseLocation"></span><span class="target" id="structLicenseLocation"></span><em class="property">struct </em><code class="sig-name descname">LicenseLocation</code><a class="headerlink" href="#_CPPv415LicenseLocation" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This structure contains informations on the raw license data. Software authors can specify the location of the license file or its full content.</p>
+<p>Can be NULL, in this case OpenLicenseManager will try to figure out the license file location on its own. </p>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt id="_CPPv411LicenseInfo">
+<span id="_CPPv311LicenseInfo"></span><span id="_CPPv211LicenseInfo"></span><span id="LicenseInfo"></span><span class="target" id="structLicenseInfo"></span><em class="property">struct </em><code class="sig-name descname">LicenseInfo</code><a class="headerlink" href="#_CPPv411LicenseInfo" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="cpp var">
+<dt id="_CPPv4N11LicenseInfo6statusE">
+<span id="_CPPv3N11LicenseInfo6statusE"></span><span id="_CPPv2N11LicenseInfo6statusE"></span><span id="LicenseInfo::status__AuditEventA"></span><span class="target" id="structLicenseInfo_1af548d1e66caa3e95244da532031ef05e"></span>AuditEvent <code class="sig-name descname">status</code>[<code class="sig-name descname">LCC_API_AUDIT_EVENT_NUM</code>]<a class="headerlink" href="#_CPPv4N11LicenseInfo6statusE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Detailed reason of success/failure. Reasons for a failure can be multiple (for instance, license expired and signature not verified). Only the last AUDIT_EVENT_NUM are reported. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N11LicenseInfo11expiry_dateE">
+<span id="_CPPv3N11LicenseInfo11expiry_dateE"></span><span id="_CPPv2N11LicenseInfo11expiry_dateE"></span><span id="LicenseInfo::expiry_date__cA"></span><span class="target" id="structLicenseInfo_1ae4c3d619237ce1a3cea3092bedac6ffc"></span>char <code class="sig-name descname">expiry_date</code>[<code class="sig-name descname">LCC_API_EXPIRY_DATE_SIZE</code> + 1]<a class="headerlink" href="#_CPPv4N11LicenseInfo11expiry_dateE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Eventual expiration date of the software, can be ‘\0’ if the software don’t expire </p>
+</dd></dl>
+
+</div>
 </dd></dl>
 
 </div>
@@ -347,7 +401,7 @@ include when you want to use the library.</p>
         <a href="extend.html" class="btn btn-neutral float-right" title="Extension points" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../usage/multi-feature.html" class="btn btn-neutral float-left" title="Multi-component software" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../usage/issue-licenses.html" class="btn btn-neutral float-left" title="Issue licenses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

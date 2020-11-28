@@ -33,7 +33,7 @@ Check out the code using git:
 
 .. code-block:: console
 
-  git clone --recursive https://github.com/open-license-manager/open-license-manager.git
+  git clone --recursive https://github.com/open-license-manager/licensecc.git
 
 Compile and build (command line)
 ====================================
@@ -127,8 +127,8 @@ Verify boost is really compiled. Go to the folder where you want to download `li
 
 .. code-block:: console
 
-   git clone --recursive https://github.com/open-license-manager/open-license-manager.git
-   cd build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost_1_68_0/boost-mingw" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+   git clone --recursive https://github.com/open-license-manager/licensecc.git
+   cd licensecc/build && cmake -G "MinGW Makefiles" -DBOOST_ROOT="C:/local/boost_1_68_0/boost-mingw" -DBoost_ARCHITECTURE="-x64" -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID="x64" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
    cmake --build . --target install --config Release
 
 And then you can test it:

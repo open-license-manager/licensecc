@@ -22,7 +22,7 @@
   
   
   
-    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/development/Build-the-library.html"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/development/Build-the-library.html"/>
   
 
   
@@ -196,20 +196,20 @@
     
 <li class="breadcrumbs-aside wy-breadcrumbs-aside">
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager"
+		href="https://github.com/open-license-manager/licensecc"
 		data-color-scheme="no-preference: light; light: light; dark: dark;"
 		data-icon="octicon-star" data-size="large" data-show-count="true"
-		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/fork"
+		href="https://github.com/open-license-manager/licensecc/fork"
 		data-icon="octicon-repo-forked" data-size="large"
 		data-show-count="true"
-		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/issues"
+		href="https://github.com/open-license-manager/licensecc/issues"
 		data-icon="octicon-issue-opened" data-size="large"
 		data-show-count="true"
-		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
 </li>
 
   </ul>
@@ -224,11 +224,12 @@
 <h1>Build - Linux<a class="headerlink" href="#build-linux" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="install-prerequisites">
 <h2>Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h2>
-<p>Below the prerequisites for compiling <code class="docutils literal notranslate"><span class="pre">open-license-manager</span></code>. For developing it we use Eclipse.
+<p>Below the prerequisites for compiling <code class="docutils literal notranslate"><span class="pre">licensecc</span></code>. For developing it we use Eclipse.
 Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.</p>
 <div class="section" id="ubuntu">
 <h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this headline">¶</a></h3>
-<p>Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). It should be possible to build on any recent Ubuntu (debian like) version.</p>
+<p>Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial).
+It should be possible to build on any recent Debian-derivate distribution.</p>
 <p>Install prerequisites:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev \</span>
 <span class="go">     libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev \</span>
@@ -283,7 +284,7 @@ Check for the corresponding Centos 7 section in the <code class="docutils litera
 </div>
 <div class="section" id="other-linux">
 <h3>Other linux<a class="headerlink" href="#other-linux" title="Permalink to this headline">¶</a></h3>
-<p>Open License Manager should compile on any recent (2019) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with.</p>
+<p>Licensecc should compile on any recent (2020) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with.</p>
 <p>Minimum prerequisites</p>
 <ul class="simple">
 <li><p>gcc =&gt; 4.9, cmake =&gt; 3.6</p></li>
@@ -301,13 +302,13 @@ Check for the corresponding Centos 7 section in the <code class="docutils litera
 <div class="section" id="download">
 <h3>Download:<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h3>
 <p>This project has a submodule (the license generator). Remember to add the option <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> to clone it.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/open-license-manager.git</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/licensecc.git</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="configure">
 <h3>Configure:<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd open-license-manager/build</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd licensecc/build</span>
 <span class="go">cmake .. -DCMAKE_INSTALL_PREFIX=../install</span>
 </pre></div>
 </div>

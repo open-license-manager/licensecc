@@ -22,7 +22,7 @@
   
   
   
-    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/development/Dependencies.html"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/development/Dependencies.html"/>
   
 
   
@@ -100,7 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Build-the-library.html">Build - Linux</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Build-the-library-windows.html">Build - Windows</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#open-license-manager-library-licensecc-dependencies">Open-license-manager library <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#library-licensecc-dependencies">Library <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#license-generator-executable-lccgen-dependencies">License generator executable <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> dependencies</a></li>
 </ul>
 </li>
@@ -180,20 +180,20 @@
     
 <li class="breadcrumbs-aside wy-breadcrumbs-aside">
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager"
+		href="https://github.com/open-license-manager/licensecc"
 		data-color-scheme="no-preference: light; light: light; dark: dark;"
 		data-icon="octicon-star" data-size="large" data-show-count="true"
-		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/fork"
+		href="https://github.com/open-license-manager/licensecc/fork"
 		data-icon="octicon-repo-forked" data-size="large"
 		data-show-count="true"
-		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/issues"
+		href="https://github.com/open-license-manager/licensecc/issues"
 		data-icon="octicon-issue-opened" data-size="large"
 		data-show-count="true"
-		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
 </li>
 
   </ul>
@@ -206,11 +206,11 @@
             
   <div class="section" id="dependencies">
 <h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h1>
-<p>This page describes the dependencies of open-license-manager and the supported build environments.</p>
+<p>This page describes the dependencies of <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> and the supported build environments.</p>
 <p>Dependencies varies with the environment, if you’re building the library for the first time we suggest you download or set up one of the supported environments to be sure not to incur in dependency/compiler errors (you can use virtual machines , docker or lxc/lxd technologies).</p>
-<p>The library is composed by two modules: a license generator <code class="docutils literal notranslate"><span class="pre">lcc</span></code> executable, that also works as a project configuration tool, and the open-license-manager C++ library itself <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> (the part you have to integrate in your application).</p>
-<div class="section" id="open-license-manager-library-licensecc-dependencies">
-<h2>Open-license-manager library <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> dependencies<a class="headerlink" href="#open-license-manager-library-licensecc-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The library is composed by two modules: a license generator <code class="docutils literal notranslate"><span class="pre">lcc</span></code> executable, that also works as a project configuration tool, and the C++ library itself <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> (the part you have to integrate in your application).</p>
+<div class="section" id="library-licensecc-dependencies">
+<h2>Library <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> dependencies<a class="headerlink" href="#library-licensecc-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>These are the dependencies of the library you have to link to your code. We try to keep them at a minimum. N.B. boost is always optional and it’s never linked to your application.</p>
 <table border="1" class="docutils">
 <thead>

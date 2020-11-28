@@ -7,7 +7,7 @@ Some `common` word that recur into the documentation have a specific meaning. Be
 .. glossary::
 
 	Project
-		A project in licensecc terminology usually corresponds to one of your applications where the licensing system need to be integrated. 
+		A project in ``licensecc`` terminology usually corresponds to one of your applications where the licensing system need to be integrated. 
 	 	For instance you want to release the executable ``Foo.exe`` you may want to create a project ``Foo`` in licensecc.
 	 	A ``licensecc-project`` is the set of customizations needed to compile licensecc-library for your own application:
 		(1) a private key used to issue licenses,

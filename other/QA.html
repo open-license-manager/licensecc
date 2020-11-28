@@ -22,7 +22,7 @@
   
   
   
-    <link rel="canonical" href="http://open-license-manager.github.io/open-license-manager/other/QA.html"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/other/QA.html"/>
   
 
   
@@ -134,7 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#project-general-context-is-the-project-still-maintained">Project general context (is the project still maintained?)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#is-it-production-ready">Is it production ready?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#challenges">Challenges.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#open-license-manager-and-the-community">Open License Manager and “the community”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#licensecc-and-the-community">Licensecc and “the community”</a></li>
 </ul>
 </li>
 </ul>
@@ -191,20 +191,20 @@
     
 <li class="breadcrumbs-aside wy-breadcrumbs-aside">
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager"
+		href="https://github.com/open-license-manager/licensecc"
 		data-color-scheme="no-preference: light; light: light; dark: dark;"
 		data-icon="octicon-star" data-size="large" data-show-count="true"
-		aria-label="Star open-license-manager/open-license-manager on GitHub">Star</a>
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/fork"
+		href="https://github.com/open-license-manager/licensecc/fork"
 		data-icon="octicon-repo-forked" data-size="large"
 		data-show-count="true"
-		aria-label="Fork open-license-manager/open-license-manager on GitHub">Fork</a>
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
 	<a class="github-button"
-		href="https://github.com/open-license-manager/open-license-manager/issues"
+		href="https://github.com/open-license-manager/licensecc/issues"
 		data-icon="octicon-issue-opened" data-size="large"
 		data-show-count="true"
-		aria-label="Issue open-license-manager/open-license-manager on GitHub">Issue</a>
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
 </li>
 
   </ul>
@@ -236,7 +236,7 @@ See <a class="reference internal" href="../analysis/Development-And-Usage-Workfl
 <li><p>Windows server 1809 (MSVC 2017, boost 1.71)</p></li>
 <li><p>Windows 7-10 (MSVC 2019, boost 1.71)</p></li>
 </ul>
-<p>Tests are carried out automatically every commit. You can see the current build status on <a class="reference external" href="https://travis-ci.org/open-license-manager/open-license-manager">travis-ci</a>.</p>
+<p>Tests are carried out automatically every commit. You can see the current build status on <a class="reference external" href="https://travis-ci.org/open-license-manager/licensecc">travis-ci</a>.</p>
 <p>If you can’t get it compiling:</p>
 <ul class="simple">
 <li><p>be sure to follow the compilation instructions for <a class="reference internal" href="../development/Build-the-library-windows.html"><span class="doc">Windows</span></a> or <a class="reference internal" href="../development/Build-the-library.html"><span class="doc">Linux</span></a>.</p></li>
@@ -255,23 +255,25 @@ you need to merge the newly generated folder with the one you saved.</p>
 <h2>Project statuss<a class="headerlink" href="#project-statuss" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="project-general-context-is-the-project-still-maintained">
 <h3>Project general context (is the project still maintained?)<a class="headerlink" href="#project-general-context-is-the-project-still-maintained" title="Permalink to this headline">¶</a></h3>
-<p>This project started as a week-end project in 2014, donated and almost forgotten. This doesn’t necessarily meant bad. It was “functional”. Thanks to the effort of some people that are using it, and to the help of many of you it has been kept up to date (2020). Now it has got a <em>refresh</em> due to some project having interest in it..</p>
+<p>This project started as a week-end project in 2014, donated and almost forgotten. This doesn’t necessarily meant bad. It was “functional”. Thanks to the effort of some people that are using it, and to the help of many of you it has been kept up to date (2020). Now it has got a <em>refresh</em> due to some project having interest in it and
+this year has seen a lot of new features mostly linked to virtualization detection and new environment support.</p>
 </div>
 <div class="section" id="is-it-production-ready">
 <h3>Is it production ready?<a class="headerlink" href="#is-it-production-ready" title="Permalink to this headline">¶</a></h3>
-<p>Let’s be honest It is still in alhpa <img alt="experimental" src="http://badges.github.io/stability-badges/dist/experimental.svg" />
-stage. This means it’s usable with some effort. Some companies are actively using it in production to issue demo licenses and few production licenses.
-If you plan to use it in a scenario where you need to issue hundreds of licenses plan some maintaining effort, or better use a more mature or commercial licensing software.</p>
+<p>Let’s be honest it is still in a very <img alt="experimental" src="http://badges.github.io/stability-badges/dist/experimental.svg" />
+stage. This means: it’s usable with some effort. Some companies are actively using it in production to issue demo licenses and few production licenses.
+If you plan to use it in a scenario where you need to issue hundreds of licenses plan some maintaining effort,
+or better use a more mature/commercial licensing software.</p>
 </div>
 <div class="section" id="challenges">
 <h3>Challenges.<a class="headerlink" href="#challenges" title="Permalink to this headline">¶</a></h3>
 <p>The most challenging aspect is the number of environment/libraries we must work with.
 We’ve set up automated tests on Travis CI in about 10 different configurations to help contributors to verify their code automatically in conditions they’ve not thought about.
-If you plan to contribute you can quickly check your pull requests are compiling before notifying us by visiting the <a class="reference external" href="https://travis-ci.org/open-license-manager/open-license-manager">travis-ci website</a>.</p>
+If you plan to contribute you can quickly check your pull requests are compiling before notifying us by visiting the <a class="reference external" href="https://travis-ci.org/open-license-manager/licensecc">travis-ci website</a>.</p>
 </div>
-<div class="section" id="open-license-manager-and-the-community">
-<h3>Open License Manager and “the community”<a class="headerlink" href="#open-license-manager-and-the-community" title="Permalink to this headline">¶</a></h3>
-<p>Open License Manager has a very strange relationship with “the community”, its aim is to protect proprietary software
+<div class="section" id="licensecc-and-the-community">
+<h3>Licensecc and “the community”<a class="headerlink" href="#licensecc-and-the-community" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Licensecc</span></code> has a very controversal relationship with “the community”, its aim is to protect proprietary software
 from copy and unintended usage. But out there, there are people that think that all the software should be licensed as AGPL…
 StackOverflow and its fellow sites turned out to be not such a collaborative place to talk about software protection.
 Remember to choose your questions carefully. :speak_no_evil:</p>

@@ -20,3 +20,12 @@ Verify a license
 ***********************
 
 .. doxygenfunction:: acquire_license
+
+.. doxygenstruct:: CallerInformations
+	:members:
+
+.. doxygenstruct:: LicenseLocation
+	:members:
+	
+.. doxygenstruct:: LicenseInfo
+	:members:

@@ -39,10 +39,10 @@ you can run `lccinspector` in the destination machine.
 Once you have the hardware identifier you can issue the command:
 
 ```
-cd projects/DEFAULT #(or whatever your project name is) 
+cd projects/DEFAULT #(or whatever your `lcc-project` is) 
 lcc license issue --client-signature XXXX-XXXX-XXXX -o licenses/{license-file-name}.lic
 ```
-usually this command is issued in the host machine where you compiled `licensecc`
+to create the license file (usually this command is issued in the host machine where you compiled `licensecc`).
 
 ## Full set of options
 A good way to start exploring available options is the command: `lcc license issue --help`

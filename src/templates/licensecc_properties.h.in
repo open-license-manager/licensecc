@@ -88,6 +88,14 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	 *  - If it detects the software is running in a virtual machine in the cloud it will use ::LCC_CLOUD_STRATEGIES
 	 */
 	STRATEGY_DEFAULT = -1,
+	/**
+	 * \brief Uses mac address to generate hardware id.
+	 * 
+	 * This strategy use the mac address of one of the network adapters to generate the hardware identifier.
+	 * Network adapters are scored using their names, trying to avoid vpn adapters and virtual devices.
+	 * Mac address should be unique in the subnetwork, so this strategy poses some limitation on the number of licenses
+	 * that can be in use in the same subnet.
+	 */	
 	STRATEGY_ETHERNET = 0,
 	STRATEGY_IP_ADDRESS = 1,
 	STRATEGY_DISK = 2,

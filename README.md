@@ -5,10 +5,10 @@ Copy protection, licensing software in C++ for Windows and Linux (with a simple 
 [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![travis](https://travis-ci.org/open-license-manager/open-license-manager.svg?branch=develop)](https://travis-ci.org/open-license-manager/open-license-manager)
+[![travis](https://travis-ci.org/open-license-manager/licensecc.svg?branch=develop)](https://travis-ci.org/open-license-manager/licensecc)
 [![Github_CI](https://github.com/open-license-manager/licensecc/workflows/Github_CI/badge.svg)](https://github.com/open-license-manager/licensecc/actions)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/62d6e1bb22d648bd85b6f3bc344a545a)](https://www.codacy.com/manual/gcontini/open-license-manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/open-license-manager&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/open-license-manager/open-license-manager/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
 [![forum : licensecc](https://img.shields.io/badge/forum-licensecc-blue.svg)](https://groups.google.com/d/forum/licensecc)
 
@@ -31,7 +31,7 @@ The software is made by 4 main sub-components:
 -   a C++ library with a nice C api, `licensecc` with minimal (or no) external dependencies (the part you have to integrate in your software) that is the project you're currently in.
 -   a license debugger `lcc-inspector` to be sent to the final customer when there are licensing problems or for calculating the pc hash before issuing the license.
 -   a license generator (github project [lcc-license-generator](https://github.com/open-license-manager/lcc-license-generator)) `lccgen` for customizing the library and generate the licenses.
--   examples projecs
+-   Usage [examples](hhttps://github.com/open-license-manager/examples) to simplify the integration in your project.
  
 ## How to build
 Below an overview of the basic build procedure, you can find detailed instructions for [Linux](http://open-license-manager.github.io/licensecc/development/Build-the-library.html) 

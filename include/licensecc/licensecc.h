@@ -22,7 +22,7 @@ void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licens
 /**
  * \brief Calculates the hardware identifier associated with a specific pc.
  * \details
- * The software, when it doesn't find a valid license should show to the user the calculated identifier.
+ * The caller, when it doesn't find a valid license (see `acquire_license` below) should show to the user the calculated identifier.
  * The user should report the pc_identifier to the software editor that will in turn use it to issue a license.
  *
  * pc_id_method = ::STRATEGY_DEFAULT is usually the best choice.
@@ -46,11 +46,12 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifi
  * This method is used to request the use of one license for a product.
  * In case of local license it's used to check if the product is licensed.
  *
- * @return ::LICENSE_OK(0) if successful. Other values if there are errors.
+ * @return LCC_EVENT_TYPE::LICENSE_OK(0) if successful. Other values if there are errors.
  *
- * @param callerInformation[in]
- * 			a vendor defined string containing the name of the product we want to request.
- * @param licenseLocation[in] otpional, can be NULL.
+ * @param callerInformation[in] optional, can be NULL.
+ * 			contains informations on the software that is requesting the license verification. Let the software
+ * 			specify its version or request verification for features that need to be enabled separately.  
+ * @param licenseLocation[in] optional, can be NULL.
  * 					licenseLocation, either the name of the file
  * 								or the name of the environment variable should be !='\0'
  * @param license_out[out] optional, can be NULL, if set it will return extra informations about the license.

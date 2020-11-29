@@ -1,6 +1,6 @@
-# Licensecc
+# Licensecc: protect your C++ software from unauthorized copies.
 
-Copy protection, licensing software in C++ for Windows and Linux (with a simple C api for use in C projects).
+*Copy protection, licensing library and license generator for Windows and Linux.*
 
 [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
@@ -8,7 +8,7 @@ Copy protection, licensing software in C++ for Windows and Linux (with a simple 
 [![travis](https://travis-ci.org/open-license-manager/licensecc.svg?branch=develop)](https://travis-ci.org/open-license-manager/licensecc)
 [![Github_CI](https://github.com/open-license-manager/licensecc/workflows/Github_CI/badge.svg)](https://github.com/open-license-manager/licensecc/actions)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg)](https://codecov.io/gh/open-license-manager/open-license-manager)
+[![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
 [![forum : licensecc](https://img.shields.io/badge/forum-licensecc-blue.svg)](https://groups.google.com/d/forum/licensecc)
 

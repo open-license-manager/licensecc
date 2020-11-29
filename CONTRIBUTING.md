@@ -1,5 +1,4 @@
-Contributing to Licensecc
-==========
+# Contributing to Licensecc
 
 ## Interacting with the team 
 
@@ -55,9 +54,9 @@ Please also check for the [current and planned features](https://github.com/open
 
 Contributions to `licensecc` will be subject to the following rules:
 
-  - small patches eg. documentation changes, small bug fixes can be submitted directly on github, use the description of the patch to shortly explain the content of the patch. 
-  - if the patch is not completely trivial please open an issue first and provide a description of what you want to achieve.
-  - larger contributions should be discussed first on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
+-   small patches eg. documentation changes, small bug fixes can be submitted directly on github, use the description of the patch to shortly explain the content of the patch. 
+-   if the patch is not completely trivial please open an issue first and provide a description of what you want to achieve.
+-   larger contributions should be discussed first on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
 
 If you want to contribute we are happy to integrate your code. You can start by looking through the [`good first issue`](https://github.com/open-license-manager/licensecc/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`help-wanted`](https://github.com/open-license-manager/licensecc/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issues. 
 
@@ -80,5 +79,5 @@ Supposing you already know how to contribute to an open source project on GitHub
 ##### Don't
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
-    -  We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
-    
+-   We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
+

@@ -1,7 +1,7 @@
 ###########################################
-Licensecc: a C++ software license manager 
+Licensecc: a C++ license manager 
 ###########################################
-Copy protect, limit the usage of your C++ software with a license.
+*Copy protection, licensing library and license generator for Windows and Linux.*
 
 |c11|_ |License|_ |unstable|_ |TravisBuild|_ |GithubCI|_ |CodacyBadge|_ |codecov|_ |forum|_ 
 
@@ -17,9 +17,9 @@ Copy protect, limit the usage of your C++ software with a license.
 .. _GithubCI: https://github.com/open-license-manager/licensecc/actions
 .. |CodacyBadge| image:: https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206
 .. _CodacyBadge: https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade
-.. |codecov| image:: https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl
 .. _codecov: https://codecov.io/gh/open-license-manager/licensecc
-.. |issues| image:: https://img.shields.io/github/issues/licensecc/open-license-manager
+.. |issues| image:: https://img.shields.io/github/issues/open-license-manager/licensecc
 .. _issues: http://github.com/open-license-manager/licensecc/issues
 .. |forum| image:: https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat
 .. _forum: https://groups.google.com/d/forum/licensecc
@@ -27,6 +27,7 @@ Copy protect, limit the usage of your C++ software with a license.
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. `Licensecc` is an open source license management system 
 that helps to keep your software closed |:smirk:| . 
+
 Among the other features the most notable one is: if it runs on a "real hardware" (not a container/vm)
 it can generate a signature of that hardware and report if the signature doesn't match, because for instance 
 the software has been copied to another place.
@@ -195,5 +196,7 @@ We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow 
 
 .. meta::
    :description: open source license manager, copy protection library in C++. 
-   :keywords: license manager, c++, open source, copy protection, hardware identifcation
-   :title: a
+   :keywords: c++, licensing software, license manager, open source, copy protection, hardware identifcation
+   
+.. title::
+   Copy protection in C++

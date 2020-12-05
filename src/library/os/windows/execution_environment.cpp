@@ -20,8 +20,7 @@ namespace license {
 namespace os {
 using namespace std;
 
-ExecutionEnvironment::ExecutionEnvironment() : 
-	m_container_type(CONTAINER_TYPE::NONE) {}
+ExecutionEnvironment::ExecutionEnvironment() : m_container_type(CONTAINER_TYPE::NONE) {}
 
 #define MAX_UNITS 20
 CONTAINER_TYPE wine_container() {
@@ -31,8 +30,7 @@ CONTAINER_TYPE wine_container() {
 
 	CONTAINER_TYPE result = CONTAINER_TYPE::NONE;
 	const DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
-	
-	//FIXME! this code missed the increment in the loop... 
+
 	if (dwResult > 0 && dwResult <= MAX_PATH) {
 		char* szSingleDrive = szLogicalDrives;
 		while (*szSingleDrive && ndrives < MAX_UNITS) {
@@ -58,6 +56,8 @@ CONTAINER_TYPE wine_container() {
 					// no problem,we're just guessing
 				}
 			}
+			szSingleDrive += strlen(szSingleDrive) + 1;
+			ndrives++;
 		}
 	}
 	return result;

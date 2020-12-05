@@ -12,7 +12,7 @@ compiled `licensecc-static-lib` library at compile time.
 Since we're open source the keys can't be generated once and committed to github, we need to generate them before the 
 compilation of the library. 
 
-A ``project`` in ``licensecc`` terms refers to a folder containing a private key, a public key and a file containing customizations. 
+A ``project`` in `licensecc` terms refers to a folder containing a private key, a public key and a file containing customizations. 
 Licensecc source tree can host multiple projects simultaneously, but can compile only one project at once.
 
 Projects are stored by default in the ``licensecc\projects`` folder, though you can place them elsewhere.

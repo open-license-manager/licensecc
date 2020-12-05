@@ -1,6 +1,6 @@
-###########################################
-Licensecc: a C++ license manager 
-###########################################
+##############
+Licensecc
+##############
 *Copy protection, licensing library and license generator for Windows and Linux.*
 
 |c11|_ |License|_ |unstable|_ |TravisBuild|_ |GithubCI|_ |CodacyBadge|_ |codecov|_ |forum|_ 
@@ -196,7 +196,7 @@ We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow 
 
 .. meta::
    :description: open source license manager, copy protection library in C++. 
-   :keywords: c++, licensing software, license manager, open source, copy protection, hardware identifcation
+   :keywords: c++, open source, licensing software, copy protection, license manager, hardware identifcation
    
 .. title::
-   Copy protection in C++
+   C++ copy protection library 

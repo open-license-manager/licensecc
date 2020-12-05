@@ -45,7 +45,7 @@ string get_file_contents(const char *filename, size_t max_size) {
 		in.read(&contents[0], limited_size);
 		in.close();
 	} else {
-		throw(std::strerror(errno));
+		throw runtime_error(std::strerror(errno));
 	}
 	return contents;
 }

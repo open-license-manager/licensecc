@@ -70,7 +70,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 
 	const auto expiry = fullLicInfo.m_limits.find(PARAM_EXPIRY_DATE);
 	if (expiry != fullLicInfo.m_limits.end()) {
-		strncpy(info.expiry_date, expiry->second.c_str(), sizeof(info.expiry_date));
+		mstrlcpy(info.expiry_date, expiry->second.c_str(), sizeof(info.expiry_date));
 		info.has_expiry = true;
 		const double secs = difftime(seconds_from_epoch(expiry->second), time(nullptr));
 		info.days_left = max((int)round(secs / (60 * 60 * 24)), 0);
@@ -89,7 +89,7 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 
 	const auto proprietary_data = fullLicInfo.m_limits.find(PARAM_EXTRA_DATA);
 	if (proprietary_data != fullLicInfo.m_limits.end()) {
-		strncpy(info.proprietary_data, proprietary_data->second.c_str(), LCC_API_PROPRIETARY_DATA_SIZE);
+		mstrlcpy(info.proprietary_data, proprietary_data->second.c_str(), sizeof(info.proprietary_data));
 	}
 	return info;
 }

@@ -5,6 +5,7 @@
 #include <iphlpapi.h>
 #include <stdio.h>
 
+#include "../../base/string_utils.h"
 #include "../../base/logger.h"
 #include "../os.h"
 using namespace std;
@@ -29,7 +30,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 	DWORD fileMaxLen;
 	size_t ndrives = 0, drives_scanned = 0;
 	DWORD fileFlags;
-	char volName[MAX_PATH], fileSysName[MAX_PATH];
+	char volName[MAX_PATH];
 	DWORD volSerial = 0;
 	const DWORD dwSize = MAX_PATH;
 	char szLogicalDrives[MAX_PATH] = {0};
@@ -44,6 +45,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 			// get the next drive
 			UINT driveType = GetDriveType(szSingleDrive);
 			if (driveType == DRIVE_FIXED) {
+				char fileSysName[MAX_PATH];
 				BOOL success = GetVolumeInformation(szSingleDrive, volName, MAX_PATH, &volSerial, &fileMaxLen,
 													&fileFlags, fileSysName, MAX_PATH);
 				if (success) {
@@ -52,9 +54,8 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 					DiskInfo diskInfo = {};
 					diskInfo.id = (int)ndrives;
 					diskInfo.label_initialized = true;
-					strncpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)) - 1);
-					strncpy(diskInfo.label, fileSysName,
-							min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)) - 1);
+					mstrlcpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)));
+					mstrlcpy(diskInfo.label, fileSysName, min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
 					memcpy(diskInfo.disk_sn, &volSerial, sizeof(DWORD));
 					diskInfo.sn_initialized = true;
 					diskInfo.preferred = (szSingleDrive[0] == 'C');

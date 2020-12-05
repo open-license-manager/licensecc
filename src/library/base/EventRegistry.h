@@ -55,6 +55,7 @@ public:
 	void addEvent(LCC_EVENT_TYPE event, const std::string &licenseLocationId);
 	void addEvent(LCC_EVENT_TYPE event, const char *licenseLocationId = nullptr, const char *info = nullptr);
 	void exportLastEvents(AuditEvent *auditEvents, int nlogs);
+	std::string to_string() const;
 };
 }  // namespace license
 #endif /* EVENTREGISTRY_H_ */

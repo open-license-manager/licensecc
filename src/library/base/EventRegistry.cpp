@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 #include "EventRegistry.h"
 #define LIC_ID_NOT_DEFINED "UNDEF"
@@ -39,6 +40,12 @@ ostream &operator<<(std::ostream &out, const EventRegistry &er) {
 	}
 	out << "]";
 	return out;
+}
+
+string EventRegistry::to_string() const {
+	std::stringstream ss;
+	ss << this;
+	return ss.str();
 }
 
 void EventRegistry::append(const EventRegistry &eventRegistry) {

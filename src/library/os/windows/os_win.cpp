@@ -54,8 +54,8 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 					DiskInfo diskInfo = {};
 					diskInfo.id = (int)ndrives;
 					diskInfo.label_initialized = true;
-					mstrlcpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)));
-					mstrlcpy(diskInfo.label, fileSysName, min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
+					license::mstrlcpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)));
+					license::mstrlcpy(diskInfo.label, fileSysName, min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
 					memcpy(diskInfo.disk_sn, &volSerial, sizeof(DWORD));
 					diskInfo.sn_initialized = true;
 					diskInfo.preferred = (szSingleDrive[0] == 'C');

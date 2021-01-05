@@ -23,10 +23,10 @@ namespace hw_identifier {
  */
 class IdentificationStrategy {
 protected:
-	IdentificationStrategy(){};
+	IdentificationStrategy(){}
 
 public:
-	virtual ~IdentificationStrategy(){};
+	virtual ~IdentificationStrategy(){}
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
 	virtual FUNCTION_RETURN generate_pc_id(HwIdentifier& identifier_out) const;
 	virtual std::vector<HwIdentifier> alternative_ids() const = 0;

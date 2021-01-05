@@ -22,13 +22,13 @@ private:
 
 public:
 	DmiInfo();
-	virtual ~DmiInfo(){};
-	const std::string& bios_vendor() const { return m_bios_vendor; };
-	const std::string& sys_vendor() const { return m_sys_vendor; };
-	const std::string& bios_description() const { return m_bios_description; };
+	virtual ~DmiInfo(){}
+	const std::string& bios_vendor() const { return m_bios_vendor; }
+	const std::string& sys_vendor() const { return m_sys_vendor; }
+	const std::string& bios_description() const { return m_bios_description; }
 	// Only Windows
-	const std::string& cpu_manufacturer() const { return m_cpu_manufacturer; };
-	const unsigned int cpu_cores() const { return m_cpu_cores; };
+	const std::string& cpu_manufacturer() const { return m_cpu_manufacturer; }
+	const unsigned int cpu_cores() const { return m_cpu_cores; }
 };
 
 }  // namespace os

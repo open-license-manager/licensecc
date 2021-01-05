@@ -52,7 +52,7 @@ public:
 	friend std::ostream &operator<<(std::ostream &output, const HwIdentifier &d) {
 		output << d.print();
 		return output;
-	};
+	}
 };
 
 

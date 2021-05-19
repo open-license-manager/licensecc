@@ -1,4 +1,4 @@
-# Licensecc: protect your C++ software from unauthorized copies.
+# Licensecc
 
 *Copy protection, licensing library and license generator for Windows and Linux.*
 

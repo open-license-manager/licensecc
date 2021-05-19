@@ -80,4 +80,3 @@ Supposing you already know how to contribute to an open source project on GitHub
 -   Don't reformat the code following your personal likes, it introduce a lot of "noise" and makes very hard to merge. Use the clang-format style provided at the base of the project.
 -   Very large pull requests with few comments, no corresponding issue explaining what's it about will probably be rejected.
 -   We understand that the project is still in beta stage, however we would like to discuss it with you before we take project changing decision. You can reach us on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
-

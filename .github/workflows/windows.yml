@@ -18,13 +18,13 @@ jobs:
          run: env
       -  name: install boost boost-msvc-14.2
          shell: bash
-         if: ${{ matrix.os == "windows-2019" }}
+         if: ${{ matrix.os == 'windows-2019' }}
          run: |
             choco install -y boost-msvc-14.2 --version 1.74.0
             echo "BOOST_ROOT=C:/local/boost_1_74_0" >> $GITHUB_ENV
       -  name: install boost boost-msvc-14.1
          shell: bash
-         if: ${{ matrix.os == "windows-2016" }}
+         if: ${{ matrix.os == 'windows-2016' }}
          run: |
             choco install -y boost-msvc-14.1 --version 1.74.0
             echo "BOOST_ROOT=C:/local/boost_1_74_0" >> $GITHUB_ENV     

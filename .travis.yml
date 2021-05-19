@@ -165,7 +165,7 @@ jobs:
         - docker run --name centos8_toconfigure -v `pwd`:/root/open-license-manager centos:centos8 /bin/bash -c \
             "yum -y update && yum -y groupinstall 'Development Tools' && 
              yum -y install wget cmake boost boost-devel openssl-devel zlib-devel && 
-             dnf -y --enablerepo=PowerTools install boost-static && 
+             dnf -y --enablerepo=powertools install boost-static && 
              wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz && 
              tar xzf OpenSSL_1_1_1d.tar.gz && cd openssl-OpenSSL_1_1_1d && 
              ./config && make -j 8 && make install && 

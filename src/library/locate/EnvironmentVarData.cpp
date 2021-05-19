@@ -48,7 +48,6 @@ const vector<string> EnvironmentVarData::license_locations(EventRegistry &eventR
 const std::string EnvironmentVarData::retrieve_license_content(const std::string &licenseLocation) const {
 	string env_val = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
 	if (isBase64) {
-		int flen = 0;
 		vector<uint8_t> data = unbase64(env_val);
 		string str = string(reinterpret_cast<char *>(data.data()));
 		return str;

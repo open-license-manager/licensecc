@@ -15,10 +15,12 @@ jobs:
       -  uses: actions/checkout@v1
       -  name: Setup 
          shell: bash
-         run: set
-      -  name: Setup2
+         run: env
+      -  name: install boost
          shell: bash
-         run: echo "${{ env.BOOST_ROOT_1_72_0 }}" 
+         run: |
+            choco install -y boost-msvc-14.2
+            echo "BOOST_ROOT=C:/local/boost_1_74_0" >> $GITHUB_ENV 
       -  name: Compile
          run: |
             cd build

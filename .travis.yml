@@ -225,7 +225,7 @@ jobs:
          directories:
              - "/C/local/boost"
      before_script:
-         - travis_wait 40 ./scripts/windows_download_boost.bat
+         - choco install boost-msvc-14.1
          - cd "${TRAVIS_BUILD_DIR}"
          - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
    - os: windows

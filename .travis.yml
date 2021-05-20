@@ -34,14 +34,14 @@ jobs:
          - ctest -T memcheck
    - os: linux
      dist: focal
-     name: "Travis CI VM - Debug"
+     name: "Travis CI VM - Release"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
      before_script:
          - sudo apt-get update
          - sudo apt-get install -y cmake libssl-dev zlib1g-dev libboost-dev libboost-filesystem-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
-         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DLCC_PROJECT_NAME=MYPROJECT ..
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Release ..
      script: 
          - cat /proc/mounts
          - ls -lLai /dev/disk/by-uuid

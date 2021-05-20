@@ -40,8 +40,8 @@ jobs:
      - CTEST_OUTPUT_ON_FAILURE=1
      before_script:
          - sudo apt-get update
-         - sudo apt-get install -y cmake valgrind libssl-dev zlib1g-dev libboost-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
-         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
+         - sudo apt-get install -y cmake libssl-dev zlib1g-dev libboost-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DLCC_PROJECT_NAME=MYPROJECT ..
      script: 
          - cat /proc/mounts
          - ls -lLai /dev/disk/by-uuid
@@ -49,7 +49,7 @@ jobs:
          - ls -lai /dev
          - ls -la /run
          - cmake --build . --target install
-         - ctest -T memcheck; cat /tmp/open-license.log
+         - ctest; cat /tmp/open-license.log
    - os: linux
      dist: bionic
      name: "VM - set LCC_PROJECT_NAME"

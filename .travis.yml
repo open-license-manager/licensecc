@@ -40,6 +40,7 @@ jobs:
      - CTEST_OUTPUT_ON_FAILURE=1
      addons:
         apt:
+          update: true
           packages:
              - cmake
              - valgrind
@@ -176,13 +177,14 @@ jobs:
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
             "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && CTEST_OUTPUT_ON_FAILURE=1 VIRTUAL_ENV=DOCKER make test"
    - os: linux
-     dist: bionic
-     name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
+     dist: focal
+     name: "Ubuntu 20.04 - MinGW cross-compile for Windows x64"
      env:
      - CTEST_OUTPUT_ON_FAILURE=1      
      - WINEARCH=win64
      addons:
         apt:
+          update: true
           packages:
              - cmake 
              - binutils-mingw-w64 

@@ -10,7 +10,7 @@ jobs:
    include:
    - os: linux
      dist: bionic
-     name: "Ubuntu 18.04 - Travis CI VM"
+     name: "Travis CI VM"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
@@ -34,17 +34,33 @@ jobs:
          - ctest -T memcheck
    - os: linux
      dist: focal
-     name: "Ubuntu 20.04 - Travis CI VM - Debug"
+     name: "Travis CI VM - Debug"
+     env:
+     - VIRTUAL_ENV=VM
+     - CTEST_OUTPUT_ON_FAILURE=1
+     before_script:
+         - apt-get update
+         - apt-get install -y cmake valgrind libssl-dev zlib1g-dev libboost-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
+     script: 
+         - cat /proc/mounts
+         - ls -lLai /dev/disk/by-uuid
+         - ls -lLai /dev/disk/by-label
+         - ls -lai /dev
+         - ls -la /run
+         - cmake --build . --target install
+         - ctest -T memcheck; cat /tmp/open-license.log
+   - os: linux
+     dist: bionic
+     name: "VM - set LCC_PROJECT_NAME"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
      addons:
         apt:
-          update: true
           packages:
              - cmake
              - valgrind
-             - libc6-dbg
              - libssl-dev
              - zlib1g-dev
              - libboost-dev
@@ -58,44 +74,13 @@ jobs:
      before_script:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
      script: 
-         - cat /proc/mounts
-         - ls -lLai /dev/disk/by-uuid
-         - ls -lLai /dev/disk/by-label
-         - ls -lai /dev
-         - ls -la /run
-         - cmake --build . --target install
-         - ctest -T memcheck; cat /tmp/open-license.log
-   - os: linux
-     dist: bionic
-     name: "Ubuntu 18.04 - VM - set LCC_PROJECT_NAME"
-     env:
-     - VIRTUAL_ENV=VM
-     - CTEST_OUTPUT_ON_FAILURE=1
-     addons:
-        apt:
-          packages:
-             - cmake
-             - valgrind
-             - libssl-dev
-             - zlib1g-dev
-             - libboost-dev
-             - libboost-test-dev
-             - libboost-filesystem-dev
-             - libboost-iostreams-dev
-             - libboost-program-options-dev
-             - libboost-system-dev
-             - libboost-thread-dev
-             - libboost-date-time-dev
-     before_script:
-         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
-     script: 
          - cmake --build . --target install
          - ctest -T memcheck    
    - os: linux
      dist: xenial
      env:
      - CTEST_OUTPUT_ON_FAILURE=1
-     name: "Ubuntu 16.04 - Travis CI VM"
+     name: "Travis CI VM"
      addons:
         apt:
           packages:
@@ -113,7 +98,7 @@ jobs:
              - libboost-date-time-dev
    - os: linux
      dist: bionic
-     name: "Ubuntu 18.04 - Travis CI VM - Debug build"
+     name: "Travis CI VM - Debug build"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
@@ -178,7 +163,7 @@ jobs:
             "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && CTEST_OUTPUT_ON_FAILURE=1 VIRTUAL_ENV=DOCKER make test"
    - os: linux
      dist: focal
-     name: "Ubuntu 20.04 - MinGW cross-compile for Windows x64"
+     name: "MinGW cross-compile for Windows x64"
      env:
      - CTEST_OUTPUT_ON_FAILURE=1      
      - WINEARCH=win64

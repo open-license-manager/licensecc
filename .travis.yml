@@ -39,8 +39,8 @@ jobs:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
      before_script:
-         - apt-get update
-         - apt-get install -y cmake valgrind libssl-dev zlib1g-dev libboost-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
+         - sudo apt-get update
+         - sudo apt-get install -y cmake valgrind libssl-dev zlib1g-dev libboost-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
      script: 
          - cat /proc/mounts

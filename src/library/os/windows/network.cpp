@@ -73,7 +73,7 @@ int score(const OsAdapterInfo &a) {
 	return score;
 }
 
-bool cmp(const OsAdapterInfo &a, const OsAdapterInfo &b) { return score(a) >= score(b); }
+bool cmp(const OsAdapterInfo &a, const OsAdapterInfo &b) { return score(a) > score(b); }
 	/**
  *
  * @param adapterInfos

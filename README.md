@@ -10,7 +10,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
-[![forum : licensecc](https://img.shields.io/badge/forum-licensecc-blue.svg)](https://groups.google.com/d/forum/licensecc)
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. It is an open source license manager that helps to keep your 
@@ -95,7 +94,7 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The easiest way you can solve your problems or ask help is through the [forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/licensecc/issues). 
+The easiest way you can solve your problems or ask help is through the [discussion tab](https://github.com/open-license-manager/licensecc/discussions) above, otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/licensecc/issues). 
 Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). 
 Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

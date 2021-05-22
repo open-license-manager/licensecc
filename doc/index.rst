@@ -22,7 +22,7 @@ Licensecc
 .. |issues| image:: https://img.shields.io/github/issues/open-license-manager/licensecc
 .. _issues: http://github.com/open-license-manager/licensecc/issues
 .. |forum| image:: https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat
-.. _forum: https://groups.google.com/d/forum/licensecc
+.. _forum: https://github.com/open-license-manager/licensecc/discussions
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. `Licensecc` is an open source license management system 
@@ -130,8 +130,8 @@ The `examples`_ repository shows various ways to integrate `licensecc` into your
 Branches and status
 *********************
 
-* On branch ``master`` there is the 'legacy' 1.0.0 version. This version is working but doesn't correspond to the current documentation, and we don't plan to actively fix it. There are well-known bugs and limitations. We still accept community contributions on this branch. Feel free to propose your pull request.   
-* On branch ``develop`` there is the upcoming 2.0.0 version that corresponds to the documentation. This version is under development and has not been extensively used/tested. However we encourage users to download and use this one.   
+* On branch ``master`` there is the 'stable' 2.0.0 version.   
+* On branch ``develop`` there is the upcoming 2.1.0 version that corresponds to this documentation. This version is under development and has not been extensively used/tested. However we encourage users to download and use this one.   
 
 How to contribute
 ********************
@@ -143,7 +143,7 @@ Otherwise you can open an issue in the `issue system`_. Have a look to the `cont
 
 We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow git plugin and use ``develop`` as default branch for your pull requests. 
 
-.. _forums: https://groups.google.com/forum/#!forum/licensecc
+.. _forums: https://github.com/open-license-manager/licensecc/discussions
 .. _issue system: https://github.com/open-license-manager/licensecc/issues
 .. _contribution guidelines: https://github.com/open-license-manager/licensecc/blob/develop/CONTRIBUTING.md
 .. _GitFlow: https://datasift.github.io/gitflow/IntroducingGitFlow.html

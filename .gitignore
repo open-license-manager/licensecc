@@ -38,3 +38,4 @@ projects/*
 /CMakeSettings.json
 /.venv/
 /Pipfile
+/.pydevproject

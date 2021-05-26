@@ -17,7 +17,7 @@ software closed :smirk: . Among other features if it runs on a "real hardware" i
 
 A comprehensive [list of features](http://open-license-manager.github.io/licensecc/analysis/features.html), and their status is available in the project site. 
 
-If you're experiencing problems, or you just need informations you can't find in the [documentation](http://open-license-manager.github.io/licensecc)  please contact us on the [user forum](https://groups.google.com/forum/#!forum/licensecc) (hosted on Google), we'll be happy to help. 
+If you're experiencing problems, or you just need informations you can't find in the [documentation](http://open-license-manager.github.io/licensecc)  please contact us on [github discussions](https://github.com/open-license-manager/licensecc/discussions), we'll be happy to help. 
 
 Remember to show your appreciation giving us a <a class="github-button" href="https://github.com/open-license-manager/licensecc" data-icon="octicon-star" aria-label="Star open-license-manager/licensecc on GitHub">star</a> here on GitHub.
 
@@ -94,7 +94,7 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 
 ## How to contribute
 
-The easiest way you can solve your problems or ask help is through the [discussion tab](https://github.com/open-license-manager/licensecc/discussions) above, otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/licensecc/issues). 
+The easiest way you can solve your problems or ask help is through the [discussions tab](https://github.com/open-license-manager/licensecc/discussions) above, otherwise if you think there is a problem you can open an issue in the [issue system](https://github.com/open-license-manager/licensecc/issues). 
 Have a look to the [contribution guidelines](CONTRIBUTING.md) before reporting.
 We use [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) (or at least a subset of it). 
 Remember to install the gitflow git plugin and use `develop` as default branch for your pull requests. 

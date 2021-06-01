@@ -22,15 +22,15 @@ If you're experiencing problems, or you just need informations you can't find in
 Remember to show your appreciation giving us a <a class="github-button" href="https://github.com/open-license-manager/licensecc" data-icon="octicon-star" aria-label="Star open-license-manager/licensecc on GitHub">star</a> here on GitHub.
 
 ## License
-The project is donated to the community. It comes with a very large freedom of use for everyone, and it will always be. 
-It uses a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows free modification and inclusion in commercial software. 
+The project is donated to the community. It comes with freedom of use for everyone, and it always will be. 
+It has a [BSD 3 clauses](https://opensource.org/licenses/BSD-3-Clause) licensing schema, that allows free modification and use in commercial software. 
 
 ## Project Structure
 The software is made by 4 main sub-components:
 -   a C++ library with a nice C api, `licensecc` with minimal (or no) external dependencies (the part you have to integrate in your software) that is the project you're currently in.
 -   a license debugger `lcc-inspector` to be sent to the final customer when there are licensing problems or for calculating the pc hash before issuing the license.
 -   a license generator (github project [lcc-license-generator](https://github.com/open-license-manager/lcc-license-generator)) `lccgen` for customizing the library and generate the licenses.
--   Usage [examples](hhttps://github.com/open-license-manager/examples) to simplify the integration in your project.
+-   Usage [examples](https://github.com/open-license-manager/examples) to simplify the integration in your project.
  
 ## How to build
 Below an overview of the basic build procedure, you can find detailed instructions for [Linux](http://open-license-manager.github.io/licensecc/development/Build-the-library.html) 

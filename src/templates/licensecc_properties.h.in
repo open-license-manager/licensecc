@@ -103,10 +103,11 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	* Not yet implemented
 	*/
 	STRATEGY_CPU_SIZE = 3,
+	STRATEGY_CPU_MODEL = 4,
 	/**
 	* Not yet implemented
 	*/
-	STRATEGY_HOST_NAME = 4,
+	STRATEGY_HOST_NAME = 5,
 	STRATEGY_NONE = -2
 };
 

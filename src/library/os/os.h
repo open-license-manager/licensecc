@@ -34,6 +34,7 @@ typedef struct {
 } DiskInfo;
 
 FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos);
+FUNCTION_RETURN getCPUModel(uint32_t &cpu_model);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]);
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]);

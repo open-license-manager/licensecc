@@ -3,6 +3,7 @@
 #include "default_strategy.hpp"
 #include "ethernet.hpp"
 #include "disk_strategy.hpp"
+#include "cpu_strategy.hpp"
 namespace license {
 namespace hw_identifier {
 
@@ -46,6 +47,9 @@ std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC
 			break;
 		case STRATEGY_DISK:
 			result = unique_ptr<IdentificationStrategy>(dynamic_cast<IdentificationStrategy*>(new DiskStrategy()));
+			break;
+		case STRATEGY_CPU_MODEL:
+			result = unique_ptr<IdentificationStrategy>(dynamic_cast<IdentificationStrategy*>(new CPUStrategy()));
 			break;
 		default:
 			throw logic_error("strategy not supported");

@@ -58,6 +58,12 @@ BOOST_AUTO_TEST_CASE(volid_lic_file) {
 	}
 }
 
+BOOST_AUTO_TEST_CASE(cpu_lic_file) {
+	HwIdentifier identifier_out;
+	generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_CPU_MODEL, "cpu_lic_file");
+}
+
+
 BOOST_AUTO_TEST_CASE(strategy_mac_address) {
 	vector<os::OsAdapterInfo> adapters;
 	FUNCTION_RETURN result_adapterInfos = os::getAdapterInfos(adapters);

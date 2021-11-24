@@ -8,6 +8,7 @@
 #include "../../base/string_utils.h"
 #include "../../base/logger.h"
 #include "../os.h"
+#include "../cpu_info.hpp"
 using namespace std;
 
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
@@ -88,4 +89,9 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 		result = FUNC_RET_ERROR;
 	}
 	return result;
+}
+FUNCTION_RETURN getCPUModel(uint32_t &cpu_model){
+  license::os::CpuInfo cpu;
+  cpu_model = cpu.model();
+  return FUNCTION_RETURN::FUNC_RET_OK;
 }

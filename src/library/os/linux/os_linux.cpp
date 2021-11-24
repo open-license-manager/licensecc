@@ -20,6 +20,7 @@
 #ifndef NDEBUG
 #include <valgrind/memcheck.h>
 #endif
+#include "../cpu_info.hpp"
 
 //#ifdef USE_DISK_MODEL
 ///#define PARSE_ID_FUNC parse_disk_id
@@ -310,6 +311,13 @@ static void set_preferred_disks(std::vector<DiskInfo> &diskInfos, std::unordered
 	}
 	endmntent(fstabFile);
 	return;
+}
+
+
+FUNCTION_RETURN getCPUModel(uint32_t &cpu_model){
+  license::os::CpuInfo cpu;
+  cpu_model = cpu.model();
+  return FUNCTION_RETURN::FUNC_RET_OK;
 }
 
 /**

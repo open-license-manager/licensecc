@@ -17,14 +17,14 @@ projects
     └── private_key.rsa
 ```
 
-Place the `lcc` executable in your path (this is the executable needed to issue licenses). This executable is compiled
+Place the `lccgen` executable in your path (this is the executable needed to issue licenses). This executable is compiled
 together with the library, you should find it somewhere in your build tree or where you installed the library.
 
 The lines below will create a perpetual unlimited license for your software:
 
 ```
 cd projects/DEFAULT #(or whatever your project name is) 
-lcc license issue -o licenses/{license-file-name}.lic
+lccgen license issue -o licenses/{license-file-name}.lic
 ```
 
 ## Licensing software with hardware identifier
@@ -40,7 +40,7 @@ Once you have the hardware identifier you can issue the command:
 
 ```
 cd projects/DEFAULT #(or whatever your `lcc-project` is) 
-lcc license issue --client-signature XXXX-XXXX-XXXX -o licenses/{license-file-name}.lic
+lccgen license issue --client-signature XXXX-XXXX-XXXX -o licenses/{license-file-name}.lic
 ```
 to create the license file (usually this command is issued in the host machine where you compiled `licensecc`).
 

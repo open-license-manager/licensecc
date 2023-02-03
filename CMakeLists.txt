@@ -19,9 +19,9 @@ ENDIF(NOT LCC_PROJECTS_BASE_DIR)
 cmake_policy(SET CMP0048 NEW)
 #cmake_policy(SET CMP0091 NEW)
 project (licensecc 
-			VERSION 2.0.0
-			DESCRIPTION "Copy protection and licensing library" 
+			VERSION 2.1.0
 			LANGUAGES CXX)
+set(PROJECT_DESCRIPTION "Copy protection and licensing library")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

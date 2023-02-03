@@ -35,7 +35,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 	const DWORD dwSize = MAX_PATH;
 	char szLogicalDrives[MAX_PATH] = {0};
 
-	FUNCTION_RETURN return_value = FUNC_RET_NOT_AVAIL;
+	FUNCTION_RETURN return_value;
 	const DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
 
 	if (dwResult > 0) {
@@ -75,7 +75,7 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 		return_value = FUNC_RET_OK;
 	} else {
 		return_value = FUNC_RET_NOT_AVAIL;
-		LOG_INFO("No fixed drive were detected");
+		LOG_DEBUG("No fixed drive were detected");
 	}
 
 	return return_value;

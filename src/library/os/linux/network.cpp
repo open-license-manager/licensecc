@@ -49,7 +49,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	struct ifaddrs *ifaddr, *ifa;
 	int family, n = 0;
-	unsigned int if_num, if_max;
+	unsigned int if_num;
 
 	if (getifaddrs(&ifaddr) == -1) {
 		LOG_WARN("getifaddrs failed == -1");
@@ -75,12 +75,10 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		family = ifa->ifa_addr->sa_family;
 		/* Display interface name and family (including symbolic
 		 form of the latter for the common families) */
-#ifndef NDEBUG
-		printf("%-8s %s (%d)\n", ifa->ifa_name,
-			   (family == AF_PACKET) ? "AF_PACKET"
-									 : (family == AF_INET) ? "AF_INET" : (family == AF_INET6) ? "AF_INET6" : "???",
-			   family);
-#endif
+		LOG_DEBUG("%-8s %s (%d)\n", ifa->ifa_name,
+				  (family == AF_PACKET) ? "AF_PACKET"
+										: (family == AF_INET) ? "AF_INET" : (family == AF_INET6) ? "AF_INET6" : "???",
+				  family);
 		/* For an AF_INET* interface address, display the address
 		 * || family == AF_INET6*/
 		if (family == AF_INET) {
@@ -96,13 +94,9 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 			int i;
 			for (i = 0; i < 6; i++) {
 				currentAdapter->mac_address[i] = s1->sll_addr[i];
-#ifndef NDEBUG
-				printf("%02x:", s1->sll_addr[i]);
-#endif
+				LOG_DEBUG("%02x:", s1->sll_addr[i]);
 			}
-#ifndef NDEBUG
-			printf("\t %s\n", ifa->ifa_name);
-#endif
+			LOG_DEBUG("\t %s\n", ifa->ifa_name);
 		}
 	}
 	freeifaddrs(ifaddr);

@@ -6,7 +6,7 @@ Licensecc is suitable  for your project if it is relatively small, you plan to d
 estimate there will be a "limited" number of clients: 
 
 * The management of licenses is command-line. If you plan to issue hundreds of licenses you should consider more advanced licensing systems.   
-* Open License Manager doesn't offer professional support. 
+* Licensecc doesn't offer professional support. 
 
 Features and their status
 ****************************
@@ -16,8 +16,10 @@ Features and their status
 ======================================  ========================
 Trial license with expiry date          |:heavy_check_mark:|  
 Link software to "physical" hardware    |:heavy_check_mark:|  
-Virtual machine detection               In progress           
-Easy license retrieval                  |:heavy_check_mark:|   
+Virtual machine/docker detection        In progress           
+Easy license retrieval                  |:heavy_check_mark:|
+Licensed software components			|:heavy_check_mark:|
+ARM support								Planned
 Manage licenses                         Planned               
 Easy Customizable limits                Planned               
 Java/C# bindings                        Planned               
@@ -45,9 +47,10 @@ Licenses retrieval
 Open License Manager, when integrated into a licensed software will find its license file based on many different strategies.
 It can handle multiple licenses at the same time. See the wiki page about :ref:`license retrieval <usage/License-retrieval:License retrieval>` for details.
  
-Licensed software features (partially implemented)
+Licensed software components/features
 =========================================================
-A licensed software may be composed by many features (functions) each one activable independently. Licensing system tells the licensed software which features are enabled, and which features are disabled.
+A licensed software may be composed by many features (functions, components...) each one activable independently. Licensing system tells the licensed software which features are enabled, and which features are disabled. 
+For an example usage see `examples <https://github.com/open-license-manager/examples/tree/develop/program_features>`_ 
  
 License Management (planned)
 ==================================
@@ -77,7 +80,7 @@ Status of this implementation is tracked in `issue #4 <https://github.com/open-l
 Implemented/Planned Execution limits
 *************************************
 
-Open License Manager can limit execution of licensed software based on some criteria, called "execution limits".
+Licensecc can limit execution of licensed software based on some criteria, called "execution limits".
 Depending on the execution environment some criteria may not be applicable:
 
 =============================== ==================== ====================  ============================== ==================== 

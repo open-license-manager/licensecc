@@ -10,7 +10,7 @@ jobs:
    include:
    - os: linux
      dist: bionic
-     name: "Ubuntu 18.04 - Travis CI VM"
+     name: "Travis CI VM"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
@@ -34,7 +34,25 @@ jobs:
          - ctest -T memcheck
    - os: linux
      dist: focal
-     name: "Ubuntu 20.04 - Travis CI VM - Debug"
+     name: "Travis CI VM - Release"
+     env:
+     - VIRTUAL_ENV=VM
+     - CTEST_OUTPUT_ON_FAILURE=1
+     before_script:
+         - sudo apt-get update
+         - sudo apt-get install -y cmake libssl-dev zlib1g-dev libboost-dev libboost-filesystem-dev libboost-test-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
+         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Release ..
+     script: 
+         - cat /proc/mounts
+         - ls -lLai /dev/disk/by-uuid
+         - ls -lLai /dev/disk/by-label
+         - ls -lai /dev
+         - ls -la /run
+         - cmake --build . --target install
+         - ctest; cat /tmp/open-license.log
+   - os: linux
+     dist: bionic
+     name: "VM - set LCC_PROJECT_NAME"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
@@ -56,44 +74,13 @@ jobs:
      before_script:
          - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
      script: 
-         - cat /proc/mounts
-         - ls -lLai /dev/disk/by-uuid
-         - ls -lLai /dev/disk/by-label
-         - ls -lai /dev
-         - ls -la /run
-         - cmake --build . --target install
-         - ctest -T memcheck; cat /tmp/open-license.log
-   - os: linux
-     dist: bionic
-     name: "Ubuntu 18.04 - VM - set LCC_PROJECT_NAME"
-     env:
-     - VIRTUAL_ENV=VM
-     - CTEST_OUTPUT_ON_FAILURE=1
-     addons:
-        apt:
-          packages:
-             - cmake
-             - valgrind
-             - libssl-dev
-             - zlib1g-dev
-             - libboost-dev
-             - libboost-test-dev
-             - libboost-filesystem-dev
-             - libboost-iostreams-dev
-             - libboost-program-options-dev
-             - libboost-system-dev
-             - libboost-thread-dev
-             - libboost-date-time-dev
-     before_script:
-         - cd build && cmake -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug DCODE_COVERAGE=ON -DLCC_PROJECT_NAME=MYPROJECT ..
-     script: 
          - cmake --build . --target install
          - ctest -T memcheck    
    - os: linux
      dist: xenial
      env:
      - CTEST_OUTPUT_ON_FAILURE=1
-     name: "Ubuntu 16.04 - Travis CI VM"
+     name: "Travis CI VM"
      addons:
         apt:
           packages:
@@ -111,7 +98,7 @@ jobs:
              - libboost-date-time-dev
    - os: linux
      dist: bionic
-     name: "Ubuntu 18.04 - Travis CI VM - Debug build"
+     name: "Travis CI VM - Debug build"
      env:
      - VIRTUAL_ENV=VM
      - CTEST_OUTPUT_ON_FAILURE=1
@@ -165,7 +152,7 @@ jobs:
         - docker run --name centos8_toconfigure -v `pwd`:/root/open-license-manager centos:centos8 /bin/bash -c \
             "yum -y update && yum -y groupinstall 'Development Tools' && 
              yum -y install wget cmake boost boost-devel openssl-devel zlib-devel && 
-             dnf -y --enablerepo=PowerTools install boost-static && 
+             dnf -y --enablerepo=powertools install boost-static && 
              wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz && 
              tar xzf OpenSSL_1_1_1d.tar.gz && cd openssl-OpenSSL_1_1_1d && 
              ./config && make -j 8 && make install && 
@@ -175,13 +162,14 @@ jobs:
         - docker run --name centos8_make -v `pwd`:/root/open-license-manager centos8_configured /bin/bash -c \
             "cd /root/open-license-manager/build && make && make install && src/inspector/lccinspector && CTEST_OUTPUT_ON_FAILURE=1 VIRTUAL_ENV=DOCKER make test"
    - os: linux
-     dist: bionic
-     name: "Ubuntu 18.04 - MinGW cross-compile for Windows x64"
+     dist: focal
+     name: "MinGW cross-compile for Windows x64"
      env:
      - CTEST_OUTPUT_ON_FAILURE=1      
      - WINEARCH=win64
      addons:
         apt:
+          update: true
           packages:
              - cmake 
              - binutils-mingw-w64 
@@ -194,40 +182,29 @@ jobs:
              - wine64
              - p7zip-full
      before_script:
-        - cd build
-        - wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
-        - tar xjf boost_1_71_0.tar.bz2
         - sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw
+        - cd build
+        - wget -c https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.bz2
+        - tar xjf boost_1_71_0.tar.bz2
         - cd boost_1_71_0
         - ./bootstrap.sh
         - travis_wait 30 ./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install
         - cd ..
-        - wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z
-        - 7z x openssl.7z
-        - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl-1.0.2h-win64-mingw/ ..
+        - wget --no-check-certificate https://github.com/open-license-manager/build-dependencies/raw/main/openssl/openssl-dev-1.0.2s-x86_64-win-mingw-w64.zip -O openssl.zip
+        - unzip openssl.zip
+        - cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DCMAKE_INSTALL_PREFIX=../../install -DBOOST_ROOT=$PWD/boost_1_71_0/dist -DOPENSSL_ROOT_DIR=$PWD/openssl/ ..
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MD)"
-     env:
-     - CTEST_OUTPUT_ON_FAILURE=1   
-     cache:
-         edge: true
-         directories:
-             - "/C/local/boost"
      before_script:
-         - travis_wait 40 ./scripts/windows_download_boost.bat
+         - choco install -y boost-msvc-14.1
          - cd "${TRAVIS_BUILD_DIR}/build"
-         - cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" ..
+         - cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost_1_74_0" ..
 
    - os: windows
      name: "Widnows server 1803 - Visual Studio 15 2017 Win64 - (/MT)"
-     cache:
-         edge: true
-         directories:
-             - "/C/local/boost"
      before_script:
-         - travis_wait 40 ./scripts/windows_download_boost.bat
-         - cd "${TRAVIS_BUILD_DIR}"
-         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost" -DSTATIC_RUNTIME=1 ..
+         - choco install -y boost-msvc-14.1
+         - cd build && cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="C:/local/boost_1_74_0" -DSTATIC_RUNTIME=1 ..
    - os: windows
      name: "Widnows server 1803 - MinGW Win64"
      cache:

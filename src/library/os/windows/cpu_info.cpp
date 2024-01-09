@@ -60,8 +60,11 @@ CpuInfo::~CpuInfo() {}
 bool CpuInfo::is_hypervisor_set() const {
 	int cpui[4] = {0};
 	__cpuid(cpui, 0x1);
+	bool is_hyperv = ((cpui[2] >> 31) & 1);
+	__cpuid(cpui, 0x40000003);
+	bool is_admin = ((cpui[1] >> 12) & 1);
 
-	return ((cpui[2] >> 31) & 1);
+	return is_hyperv && !is_admin;
 }
 
 uint32_t CpuInfo::model() const {

@@ -58,9 +58,12 @@ CpuInfo::~CpuInfo() {}
 bool CpuInfo::is_hypervisor_set() const {
 	uint32_t level = 1, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
-
 	bool is_virtual = (((ecx >> 31) & 1) == 1);  // hypervisor flag
-	return is_virtual;
+	level = 0x40000003;
+	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
+	bool is_admin = (((ebx >> 12) & 1) == 1);  // cpu admin flag
+
+	return is_hyperv && !is_admin;
 }
 
 uint32_t CpuInfo::model() const {

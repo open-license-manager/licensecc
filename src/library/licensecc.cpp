@@ -116,7 +116,11 @@ LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, cons
 		}
 	} else {
 		er.turnWarningsIntoErrors();
-		result = er.getLastFailure()->event_type;
+		const AuditEvent *tmp = er.getLastFailure();
+		if(tmp != nullptr)
+			result =tmp->event_type;
+		else
+			result = LICENSE_FILE_NOT_FOUND;
 		if (license_out != nullptr) {
 			license_out->proprietary_data[0] = '\0';
 			license_out->linked_to_pc = false;

@@ -14,6 +14,12 @@
 #include "../../base/logger.h"
 #include "../../base/string_utils.h"
 
+#include <sys/ioctl.h>
+#include <linux/nvme_ioctl.h>
+#include <scsi/sg.h>
+#include <fcntl.h>
+#include <algorithm>
+
 #include <mntent.h>
 #include <dirent.h>
 #include <sys/utsname.h>
@@ -21,13 +27,14 @@
 #include <valgrind/memcheck.h>
 #endif
 
-//#ifdef USE_DISK_MODEL
-///#define PARSE_ID_FUNC parse_disk_id
-//#define ID_FOLDER "/dev/disk/by-id"
-//#else
+// #ifdef USE_DISK_MODEL
+/// #define PARSE_ID_FUNC parse_disk_id
+// #define ID_FOLDER "/dev/disk/by-id"
+// #else
 #define PARSE_ID_FUNC parseUUID
 #define ID_FOLDER "/dev/disk/by-uuid"
-//#endif
+#define SERIAL_FOLDER "/run/udev/data"
+// #endif
 #ifdef USE_DBUS
 #include <dbus-1.0/dbus/dbus.h>
 #endif
@@ -187,6 +194,101 @@ static void read_disk_labels(std::vector<DiskInfo> &disk_infos) {
 	}
 }
 
+inline void ltrim(std::string &s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && 0 != ch; }));
+}
+inline void rtrim(std::string &s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { 
+		return !std::isspace(ch) && 0 != ch;
+		}).base(),
+			s.end());
+}
+inline void trim(std::string &s) {
+	rtrim(s);
+	ltrim(s);
+}
+
+FUNCTION_RETURN getDiskSerial(const std::string &devname, std::string &out_serial) {
+	std::string filename("/dev/");
+	filename.append(devname);
+	if (devname.compare(0, 4, "nvme") == 0) {
+		int fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
+		if (fd < 0) {
+			LOG_DEBUG("Can't open %s: %s", devname.c_str(), std::strerror(errno));
+			return FUNC_RET_ERROR;
+		}
+
+		char buf[4096] = {0};
+		struct nvme_admin_cmd mib = {0};
+		mib.opcode = 0x06;
+		mib.nsid = 0;
+		mib.addr = (__u64)buf;
+		mib.data_len = sizeof(buf);
+		mib.cdw10 = 1;
+
+		int ret = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &mib);
+		close(fd);
+		if (ret) {
+			LOG_DEBUG("Ioctl for %s failed: %s", devname.c_str(), std::strerror(errno));
+			return FUNC_RET_ERROR;
+		}
+
+		std::string serial(&buf[4], 20);
+		trim(serial);
+		out_serial = serial;
+		LOG_DEBUG("Disk: %s; Serial: %s", devname.c_str(), serial.c_str());
+	} else if (devname.compare(0, 2, "sd") == 0) {
+		int fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
+		if (fd < 0) {
+			LOG_DEBUG("Can't open %s: %s", devname.c_str(), std::strerror(errno));
+			return FUNC_RET_ERROR;
+		}
+		unsigned char cmd[] = {0x12, 0x01, 0x80, 0, 0, 0};
+		unsigned int data_size = 0x00ff;
+		char data[data_size];
+		unsigned int sense_len = 32;
+		unsigned char sense[sense_len];
+		int res, pl, i;
+
+		cmd[3] = (data_size >> 8) & 0xff;
+		cmd[4] = data_size & 0xff;
+		struct sg_io_hdr io_hdr = {0};
+		io_hdr.interface_id = 'S';
+		io_hdr.cmdp = cmd;
+		io_hdr.cmd_len = sizeof(cmd);
+		io_hdr.sbp = sense;
+		io_hdr.mx_sb_len = sense_len;
+		io_hdr.dxfer_direction = SG_DXFER_FROM_DEV;
+		io_hdr.dxferp = data;
+		io_hdr.dxfer_len = data_size;
+		io_hdr.timeout = 1000; /* SCSI timeout in ms */
+
+		int ret = ioctl(fd, SG_IO, &io_hdr);
+		close(fd);
+		if (ret < 0) {
+			LOG_DEBUG("Ioctl for %s failed: %s", devname.c_str(), std::strerror(errno));
+			return FUNC_RET_ERROR;
+		}
+		if ((io_hdr.info & SG_INFO_OK_MASK) != SG_INFO_OK) {
+			return FUNC_RET_ERROR;
+		}
+
+		std::string serial(&data[4], (uint8_t)data[3] - 2);
+		// serial = serial.c_str();
+		trim(serial);
+		out_serial = serial;
+		LOG_DEBUG("Disk: %s; Serial: %s", devname.c_str(), serial.c_str());
+	} else if (devname.compare(0, 2, "hd") == 0) {
+		LOG_DEBUG("%s disk not supported", devname.c_str());
+		return FUNC_RET_ERROR;
+	} else {
+		LOG_DEBUG("%s disk not supported", devname.c_str());
+		return FUNC_RET_ERROR;
+	}
+
+	return FUNCTION_RETURN::FUNC_RET_OK;
+}
+
 FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &disk_infos,
 								 std::unordered_map<std::string, int> &disk_by_uuid) {
 	struct dirent *dir = NULL;
@@ -218,7 +320,9 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo> &disk_infos,
 						device_name_s = device_name_s.substr(pos + 1);
 					}
 					mstrlcpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
-					PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
+					std::string serial(dir->d_name);
+					getDiskSerial(device_name_s, serial);
+					PARSE_ID_FUNC(serial.c_str(), tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
 					tmpDiskInfo.sn_initialized = true;
 					tmpDiskInfo.label_initialized = false;
 					tmpDiskInfo.preferred = false;

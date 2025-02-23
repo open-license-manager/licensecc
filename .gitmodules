@@ -1,8 +1,8 @@
 [submodule "license-generator"]
-	path = extern/license-generator
-	url = https://github.com/open-license-manager/lcc-license-generator.git
-	branch = .
-	ignore = all
+    path = extern/license-generator
+    url = https://github.com/Apra-Labs/lcc-license-generator
+    branch = vcpkg_changes
+    ignore = all
 [submodule "extern/vcpkg"]
-	path = extern/vcpkg
-	url = https://github.com/microsoft/vcpkg.git
+    path = extern/vcpkg
+    url = https://github.com/microsoft/vcpkg.git

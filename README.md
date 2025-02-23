@@ -62,7 +62,10 @@ make install
 ### build on Windows (with MSVC 2017)
 
 ```console
-cmake .. -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="{Folder where boost is}" -DCMAKE_INSTALL_PREFIX=../install
+cd extern\vcpkg
+.\bootstrap-vcpkg.bat
+.\vcpkg.exe install openssl:x64-windows-static boost-test boost-date-time boost-system boost-filesystem boost-program-options
+cmake .. -G "Visual Studio 17 2022" -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install --config Release
 ```
 

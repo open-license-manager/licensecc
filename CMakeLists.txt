@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
-
+SET(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
 SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
@@ -39,7 +39,7 @@ SET (OPENSSL_USE_STATIC_LIBS TRUE)
 IF(${STATIC_RUNTIME})
 	SET(OPENSSL_MSVC_STATIC_RT TRUE)
 ENDIF(${STATIC_RUNTIME})
-find_package(OpenSSL COMPONENTS Crypto QUIET)
+find_package(OpenSSL REQUIRED)
 IF(OPENSSL_FOUND)
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} -licensecc")
 ENDIF(OPENSSL_FOUND)
@@ -144,7 +144,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
-find_package(Boost COMPONENTS unit_test_framework system filesystem)
+find_package(Boost COMPONENTS test system filesystem)
 #if boost is found enable tests
 IF(Boost_FOUND)
 	INCLUDE(CTest)

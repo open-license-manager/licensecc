@@ -39,3 +39,4 @@ projects/*
 /.venv/
 /Pipfile
 /.pydevproject
+vcpkg_installed/

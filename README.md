@@ -62,11 +62,15 @@ make install
 ### build on Windows (with MSVC 2017)
 
 ```console
-cd extern\vcpkg
+pushd extern\vcpkg
 .\bootstrap-vcpkg.bat
-.\vcpkg.exe install openssl:x64-windows-static boost-test boost-date-time boost-system boost-filesystem boost-program-options
-cmake .. -G "Visual Studio 17 2022" -DCMAKE_INSTALL_PREFIX=../install
+popd
+.\extern\vcpkg\vcpkg.exe install --triplet x64-windows-static
+pushd build
+cmake .. -G "Visual Studio 17 2022" -DSTATIC_RUNTIME=ON -DCMAKE_INSTALL_PREFIX=../install -DVCPKG_TARGET_TRIPLET=x64-windows-static
 cmake --build . --target install --config Release
+ctest -C Release
+popd
 ```
 
 ### cross compile with MINGW on Linux

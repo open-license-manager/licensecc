@@ -65,7 +65,7 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 	ini.LoadFile(fname.c_str());
 	CSimpleIniA::TNamesDepend sections;
 	ini.GetAllSections(sections);
-	CallerInformations callerInformation;
+	CallerInformations callerInformation {"\0"};
 	for (CSimpleIniA::Entry section : sections) {
 		const string section_name(section.pItem, 15);
 		if (section_name != LCC_PROJECT_NAME) {

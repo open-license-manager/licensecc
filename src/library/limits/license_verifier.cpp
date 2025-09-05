@@ -13,6 +13,20 @@
 #include "../os/signature_verifier.hpp"
 #include "../hw_identifier/hw_identifier_facade.hpp"
 
+// Custom client signature validation callback
+typedef bool (*ClientSignatureValidator)(const char* client_signature);
+static ClientSignatureValidator g_client_signature_validator = nullptr;
+static bool g_validator_locked = false;
+
+extern "C" bool set_client_signature_validator(ClientSignatureValidator validator) {
+    if (g_validator_locked) {
+        return false;  // Already set, prevent changes
+    }
+    g_client_signature_validator = validator;
+    g_validator_locked = true;
+    return true;
+}
+
 namespace license {
 using namespace std;
 
@@ -57,7 +71,18 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& lic_info) 
 	}
 	const auto client_sig = lic_info.m_limits.find(PARAM_CLIENT_SIGNATURE);
 	if (is_valid && client_sig != lic_info.m_limits.end()) {
-		const LCC_EVENT_TYPE event = hw_identifier::HwIdentifierFacade::validate_pc_signature(client_sig->second);
+		LCC_EVENT_TYPE event;
+		
+		// Use custom validator if set, otherwise use default
+		if (g_client_signature_validator != nullptr) {
+			// Delegate to custom validator
+			bool valid = g_client_signature_validator(client_sig->second.c_str());
+			event = valid ? LICENSE_OK : IDENTIFIERS_MISMATCH;
+		} else {
+			// Use default licensecc validation
+			event = hw_identifier::HwIdentifierFacade::validate_pc_signature(client_sig->second);
+		}
+		
 		m_event_registry.addEvent(event, lic_info.source);
 		is_valid = is_valid && (event == LICENSE_OK);
 	}

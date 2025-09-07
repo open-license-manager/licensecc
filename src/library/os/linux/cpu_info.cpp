@@ -5,15 +5,26 @@
  *      Author: devel
  */
 
-#include <cpuid.h>
+#include "../cpu_info.hpp"
 #include <string>
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <map>
+
+// Include cpuid.h only for x86/x64 architectures
+#if defined(__x86_64__) || defined(__i386__)
+#include <cpuid.h>
 #include <unordered_set>
 #include <memory.h>
-#include "../cpu_info.hpp"
+#endif
 
 namespace license {
 namespace os {
 using namespace std;
+
+#if defined(__x86_64__) || defined(__i386__)
+// x86/x64 implementation
 
 struct CPUVendorID {
 	uint32_t ebx;
@@ -27,7 +38,10 @@ static string get_cpu_vendor() {
 	unsigned int level = 0, eax = 0, ebx = 0, ecx = 0, edx = 0;
 	// hypervisor flag false, try to get the vendor name, see if it's a virtual cpu
 	__get_cpuid(level, &eax, &ebx, &ecx, &edx);
-	CPUVendorID vendorID{.ebx = ebx, .edx = edx, .ecx = ecx};
+	CPUVendorID vendorID;
+	vendorID.ebx = ebx;
+	vendorID.edx = edx;
+	vendorID.ecx = ecx;
 	return vendorID.toString();
 }
 
@@ -51,6 +65,7 @@ static string get_cpu_brand() {
 CpuInfo::CpuInfo() : m_vendor(get_cpu_vendor()), m_brand(get_cpu_brand()) {}
 
 CpuInfo::~CpuInfo() {}
+
 /**
  * Detect Virtual machine using hypervisor bit.
  * @return true if the cpu hypervisor bit is set to 1
@@ -71,6 +86,196 @@ uint32_t CpuInfo::model() const {
 	// bx bits 0-7 brand index
 	return (eax & 0x3FFF) | (eax & 0x3FF8000) >> 2 | (ebx & 0xff) << 24;
 }
+
+#elif defined(__aarch64__) || defined(__arm__)
+// ARM implementation
+
+// ARM CPU implementer codes (from ARM Architecture Reference Manual)
+static map<string, string> arm_vendors = {
+    {"0x41", "ARM"},
+    {"0x42", "Broadcom"},
+    {"0x43", "Cavium"},
+    {"0x44", "DEC"},
+    {"0x4e", "NVIDIA"},
+    {"0x50", "APM"},
+    {"0x51", "Qualcomm"},
+    {"0x53", "Samsung"},
+    {"0x54", "HiSilicon"},
+    {"0x56", "Marvell"},
+    {"0x69", "Intel"}
+};
+
+static string get_arm_cpu_vendor() {
+    ifstream cpuinfo("/proc/cpuinfo");
+    string line;
+    string vendor = "ARM";  // Default vendor
+    
+    while (getline(cpuinfo, line)) {
+        if (line.find("CPU implementer") != string::npos) {
+            size_t pos = line.find(":");
+            if (pos != string::npos) {
+                string implementer = line.substr(pos + 1);
+                // Remove leading/trailing whitespace
+                implementer.erase(0, implementer.find_first_not_of(" \t"));
+                implementer.erase(implementer.find_last_not_of(" \t") + 1);
+                
+                auto it = arm_vendors.find(implementer);
+                if (it != arm_vendors.end()) {
+                    vendor = it->second;
+                }
+            }
+            break;
+        }
+    }
+    
+    // Check device tree for more specific info (e.g., NVIDIA Jetson)
+    ifstream dt_compat("/proc/device-tree/compatible");
+    if (dt_compat.is_open()) {
+        string compat_str;
+        getline(dt_compat, compat_str, '\0');  // Read null-terminated string
+        if (compat_str.find("nvidia") != string::npos) {
+            vendor = "NVIDIA";
+        }
+    }
+    
+    return vendor;
+}
+
+static string get_arm_cpu_brand() {
+    string brand = "ARM Processor";
+    
+    // First try to get model name from cpuinfo
+    ifstream cpuinfo("/proc/cpuinfo");
+    string line;
+    
+    while (getline(cpuinfo, line)) {
+        if (line.find("model name") != string::npos) {
+            size_t pos = line.find(":");
+            if (pos != string::npos) {
+                brand = line.substr(pos + 1);
+                // Remove leading/trailing whitespace
+                brand.erase(0, brand.find_first_not_of(" \t"));
+                brand.erase(brand.find_last_not_of(" \t") + 1);
+            }
+            break;
+        }
+    }
+    
+    // Try to get more specific info from device tree
+    ifstream dt_model("/proc/device-tree/model");
+    if (dt_model.is_open()) {
+        string model;
+        getline(dt_model, model);
+        if (!model.empty() && model.find("nvidia") != string::npos) {
+            // For NVIDIA Jetson devices, use the model from device tree
+            brand = "NVIDIA " + model;
+        } else if (!model.empty() && model != brand) {
+            // Use device tree model if it's more specific
+            brand = model;
+        }
+    }
+    
+    return brand;
+}
+
+static uint32_t get_arm_cpu_model() {
+    uint32_t model = 0;
+    ifstream cpuinfo("/proc/cpuinfo");
+    string line;
+    
+    while (getline(cpuinfo, line)) {
+        if (line.find("CPU part") != string::npos) {
+            size_t pos = line.find(":");
+            if (pos != string::npos) {
+                string part_str = line.substr(pos + 1);
+                // Remove leading/trailing whitespace
+                part_str.erase(0, part_str.find_first_not_of(" \t"));
+                part_str.erase(part_str.find_last_not_of(" \t") + 1);
+                
+                // Convert hex string to integer
+                try {
+                    model = stoul(part_str, nullptr, 16);
+                } catch (...) {
+                    model = 0;
+                }
+            }
+            break;
+        }
+    }
+    
+    return model;
+}
+
+static bool is_arm_hypervisor() {
+    // Check for common hypervisor indicators on ARM
+    
+    // 1. Check for hypervisor sysfs directory
+    ifstream hypervisor("/sys/hypervisor/type");
+    if (hypervisor.is_open()) {
+        return true;
+    }
+    
+    // 2. Check device tree for virtualization indicators
+    ifstream dt_compat("/proc/device-tree/compatible");
+    if (dt_compat.is_open()) {
+        string compat_str;
+        getline(dt_compat, compat_str);
+        if (compat_str.find("xen") != string::npos ||
+            compat_str.find("kvm") != string::npos ||
+            compat_str.find("qemu") != string::npos) {
+            return true;
+        }
+    }
+    
+    // 3. Check for QEMU/KVM specific files
+    ifstream qemu_fw("/sys/firmware/qemu_fw_cfg");
+    if (qemu_fw.good()) {
+        return true;
+    }
+    
+    // 4. Check kernel command line for hypervisor hints
+    ifstream cmdline("/proc/cmdline");
+    if (cmdline.is_open()) {
+        string cmd;
+        getline(cmdline, cmd);
+        if (cmd.find("console=hvc") != string::npos ||  // Xen console
+            cmd.find("xen_blkfront") != string::npos ||
+            cmd.find("virtio") != string::npos) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+CpuInfo::CpuInfo() : m_vendor(get_arm_cpu_vendor()), m_brand(get_arm_cpu_brand()) {}
+
+CpuInfo::~CpuInfo() {}
+
+uint32_t CpuInfo::model() const {
+    return get_arm_cpu_model();
+}
+
+bool CpuInfo::is_hypervisor_set() const {
+    return is_arm_hypervisor();
+}
+
+#else
+// Generic/Unknown architecture fallback
+
+CpuInfo::CpuInfo() : m_vendor("Unknown"), m_brand("Unknown Processor") {}
+
+CpuInfo::~CpuInfo() {}
+
+uint32_t CpuInfo::model() const {
+    return 0;
+}
+
+bool CpuInfo::is_hypervisor_set() const {
+    return false;
+}
+
+#endif
 
 }  // namespace os
 } /* namespace license */

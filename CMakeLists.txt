@@ -29,6 +29,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
+# Enable position-independent code for all targets
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 #find lccgen executable or build it.
 find_package(lccgen REQUIRED) 
 
@@ -113,11 +116,20 @@ set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJ
 set(LCC_PROJECT_PUBLIC_KEY "${LCC_INCLUDE_DIR}/public_key.h" )
 set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/private_key.rsa" )
 
-add_custom_target(project_initialize
-COMMAND license_generator::lccgen project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
-COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY} and ${LCC_PROJECT_PRIVATE_KEY} if they don't already exist"
-USES_TERMINAL
-)
+if(NOT LCC_PRODUCTION_BUILD)
+	add_custom_target(project_initialize
+	COMMAND license_generator::lccgen project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
+	COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY} and ${LCC_PROJECT_PRIVATE_KEY} if they don't already exist"
+	USES_TERMINAL
+	)
+	message(STATUS "project_initialize target enabled (development mode)")
+else()
+	# Production build - skip key generation, use committed keys
+	add_custom_target(project_initialize
+	COMMAND ${CMAKE_COMMAND} -E echo "Production build: Using committed keys from ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}"
+	)
+	message(STATUS "project_initialize target disabled (production mode - using committed keys)")
+endif()
 
 include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 

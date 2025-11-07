@@ -14,6 +14,30 @@ extern "C" {
 #include "datatypes.h"
 
 /**
+ * \brief Sets a custom validator for client signature (host ID) validation.
+ * 
+ * This allows applications to provide their own host ID validation logic
+ * instead of using licensecc's built-in hardware identification.
+ * 
+ * @param validator Function pointer that takes a client signature string and returns true if valid
+ * @return true if the validator was set successfully, false if already set
+ * 
+ * Note: Can only be set once. Subsequent calls will fail to prevent tampering.
+ * 
+ * Example usage:
+ * ```c
+ * bool my_host_validator(const char* client_sig) {
+ *     // Custom validation logic
+ *     return validate_apra_hostid(client_sig);
+ * }
+ * 
+ * set_client_signature_validator(my_host_validator);
+ * ```
+ */
+typedef bool (*ClientSignatureValidator)(const char* client_signature);
+bool set_client_signature_validator(ClientSignatureValidator validator);
+
+/**
  * Method used to convert the LicenseInfo into a human readable
  * representation.
  */

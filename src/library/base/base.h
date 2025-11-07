@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <limits.h>
 #define DllExport
 #ifndef MAX_PATH

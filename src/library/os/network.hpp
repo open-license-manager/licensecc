@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <vector>
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <netdb.h>
 #define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
 #else

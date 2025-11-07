@@ -7,7 +7,7 @@
 
 #ifndef LOG_DISABLED
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
 #define MAX_PATH 255
 #else
@@ -27,7 +27,7 @@ static void timenow(char * buffer) {
 }
 
 static void getLogFname(char* logpath) {
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 	const char *folder = getenv("TMPDIR");
 	if (folder == nullptr) {
 		folder = "/tmp";

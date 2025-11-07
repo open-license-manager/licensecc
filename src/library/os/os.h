@@ -15,7 +15,7 @@
 // definition of size_t
 #include <stdlib.h>
 #include <vector>
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
 #include <stdbool.h>
 #endif

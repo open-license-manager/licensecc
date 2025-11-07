@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
-
+SET(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
 SET(LICENSECC_SHORT_LICENSE "BSD Software License")
+SET(OPENSSL_ROOT_DIR "${CMAKE_SOURCE_DIR}/extern/vcpkg/installed/x64-windows-static")
+
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
@@ -27,6 +29,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
+# Enable position-independent code for all targets
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 #find lccgen executable or build it.
 find_package(lccgen REQUIRED) 
 
@@ -39,7 +44,7 @@ SET (OPENSSL_USE_STATIC_LIBS TRUE)
 IF(${STATIC_RUNTIME})
 	SET(OPENSSL_MSVC_STATIC_RT TRUE)
 ENDIF(${STATIC_RUNTIME})
-find_package(OpenSSL COMPONENTS Crypto QUIET)
+find_package(OpenSSL REQUIRED)
 IF(OPENSSL_FOUND)
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} -licensecc")
 ENDIF(OPENSSL_FOUND)
@@ -111,11 +116,20 @@ set(LCC_INCLUDE_DIR "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/include/${PROJ
 set(LCC_PROJECT_PUBLIC_KEY "${LCC_INCLUDE_DIR}/public_key.h" )
 set(LCC_PROJECT_PRIVATE_KEY "${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}/private_key.rsa" )
 
-add_custom_target(project_initialize
-  COMMAND license_generator::lccgen project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
-  COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY} and ${LCC_PROJECT_PRIVATE_KEY} if they don't already exist"
-  USES_TERMINAL
-)
+if(NOT LCC_PRODUCTION_BUILD)
+	add_custom_target(project_initialize
+	COMMAND license_generator::lccgen project initialize -t "${PROJECT_SOURCE_DIR}/src/templates" -n "${LCC_PROJECT_NAME}" -p "${LCC_PROJECTS_BASE_DIR}"
+	COMMENT "generating ${LCC_PROJECT_PUBLIC_KEY} and ${LCC_PROJECT_PRIVATE_KEY} if they don't already exist"
+	USES_TERMINAL
+	)
+	message(STATUS "project_initialize target enabled (development mode)")
+else()
+	# Production build - skip key generation, use committed keys
+	add_custom_target(project_initialize
+	COMMAND ${CMAKE_COMMAND} -E echo "Production build: Using committed keys from ${LCC_PROJECTS_BASE_DIR}/${LCC_PROJECT_NAME}"
+	)
+	message(STATUS "project_initialize target disabled (production mode - using committed keys)")
+endif()
 
 include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 

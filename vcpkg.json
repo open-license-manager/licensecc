@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "licensecc",
+  "version": "0.0.1",
+  "dependencies": [
+    "openssl",
+    "boost-test",
+    "boost-date-time",
+    "boost-system",
+    "boost-filesystem",
+    "boost-program-options"
+  ]
+}

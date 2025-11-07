@@ -15,7 +15,7 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #define DllExport
 #ifndef MAX_PATH
 #define MAX_PATH 1024

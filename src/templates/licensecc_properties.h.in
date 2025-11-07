@@ -56,9 +56,11 @@
 #define LCC_API_ERROR_BUFFER_SIZE 256
 
 /**
-This definition allows to specify a custom expression to verify the magic number passed in by the api.
+Magic number for APRA licensing system (ASCII "APRA" = 0x41505241)
+Shared with host ID encryption for consistency.
 */
-#define LCC_VERIFY_MAGIC (lic_info.m_magic == @LCC_PROJECT_MAGIC_NUM@)
+#define LCC_PROJECT_MAGIC_VALUE @LCC_PROJECT_MAGIC_NUM@
+#define LCC_VERIFY_MAGIC (lic_info.m_magic == LCC_PROJECT_MAGIC_VALUE)
 
 /**
  *

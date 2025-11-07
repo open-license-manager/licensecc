@@ -6,6 +6,9 @@ ADD_LIBRARY(base OBJECT
     logger.cpp
 )
 
+# Ensure project headers are generated before compiling
+add_dependencies(base project_initialize)
+
 if(CODE_COVERAGE AND UNIX)
 	  MESSAGE(STATUS "Enabling code coverage")
 	  target_compile_options(base PUBLIC

@@ -1,6 +1,7 @@
 #ifndef BASE64_H
 #define BASE64_H
 
+#include <cstdint>
 #include <string>
 #include <vector>
 

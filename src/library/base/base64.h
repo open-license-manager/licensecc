@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-
+#include <stdint.h>
 #if _WIN32
 #include <wtypes.h>
 #endif

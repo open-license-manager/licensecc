@@ -8,6 +8,7 @@
 #ifndef SRC_LIBRARY_OS_CPU_INFO_H_
 #define SRC_LIBRARY_OS_CPU_INFO_H_
 #include <string>
+#include <stdint.h>
 namespace license {
 namespace os {
 
@@ -18,6 +19,7 @@ class CpuInfo {
 private:
 	const std::string m_vendor;
 	const std::string m_brand;
+
 public:
 	CpuInfo();
 	virtual ~CpuInfo();

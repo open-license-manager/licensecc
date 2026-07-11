@@ -26,6 +26,8 @@ jobs:
         os: [ubuntu-latest]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
+        #static: ["true","false"]
+        static: ["true"]
         include:
           #- os: windows-latest
           #  c_compiler: cl
@@ -52,7 +54,9 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
+    - name: Dependencies
+      run: |
+           sudo apt-get -y install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -65,7 +69,10 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: |
+           cd ${{ steps.strings.outputs.build-output-dir }}
+           cmake .. -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DSTATIC_RUNTIME:BOOL=${{matrix.static}} -DLCC_PROJECT_NAME:STRING=test -DCMAKE_INSTALL_PREFIX=C:/licensecc
+           cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
       env:
          CTEST_OUTPUT_ON_FAILURE: 1
          VIRTUAL_ENV: VM

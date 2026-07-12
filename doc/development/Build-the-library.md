@@ -11,9 +11,9 @@ It should be possible to build on any recent Debian-derivate distribution.
 Install prerequisites:
 
 ```console
-sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev \
+sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libzstd-dev libboost-test-dev libboost-filesystem-dev \
      libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev \
-     libboost-date-time-dev build-essential
+     libboost-date-time-dev build-essential 
 ```
 
 For development with eclipse:

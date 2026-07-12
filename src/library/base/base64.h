@@ -2,8 +2,8 @@
 #define BASE64_H
 
 #include <cstdint>
-#include <string>
 #include <vector>
+#include <string>
 
 #if _WIN32
 #include <wtypes.h>

@@ -1,8 +1,8 @@
+#include "base64.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
 
-#include "base64.h"
 namespace license {
 using namespace std;
 

@@ -24,21 +24,11 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang]
+        cpp_compiler: [g++, clang++]
         static: ["true","false"]
-        include:
-          - c_compiler: gcc
-            cpp_compiler: g++
-          - c_compiler: clang
-            cpp_compiler: clang++
-        exclude:
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
@@ -54,10 +44,9 @@ jobs:
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
-        -DSTATIC_RUNTIME:BOOL=${{matrix.static}} -DLCC_PROJECT_NAME:STRING=test -DCMAKE_INSTALL_PREFIX=C:/licensecc
+        -DSTATIC_RUNTIME:BOOL=${{matrix.static}} -DLCC_PROJECT_NAME:STRING=test -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: |

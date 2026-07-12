@@ -6,7 +6,6 @@ target_link_libraries( test_hw_identifier
  licensecc_static
  Boost::unit_test_framework 
  Boost::filesystem
- Boost::system
 )
 
 if(CODE_COVERAGE AND UNIX)

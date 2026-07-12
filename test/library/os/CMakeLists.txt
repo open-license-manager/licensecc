@@ -6,7 +6,6 @@ target_link_libraries( test_network
  licensecc_static
  Boost::unit_test_framework 
  Boost::filesystem
- Boost::system
 )
 
 ADD_TEST(NAME test_network COMMAND test_network)
@@ -17,7 +16,6 @@ IF(NOT DEFINED MINGW)
  		licensecc_static
  		Boost::unit_test_framework 
  		Boost::filesystem
- 		Boost::system
 	)
 	ADD_TEST(NAME test_dmi_info COMMAND test_dmi_info)
 ENDIF(NOT DEFINED MINGW)
@@ -30,7 +28,6 @@ target_link_libraries( test_execution_environment
  licensecc_static
  Boost::unit_test_framework 
  Boost::filesystem
- Boost::system
 )
 
 ADD_TEST(NAME test_execution_environment COMMAND test_execution_environment)

@@ -39,10 +39,6 @@ SET (OPENSSL_USE_STATIC_LIBS TRUE)
 IF(${STATIC_RUNTIME})
 	SET(OPENSSL_MSVC_STATIC_RT TRUE)
 ENDIF(${STATIC_RUNTIME})
-find_package(OpenSSL COMPONENTS Crypto QUIET)
-IF(OPENSSL_FOUND)
-	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} -licensecc")
-ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(${STATIC_RUNTIME})
@@ -50,10 +46,7 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		unset(CMAKE_DL_LIBS)
 		add_definitions(-DBOOST_TEST_STATIC_LINK)
 	ENDIF(${STATIC_RUNTIME})
-	IF(NOT OPENSSL_FOUND)
-		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
-	ENDIF(NOT OPENSSL_FOUND)
-	
+
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
   		list(APPEND EXTERNAL_LIBS "-pthread")
@@ -63,22 +56,20 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
 
-	#Zlib required with old openssl version < 1.0.1f in centos 7
-	IF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
-		SET ( ZLIB_USE_STATIC_LIBS ON ) 
-		find_package(ZLIB REQUIRED)
-		list(APPEND EXTERNAL_LIBS "${ZLIB_LIBRARIES}")
-		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
-	ELSE(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
-	    MESSAGE(STATUS "openssl ${OPENSSL_VERSION} zlib not required - licensecc")
-	ENDIF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
-	
+	cmake_pkg_config(IMPORT openssl REQUIRED)
+	add_definitions(-DHAS_OPENSSL)
+	SET(OPENSSL_FOUND TRUE)
+
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
 	set(main_lib_dest "lib/${PROJECT_NAME}")
 	#https://cmake.org/cmake/help/latest/command/find_package.html
 	set(pkg_config_dest "lib/cmake/${PROJECT_NAME}")
 else(UNIX)
+	find_package(OpenSSL COMPONENTS Crypto QUIET)
+	IF(OPENSSL_FOUND)
+		MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} -licensecc")
+	ENDIF(OPENSSL_FOUND)
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(STATUS "Openssl not found, configuring the library without it (running in wine not supported).")
 	ENDIF(NOT OPENSSL_FOUND)

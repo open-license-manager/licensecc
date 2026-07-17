@@ -22,7 +22,8 @@ if(CODE_COVERAGE AND UNIX)
 endif(CODE_COVERAGE AND UNIX)
 
 define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile" FULL_DOCS "ff")
-IF(UNIX OR OPENSSL_FOUND)
+
+IF(OPENSSL_FOUND)
 	target_compile_definitions(licensecc_static PUBLIC HAS_OPENSSL)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 1)
 	target_link_libraries(licensecc_static PUBLIC OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
@@ -33,7 +34,7 @@ IF(UNIX OR OPENSSL_FOUND)
 ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
 	target_link_libraries(licensecc_static PUBLIC ${EXTERNAL_LIBS})
-ENDIF(UNIX OR OPENSSL_FOUND)
+ENDIF(OPENSSL_FOUND)
 
 target_include_directories(licensecc_static
     PUBLIC 

@@ -1,4 +1,3 @@
-
 ADD_EXECUTABLE(lccinspector inspector.cpp )
 
 target_link_libraries(lccinspector 

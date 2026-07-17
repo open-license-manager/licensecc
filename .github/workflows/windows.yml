@@ -1,30 +1,35 @@
-name: Github_CI
+name: Windows standard tests
 on:
-   push: 
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
 jobs:
    build-windows:
       runs-on: ${{ matrix.os }}
       strategy:
         fail-fast: false
         matrix:
-          build_type: ["Debug", "Release"]
-          os: ["windows-2019", "windows-2016"]
-          static: ["true","false"]
-
+          #build_type: ["Debug", "Release"]
+          #os: ["windows-2025", "windows-2022"]
+          #static: ["true","false"]
+          build_type: ["Debug"]
+          os: ["windows-2022"]
+          static: ["false"]
       steps:
-      -  uses: actions/checkout@v1
+      -  uses: actions/checkout@v6
       -  name: Setup 
          shell: bash
          run: env
       -  name: install boost boost-msvc-14.2
          shell: bash
-         if: ${{ matrix.os == 'windows-2019' }}
+         if: ${{ matrix.os == 'windows-2025' }}
          run: |
             choco install -y boost-msvc-14.2 --version 1.74.0
             echo "BOOST_ROOT=C:/local/boost_1_74_0" >> $GITHUB_ENV
       -  name: install boost boost-msvc-14.1
          shell: bash
-         if: ${{ matrix.os == 'windows-2016' }}
+         if: ${{ matrix.os == 'windows-2022' }}
          run: |
             choco install -y boost-msvc-14.1 --version 1.74.0
             echo "BOOST_ROOT=C:/local/boost_1_74_0" >> $GITHUB_ENV     

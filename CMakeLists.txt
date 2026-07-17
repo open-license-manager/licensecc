@@ -35,10 +35,7 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT
 	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
 ENDIF()
 
-SET (OPENSSL_USE_STATIC_LIBS TRUE)
-IF(${STATIC_RUNTIME})
-	SET(OPENSSL_MSVC_STATIC_RT TRUE)
-ENDIF(${STATIC_RUNTIME})
+SET (OPENSSL_USE_STATIC_LIBS ${STATIC_RUNTIME})
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(${STATIC_RUNTIME})
@@ -56,8 +53,9 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
 
-	cmake_pkg_config(IMPORT openssl REQUIRED)
+	find_package(OpenSSL REQUIRED COMPONENTS Crypto QUIET)
 	add_definitions(-DHAS_OPENSSL)
+	message( STATUS "OpenSSL libraries         :  ${OPENSSL_CRYPTO_LIBRARIES}")
 	SET(OPENSSL_FOUND TRUE)
 
 	find_program( MEMORYCHECK_COMMAND valgrind )
@@ -79,12 +77,13 @@ else(UNIX)
 		message(STATUS "Architecture detected     : ${TARGET_ARCHITECTURE}")
 		
 		#cmake > 3.15 handle the /MD flag more nicely than this
-		if(S${STATIC_RUNTIME})
+		if(${STATIC_RUNTIME})
 		    message(STATUS "Static runtime ${STATIC_RUNTIME}")
 			string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 			string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
 			SET(Boost_USE_STATIC_RUNTIME ON)
+			SET(OPENSSL_MSVC_STATIC_RT TRUE)
 		endif(${STATIC_RUNTIME})
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 	    list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")

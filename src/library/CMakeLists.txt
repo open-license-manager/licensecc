@@ -26,18 +26,15 @@ define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile
 IF(OPENSSL_FOUND)
 	target_compile_definitions(licensecc_static PUBLIC HAS_OPENSSL)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 1)
+	target_link_libraries(licensecc_static PUBLIC OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
+    #check if really required. it is required for the generator
     if(UNIX)
-	    target_link_libraries(licensecc_static PUBLIC PkgConfig::openssl ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
-    else(UNIX)
-        target_link_libraries(license_generator_lib PUBLIC
-             ${Boost_LIBRARIES} OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
-    endif(UNIX)
-ELSE(OPENSSL_FOUND)
+        set_target_properties(licensecc_static PROPERTIES POSITION_INDEPENDENT_CODE ${STATIC_RUNTIME})
+    endif(UNIX) 
+ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
 	target_link_libraries(licensecc_static PUBLIC ${EXTERNAL_LIBS})
 ENDIF(OPENSSL_FOUND)
-
-#set_property(TARGET licensecc_static PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 target_include_directories(licensecc_static
     PUBLIC 

@@ -57,6 +57,7 @@ Contributions to `licensecc` will be subject to the following rules:
 -   small patches eg. documentation changes, small bug fixes can be submitted directly on github, use the description of the patch to shortly explain the content of the patch. 
 -   if the patch is not completely trivial please open an issue first and provide a description of what you want to achieve.
 -   larger contributions should be discussed first on the [project forum](https://groups.google.com/forum/#!forum/licensecc). 
+-   If you submit a PR please do it *** from a separate branch ***. Do not submit a PR from your `develop` branch or it will be updated as soon as you progress with your developments, and it may become impossible to handle.  
 
 If you want to contribute we are happy to integrate your code. You can start by looking through the [`good first issue`](https://github.com/open-license-manager/licensecc/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`help-wanted`](https://github.com/open-license-manager/licensecc/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issues. 
 

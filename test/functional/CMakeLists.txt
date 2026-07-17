@@ -3,19 +3,16 @@ ADD_LIBRARY(license_generator_snippet STATIC
 )
 
 target_link_libraries( license_generator_snippet
- 	 Boost::unit_test_framework 
-     Boost::filesystem
+	${Boost_LIBRARIES}
 )
 
 add_executable( test_standard_license
- standard-license_test.cpp
+     standard-license_test.cpp
 )
 
 target_link_libraries( test_standard_license
  licensecc_static
  license_generator_snippet
- Boost::unit_test_framework 
- Boost::filesystem
 )
 
 add_executable( test_date
@@ -25,8 +22,6 @@ add_executable( test_date
 target_link_libraries( test_date
  licensecc_static
  license_generator_snippet
- Boost::unit_test_framework 
- Boost::filesystem
 )
 
 add_executable( test_signature_verifier
@@ -37,8 +32,6 @@ target_link_libraries(
  test_signature_verifier
  licensecc_static
  license_generator_snippet
- Boost::unit_test_framework 
- Boost::filesystem
 )
 
 
@@ -47,8 +40,6 @@ add_executable(test_it_hw_identifier hw_identifier_it_test.cpp)
 target_link_libraries(test_it_hw_identifier
  license_generator_snippet
  licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
 )
 
 add_executable(test_crack crack_test.cpp)
@@ -56,8 +47,6 @@ add_executable(test_crack crack_test.cpp)
 target_link_libraries( test_crack
  license_generator_snippet
  licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
 )
 
 ADD_TEST(NAME test_crack COMMAND test_crack WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

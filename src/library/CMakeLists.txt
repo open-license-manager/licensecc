@@ -26,12 +26,14 @@ IF(UNIX OR OPENSSL_FOUND)
 	target_compile_definitions(licensecc_static PUBLIC HAS_OPENSSL)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 1)
 	target_link_libraries(licensecc_static PUBLIC OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
+    #check if really required. it is required for the generator
+    if(UNIX)
+        set_target_properties(licensecc_static PROPERTIES POSITION_INDEPENDENT_CODE ${STATIC_RUNTIME})
+    endif(UNIX) 
 ELSE(UNIX OR OPENSSL_FOUND)
 	set_target_properties(licensecc_static PROPERTIES WITH_OPENSSL 0)
 	target_link_libraries(licensecc_static PUBLIC ${EXTERNAL_LIBS})
 ENDIF(UNIX OR OPENSSL_FOUND)
-
-#set_property(TARGET licensecc_static PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 target_include_directories(licensecc_static
     PUBLIC 

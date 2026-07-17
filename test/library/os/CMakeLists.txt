@@ -2,12 +2,8 @@ add_executable( test_network
  network_test.cpp
  "network_test.cpp")
 
-target_link_libraries( test_network
- licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
- Boost::system
-)
+target_link_libraries( test_network 
+	licensecc_static ${Boost_LIBRARIES})
 
 ADD_TEST(NAME test_network COMMAND test_network)
 
@@ -15,9 +11,7 @@ IF(NOT DEFINED MINGW)
 	add_executable( test_dmi_info dmi_info_test.cpp "dmi_info_test.cpp")
 	target_link_libraries( test_dmi_info
  		licensecc_static
- 		Boost::unit_test_framework 
- 		Boost::filesystem
- 		Boost::system
+		${Boost_LIBRARIES}
 	)
 	ADD_TEST(NAME test_dmi_info COMMAND test_dmi_info)
 ENDIF(NOT DEFINED MINGW)
@@ -27,10 +21,8 @@ add_executable( test_execution_environment
 )
 
 target_link_libraries( test_execution_environment
- licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
- Boost::system
+ 	licensecc_static
+	${Boost_LIBRARIES}
 )
 
 ADD_TEST(NAME test_execution_environment COMMAND test_execution_environment)

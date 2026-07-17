@@ -3,10 +3,8 @@ add_executable( test_license_reader
 )
 
 target_link_libraries( test_license_reader
- licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
- Boost::system
+   licensecc_static
+   ${Boost_LIBRARIES}
 )
 
 IF(WIN32)
@@ -20,9 +18,7 @@ ELSE(WIN32)
 	target_link_libraries(
  		test_os_linux
  		licensecc_static
- 		Boost::unit_test_framework 
-        Boost::filesystem
-        Boost::system
+		${Boost_LIBRARIES}
 	)
 
 	ADD_TEST(NAME test_os_linux COMMAND test_os_linux)
@@ -35,11 +31,9 @@ add_executable(
 )
 
 target_link_libraries(
- test_license_locator
- licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
- Boost::system
+	test_license_locator
+	licensecc_static
+	${Boost_LIBRARIES}
 )
 
 ### LicenseLocator tests
@@ -50,9 +44,8 @@ add_executable(
 )
 
 target_link_libraries(
- test_event_registry
- Boost::unit_test_framework 
- Boost::system
+ 	test_event_registry
+ 	${Boost_LIBRARIES}
 )
 
 if(CODE_COVERAGE AND UNIX)

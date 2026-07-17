@@ -3,10 +3,8 @@ add_executable( test_hw_identifier
 )
 
 target_link_libraries( test_hw_identifier
- licensecc_static
- Boost::unit_test_framework 
- Boost::filesystem
- Boost::system
+	licensecc_static
+	${Boost_LIBRARIES}
 )
 
 if(CODE_COVERAGE AND UNIX)

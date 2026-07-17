@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
@@ -46,7 +46,9 @@ ENDIF(OPENSSL_FOUND)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	IF(${STATIC_RUNTIME})
-		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+		unset(CMAKE_DL_LIBS)
+		add_definitions(-DBOOST_TEST_STATIC_LINK)
 	ENDIF(${STATIC_RUNTIME})
 	IF(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl required in Linux, please install it or specify -DOPENSSL_ROOT")
@@ -83,15 +85,16 @@ else(UNIX)
 	if(MSVC)
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )
-		message(STATUS "architecture detected: ${TARGET_ARCHITECTURE}")
+		message(STATUS "Architecture detected     : ${TARGET_ARCHITECTURE}")
+		
 		#cmake > 3.15 handle the /MD flag more nicely than this
-		if(STATIC_RUNTIME)
+		if(S${STATIC_RUNTIME})
 		    message(STATUS "Static runtime ${STATIC_RUNTIME}")
 			string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 			string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-			#list(APPEND CMAKE_CXX_FLAGS_DEBUG "/MTd")
+
 			SET(Boost_USE_STATIC_RUNTIME ON)
-		endif(STATIC_RUNTIME)
+		endif(${STATIC_RUNTIME})
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 	    list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")
 	else(MSVC)
@@ -119,9 +122,9 @@ add_custom_target(project_initialize
 
 include_directories( ${LCC_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 
-message( STATUS "CXX compiler        : " ${CMAKE_CXX_COMPILER})
-message( STATUS "CXX compiler flags  : " ${CMAKE_CXX_FLAGS})
-message( STATUS "CXX compiler flags debug : " ${CMAKE_CXX_FLAGS_DEBUG})
+message( STATUS "CXX compiler              : " ${CMAKE_CXX_COMPILER})
+message( STATUS "CXX compiler flags        : " ${CMAKE_CXX_FLAGS})
+message( STATUS "CXX compiler flags debug  : " ${CMAKE_CXX_FLAGS_DEBUG})
 message( STATUS "CXX compiler flags release: " ${CMAKE_CXX_FLAGS_RELEASE})
 if(CMAKE_BUILD_TYPE)
   message( STATUS "Build type          : " ${CMAKE_BUILD_TYPE})
@@ -144,7 +147,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
-find_package(Boost COMPONENTS unit_test_framework system filesystem)
+find_package(Boost COMPONENTS date_time filesystem program_options unit_test_framework OPTIONAL_COMPONENTS system)
 #if boost is found enable tests
 IF(Boost_FOUND)
 	INCLUDE(CTest)

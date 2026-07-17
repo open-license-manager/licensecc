@@ -150,6 +150,7 @@ SET( Boost_USE_STATIC_LIBS ON )
 find_package(Boost COMPONENTS date_time filesystem program_options unit_test_framework OPTIONAL_COMPONENTS system)
 #if boost is found enable tests
 IF(Boost_FOUND)
+	set(MEMORYCHECK_COMMAND_OPTIONS "--error-exitcode=1")
 	INCLUDE(CTest)
 	IF(BUILD_TESTING)
 		SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")

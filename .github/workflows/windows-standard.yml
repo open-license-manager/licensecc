@@ -11,16 +11,11 @@ jobs:
       strategy:
         fail-fast: false
         matrix:
-          #static: ["TRUE", "FALSE"]
-          #build_type: ["Debug", "Release"]
-          #os: ["windows-2025", "windows-2022"]
-          #boost_version: [1.78.0, 1.90.0]
-          #openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
-          static: ["FALSE"]
-          build_type: ["Release"]
-          os: ["windows-2025"]
-          boost_version: [1.90.0]
-          openssl_version: ["None"]
+          static: ["TRUE", "FALSE"]
+          build_type: ["Debug", "Release"]
+          os: ["windows-2025", "windows-2022"]
+          boost_version: [1.78.0, 1.90.0]
+          openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
       steps:
       -  uses: actions/checkout@v6
       -  name: Set reusable strings
@@ -75,9 +70,8 @@ jobs:
             VIRTUAL_ENV: VM
       -  name: Inspector
          run: |
-           dir ${{ github.workspace }}\install
-           dir ${{ github.workspace }}\install\bin
-           ${{ github.workspace }}\install\bin\lccinspector.exe
+           dir ${{ github.workspace }}\install\bin\test
+           ${{ github.workspace }}\install\bin\test\lccinspector.exe
 #      - name: On Failure print logs
 #        if: ${{ failure() }}
 #        run: |

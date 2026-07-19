@@ -168,7 +168,6 @@ message( STATUS "Project base dir          : " ${LCC_PROJECTS_BASE_DIR}/${LCC_PR
 
 add_subdirectory(src)
 
-
 #bug in cmake win32 - can't find boost compiled with mingw 
 if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
     message(WARNING "WIN32 compiler does not specify CMAKE_CXX_COMPILER_ARCHITECTURE_ID -- filling in manually")
@@ -187,6 +186,7 @@ find_package(Boost COMPONENTS date_time filesystem program_options unit_test_fra
 
 #if boost is found enable tests and inspector
 IF(Boost_FOUND)
+	message( STATUS "Boost                     : " ${Boost_LIBRARIES} )
 	#set(MEMORYCHECK_COMMAND_OPTIONS "--error-exitcode=1") #already set
 	#set below in case of dynamic linking in debug (cmake 3.15?).
 	#set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_TEST_DYN_LINK>)

@@ -75,10 +75,9 @@ jobs:
             VIRTUAL_ENV: VM
       -  name: Inspector
          run: |
-		dir ${{ github.workspace }}\install
-                dir ${{ github.workspace }}\install\bin
-		${{ github.workspace }}\install\bin\lccinspector.exe
-         shell: bash
+           dir ${{ github.workspace }}\install
+           dir ${{ github.workspace }}\install\bin
+           ${{ github.workspace }}\install\bin\lccinspector.exe
 #      - name: On Failure print logs
 #        if: ${{ failure() }}
 #        run: |

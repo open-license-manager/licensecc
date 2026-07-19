@@ -19,8 +19,8 @@ namespace hw_identifier {
 
 class HwIdentifierFacade {
 private:
-	HwIdentifierFacade(){};
-	virtual ~HwIdentifierFacade(){};
+	HwIdentifierFacade(){}
+	virtual ~HwIdentifierFacade(){}
 public:
 	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code);
 	/**

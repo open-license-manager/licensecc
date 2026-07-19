@@ -30,7 +30,7 @@ if (-not (Test-Path $output_dir)) {
 }
 
 if (-not (Test-Path $outputfile)) {
-	Write-Host "Boost not cached, downloading it: from $uri to $outputfile"
+	Write-Verbose "Boost not cached, downloading it: from $uri to $outputfile"
     do {
         try {
                 Invoke-WebRequest -Uri "$uri" -Verbose -OutFile "$outputfile" 
@@ -39,19 +39,19 @@ if (-not (Test-Path $outputfile)) {
                 $StatusCode = $_.Exception.Response.StatusCode
                 $errorMessage = $_.Exception.Message
                 $retryCount++
-                Write-Host "Attempt $retryCount failed: $StatusCode $errorMessage. Retrying $uri ..."
+                Write-Output "Attempt $retryCount failed: $StatusCode $errorMessage. Retrying $uri ..."
                 Start-Sleep -Seconds 2  # Wait before retrying
             }
         } until ($retryCount -ge $maxRetries)
 
         if ($retryCount -ge $maxRetries) {
-            Write-Host "Request failed after $retryCount attempts."
+            Write-Output "Request failed after $retryCount attempts."
             exit 1
         } else {
-            Write-Host "Boost downloaded"
+            Write-Output "Boost downloaded"
             dir $output_file
         }
 } else { 
-    Write-Host "Boost already downloaded" 
+    Write-Output "Boost already downloaded" 
     dir $output_file
 }

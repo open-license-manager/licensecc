@@ -5,7 +5,8 @@
 [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Github_CI](https://github.com/open-license-manager/licensecc/workflows/Github_CI/badge.svg)](https://github.com/open-license-manager/licensecc/actions)
+[![Linux build](https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml/badge.svg)](https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml)
+[![Windows build](https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml/badge.svg)](https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
@@ -36,9 +37,9 @@ Below an overview of the basic build procedure, you can find detailed instructio
 or [Windows](http://open-license-manager.github.io/licensecc/development/Build-the-library-windows.html) in the project web site. 
 
 ### Prerequisites
--   Operating system: Linux(Ubuntu, CentOS), Windows
--   compilers       : GCC (Linux) MINGW (Linux cross compile for Windows), MINGW or MSVC (Windows) 
--   tools           : cmake(>3.6), git, make/ninja(linux)
+-   Operating system: Linux (Ubuntu tested, other may be supported), Windows
+-   compilers       : GCC (Linux), Visual Studio 2022 or 2026 (Windows) 
+-   tools           : cmake(>=3.12), git, make/ninja(linux)
 -   libs            : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
 For a complete list of dependencies and supported environments see [the project website](http://open-license-manager.github.io/licensecc/development/Dependencies.html)
@@ -58,20 +59,20 @@ make
 make install
 ```
 
-### build on Windows (with MSVC 2017)
+### build on Windows (with Visual Studio 2026)
 
-```console
-cmake .. -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT="{Folder where boost is}" -DCMAKE_INSTALL_PREFIX=../install
-cmake --build . --target install --config Release
-```
+* check out the project with git.
+* go to Project -> cmake settings for licensecc -> Add -DBoost_ROOT="C:\path\to\boost" to the cmake command line arguments. 
+* Check that boost is found and build using the UI.
 
-### cross compile with MINGW on Linux
+~~ ### cross compile with MINGW on Linux (untested as of 2026)
 
 ```console
 x86_64-w64-mingw32.static-cmake .. -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
 ```
+~~
 
 ## How to test
 
@@ -79,12 +80,6 @@ make install
 
 ```console
 make test
-```
-
-### on Windows (MSVC)
-
-```console
-ctest -C Release
 ```
 
 ## How to use

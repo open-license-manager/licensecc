@@ -40,14 +40,14 @@ static boost::optional<path> find_file(const path &dir_path, const path &file_na
  *****************************************************************************/
 BOOST_AUTO_TEST_CASE(read_license_near_module) {
 	const string testExeFolder = PROJECT_BINARY_DIR "/test/library";
-	//bool exeFileFound = false;
+	bool exeFileFound = false;
 	string referenceExeFileName;
 	string referenceLicenseFileName;
 	// Verify we're pointing the correct executable, in windows isn't clear where it's built
 #ifdef _WIN32
 	boost::optional<path> exeLocation(find_file(path(testExeFolder), path(BOOST_TEST_MODULE ".exe")));
-	//exeFileFound = exeLocation..has_value();
 	if (exeLocation) {
+		exeFileFound = true;
 		referenceExeFileName = exeLocation.get().string();
 		referenceLicenseFileName =
 			referenceExeFileName.replace(referenceExeFileName.find(BOOST_TEST_MODULE ".exe"),
@@ -56,11 +56,11 @@ BOOST_AUTO_TEST_CASE(read_license_near_module) {
 #else
 	referenceExeFileName = testExeFolder + "/" + BOOST_TEST_MODULE;
 	std::ifstream f(referenceExeFileName.c_str());
-	//exeFileFound = f.good();
+	exeFileFound = f.good();
 	referenceLicenseFileName = testExeFolder + "/" + BOOST_TEST_MODULE ".lic";
 #endif
-	BOOST_WARN_MESSAGE(!exeLocation, "File [" + referenceExeFileName + "] NOT found");
-	if (exeLocation) {
+	BOOST_WARN_MESSAGE(!exeFileFound, "File [" + referenceExeFileName + "] NOT found");
+	if (exeFileFound) {
 		// copy test license near module
 		std::ifstream src(MOCK_LICENSE, std::ios::binary);
 		std::ofstream dst(referenceLicenseFileName, std::ios::binary);

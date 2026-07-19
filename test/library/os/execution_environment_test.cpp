@@ -23,6 +23,7 @@ BOOST_AUTO_TEST_CASE(test_virtualization) {
 	bool docker = false;
 	os::ExecutionEnvironment exec_env;
 	LCC_API_VIRTUALIZATION_SUMMARY detected_virt = exec_env.virtualization();
+	BOOST_TEST_MESSAGE("Detected virtualization: " + to_string(static_cast<int>(detected_virt)));
 	if (env != nullptr) {
 		string required_virtualization(env);
 		if (required_virtualization == "CONTAINER" || (docker = (required_virtualization == "DOCKER"))) {

@@ -86,8 +86,7 @@ jobs:
            dir ${{ github.workspace }}\install\bin\test
            $exePath = "${{ github.workspace }}\install\bin\test\lccinspector.exe"
            if (Test-Path $exePath) {
-              "${{ exePath }}"
-              Start-Process -Wait -FilePath "${{ exePath }}"
+              Start-Process -Wait -FilePath "$exePath"
            } else {
               Write-Output "lccinspector.exe not found at $exePath"
            }

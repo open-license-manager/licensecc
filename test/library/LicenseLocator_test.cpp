@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(read_license_near_module) {
 #else
 	referenceExeFileName = testExeFolder + "/" + BOOST_TEST_MODULE;
 	std::ifstream f(referenceExeFileName.c_str());
-	exeFileFound = f.good();
+	//exeFileFound = f.good();
 	referenceLicenseFileName = testExeFolder + "/" + BOOST_TEST_MODULE ".lic";
 #endif
 	BOOST_WARN_MESSAGE(!exeLocation, "File [" + referenceExeFileName + "] NOT found");

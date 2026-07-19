@@ -9,7 +9,7 @@ jobs:
       name: '${{ matrix.os }}, build: ${{ matrix.build_type }} static ${{ matrix.static }} ssl: ${{ matrix.openssl_version }} boost: ${{ matrix.boost_version }}'
       runs-on: ${{ matrix.os }}
       strategy:
-        fail-fast: false
+        fail-fast: true
         matrix:
           static: ["TRUE", "FALSE"]
           build_type: ["Debug", "Release"]

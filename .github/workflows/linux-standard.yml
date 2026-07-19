@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: [ubuntu-24.04, ubuntu-22.04, ubuntu-26.04]
         build_type: [Debug,Release]

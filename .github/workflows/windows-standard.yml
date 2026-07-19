@@ -12,10 +12,22 @@ jobs:
         fail-fast: true
         matrix:
           static: ["TRUE", "FALSE"]
-          build_type: ["Debug", "Release"]
+          #build_type: ["Debug", "Release"]
+          build_type: ["Debug"]
           os: ["windows-2025", "windows-2022"]
           boost_version: [1.78.0, 1.90.0]
-          openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
+          boost_msvc_version: [14.3]
+          #openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
+          openssl_version: ["None", "4.0.1"]
+          
+          include:
+          - os: windows-2025
+            boost_version: 1.64.0
+            openssl_version: 1.1.1.2100
+            build_type: "Release"
+            static: "TRUE"
+            boost_msvc_version: 14.1
+
       steps:
       -  uses: actions/checkout@v6
       -  name: Set reusable strings
@@ -29,11 +41,11 @@ jobs:
             else
                echo "use-openssl=FALSE" >> "$GITHUB_OUTPUT"
             fi
-      -  name: download boost boost-msvc-14.3
+      -  name: download boost boost-msvc (14.3)
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          shell: powershell
          run: |
-            ${{ github.workspace }}\scripts\windows_download_boost.ps1 ${{ matrix.boost_version }} 14.3 64 "${{ steps.strings.outputs.build-output-dir }}"
+            ${{ github.workspace }}\scripts\windows_download_boost.ps1 ${{ matrix.boost_version }} ${{ matrix.boost_msvc_version }} 64 "${{ steps.strings.outputs.build-output-dir }}"
       -  name: install boost
          id: install-boost
          shell: powershell

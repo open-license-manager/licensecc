@@ -1,4 +1,4 @@
-name: Linux-standard tests
+name: Linux build
 on:
   push:
     branches: [ "develop" ]

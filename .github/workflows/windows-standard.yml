@@ -1,0 +1,87 @@
+name: Windows build
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+jobs:
+   build-windows:
+      name: '${{ matrix.os }}, build: ${{ matrix.build_type }} static ${{ matrix.static }} ssl: ${{ matrix.openssl_version }} boost: ${{ matrix.boost_version }}'
+      runs-on: ${{ matrix.os }}
+      strategy:
+        fail-fast: false
+        matrix:
+          #static: ["TRUE", "FALSE"]
+          #build_type: ["Debug", "Release"]
+          #os: ["windows-2025", "windows-2022"]
+          #boost_version: [1.78.0, 1.90.0]
+          #openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
+          static: ["FALSE"]
+          build_type: ["Release"]
+          os: ["windows-2025"]
+          boost_version: [1.90.0]
+          openssl_version: ["None"]
+      steps:
+      -  uses: actions/checkout@v6
+      -  name: Set reusable strings
+         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+         id: strings
+         shell: bash
+         run: |
+            echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
+            if [ "${{ matrix.openssl_version }}" != "None" ]; then
+               echo "use-openssl=TRUE" >> "$GITHUB_OUTPUT"
+            else
+               echo "use-openssl=FALSE" >> "$GITHUB_OUTPUT"
+            fi
+      -  name: download boost boost-msvc-14.3
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         shell: powershell
+         run: |
+            ${{ github.workspace }}\scripts\windows_download_boost.ps1 ${{ matrix.boost_version }} 14.3 64 "${{ steps.strings.outputs.build-output-dir }}"
+      -  name: install boost
+         id: install-boost
+         shell: powershell
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: |
+            $Process = Start-Process -Wait -FilePath "${{ steps.strings.outputs.build-output-dir }}\boost.exe" -Argumentlist @( "/VERYSILENT" , "/DIR=${{ steps.strings.outputs.build-output-dir }}/boost") -PassThru
+            "boost-root=${{ steps.strings.outputs.build-output-dir }}/boost" >> $env:GITHUB_ENV
+            exit $Process.ExitCode
+      -  name: install openssl
+         id: install-openssl
+         if: ${{ matrix.openssl_version != 'None' }}
+         shell: powershell
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: |
+            choco install -y openssl --version ${{ matrix.openssl_version }}
+      -  name: Configure
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: >
+            cmake -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBoost_ROOT=${{ steps.strings.outputs.build-output-dir }}/boost
+            -DSTATIC_RUNTIME:BOOL=${{matrix.static}} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+            -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} 
+            -DUSE_OPENSSL=${{ steps.strings.outputs.use-openssl }} -DOpenSSL_ROOT_DIR="C:/Program Files/OpenSSL-Win64"
+	    -DLCC_PROJECT_NAME:STRING=test 
+      -  name: Compile
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: >
+            cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
+      -  name: Test
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: |
+            ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
+         env:
+            CTEST_OUTPUT_ON_FAILURE: 1
+            VIRTUAL_ENV: VM
+      -  name: Inspector
+         run: |
+		dir ${{ github.workspace }}\install
+                dir ${{ github.workspace }}\install\bin
+		${{ github.workspace }}\install\bin\lccinspector.exe
+         shell: bash
+#      - name: On Failure print logs
+#        if: ${{ failure() }}
+#        run: |
+#           type $env:temp/open-license.log
+
+ 

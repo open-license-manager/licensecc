@@ -76,17 +76,20 @@ jobs:
       -  name: Test
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: |
-            ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
+            ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure -VV
          env:
             CTEST_OUTPUT_ON_FAILURE: 1
             VIRTUAL_ENV: VM
+            BOOST_TEST_LOG_LEVEL: message
       -  name: Inspector
          if: ${{ always() }}
          run: |
            dir ${{ github.workspace }}\install\bin\test
            $exePath = "${{ github.workspace }}\install\bin\test\lccinspector.exe"
            if (Test-Path $exePath) {
+              Write-Output "lccinspector.exe found at $exePath"
               Start-Process -Wait -FilePath "$exePath"
+              Write-Output "lccinspector.exe exited at $exePath"
            } else {
               Write-Output "lccinspector.exe not found at $exePath"
            }

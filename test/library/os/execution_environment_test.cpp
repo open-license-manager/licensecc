@@ -21,10 +21,10 @@ using namespace std;
 BOOST_AUTO_TEST_CASE(test_virtualization) {
 	const char *env = getenv("VIRTUAL_ENV");
 	bool docker = false;
+	os::ExecutionEnvironment exec_env;
+	LCC_API_VIRTUALIZATION_SUMMARY detected_virt = exec_env.virtualization();
 	if (env != nullptr) {
 		string required_virtualization(env);
-		os::ExecutionEnvironment exec_env;
-		LCC_API_VIRTUALIZATION_SUMMARY detected_virt = exec_env.virtualization();
 		if (required_virtualization == "CONTAINER" || (docker = (required_virtualization == "DOCKER"))) {
 			BOOST_CHECK_MESSAGE(detected_virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "container detected");
 			BOOST_CHECK_MESSAGE(exec_env.is_container(), "container detected");
@@ -46,6 +46,12 @@ BOOST_AUTO_TEST_CASE(test_virtualization) {
 		} else {
 			BOOST_FAIL(string("value ") + env + " not supported: VM,DOCKER,CONTAINER,NONE");
 		}
+	} else { //no virtualization specified, check it is none. N>B. This will affect all the tests
+		BOOST_CHECK_EQUAL(detected_virt, LCC_API_VIRTUALIZATION_SUMMARY::NONE);
+		BOOST_CHECK_MESSAGE(!exec_env.is_container(), "not a container");
+		BOOST_CHECK_MESSAGE(!exec_env.is_docker(), "not a docker");
+		BOOST_CHECK_MESSAGE(exec_env.virtualization_detail() == LCC_API_VIRTUALIZATION_DETAIL::BARE_TO_METAL,
+							"NOT running bare to metal, while we should.If you are testing in a vm/container/cloud specify VIRTUAL_ENV env variable to make the test succeed.");
 	}
 }
 }  // namespace test

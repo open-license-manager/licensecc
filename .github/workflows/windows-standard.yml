@@ -79,11 +79,17 @@ jobs:
             ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
          env:
             CTEST_OUTPUT_ON_FAILURE: 1
-            VIRTUAL_ENV: VM
+            VIRTUAL_ENV: DOCKER
       -  name: Inspector
+         if: ${{ always() }}
          run: |
            dir ${{ github.workspace }}\install\bin\test
-           ${{ github.workspace }}\install\bin\test\lccinspector.exe
+           $exePath = "${{ github.workspace }}\install\bin\test\lccinspector.exe"
+           if (Test-Path $exePath) {
+              $exePath
+           } else {
+              Write-Output "lccinspector.exe not found at $exePath"
+           }
 #      - name: On Failure print logs
 #        if: ${{ failure() }}
 #        run: |

@@ -5,7 +5,7 @@
 # eg. windows_download_boost.ps1 1.91.0 14.3 64 C:\local\boost
 
 if ($args.Count -ne 4) {
-    Write-Host "Error: This script requires 4 parameters.\n windows_download_boost.ps1 <boost_version> <msvc version> <architecture> <output_dir>"
+    Write-Output "Error: This script requires 4 parameters.\n windows_download_boost.ps1 <boost_version> <msvc version> <architecture> <output_dir>"
     exit
 }
 #set Invoke-WebRequest to not show progress bar, as it can cause issues in some CI environments

@@ -5,6 +5,7 @@ IndentWidth: 4
 TabWidth: 4
 ColumnLimit: 120
 UseTab: Always
+MaxEmptyLinesToKeep: 1
 AccessModifierOffset: -4
 AlignTrailingComments: false
 FixNamespaceComments: true

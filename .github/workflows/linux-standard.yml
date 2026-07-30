@@ -1,14 +1,18 @@
 name: Linux build
 on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
-
+   push:
+     branches: [ "develop" ]
+   pull_request:
+     branches: [ "develop" ]
+permissions:
+   contents: read
+   actions: read
+   packages: read
+   
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
+    name: '${{ matrix.os }}, build:${{ matrix.build_type }}, static:${{ matrix.static }}, ccov:${{ matrix.code_coverage }}'
     strategy:
       fail-fast: true
       matrix:
@@ -27,13 +31,13 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
     - name: Dependencies
       run: >
-          sudo apt-get -y install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev 
-          libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev 
-
+          sudo apt-get update && sudo apt-get -y install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev 
+          libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
+      # Install extra deps for ubuntu 26-04 (and add valgrind and coverage tests)
     - name: Extra Dependecies Ubuntu 26.04
       if: ${{ matrix.os == 'ubuntu-26.04' }}
       run: >
-        sudo apt-get install -y libjitterentropy3-dev valgrind lcov
+        sudo apt-get install -y libjitterentropy3-dev valgrind lcov gcovr
     #- name: Install cmake 4
     #  run: |
     #       test -f /usr/share/doc/kitware-archive-keyring/copyright || wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
@@ -51,23 +55,19 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
-        -DSTATIC_RUNTIME:BOOL=${{matrix.static}} -DLCC_PROJECT_NAME:STRING=test 
+        -DSTATIC_RUNTIME:BOOL=${{matrix.static}}
         -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
         -DLCC_PROJECT_NAME=MYPROJECT
     - name: Build
       # Build your program with the given configuration. 
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
-           /usr/bin/cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
-      env:
-         CTEST_OUTPUT_ON_FAILURE: 1
-         VIRTUAL_ENV: VM
+           /usr/bin/cmake --build ${{ steps.strings.outputs.build-output-dir }} -j $(nproc) --target install --config ${{ matrix.build_type }}
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --build-config ${{ matrix.build_type }}
-    - name: On_Failure_print_logs
-      if: ${{ failure() }}
-      run: |
-           type $env:temp/open-license.log
+      run: ctest . --build-config ${{ matrix.build_type }} --output-on-failure
+      env:
+         CTEST_OUTPUT_ON_FAILURE: 1
+         BOOST_TEST_LOG_LEVEL: message
+         VIRTUAL_ENV: VM
+

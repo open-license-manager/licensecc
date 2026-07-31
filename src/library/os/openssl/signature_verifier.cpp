@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
-//#ifdef _WIN32
-//#include <windows.h>
-//#endif
+// #ifdef _WIN32
+// #include <windows.h>
+// #endif
 
 #include <public_key.h>
 
@@ -49,28 +49,26 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 
 	BIO* bio = BIO_new_mem_buf((void*)(pubKey), sizeof(pubKey));
 	RSA* rsa = d2i_RSAPublicKey_bio(bio, NULL);
-	BIO_free(bio);
 	if (rsa == NULL) {
+		BIO_free(bio);
 		LOG_ERROR("Error reading public key");
 		return FUNC_RET_ERROR;
 	}
 	EVP_PKEY* pkey = EVP_PKEY_new();
 	EVP_PKEY_assign_RSA(pkey, rsa);
+	BIO_free(bio);
 
-	/*BIO* bo = BIO_new(BIO_s_mem());
-	 BIO_write(bo, pubKey, strlen(pubKey));
-	 RSA *key = 0;
-	 PEM_read_bio_RSAPublicKey(bo, &key, 0, 0);
-	 BIO_free(bo);*/
+	// Estimate maximum signature size from base64 length
+	// Base64 encoded data is roughly 4/3 of the original size
+	// Add 64 bits padding for safety
+	size_t estimated_max_size = (signatureB64.length() * 3) / 4 + 64;
+	unsigned char* buffer = new unsigned char[estimated_max_size];
 
-	// RSA* rsa = EVP_PKEY_get1_RSA( key );
-	// RSA * pubKey = d2i_RSA_PUBKEY(NULL, <der encoded byte stream pointer>, <num bytes>);
-	unsigned char buffer[512];
 	BIO* b64 = BIO_new(BIO_f_base64());
 	BIO* encoded_signature = BIO_new_mem_buf((const void*)signatureB64.c_str(), signatureB64.size());
 	BIO* biosig = BIO_push(b64, encoded_signature);
-	BIO_set_flags(biosig, BIO_FLAGS_BASE64_NO_NL);  // Do not use newlines to flush buffer
-	unsigned int len = BIO_read(biosig, (void*)buffer, signatureB64.size());
+	BIO_set_flags(biosig, BIO_FLAGS_BASE64_NO_NL);	// Do not use newlines to flush buffer
+	unsigned int len = BIO_read(biosig, (void*)buffer, estimated_max_size);
 	// Can test here if len == decodeLen - if not, then return an error
 	buffer[len] = 0;
 
@@ -78,19 +76,22 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 
 	/* Create the Message Digest Context */
 	if (!(mdctx = EVP_MD_CTX_create())) {
+		delete[] buffer;
 		free_resources(pkey, mdctx);
 		LOG_ERROR("Error creating context");
 		return FUNC_RET_ERROR;
 	}
 	if (1 != EVP_DigestVerifyInit(mdctx, NULL, EVP_sha256(), NULL, pkey)) {
-		LOG_ERROR("Error initializing digest");
+		delete[] buffer;
 		free_resources(pkey, mdctx);
+		LOG_ERROR("Error initializing digest");
 		return FUNC_RET_ERROR;
 	}
 
 	func_ret = EVP_DigestVerifyUpdate(mdctx, (const void*)stringToVerify.c_str(), stringToVerify.size());
 	if (1 != func_ret) {
 		LOG_ERROR("Error verifying digest %d", func_ret);
+		delete[] buffer;
 		free_resources(pkey, mdctx);
 		return FUNC_RET_ERROR;
 	}
@@ -101,6 +102,7 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	}
 	result = (1 == func_ret ? FUNC_RET_OK : FUNC_RET_ERROR);
 
+	delete[] buffer;
 	free_resources(pkey, mdctx);
 	return result;
 }

@@ -87,20 +87,14 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	#https://cmake.org/cmake/help/latest/command/find_package.html
 	set(pkg_config_dest "lib/cmake/${PROJECT_NAME}")
 else(UNIX) #windows and linux crosscompiling for windows target
-	
+	option(USE_OPENSSL "If disabled do not search for openssl, use windows BCRYPT API" OFF)
 	SET (OPENSSL_MSVC_STATIC_RT ${STATIC_RUNTIME})
-	IF(DEFINED USE_OPENSSL)
-		if(USE_OPENSSL)
-			MESSAGE(VERBOSE "Openssl (licensecc)       : forced by the user")
-			find_package(OpenSSL REQUIRED COMPONENTS Crypto QUIET)
-		else(USE_OPENSSL) #defined but evaluate
-			MESSAGE(VERBOSE "Openssl (licensecc)       : disabled by user.")
-			set(OpenSSL_FOUND FALSE)
-		endif(USE_OPENSSL)
-	else(DEFINED USE_OPENSSL)
-		SET (OPENSSL_MSVC_STATIC_RT TRUE)
-		find_package(OpenSSL COMPONENTS Crypto QUIET)
-	endif(DEFINED USE_OPENSSL)
+	if(${USE_OPENSSL})
+		find_package(OpenSSL REQUIRED COMPONENTS Crypto QUIET)
+	else(${USE_OPENSSL}) #defined but evaluate
+		MESSAGE(VERBOSE "Openssl (licensecc)       : search for openssl disabled (it is optional in windows).")
+		set(OpenSSL_FOUND FALSE)
+	endif(${USE_OPENSSL})
 	IF(OpenSSL_FOUND)
 		add_definitions(-DHAS_OPENSSL)
 		include_directories(${OPENSSL_INCLUDE_DIR})

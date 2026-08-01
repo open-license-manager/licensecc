@@ -7,6 +7,7 @@
 
 #include "../os.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -15,34 +16,36 @@
 #include <wincrypt.h>
 #include <iphlpapi.h>
 #include <windows.h>
-//#pragma comment(lib, "bcrypt.lib")
+// #pragma comment(lib, "bcrypt.lib")
 
 #include <public_key.h>
 #include "../../base/logger.h"
 #include "../../base/base64.h"
 #include "../signature_verifier.hpp"
-
-#define RSA_KEY_BITLEN 1024
+#include <vector>
+#include <cstdint>
+#include <iostream>
+#include <iomanip>
+#include <span>
 
 namespace license {
 namespace os {
 using namespace std;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
-static const void formatError(DWORD status, const char *description) {
+static const void formatError(DWORD status, const char* description) {
 	char msgBuffer[256];
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, status, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &msgBuffer[0],
 				  sizeof(msgBuffer) - 1, nullptr);
 	LOG_DEBUG("error %s : %s %h", description, msgBuffer, status);
 }
 
-#pragma pack(push, 1)
-typedef struct {
-	BCRYPT_RSAKEY_BLOB rsakey;
-	BYTE pkExp[3];
-	BYTE modulus[RSA_KEY_BITLEN / 8];
-} PUBKEY_BLOB, *P_PUBKEY_BLOB;
-#pragma pack(pop)
+//#pragma pack(push, 1)
+//typedef struct {
+//	BCRYPT_RSAKEY_BLOB rsakey;
+//	BYTE pkExp[3];	// Fixed size for exponent
+//} PUBKEY_HEADER, *P_PUBKEY_HEADER;
+//#pragma pack(pop)
 
 static BCRYPT_ALG_HANDLE openHashProvider() {
 	DWORD status;
@@ -61,10 +64,14 @@ static DWORD hashData(BCRYPT_HASH_HANDLE& hHash, const string& data, PBYTE pbHas
 	return status;
 }
 
+/**
+ * Reads the length field of an ASN.1 encoded element
+ * @param ptr pointer to the length field in the ASN.1 data
+ * @return the decoded length value
+ */
 static size_t read_length(uint8_t*& ptr) {
 	uint8_t len = *ptr++;
 	size_t result = 0;
-	cout << (len & 0x80) << endl;
 	if ((len & 0x80) > 0) {
 		size_t blen = len & 0x7F;
 		for (size_t i = 0; i < blen; i++) {
@@ -76,58 +83,147 @@ static size_t read_length(uint8_t*& ptr) {
 	return result;
 }
 
-static FUNCTION_RETURN read_sequence(uint8_t*& ptr) {
+/**
+ * Reads an ASN.1 SEQUENCE header and returns its length
+ * @param ptr pointer to the SEQUENCE tag in the ASN.1 data
+ * @param seq_len reference to store the sequence length
+ * @return FUNCTION_RETURN indicating success or failure
+ */
+static FUNCTION_RETURN read_sequence(uint8_t*& ptr, size_t& seq_len) {
 	uint8_t tag = *ptr++;
 	if (tag != 0x30) {
 		return FUNC_RET_ERROR;
 	}
-	read_length(ptr);
+	seq_len = read_length(ptr);
 	return FUNC_RET_OK;
 }
 
-static FUNCTION_RETURN read_integer(uint8_t*& ptr, BYTE* location, const size_t expected_length) {
+/**
+ * Reads an ASN.1 INTEGER value from the data stream
+ * @param ptr pointer to the INTEGER tag in the ASN.1 data
+ * @param location buffer to store the integer value
+ * @param buffer_length maximum size of the location buffer
+ * @param actual_length reference to store the actual length of the integer read
+ * @return FUNCTION_RETURN indicating success or failure
+ *
+ * Note: The INTEGER value is stored in big-endian format in the location buffer.
+ * If the integer has the high bit set, a leading zero byte may be present to
+ * ensure it's interpreted as positive (ASN.1 INTEGER is signed).
+ */
+static FUNCTION_RETURN read_integer(uint8_t*& ptr, BYTE* buffer, const size_t buffer_length, size_t& actual_length) {
 	uint8_t tag = *ptr++;
 	if (tag != 0x02) {
 		return FUNC_RET_ERROR;
 	}
 	size_t length = read_length(ptr);
-	// skip the padding byte
+	// skip the padding byte if present
 	if (*ptr == 0) {
 		length--;
 		ptr++;
 	}
-	if (expected_length < length) {
-		return FUNC_RET_ERROR;
+	actual_length = length;
+	if (buffer_length < length || buffer == nullptr) {
+		ptr += length;
+		return FUNC_RET_BUFFER_TOO_SMALL;
 	}
 	for (size_t i = 0; i < length; i++) {
-		location[i] = *(ptr++);
+		buffer[i] = *(ptr++);
+		
 	}
 	return FUNC_RET_OK;
 }
 
+/*
+ * ASN.1 structure of a PKCS#1 encoded RSA public key:
+ *
+ * RSAPublicKey ::= SEQUENCE {
+ *     modulus           INTEGER,    -- n
+ *     publicExponent    INTEGER     -- e
+ * }
+ *
+ * The structure starts with a SEQUENCE tag (0x30), followed by the length,
+ * then two INTEGER values: the modulus and the public exponent.
+ * 
+ * The target structure in the windows API to hold the public key format has the following structure:
+ * 
+ * BCRYPT_RSAKEY_BLOB
+ * PublicExponent[cbPublicExp] // Big-endian.
+ * Modulus[cbModulus] // Big-endian.
+ */
 static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY_HANDLE* hKey) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	DWORD status;
-	PUBKEY_BLOB pubk;
-	pubk.rsakey.Magic = BCRYPT_RSAPUBLIC_MAGIC;
-	pubk.rsakey.BitLength = RSA_KEY_BITLEN;
-	pubk.rsakey.cbPublicExp = 3;
-	pubk.rsakey.cbModulus = RSA_KEY_BITLEN / 8;
-	pubk.rsakey.cbPrime1 = 0;
-	pubk.rsakey.cbPrime2 = 0;
+
+	// First pass: determine the size of the modulus by parsing the public key
 	uint8_t pubKey[] = PUBLIC_KEY;
 	uint8_t* pub_key_idx = &pubKey[0];
-	read_sequence(pub_key_idx);
-	read_integer(pub_key_idx, (BYTE*)&pubk.modulus, sizeof(pubk.modulus));
-	read_integer(pub_key_idx, (BYTE*)&pubk.pkExp, sizeof(pubk.pkExp));
-	if (NT_SUCCESS(status = BCryptImportKeyPair(sig_alg, nullptr, BCRYPT_RSAPUBLIC_BLOB, hKey, (PUCHAR)&pubk,
-												sizeof(pubk), 0))) {
+
+	size_t seq_len = 0;
+	if (read_sequence(pub_key_idx, seq_len) != FUNC_RET_OK) {
+		return FUNC_RET_ERROR;
+	}
+	cout << "seq:" << seq_len << endl;
+	
+	uint8_t* modulus_idx = pub_key_idx; //remembers the modulus position.
+	size_t mod_size = 0;  // read the modulus size
+	if (read_integer(pub_key_idx, nullptr, 0, mod_size) != FUNC_RET_BUFFER_TOO_SMALL) {
+		return FUNC_RET_ERROR;
+	}
+	cout << "mod_len:" << mod_size << endl;
+
+	size_t exp_size = 0;  // read the exponent size
+	uint8_t* exponent_idx = pub_key_idx; // remembers the exponent position
+	if (read_integer(pub_key_idx, nullptr, 0, exp_size) != FUNC_RET_BUFFER_TOO_SMALL) {
+		return FUNC_RET_ERROR;
+	}
+	if (exp_size != 3) {
+		LOG_DEBUG("Error reading public key exponent size is not 3 bytes");
+		return FUNC_RET_ERROR;
+	}
+	// Calculate the key bit length
+	size_t key_bitlen = mod_size * 8;
+	// Now allocate memory for the key blob with the correct size
+	size_t total_blob_size = sizeof(BCRYPT_RSAKEY_BLOB) + exp_size + mod_size;	 // 3 for exponent, modulus_size for modulus
+	vector<BYTE> blob_buffer(total_blob_size);
+
+	// Set up the key blob
+	BCRYPT_RSAKEY_BLOB* pubk_header = (BCRYPT_RSAKEY_BLOB*)blob_buffer.data();
+	pubk_header->Magic = BCRYPT_RSAPUBLIC_MAGIC;
+	pubk_header->BitLength = (ULONG)key_bitlen;
+	pubk_header->cbPublicExp = (ULONG)exp_size;
+	pubk_header->cbModulus = (ULONG)mod_size;
+	pubk_header->cbPrime1 = 0;
+	pubk_header->cbPrime2 = 0;
+
+	// Get pointers to the exponent and modulus areas
+	BYTE* blob_exp_ptr = blob_buffer.data() + sizeof(BCRYPT_RSAKEY_BLOB);
+	BYTE* blob_modulus_ptr = blob_exp_ptr + exp_size;
+	//read the modulus into the blob
+	if (read_integer(modulus_idx, blob_modulus_ptr, mod_size, mod_size) != FUNC_RET_OK) {
+		return FUNC_RET_ERROR;
+	}
+
+	if (read_integer(exponent_idx, blob_exp_ptr, exp_size, exp_size) != FUNC_RET_OK) {
+		return FUNC_RET_ERROR;
+	}
+	/*
+	auto first = blob_buffer.begin() + sizeof(BCRYPT_RSAKEY_BLOB);
+	auto last = first + mod_size;  // +1 to include index 'end'
+
+	std::cout << "Hex [5..10]: ";
+	for (auto it = first; it != last; ++it) {
+		std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*it) << ":";
+	}*/
+	if (NT_SUCCESS(status = BCryptImportKeyPair(sig_alg, nullptr, BCRYPT_RSAPUBLIC_BLOB, hKey, (PUCHAR)blob_buffer.data(),
+												total_blob_size, 0))) {
 		result = FUNC_RET_OK;
 	} else {
 #ifndef NDEBUG
 		formatError(status, "error importing public key");
 #endif
 	}
+
+	//free(blob_buffer);
 	return result;
 }
 
@@ -139,7 +235,7 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	BCRYPT_ALG_HANDLE hSignAlg = nullptr;
 
 	vector<uint8_t> signatureBlob = unbase64(signatureBuffer);
-	DWORD dwSigLen = (DWORD) signatureBlob.size();
+	DWORD dwSigLen = (DWORD)signatureBlob.size();
 	BYTE* sigBlob = &signatureBlob[0];
 
 	if (NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hSignAlg, BCRYPT_RSA_ALGORITHM, NULL, 0))) {
@@ -159,8 +255,7 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 		} else {
 			LOG_DEBUG("Error reading public key");
 		}
-	}
-	else {
+	} else {
 		result = FUNC_RET_NOT_AVAIL;
 #ifndef NDEBUG
 		formatError(status, "error opening RSA provider");
@@ -173,9 +268,9 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 	if (hSignAlg != nullptr) {
 		BCryptCloseAlgorithmProvider(hSignAlg, 0);
 	}
-	//if (sigBlob) {
+	// if (sigBlob) {
 	//	free(sigBlob);
-	//}
+	// }
 	return result;
 }
 

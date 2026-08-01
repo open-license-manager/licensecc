@@ -8,7 +8,7 @@
 #ifndef SRC_LIBRARY_LIMITS_LICENSEVERIFIER_HPP_
 #define SRC_LIBRARY_LIMITS_LICENSEVERIFIER_HPP_
 #include "../base/EventRegistry.h"
-#include "../LicenseReader.hpp"
+#include "../LicenseParser.hpp"
 
 namespace license {
 

@@ -1,5 +1,5 @@
 add_executable( test_license_reader
- LicenseReader_test.cpp
+ LicenseParser_test.cpp
 )
 
 target_link_libraries( test_license_reader

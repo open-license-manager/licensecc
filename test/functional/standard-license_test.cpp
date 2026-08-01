@@ -99,21 +99,18 @@ BOOST_AUTO_TEST_CASE(multiple_features) {
 }
 #endif
 
-//
-// BOOST_AUTO_TEST_CASE( hw_identifier ) {
-//	const string licLocation(PROJECT_TEST_TEMP_DIR "/hw_identifier.lic");
-//	const vector<string> extraArgs = { "-s", "Jaaa-aaaa-MG9F-ZhB1" };
-//	generate_license(licLocation, extraArgs);
-//
-//	LicenseInfo license;
-//	LicenseLocation licenseLocation;
-//	licenseLocation.licenseFileLocation = licLocation.c_str();
-//	licenseLocation.licenseData = "";
-//	const EVENT_TYPE result = acquire_license("TEST", &licenseLocation,
-//			&license);
-//	BOOST_CHECK_EQUAL(result, IDENTIFIERS_MISMATCH);
-//	BOOST_CHECK_EQUAL(license.has_expiry, false);
-//	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
-//}
+BOOST_AUTO_TEST_CASE(hw_identifier) {
+	const string licLocation(PROJECT_TEST_TEMP_DIR "/hw_identifier.lic");
+	const vector<string> extraArgs = {"-s", "Jaaa-aaaa-MG9F-ZhB1"};
+	generate_license(licLocation, extraArgs);
+
+	LicenseInfo license;
+	LicenseLocation licenseLocation = {LICENSE_PATH};
+	std::copy(licLocation.begin(), licLocation.end(), licenseLocation.licenseData);
+	const LCC_EVENT_TYPE result = acquire_license(nullptr, &licenseLocation, &license);
+	BOOST_CHECK_EQUAL(result, IDENTIFIERS_MISMATCH);
+	BOOST_CHECK_EQUAL(license.has_expiry, false);
+	BOOST_CHECK_EQUAL(license.linked_to_pc, true);
+}
 }  // namespace test
 }  // namespace license

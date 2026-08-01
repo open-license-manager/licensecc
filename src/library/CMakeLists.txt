@@ -5,7 +5,8 @@ add_subdirectory("hw_identifier")
 
 ADD_LIBRARY(licensecc_static STATIC
     licensecc.cpp
-    LicenseReader.cpp
+    license_facade.cpp
+    LicenseParser.cpp
     limits/license_verifier.cpp
     ini/ConvertUTF.cpp
     $<TARGET_OBJECTS:hw_identifier>

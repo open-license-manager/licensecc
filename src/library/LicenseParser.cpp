@@ -1,5 +1,5 @@
 /*
- * LicenseReader.cpp
+ * LicenseParser.cpp
  *
  *  Created on: Mar 30, 2014
  *
@@ -25,7 +25,7 @@
 #include <licensecc/licensecc.h>
 
 #include "base/base.h"
-#include "LicenseReader.hpp"
+#include "LicenseParser.hpp"
 #include "base/string_utils.h"
 #include "base/logger.h"
 #include "locate/LocatorFactory.hpp"
@@ -33,15 +33,15 @@
 namespace license {
 using namespace std;
 
-FullLicenseInfo::FullLicenseInfo(const string &source, const string &product, const string &license_signature)
+FullLicenseInfo::FullLicenseInfo(const string& source, const string& product, const string& license_signature)
 	: source(source),
 	  m_project(product),  //
 	  license_signature(license_signature),
 	  m_magic(0) {}
 
-LicenseReader::LicenseReader(const LicenseLocation *licenseLocation) : licenseLocation(licenseLocation) {}
+LicenseParser::LicenseParser(const LicenseLocation* licenseLocation) : licenseLocation(licenseLocation) {}
 
-EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLicenseInfo> &licenseInfoOut) const {
+EventRegistry LicenseParser::readLicenses(const string& product, vector<FullLicenseInfo>& licenseInfoOut) const {
 	vector<unique_ptr<locate::LocatorStrategy>> locator_strategies;
 	FUNCTION_RETURN ret = locate::LocatorFactory::get_active_strategies(locator_strategies, licenseLocation);
 	EventRegistry eventRegistry;
@@ -53,8 +53,8 @@ EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLice
 
 	bool atLeastOneLicenseComplete = false;
 	const string product_up = toupper_copy(product);
-	const char *productNamePtr = product_up.c_str();
-	for (unique_ptr<locate::LocatorStrategy> &locator : locator_strategies) {
+	const char* productNamePtr = product_up.c_str();
+	for (unique_ptr<locate::LocatorStrategy>& locator : locator_strategies) {
 		vector<string> licenseLocations = locator->license_locations(eventRegistry);
 		if (licenseLocations.size() == 0) {
 			continue;
@@ -84,13 +84,13 @@ EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLice
 			 *  sig = XXXXXXXXXX (mandatory, 1024)
 			 *  application_data = xxxxxxxxx (optional string 16)
 			 */
-			const char *license_signature = ini.GetValue(productNamePtr, LICENSE_SIGNATURE, nullptr);
+			const char* license_signature = ini.GetValue(productNamePtr, LICENSE_SIGNATURE, nullptr);
 			long license_version = ini.GetLongValue(productNamePtr, LICENSE_VERSION, -1);
-			if (license_signature != nullptr && license_version == 200) {
+			if (license_signature != nullptr && license_version <= 210) {
 				CSimpleIniA::TNamesDepend keys;
 				ini.GetAllKeys(productNamePtr, keys);
 				FullLicenseInfo licInfo(*it, product, license_signature);
-				for (auto &it : keys) {
+				for (auto& it : keys) {
 					licInfo.m_limits[it.pItem] = ini.GetValue(productNamePtr, it.pItem, nullptr);
 				}
 				licenseInfoOut.push_back(licInfo);
@@ -106,12 +106,12 @@ EventRegistry LicenseReader::readLicenses(const string &product, vector<FullLice
 	return eventRegistry;
 }
 
-LicenseReader::~LicenseReader() {}
+LicenseParser::~LicenseParser() {}
 
 string FullLicenseInfo::printForSign() const {
 	ostringstream oss;
 	oss << toupper_copy(trim_copy(m_project));
-	for (auto &it : m_limits) {
+	for (auto& it : m_limits) {
 		if (it.first != LICENSE_SIGNATURE) {
 			oss << trim_copy(it.first) << trim_copy(it.second);
 		}

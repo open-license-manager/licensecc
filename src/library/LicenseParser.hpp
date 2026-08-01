@@ -1,12 +1,12 @@
 /*
- * LicenseReader.h
+ * LicenseParser.h
  *
  *  Created on: Mar 30, 2014
  *
  */
 
-#ifndef LICENSEREADER_H_
-#define LICENSEREADER_H_
+#ifndef LICENSEPARSER_H_
+#define LICENSEPARSER_H_
 #include <string>
 #include <ctime>
 
@@ -50,14 +50,14 @@ public:
  *	license_version = 100 (mandatory int)
  *  </pre>
  */
-class LicenseReader {
+class LicenseParser {
 private:
 	const LicenseLocation* licenseLocation;
 
 public:
-	LicenseReader(const LicenseLocation* licenseLocation);
+	LicenseParser(const LicenseLocation* licenseLocation);
 	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut) const;
-	virtual ~LicenseReader();
+	virtual ~LicenseParser();
 };
 }  // namespace license
-#endif /* LICENSEREADER_H_ */
+#endif /* LICENSEPARSER_H_ */

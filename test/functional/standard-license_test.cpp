@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 /**
  * Pass the license data to the application.
  */
-/* lccgen bug #10 parameter -b is ignored.
-BOOST_AUTO_TEST_CASE(base64_encoded) {
+/* lccgen bug #10 parameter -b is ignored. */
+/*BOOST_AUTO_TEST_CASE(base64_encoded) {
 	const string licLocation("standard_b64.lic");
 	vector<string> extraArgs;
 	extraArgs.push_back("-b");
@@ -69,11 +69,8 @@ BOOST_AUTO_TEST_CASE(base64_encoded) {
 	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::LICENSE_OK);
 	BOOST_CHECK_EQUAL(license.has_expiry, false);
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
-}
-*/
+}*/
 
-// old boost version can't parse the comma separated list.. only centos 7 and Ubuntu 16.04
-#if (BOOST_VERSION > 106500)
 BOOST_AUTO_TEST_CASE(multiple_features) {
 	vector<string> extraArgs;
 	extraArgs.push_back("-f");
@@ -97,12 +94,10 @@ BOOST_AUTO_TEST_CASE(multiple_features) {
 	result = acquire_license(&callInfo, &location, &license);
 	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::PRODUCT_NOT_LICENSED);
 }
-#endif
 
 BOOST_AUTO_TEST_CASE(hw_identifier) {
-	const string licLocation(PROJECT_TEST_TEMP_DIR "/hw_identifier.lic");
 	const vector<string> extraArgs = {"-s", "Jaaa-aaaa-MG9F-ZhB1"};
-	generate_license(licLocation, extraArgs);
+	const string licLocation = generate_license("license_hw", extraArgs);
 
 	LicenseInfo license;
 	LicenseLocation licenseLocation = {LICENSE_PATH};

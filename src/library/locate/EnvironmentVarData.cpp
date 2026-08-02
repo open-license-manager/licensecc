@@ -32,22 +32,22 @@ const vector<string> EnvironmentVarData::license_locations(EventRegistry& eventR
 	vector<string> diskFiles;
 	char* env_var_value = getenv(LCC_LICENSE_DATA_ENV_VAR);
 	if (env_var_value != nullptr && env_var_value[0] != '\0') {
-		eventRegistry.addEvent(LICENSE_SPECIFIED, LCC_LICENSE_LOCATION_ENV_VAR);
+		eventRegistry.addEvent(LICENSE_SPECIFIED, LCC_LICENSE_DATA_ENV_VAR);
 		FILE_FORMAT licenseFormat = identify_format(env_var_value);
 		if (licenseFormat == UNKNOWN) {
-			eventRegistry.addEvent(LICENSE_MALFORMED, LCC_LICENSE_LOCATION_ENV_VAR);
+			eventRegistry.addEvent(LICENSE_MALFORMED, LCC_LICENSE_DATA_ENV_VAR);
 		} else {
-			diskFiles.push_back(LCC_LICENSE_LOCATION_ENV_VAR);
+			diskFiles.push_back(LCC_LICENSE_DATA_ENV_VAR);
 			isBase64 = (licenseFormat == BASE64);
 		}
 	} else {
-		eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, LCC_LICENSE_LOCATION_ENV_VAR);
+		eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, LCC_LICENSE_DATA_ENV_VAR);
 	}
 	return diskFiles;
 }
 
 const std::string EnvironmentVarData::retrieve_license_content(const std::string& licenseLocation) const {
-	string env_val = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
+	string env_val = getenv(licenseLocation.c_str());
 	if (isBase64) {
 		vector<uint8_t> data = unbase64(env_val);
 		string str = string(reinterpret_cast<char*>(data.data()));
@@ -57,9 +57,7 @@ const std::string EnvironmentVarData::retrieve_license_content(const std::string
 }
 
 std::unique_ptr<LocatorStrategy> EnvironmentVarData::clone() const {
-	auto cloned = std::unique_ptr<EnvironmentVarData>(new EnvironmentVarData());
-	cloned->isBase64 = this->isBase64;	// Copy the internal state
-	return cloned;
+	return std::unique_ptr<EnvironmentVarData>(new EnvironmentVarData(*this));
 }
 
 }  // namespace locate

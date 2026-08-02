@@ -19,7 +19,7 @@
 
 namespace license {
 
-class FullLicenseInfo {
+struct FullLicenseInfo {
 public:
 	const std::string license_signature;
 	const std::string source;

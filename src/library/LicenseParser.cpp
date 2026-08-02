@@ -59,44 +59,46 @@ EventRegistry LicenseParser::readLicenses(const string& product, vector<FullLice
 		if (licenseLocations.size() == 0) {
 			continue;
 		}
-		CSimpleIniA ini;
 		for (auto it = licenseLocations.begin(); it != licenseLocations.end(); it++) {
-			ini.Reset();
 			const string license = locator->retrieve_license_content((*it).c_str());
-			const SI_Error rc = ini.LoadData(license.c_str(), license.size());
-			if (rc < 0) {
-				eventRegistry.addEvent(FILE_FORMAT_NOT_RECOGNIZED, *it);
-				continue;
-			}
-			const int sectionSize = ini.GetSectionSize(productNamePtr);
-			if (sectionSize <= 0) {
-				eventRegistry.addEvent(PRODUCT_NOT_LICENSED, *it);
-				continue;
-			} else {
-				eventRegistry.addEvent(PRODUCT_FOUND, *it);
-			}
-			/*
-			 *  sw_version_from = (optional int)
-			 *  sw_version_to = (optional int)
-			 *  from_date = YYYY-MM-DD (optional)
-			 *  to_date  = YYYY-MM-DD (optional)
-			 *  client_signature = XXXX-XXXX-XXXX (optional string 16)
-			 *  sig = XXXXXXXXXX (mandatory, 1024)
-			 *  application_data = xxxxxxxxx (optional string 16)
-			 */
-			const char* license_signature = ini.GetValue(productNamePtr, LICENSE_SIGNATURE, nullptr);
-			long license_version = ini.GetLongValue(productNamePtr, LICENSE_VERSION, -1);
-			if (license_signature != nullptr && license_version <= 210) {
-				CSimpleIniA::TNamesDepend keys;
-				ini.GetAllKeys(productNamePtr, keys);
-				FullLicenseInfo licInfo(*it, product, license_signature);
-				for (auto& it : keys) {
-					licInfo.m_limits[it.pItem] = ini.GetValue(productNamePtr, it.pItem, nullptr);
+			{ //extract this to a public method: parse_license
+				CSimpleIniA ini;
+				ini.Reset();
+				const SI_Error rc = ini.LoadData(license.c_str(), license.size());
+				if (rc < 0) {
+					eventRegistry.addEvent(FILE_FORMAT_NOT_RECOGNIZED, *it);
+					continue;
 				}
-				licenseInfoOut.push_back(licInfo);
-				atLeastOneLicenseComplete = true;
-			} else {
-				eventRegistry.addEvent(LICENSE_MALFORMED, *it);
+				const int sectionSize = ini.GetSectionSize(productNamePtr);
+				if (sectionSize <= 0) {
+					eventRegistry.addEvent(PRODUCT_NOT_LICENSED, *it);
+					continue;
+				} else {
+					eventRegistry.addEvent(PRODUCT_FOUND, *it);
+				}
+				/*
+				 *  sw_version_from = (optional int)
+				 *  sw_version_to = (optional int)
+				 *  from_date = YYYY-MM-DD (optional)
+				 *  to_date  = YYYY-MM-DD (optional)
+				 *  client_signature = XXXX-XXXX-XXXX (optional string 16)
+				 *  sig = XXXXXXXXXX (mandatory, 1024)
+				 *  application_data = xxxxxxxxx (optional string 16)
+				 */
+				const char* license_signature = ini.GetValue(productNamePtr, LICENSE_SIGNATURE, nullptr);
+				long license_version = ini.GetLongValue(productNamePtr, LICENSE_VERSION, -1);
+				if (license_signature != nullptr && license_version <= 210) {
+					CSimpleIniA::TNamesDepend keys;
+					ini.GetAllKeys(productNamePtr, keys);
+					FullLicenseInfo licInfo(*it, product, license_signature);
+					for (auto& it : keys) {
+						licInfo.m_limits[it.pItem] = ini.GetValue(productNamePtr, it.pItem, nullptr);
+					}
+					licenseInfoOut.push_back(licInfo);
+					atLeastOneLicenseComplete = true;
+				} else {
+					eventRegistry.addEvent(LICENSE_MALFORMED, *it);
+				}
 			}
 		}
 	}

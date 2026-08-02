@@ -1,116 +1,162 @@
 /*
- * RawLicenseCursor_test.cpp
+ * LicenseLocatorFacade_test.cpp
  *
  *  Created on: Aug 2, 2026
  *      Author: gab
  */
 
-#include <gtest/gtest.h>
+#define BOOST_TEST_MODULE LicenseLocatorFacadeTest
+#include <boost/test/unit_test.hpp>
 #include <memory>
 #include <vector>
 #include <string>
+#include <cstdlib>
+#include <iostream>
 
-#include "licensecc/locate/LocatorFactory.hpp"
-#include "licensecc/locate/ApplicationFolder.hpp"
-#include "licensecc/locate/EnvironmentVarLocation.hpp"
-#include "licensecc/locate/EnvironmentVarData.hpp"
-#include "licensecc/locate/ExternalDefinition.hpp"
-#include "licensecc/base/EventRegistry.h"
+#include <licensecc_properties.h>
+#include <licensecc_properties_test.h>
+
+#include "../../src/library/os/os.h"
+#include "../../src/library/base/EventRegistry.h"
+#include "../../src/library/locate/ApplicationFolder.hpp"
+#include "../../src/library/locate/EnvironmentVarLocation.hpp"
+#include "../../src/library/locate/ExternalDefinition.hpp"
 #include "licensecc/datatypes.h"
-
+#include "../../src/library/locate/LocatorFactory.hpp"
+#include "../../src/library/locate/LocatorStrategy.hpp"
+namespace test {
 using namespace license::locate;
 using namespace license;
 
-// Test fixture for RawLicenseCursor
-class RawLicenseCursorTest : public ::testing::Test {
-protected:
-	void SetUp() override {
-		// Setup code if needed
+// Custom test strategy that returns static strings
+class TestLocatorStrategy : public LocatorStrategy {
+private:
+	std::string location_;
+	std::string data_;
+
+public:
+	TestLocatorStrategy(const std::string& location, const std::string& data)
+		: LocatorStrategy("test"), location_(location), data_(data) {}
+
+	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) override {
+		return {location_};
 	}
 
-	void TearDown() override {
-		// Cleanup code if needed
+	virtual const std::string retrieve_license_content(const std::string& location) const override { return data_; }
+
+	std::unique_ptr<LocatorStrategy> clone() const override {
+		return std::unique_ptr<LocatorStrategy>(new TestLocatorStrategy(location_, data_));
 	}
 };
 
-TEST_F(RawLicenseCursorTest, TestCursorIteration) {
-	// Create a mock event registry
-	EventRegistry eventRegistry;
+class TestLocatorEmptyStrategy : public LocatorStrategy {
+public:
+	TestLocatorEmptyStrategy() : LocatorStrategy("test_empty") {}
 
-	// Create some test strategies
+	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) override {
+		return std::vector<std::string>();
+	}
+
+	virtual const std::string retrieve_license_content(const std::string& location) const override { return ""; }
+
+	std::unique_ptr<LocatorStrategy> clone() const override {
+		return std::unique_ptr<LocatorStrategy>(new TestLocatorEmptyStrategy());
+	}
+};
+
+BOOST_AUTO_TEST_CASE(TestNoStrategy) {
+	// Set up the static methods
+	LocatorFactory::find_license_near_module(false);
+	LocatorFactory::find_license_with_env_var(false);
 	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
+	LocatorFactory::set_extra_strategies(strategies);
 
-	// Add ApplicationFolder strategy
-	strategies.push_back(std::unique_ptr<LocatorStrategy>(new ApplicationFolder()));
-
-	// Add EnvironmentVarLocation strategy
-	strategies.push_back(std::unique_ptr<LocatorStrategy>(new EnvironmentVarLocation()));
-
-	// Create cursor
-	LocatorFactory::RawLicenseCursor cursor(strategies, eventRegistry);
-
-	// Test that cursor can be created
-	EXPECT_TRUE(true);
-}
-
-TEST_F(RawLicenseCursorTest, TestCursorWithEmptyStrategies) {
-	// Create a mock event registry
 	EventRegistry eventRegistry;
-
-	// Create empty strategies vector
-	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
-
-	// Create cursor
-	LocatorFactory::RawLicenseCursor cursor(strategies, eventRegistry);
-
-	// Test that cursor can be created with empty strategies
-	EXPECT_TRUE(true);
-}
-
-TEST_F(RawLicenseCursorTest, TestCloneFunctionality) {
-	// Test that all strategies can be cloned
-	ApplicationFolder appFolder;
-	auto appFolderClone = appFolder.clone();
-	ASSERT_NE(nullptr, appFolderClone.get());
-
-	EnvironmentVarLocation envVarLoc;
-	auto envVarLocClone = envVarLoc.clone();
-	ASSERT_NE(nullptr, envVarLocClone.get());
-
-	EnvironmentVarData envVarData;
-	auto envVarDataClone = envVarData.clone();
-	ASSERT_NE(nullptr, envVarDataClone.get());
-
-	// Test that ExternalDefinition can be cloned (need a dummy LicenseLocation)
-	LicenseLocation dummyLocation = {LICENSE_PATH};
-	ExternalDefinition extDef(&dummyLocation);
-	auto extDefClone = extDef.clone();
-	ASSERT_NE(nullptr, extDefClone.get());
-}
-
-TEST_F(RawLicenseCursorTest, TestIteratorSupport) {
-	// Create a mock event registry
-	EventRegistry eventRegistry;
-
-	// Create some test strategies
-	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
-
-	// Add ApplicationFolder strategy
-	strategies.push_back(std::unique_ptr<LocatorStrategy>(new ApplicationFolder()));
-
-	// Add EnvironmentVarLocation strategy
-	strategies.push_back(std::unique_ptr<LocatorStrategy>(new EnvironmentVarLocation()));
-
-	// Test iterator support
 	LocatorFactory factory(nullptr, eventRegistry);
 
-	// Test begin and end methods
-	auto begin_it = factory.begin();
-	auto end_it = factory.end();
-
-	// Basic comparison test
-	EXPECT_TRUE(begin_it != end_it);
-
-	// Test that we can iterate (this won't actually find real licenses but will test the mechanism)
-	EXPECT_TRUE(true);
+	// Iterate over the factory to check that no licenses are returned
+	for (auto it = factory.begin(); it != factory.end(); ++it) {
+		BOOST_FAIL("should never enter this for loop.");
+	}
 }
+// if there is a registered strategy but this does not return any location, it shoud not loop
+BOOST_AUTO_TEST_CASE(TestEmptyStrategy) {
+	LocatorFactory::find_license_near_module(false);
+	LocatorFactory::find_license_with_env_var(false);
+	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
+	strategies.push_back(std::unique_ptr<LocatorStrategy>(new TestLocatorEmptyStrategy()));
+	LocatorFactory::set_extra_strategies(strategies);
+
+	EventRegistry eventRegistry;
+	LocatorFactory factory(nullptr, eventRegistry);
+	// Iterate over the factory to check that two licenses are returned
+	std::vector<std::string> returned_data;
+	for (auto it : factory) {
+		BOOST_FAIL("should never enter this for loop.");
+	}
+	BOOST_CHECK(!eventRegistry.isGood());
+	BOOST_ASSERT(eventRegistry.getLastFailure() != NULL);
+	BOOST_CHECK_EQUAL(LICENSE_FILE_NOT_FOUND, eventRegistry.getLastFailure()->event_type);
+}
+
+BOOST_AUTO_TEST_CASE(TestCustomStrategy) {
+	LocatorFactory::find_license_near_module(false);
+	LocatorFactory::find_license_with_env_var(false);
+	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
+	strategies.push_back(
+		std::unique_ptr<LocatorStrategy>(new TestLocatorStrategy("/test/location1", "license_data_1")));
+	strategies.push_back(
+		std::unique_ptr<LocatorStrategy>(new TestLocatorStrategy("/test/location2", "license_data_2")));
+	LocatorFactory::set_extra_strategies(strategies);
+
+	EventRegistry eventRegistry;
+	LocatorFactory factory(nullptr, eventRegistry);
+	// Iterate over the factory to check that two licenses are returned
+	std::vector<std::string> returned_data;
+	int license_count = 0;
+	for (auto it : factory) {
+		RawLicenseData license_data = it;
+		returned_data.push_back(license_data.data);
+		license_count++;
+		// in case we miss the end.
+		if (license_count > 3) break;
+	}
+
+	// Should find two licenses
+	BOOST_CHECK_EQUAL(returned_data.size(), 2);
+	BOOST_CHECK_EQUAL(returned_data[0], "license_data_1");
+	BOOST_CHECK_EQUAL(returned_data[1], "license_data_2");
+	BOOST_CHECK(eventRegistry.isGood());
+}
+
+BOOST_AUTO_TEST_CASE(TestEnvVarStrategy) {
+	LocatorFactory::find_license_with_env_var(true);
+	LocatorFactory::find_license_near_module(false);
+	std::vector<std::unique_ptr<LocatorStrategy>> strategies;
+	LocatorFactory::set_extra_strategies(strategies);
+
+	// Set environment variable with base64 encoded license data
+	const char* env_var_name = LCC_LICENSE_DATA_ENV_VAR;
+	const char* env_var_value = "SGVsbG8gV29ybGQ=";	 // "Hello World" in base64
+	SETENV(env_var_name, env_var_value);
+
+	EventRegistry eventRegistry;
+	LocatorFactory factory(nullptr, eventRegistry);
+
+	int license_count = 0;
+	std::string returned_data;
+	for (auto it = factory.begin(); it != factory.end(); ++it) {
+		auto license_data = *it;
+		returned_data = license_data.data;
+		license_count++;
+		if (license_count > 1) break;
+	}
+
+	BOOST_CHECK_EQUAL(license_count, 1);
+	BOOST_CHECK(eventRegistry.isGood());
+	BOOST_CHECK_EQUAL(returned_data, "Hello World");
+
+	UNSETENV(env_var_name);
+}
+
+}  // namespace test

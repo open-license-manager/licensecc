@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE "test_license_locator"
+#define BOOST_TEST_MODULE "test_license_locator_strategies"
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <string.h>
 
@@ -28,10 +28,10 @@ using namespace license::locate;
 using namespace std;
 using namespace boost::filesystem;
 
-static boost::optional<path> find_file(const path &dir_path, const path &file_name) {
+static boost::optional<path> find_file(const path& dir_path, const path& file_name) {
 	const recursive_directory_iterator end;
 	const auto it = find_if(recursive_directory_iterator(dir_path), end,
-							[&file_name](const directory_entry &e) { return e.path().filename() == file_name; });
+							[&file_name](const directory_entry& e) { return e.path().filename() == file_name; });
 	return it == end ? boost::optional<path>() : it->path();
 }
 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(external_definition_not_found) {
  *****************************************************************************/
 BOOST_AUTO_TEST_CASE(environment_var_location) {
 	// an application can define multiple license locations separated by ';'
-	const char *environment_variable_value = MOCK_LICENSE ";/this/one/doesnt/exist";
+	const char* environment_variable_value = MOCK_LICENSE ";/this/one/doesnt/exist";
 #ifdef _WIN32
 	_putenv_s(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value);
 #else
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
  * The license file doesn't exist. Check that the locator reports the right error
  */
 BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
-	const char *environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
+	const char* environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
 	SETENV(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value);
 
 	license::EventRegistry registry;
@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
 }
 
 /**
- * The license file doesn't exist. Check that the locator reports the right error
+ * The environment variable is not defined. Check that the locator reports the right error
  */
 BOOST_AUTO_TEST_CASE(environment_var_location_not_defined) {
 	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);

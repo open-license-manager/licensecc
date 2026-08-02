@@ -1,7 +1,7 @@
 name: Linux build
 on:
    push:
-     branches: [ "develop" ]
+     branches: [ "master", "develop" ]
    pull_request:
      branches: [ "develop" ]
 permissions:

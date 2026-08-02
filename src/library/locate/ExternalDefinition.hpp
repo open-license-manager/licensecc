@@ -8,6 +8,7 @@
 #ifndef SRC_LIBRARY_LOCATE_EXTERNALDEFINITION_HPP_
 #define SRC_LIBRARY_LOCATE_EXTERNALDEFINITION_HPP_
 
+#include <memory>
 #include "LocatorStrategy.hpp"
 
 namespace license {
@@ -20,10 +21,11 @@ public:
 	ExternalDefinition(const LicenseLocation* location);
 	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	const virtual std::string retrieve_license_content(const std::string& licenseLocation) const;
+	virtual std::unique_ptr<LocatorStrategy> clone() const override;
 	virtual ~ExternalDefinition();
 };
 
 } /* namespace locate */
-} /* namespace license */
+}  // namespace license
 
 #endif /* SRC_LIBRARY_LOCATE_EXTERNALDEFINITION_HPP_ */

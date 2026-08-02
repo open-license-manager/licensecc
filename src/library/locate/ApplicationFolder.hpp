@@ -9,6 +9,7 @@
 #define SRC_LIBRARY_RETRIEVERS_APPLICATIONFOLDER_H_
 
 #include <string>
+#include <memory>
 
 #include "LocatorStrategy.hpp"
 
@@ -19,6 +20,7 @@ class ApplicationFolder : public LocatorStrategy {
 public:
 	ApplicationFolder();
 	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
+	virtual std::unique_ptr<LocatorStrategy> clone() const override;
 	virtual ~ApplicationFolder();
 };
 

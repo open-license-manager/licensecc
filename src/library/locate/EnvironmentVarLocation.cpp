@@ -6,6 +6,7 @@
  */
 
 #include <licensecc_properties.h>
+#include <memory>
 
 #include "../base/string_utils.h"
 #include "EnvironmentVarLocation.hpp"
@@ -19,13 +20,13 @@ EnvironmentVarLocation::EnvironmentVarLocation() : LocatorStrategy("EnvironmentV
 
 EnvironmentVarLocation::~EnvironmentVarLocation() {}
 
-const vector<string> EnvironmentVarLocation::license_locations(EventRegistry &eventRegistry) {
+const vector<string> EnvironmentVarLocation::license_locations(EventRegistry& eventRegistry) {
 	vector<string> licenseFileFoundWithEnvVariable;
 
 	const string varName(LCC_LICENSE_LOCATION_ENV_VAR);
 	if (varName.length() > 0) {
 		// var name is defined in header files.
-		char *env_var_value = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
+		char* env_var_value = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
 		if (env_var_value != nullptr && env_var_value[0] != '\0') {
 			const vector<string> declared_positions = license::split_string(string(env_var_value), ';');
 			licenseFileFoundWithEnvVariable =
@@ -35,6 +36,10 @@ const vector<string> EnvironmentVarLocation::license_locations(EventRegistry &ev
 		}
 	}
 	return licenseFileFoundWithEnvVariable;
+}
+
+std::unique_ptr<LocatorStrategy> EnvironmentVarLocation::clone() const {
+	return std::unique_ptr<LocatorStrategy>(new EnvironmentVarLocation(*this));
 }
 
 }  // namespace locate

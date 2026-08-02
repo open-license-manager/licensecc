@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"
@@ -21,20 +22,21 @@
 
 namespace license {
 namespace locate {
-	using namespace std;
+using namespace std;
 
-ExternalDefinition::ExternalDefinition(const LicenseLocation *location)
+ExternalDefinition::ExternalDefinition(const LicenseLocation* location)
 	: LocatorStrategy("ExternalDefinition"), m_location(location) {}
 
 ExternalDefinition::~ExternalDefinition() {}
 
-const std::vector<std::string> ExternalDefinition::license_locations(EventRegistry &eventRegistry) {
+const std::vector<std::string> ExternalDefinition::license_locations(EventRegistry& eventRegistry) {
 	vector<string> existing_pos;
 	if (m_location->licenseData[0] != '\0') {
 		eventRegistry.addEvent(LICENSE_SPECIFIED, get_strategy_name());
 		switch (m_location->license_data_type) {
 			case LICENSE_PATH: {
-				string licData(m_location->licenseData, mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
+				string licData(m_location->licenseData,
+							   mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 				const vector<string> declared_positions = license::split_string(licData, ';');
 				existing_pos =
 					license::filter_existing_files(declared_positions, eventRegistry, get_strategy_name().c_str());
@@ -50,13 +52,13 @@ const std::vector<std::string> ExternalDefinition::license_locations(EventRegist
 	return existing_pos;
 }
 
-const std::string ExternalDefinition::retrieve_license_content(const std::string &licenseLocation) const {
+const std::string ExternalDefinition::retrieve_license_content(const std::string& licenseLocation) const {
 	if (licenseLocation == get_strategy_name()) {
 		string licData(m_location->licenseData, mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 		if (m_location->license_data_type == LICENSE_ENCODED) {
 			// FIXME what if license content is not base64
 			vector<uint8_t> raw = unbase64(licData);
-			string str = string(reinterpret_cast<char *>(raw.data()));
+			string str = string(reinterpret_cast<char*>(raw.data()));
 			return str;
 		} else {
 			return licData;
@@ -64,6 +66,12 @@ const std::string ExternalDefinition::retrieve_license_content(const std::string
 	} else {
 		return LocatorStrategy::retrieve_license_content(licenseLocation);
 	}
+}
+
+std::unique_ptr<LocatorStrategy> ExternalDefinition::clone() const {
+	// For ExternalDefinition, we need to handle the fact that it holds a pointer to LicenseLocation
+	// We'll create a new instance with the same location data
+	return std::unique_ptr<LocatorStrategy>(new ExternalDefinition(m_location));
 }
 
 } /* namespace locate */

@@ -46,6 +46,8 @@ public:
 	 * 	a string containing the license data in INI format.
 	 */
 	const virtual std::string retrieve_license_content(const std::string &licenseLocationId) const;
+	
+	virtual std::unique_ptr<LocatorStrategy> clone() const = 0;
 	inline virtual ~LocatorStrategy() {}
 };
 

@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include <licensecc/datatypes.h>
 #include <licensecc_properties.h>
@@ -27,7 +28,7 @@ ApplicationFolder::ApplicationFolder() : LocatorStrategy("ApplicationFolder") {}
 
 ApplicationFolder::~ApplicationFolder() {}
 
-const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRegistry) {
+const vector<string> ApplicationFolder::license_locations(EventRegistry& eventRegistry) {
 	vector<string> diskFiles;
 	char fname[MAX_PATH] = {0};
 	const FUNCTION_RETURN fret = getModuleName(fname);
@@ -48,5 +49,9 @@ const vector<string> ApplicationFolder::license_locations(EventRegistry &eventRe
 	return diskFiles;
 }
 
+std::unique_ptr<LocatorStrategy> ApplicationFolder::clone() const {
+	return std::unique_ptr<LocatorStrategy>(new ApplicationFolder(*this));
+}
+
 }  // namespace locate
-} /* namespace license */
+}  // namespace license

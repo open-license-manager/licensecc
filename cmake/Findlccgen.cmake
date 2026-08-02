@@ -27,7 +27,7 @@
 #
 #This will define the following variables:
 #
-#``LCC_FOUND``
+#``lccgen_FOUND``
 #  True if the system has the Foo library.
 #``lcc_VERSION``
 #
@@ -57,7 +57,7 @@ if(LCC_LOCATION)
 		set_property(TARGET license_generator::lccgen PROPERTY IMPORTED_LOCATION ${LCC_EXECUTABLE})
 	ENDIF(NOT lccgen_FOUND)
 ELSE(LCC_LOCATION)
-	find_package(lccgen HINTS ${CMAKE_BINARY_DIR} CONFIG) #try to find it without looping on this module
+	find_package(lccgen HINTS ${CMAKE_CURRENT_BINARY_DIR} CONFIG) #try to find it without looping on this module
 
 	IF(NOT lccgen_FOUND) 	
 		find_package(Git QUIET)
@@ -67,7 +67,7 @@ ELSE(LCC_LOCATION)
 		    if(GIT_SUBMODULE)
 		        message(STATUS "Submodule update")
 		        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-		                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 		                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
 		        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
 		            set(failure_messge  "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
@@ -77,8 +77,10 @@ ELSE(LCC_LOCATION)
 		if(NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/license-generator/CMakeLists.txt")
 		    set(failure_messge  "All the options to find lcc executable failed. And i can't compile one from source GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 		endif()
-		add_subdirectory("${PROJECT_SOURCE_DIR}/extern/license-generator")
+		add_subdirectory("${PROJECT_SOURCE_DIR}/extern/license-generator" EXCLUDE_FROM_ALL)
 		set(lccgen_FOUND TRUE)
+	ELSE(NOT lccgen_FOUND)
+		message( VERBOSE "lccgen found              : " ${lccgen_VERSION})
 	ENDIF(NOT lccgen_FOUND)
 ENDIF(LCC_LOCATION)
 

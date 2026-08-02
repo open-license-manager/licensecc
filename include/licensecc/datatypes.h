@@ -64,7 +64,7 @@ typedef struct {
 
 typedef enum {
 	/**
-	 * licenseData contains a list of paths separated by ';' containing the eventual location
+	 * licenseData contains a list of paths separated by ';' containing the location
 	 * of the license files.
 	 */
 	LICENSE_PATH,
@@ -75,7 +75,11 @@ typedef enum {
 	/**
 	 * The license in the licenseData is base 64 encoded
 	 */
-	LICENSE_ENCODED
+	LICENSE_ENCODED,
+	/**
+	 * Reserved for user customizations
+	 */
+	LICENSE_CUSTOM_FORMAT
 } LCC_LICENSE_DATA_TYPE;
 
 /**

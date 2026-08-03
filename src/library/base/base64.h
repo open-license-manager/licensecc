@@ -10,8 +10,11 @@
 #endif
 
 namespace license {
-
-std::vector<uint8_t> unbase64(const std::string& base64_data);
+/*
+	bool SafeString: if true push a null terminator at the end of the binary data. This is useful when the binary data
+   is a string.
+*/
+std::vector<uint8_t> unbase64(const std::string& base64_data, bool safeString = false);
 std::string base64(const void* binaryData, size_t len, int lineLenght = -1);
 
 }  // namespace license

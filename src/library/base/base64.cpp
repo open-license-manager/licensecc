@@ -103,7 +103,7 @@ string base64(const void* binaryData, size_t len, int lineLenght) {
 	return encodeBuffer;
 }
 
-std::vector<uint8_t> unbase64(const std::string& base64_data) {
+std::vector<uint8_t> unbase64(const std::string& base64_data, bool safeString) {
 	string tmp_str(base64_data);
 	tmp_str.erase(std::remove(tmp_str.begin(), tmp_str.end(), '\n'), tmp_str.end());
 	const unsigned char* safeAsciiPtr = (const unsigned char*)tmp_str.c_str();
@@ -121,7 +121,8 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 	if (safeAsciiPtr[len - 1] == '=') ++pad;
 	if (safeAsciiPtr[len - 2] == '=') ++pad;
 
-	size_t flen = 3 * len / 4 - pad;
+	size_t flen = 3 * len / 4 - pad + 1;
+	if (safeString) flen++;	 // for the null terminator
 	bin.reserve(flen);
 
 	for (charNo = 0; charNo <= len - 4 - pad; charNo += 4) {
@@ -146,7 +147,7 @@ std::vector<uint8_t> unbase64(const std::string& base64_data) {
 		int B = unb64[safeAsciiPtr[charNo + 1]];
 		bin.push_back((A << 2) | (B >> 4));
 	}
-
+	if (safeString) bin.push_back(0);  // null terminator
 	return bin;
 }
 

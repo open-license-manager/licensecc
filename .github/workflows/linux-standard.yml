@@ -16,11 +16,15 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-26.04]
+        os: [ubuntu-24.04-arm, ubuntu-24.04, ubuntu-22.04, ubuntu-26.04]
         build_type: [Debug,Release]
-        cpp_compiler: [g++, clang++]
-        static: ["true","false"]
-
+        cpp_compiler: [g++]
+        static: ["false"] #Linux libraries (Boost, OpenSSL) are linked to the dynamic version of libstdc++
+        include:
+        - os: ubuntu-26-04
+          build_type: Release
+          cpp_compiler: clang++
+          static: "false"
     steps:
     - uses: actions/checkout@v6
     - name: Set reusable strings

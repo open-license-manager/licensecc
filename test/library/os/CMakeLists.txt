@@ -14,7 +14,15 @@ IF(NOT DEFINED MINGW)
 		${Boost_LIBRARIES}
 	)
 	ADD_TEST(NAME test_dmi_info COMMAND test_dmi_info)
+
 ENDIF(NOT DEFINED MINGW)
+
+add_executable( test_cpu_info cpu_info_test.cpp "cpu_info_test.cpp")
+	target_link_libraries( test_cpu_info
+ 		licensecc_static
+		${Boost_LIBRARIES}
+	)
+ADD_TEST(NAME test_cpu_info COMMAND test_cpu_info)
 
 add_executable( test_execution_environment
  	execution_environment_test.cpp

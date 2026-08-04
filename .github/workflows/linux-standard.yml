@@ -22,7 +22,7 @@ jobs:
         cpp_compiler: [g++]
         static: ["false"] #Linux libraries (Boost, OpenSSL) are linked to the dynamic version of libstdc++
         include:
-        - os: ubuntu-26-04
+        - os: ubuntu-26-04-arm
           build_type: Release
           cpp_compiler: clang++
           static: "false"
@@ -77,6 +77,8 @@ jobs:
         ls -la /sys
         ls -la /sys/firmware
         ls -la /sys/hypervisor
+        cat /sys/class/dmi/id/bios_vendor
+        cat /sys/class/dmi/id/modalias
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest . --build-config ${{ matrix.build_type }} --output-on-failure

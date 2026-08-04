@@ -24,12 +24,13 @@ build/*
 !build/.gitkeep 
 install/*
 
-#eclipse files
+#editor files
 .cproject
 .settings
 .project
 *.out
 /Default/
+.vscode/
 
 projects/*
 !projects/.gitkeep
@@ -40,3 +41,4 @@ projects/*
 /.venv/
 /Pipfile
 /.pydevproject
+

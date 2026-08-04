@@ -15,8 +15,6 @@ Protect the software you develop from unauthorized copies, limit the usage in ti
 machines, or prevent the usage in  virtualized environments. It is an open source license manager that helps to keep your 
 software closed :smirk: . Among other features if it runs on a "real hardware" it can generate a signature of that hardware and report if the signature doesn't match.
 
-* Note: until support for 2048 and 4096 bit keys [issue 186](https://github.com/open-license-manager/licensecc/issues/186) is implemented remember to use ```lccgen initialize project -k 1024 ...``` to generate your keys *
-
 A comprehensive [list of features](http://open-license-manager.github.io/licensecc/analysis/features.html), and their status is available in the project site. 
 
 If you're experiencing problems, or you just need informations you can't find in the [documentation](http://open-license-manager.github.io/licensecc)  please contact us on [github discussions](https://github.com/open-license-manager/licensecc/discussions), we'll be happy to help. 

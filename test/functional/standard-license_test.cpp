@@ -71,6 +71,8 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 	BOOST_CHECK_EQUAL(license.linked_to_pc, false);
 }*/
 
+// old boost versions don't support this feature
+#if (BOOST_VERSION > 106500)
 BOOST_AUTO_TEST_CASE(multiple_features) {
 	vector<string> extraArgs;
 	extraArgs.push_back("-f");
@@ -94,6 +96,7 @@ BOOST_AUTO_TEST_CASE(multiple_features) {
 	result = acquire_license(&callInfo, &location, &license);
 	BOOST_CHECK_EQUAL(result, LCC_EVENT_TYPE::PRODUCT_NOT_LICENSED);
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(hw_identifier) {
 	const vector<string> extraArgs = {"-s", "Jaaa-aaaa-MG9F-ZhB1"};

@@ -67,6 +67,12 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
            /usr/bin/cmake --build ${{ steps.strings.outputs.build-output-dir }} -j $(nproc) --target install --config ${{ matrix.build_type }}
+    - name: Inspect
+      run: |
+        ls -la /proc; 
+        ls -la /proc/hypervisor; ls -la /proc/device-tree;
+        cat /proc/cmdline;
+        cat /proc/cpuinfo; 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest . --build-config ${{ matrix.build_type }} --output-on-failure

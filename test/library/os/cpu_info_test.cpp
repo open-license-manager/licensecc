@@ -1,10 +1,27 @@
-/*
- * cpu_info_test.cpp
- *
- *  Created on: Dec 19, 2019
- *      Author: devel
- */
+#define BOOST_TEST_MODULE cpu_info_test
+#include <string>
+#include <iostream>
+#include <unordered_map>
+#include <boost/test/unit_test.hpp>
+#include <cstdlib>
+#include <iostream>
 
-#include "cpu_info.hpp"
+#include "../../../src/library/os/cpu_info.hpp"
 
-namespace license {} /* namespace license */
+namespace license {
+namespace test {
+using namespace std;
+
+BOOST_AUTO_TEST_CASE(cpu_info) {
+	os::CpuInfo cpuInfo;
+	const char* env = getenv("VIRTUAL_ENV");
+	if (env != nullptr && string(env) == "VM") {
+		BOOST_CHECK_MESSAGE(cpuInfo.is_hypervisor_set(), "Hypervisor bit set when running in a VM");
+	}
+	BOOST_CHECK_MESSAGE(!cpuInfo.brand().empty(), "some cpu brand was returned");
+	cout << string("Vendor: ") + cpuInfo.vendor() + ",brand:" + cpuInfo.brand() << endl;
+	BOOST_TEST_MESSAGE(string("Vendor: ") + cpuInfo.vendor() + ",brand:" + cpuInfo.brand());
+}
+
+}  // namespace test
+}  // namespace license

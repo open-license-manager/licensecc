@@ -1,5 +1,5 @@
 /*
- * os-dependent.hpp
+ * Toghether with execution_environment.hpp they are the interface of the os package.
  *
  *  Created on: Mar 29, 2014
  *
@@ -12,7 +12,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
-// definition of size_t
 #include <stdlib.h>
 #include <vector>
 #ifdef __unix__

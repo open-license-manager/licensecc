@@ -9,7 +9,7 @@ namespace os {
 
 DmiInfo::DmiInfo() {
 	try {
-		m_bios_vendor = toupper_copy(trim_copy(get_file_contents("/sys/class/dmi/id/sys_vendor", 256)));
+		m_bios_vendor = toupper_copy(trim_copy(get_file_contents("/sys/class/dmi/id/bios_vendor", 256)));
 	} catch (const std::exception& e) {
 		m_bios_vendor = "";
 		LOG_DEBUG("Can not read sys_vendor %s", e.what());

@@ -1,0 +1,75 @@
+name: Windows arm
+on:
+   push:
+     branches: [ "master", "develop" ]
+   pull_request:
+     branches: [ "develop" ]
+
+permissions:
+   contents: read
+   actions: read
+   packages: read
+
+jobs:
+   windows-arm:
+      name: '${{ matrix.os }}, build: ${{ matrix.build_type }} STATIC ${{ matrix.static_runtime }} ${{ matrix.target_triple }}'
+      runs-on: ${{ matrix.os }}
+      strategy:
+        fail-fast: false
+        matrix:
+          build_type: ["Release"]
+          static_runtime: [TRUE]
+          os: ["windows-11-arm"]
+          target_triple: ["arm64-windows-static-release"]
+          #check the MT / MD logic
+          include:
+          -  os: "windows-11-arm"
+             build_type: "Debug"
+             static_runtime: FALSE
+             target_triple: "arm64-windows-static-md"
+      steps:
+      -  uses: actions/checkout@v6
+      -  name: Set reusable strings
+         #Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+         id: strings
+         shell: bash
+         run: |
+            echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
+      #Setup vcpkg and leverage automatic GitHub Actions Binary Cache
+      -  uses: johnwason/vcpkg-action@v8
+         with:
+          pkgs: boost-program-options boost-test boost-filesystem boost-date-time
+          #manifest-dir: ${{ github.workspace }} # Set to directory containing vcpkg.json
+          triplet: ${{ matrix.target_triple }}
+          token: ${{ github.token }}
+      -  name: boost libs
+         continue-on-error: true
+         run: |
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}/lib
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}/Debug/bin
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}/share/boost
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}/bin
+           dir ${{ github.workspace }}/vcpkg/installed/${{ matrix.target_triple }}/lib/manual-link
+      -  name: Configure
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: >
+            cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  
+            -DSTATIC_RUNTIME:BOOL=${{ matrix.static_runtime }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+            -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} 
+            -DUSE_OPENSSL=FALSE -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" 
+            -DVCPKG_TARGET_TRIPLET=${{ matrix.target_triple }}
+#-DCMAKE_GENERATOR=Ninja
+      -  name: Compile
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: >
+            cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
+      -  name: Test
+         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+         run: |
+            ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
+         env:
+            CTEST_OUTPUT_ON_FAILURE: 1
+            BOOST_TEST_LOG_LEVEL: message
+            VIRTUAL_ENV: VM
+            CLOUD_PROVIDER: AZURE

@@ -40,17 +40,20 @@ jobs:
           libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev libboost-date-time-dev
       # Install extra deps for ubuntu 26-04 (and add valgrind and coverage tests)
     - name: Extra Dependecies Ubuntu 26.04
-      if: ${{ matrix.os == 'ubuntu-26.04' }}
+      if: ${{ (matrix.os == 'ubuntu-26.04' || matrix.os == 'ubuntu-26.04-arm') }}
       run: >
         sudo apt-get install -y libjitterentropy3-dev valgrind lcov gcovr
-    #- name: Install cmake 4
-    #  run: |
-    #       test -f /usr/share/doc/kitware-archive-keyring/copyright || wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
-    #          gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-    #       source /etc/os-release && echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ ${UBUNTU_CODENAME} main" | \
-    #          sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null 
-    #       sudo apt-get update
-    #       sudo apt-get install -y cmake cmake-data
+    - name: Inspect
+      run: |
+        ls -la /proc; 
+        cat /proc/cmdline;
+        cat /proc/cpuinfo; 
+        cat /proc/devices;
+        ls -la /sys
+        ls -la /sys/firmware
+        ls -la /sys/hypervisor
+        cat /sys/class/dmi/id/bios_vendor
+        cat /sys/class/dmi/id/modalias
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -68,17 +71,6 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
            /usr/bin/cmake --build ${{ steps.strings.outputs.build-output-dir }} -j $(nproc) --target install --config ${{ matrix.build_type }}
-    - name: Inspect
-      run: |
-        ls -la /proc; 
-        cat /proc/cmdline;
-        cat /proc/cpuinfo; 
-        cat /proc/devices;
-        ls -la /sys
-        ls -la /sys/firmware
-        ls -la /sys/hypervisor
-        cat /sys/class/dmi/id/bios_vendor
-        cat /sys/class/dmi/id/modalias
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest . --build-config ${{ matrix.build_type }} --output-on-failure
@@ -86,4 +78,5 @@ jobs:
          CTEST_OUTPUT_ON_FAILURE: 1
          BOOST_TEST_LOG_LEVEL: message
          VIRTUAL_ENV: VM
+         CLOUD_PROVIDER: AZURE
 

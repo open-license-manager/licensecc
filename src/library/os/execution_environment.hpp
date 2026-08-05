@@ -10,7 +10,7 @@
 
 #include <string>
 #include <licensecc/datatypes.h>
-#include "dmi_info.hpp"
+#include "board_info.hpp"
 #include "cpu_info.hpp"
 
 namespace license {
@@ -27,12 +27,14 @@ enum CONTAINER_TYPE { NONE, DOCKER, LXC };
 class ExecutionEnvironment {
 private:
 	const CpuInfo m_cpu_info;
-	const DmiInfo m_dmi_info;
+	const BoardInfo m_board_info;
 	const CONTAINER_TYPE m_container_type;
+	LCC_API_CLOUD_PROVIDER guess_cloud_provider_by_os_quirks() const;
+	LCC_API_VIRTUALIZATION_DETAIL guess_virtualization_by_os_quirks() const;
 
 public:
 	ExecutionEnvironment();
-	~ExecutionEnvironment(){}
+	~ExecutionEnvironment() {}
 	LCC_API_VIRTUALIZATION_SUMMARY virtualization() const;
 	bool is_cloud() const;
 	bool is_docker() const { return m_container_type == CONTAINER_TYPE::DOCKER; }

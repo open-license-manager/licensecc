@@ -8,12 +8,12 @@ target_link_libraries( test_network
 ADD_TEST(NAME test_network COMMAND test_network)
 
 IF(NOT DEFINED MINGW)
-	add_executable( test_dmi_info dmi_info_test.cpp "dmi_info_test.cpp")
-	target_link_libraries( test_dmi_info
+	add_executable( test_board_info board_info_test.cpp "board_info_test.cpp")
+	target_link_libraries( test_board_info
  		licensecc_static
 		${Boost_LIBRARIES}
 	)
-	ADD_TEST(NAME test_dmi_info COMMAND test_dmi_info)
+	ADD_TEST(NAME test_board_info COMMAND test_board_info)
 
 ENDIF(NOT DEFINED MINGW)
 

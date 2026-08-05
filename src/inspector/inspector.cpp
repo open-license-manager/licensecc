@@ -8,9 +8,9 @@
 #include <iomanip>
 #include "../library/base/string_utils.h"
 #include "../library/ini/SimpleIni.h"
-#include "../library/os/dmi_info.hpp"
+#include "../library/os/board_info.hpp"
 #include "../library/os/cpu_info.hpp"
-#include "../library/os/dmi_info.hpp"
+#include "../library/os/board_info.hpp"
 #include "../library/os/network.hpp"
 
 using namespace std;
@@ -65,7 +65,7 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 	ini.LoadFile(fname.c_str());
 	CSimpleIniA::TNamesDepend sections;
 	ini.GetAllSections(sections);
-	CallerInformations callerInformation {"\0"};
+	CallerInformations callerInformation{"\0"};
 	for (CSimpleIniA::Entry section : sections) {
 		const string section_name(section.pItem, 15);
 		if (section_name != LCC_PROJECT_NAME) {
@@ -122,14 +122,14 @@ int main(int argc, char* argv[]) {
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;
 	cout << "Cpu Brand        :" << cpu.brand() << endl;
-	cout << "Cpu hypervisor   :" << cpu.is_hypervisor_set() << endl;
+	cout << "Cpu hypervisor   :" << cpu.is_virtual() << endl;
 	cout << "Cpu model        :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
-	license::os::DmiInfo dmi_info;
-	cout << "Bios vendor      :" << dmi_info.bios_vendor() << endl;
-	cout << "Bios description :" << dmi_info.bios_description() << endl;
-	cout << "System vendor    :" << dmi_info.sys_vendor() << endl;
-	cout << "Cpu Vendor (dmi) :" << dmi_info.cpu_manufacturer() << endl;
-	cout << "Cpu Cores  (dmi) :" << dmi_info.cpu_cores() << endl;
+	license::os::BoardInfo board_info;
+	cout << "Bios vendor      :" << board_info.bios_vendor() << endl;
+	cout << "Bios description :" << board_info.bios_description() << endl;
+	cout << "System vendor    :" << board_info.sys_vendor() << endl;
+	cout << "Cpu Vendor (dmi) :" << board_info.cpu_manufacturer() << endl;
+	cout << "Cpu Cores  (dmi) :" << board_info.cpu_cores() << endl;
 	cout << "==================" << endl;
 	if (argc == 2) {
 		const string fname(argv[1]);

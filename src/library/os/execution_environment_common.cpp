@@ -19,18 +19,17 @@ namespace os {
 using namespace std;
 
 const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> virtual_cpu_names{
-	{"bhyve bhyve ", V_OTHER}, {"KVM", KVM},	   {"MICROSOFT", HV},		{" lrpepyh vr", HV},
+	{"bhyve bhyve ", V_OTHER},	 {"KVM", KVM},		 {"MICROSOFT", HV},		  {" lrpepyh vr", HV},
 	{"prl hyperv  ", PARALLELS}, {"VMWARE", VMWARE}, {"XenVMMXenVMM", V_XEN}, {"ACRNACRNACRN", V_OTHER},
 	{"VBOX", VIRTUALBOX}};
 
-const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{{"VMWARE", VMWARE},
-																	  {"MICROSOFT", HV},
-																	  {"PARALLELS", PARALLELS},
-																	  {"VITRUAL MACHINE", V_OTHER},
-																	  {"INNOTEK GMBH", VIRTUALBOX},
-																	  {"POWERVM", V_OTHER},
-																	  {"BOCHS", V_OTHER},
-																	  {"KVM", KVM}};
+const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL> vm_vendors{
+	{"VMWARE", VMWARE},			  {"MICROSOFT", HV},	{"PARALLELS", PARALLELS}, {"VITRUAL MACHINE", V_OTHER},
+	{"INNOTEK GMBH", VIRTUALBOX}, {"POWERVM", V_OTHER}, {"BOCHS", V_OTHER},		  {"KVM", KVM}};
+
+const string pc_vendors[] = {"HEWLETT-PACKARD", "COMPAQ",  "DELL",	"ASUS",		"LENOVO", "ACER",
+							 "TOSHIBA",			"RAZER",   "APPLE", "HP",		"LG",	  "ASROCK",
+							 "GIGABYTE",		"BIOSTAR", "NZXT",	"FRAMEWORK"};
 
 static LCC_API_VIRTUALIZATION_DETAIL find_in_map(const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL>& map,
 												 const string& data) {
@@ -57,9 +56,9 @@ LCC_API_VIRTUALIZATION_SUMMARY ExecutionEnvironment::virtualization() const {
 
 LCC_API_VIRTUALIZATION_DETAIL ExecutionEnvironment::virtualization_detail() const {
 	LCC_API_VIRTUALIZATION_DETAIL result = BARE_TO_METAL;
-	const string bios_description = m_dmi_info.bios_description();
-	const string bios_vendor = m_dmi_info.bios_vendor();
-	const string sys_vendor = m_dmi_info.sys_vendor();
+	const string bios_description = m_board_info.bios_description();
+	const string bios_vendor = m_board_info.bios_vendor();
+	const string sys_vendor = m_board_info.sys_vendor();
 	if ((result = find_in_map(vm_vendors, bios_description)) == BARE_TO_METAL) {
 		if ((result = find_in_map(vm_vendors, bios_vendor)) == BARE_TO_METAL) {
 			if ((result = find_in_map(vm_vendors, sys_vendor)) == BARE_TO_METAL) {
@@ -70,7 +69,11 @@ LCC_API_VIRTUALIZATION_DETAIL ExecutionEnvironment::virtualization_detail() cons
 		}
 	}
 	if (result == BARE_TO_METAL) {
-		if (m_cpu_info.is_hypervisor_set() || is_cloud()) {
+		result = guess_virtualization_by_os_quirks();
+	}
+
+	if (result == BARE_TO_METAL) {
+		if (m_cpu_info.is_virtual() || is_cloud()) {
 			result = V_OTHER;
 		}
 	}
@@ -82,12 +85,11 @@ bool ExecutionEnvironment::is_cloud() const {
 	return prov != ON_PREMISE && prov != PROV_UNKNOWN;
 }
 
-// TODO test and azure
 LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 	LCC_API_CLOUD_PROVIDER result = PROV_UNKNOWN;
-	const string bios_description = m_dmi_info.bios_description();
-	const string bios_vendor = m_dmi_info.bios_vendor();
-	const string sys_vendor = m_dmi_info.sys_vendor();
+	const string bios_description = m_board_info.bios_description();
+	const string bios_vendor = m_board_info.bios_vendor();
+	const string sys_vendor = m_board_info.sys_vendor();
 	if (bios_description.size() > 0 || bios_vendor.size() > 0 || sys_vendor.size() > 0) {
 		if (bios_vendor.find("SEABIOS") != string::npos || bios_description.find("ALIBABA") != string::npos ||
 			sys_vendor.find("ALIBABA") != string::npos) {
@@ -98,10 +100,19 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 		} else if (bios_vendor.find("AWS") != string::npos || bios_description.find("AMAZON") != string::npos ||
 				   sys_vendor.find("AWS") != string::npos) {
 			result = AWS;
-		} else if (bios_description.find("HP-COMPAQ") != string::npos ||
-				   bios_description.find("ASUS") != string::npos || bios_description.find("DELL") != string::npos) {
-			result = ON_PREMISE;
+		} else if (bios_vendor.find("MICROSOFT CORPORATION") != string::npos ||
+				   bios_description.find("MICROSOFT CORPORATION")) {
+			result = AZURE_CLOUD;
+		} else {
+			for (const auto& vendor : pc_vendors) {
+				if (sys_vendor.find(vendor) != string::npos) {
+					result = ON_PREMISE;
+				}
+			}
 		}
+	}
+	if (result == PROV_UNKNOWN) {
+		result = guess_cloud_provider_by_os_quirks();
 	}
 	return result;
 }

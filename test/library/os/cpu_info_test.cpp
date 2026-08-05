@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
-#include <iostream>
 
 #include "../../../src/library/os/cpu_info.hpp"
 
@@ -16,10 +15,13 @@ BOOST_AUTO_TEST_CASE(cpu_info) {
 	os::CpuInfo cpuInfo;
 	const char* env = getenv("VIRTUAL_ENV");
 	if (env != nullptr && string(env) == "VM") {
-		BOOST_CHECK_MESSAGE(cpuInfo.is_hypervisor_set(), "Hypervisor bit set when running in a VM");
+		if (cpuInfo.virt_info_available()) {
+			BOOST_CHECK_MESSAGE(cpuInfo.is_virtual(), "Hypervisor bit set when running in a VM");
+		} else {
+			BOOST_CHECK_MESSAGE(true, "cpu virt bit not available (arm)");
+		}
 	}
 	BOOST_CHECK_MESSAGE(!cpuInfo.brand().empty(), "some cpu brand was returned");
-	cout << string("Vendor: ") + cpuInfo.vendor() + ",brand:" + cpuInfo.brand() << endl;
 	BOOST_TEST_MESSAGE(string("Vendor: ") + cpuInfo.vendor() + ",brand:" + cpuInfo.brand());
 }
 

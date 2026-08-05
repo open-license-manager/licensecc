@@ -5,14 +5,14 @@ IF(UNIX OR OPENSSL_FOUND)
             execution_environment_common.cpp
 		    linux/execution_environment.cpp
 		    linux/cpu_info.cpp
-		    linux/dmi_info.cpp
+		    linux/board_info.cpp
 		    linux/network.cpp
 		    linux/os_linux.cpp) 
 	ELSE(UNIX)
 	    #windows and openssl
   	    add_library(os OBJECT 
   	    windows/cpu_info.cpp
-  	    windows/dmi_info.cpp  
+  	    windows/board_info.cpp  
   	    openssl/signature_verifier.cpp 
         execution_environment_common.cpp 
         windows/execution_environment.cpp
@@ -24,7 +24,7 @@ ELSE(UNIX OR OPENSSL_FOUND)
 #windows no openssl
     add_library(os OBJECT
         windows/cpu_info.cpp
-        windows/dmi_info.cpp 
+        windows/board_info.cpp 
         windows/signature_verifier.cpp 
         execution_environment_common.cpp 
         windows/execution_environment.cpp

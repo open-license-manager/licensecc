@@ -63,5 +63,9 @@ CONTAINER_TYPE wine_container() {
 	return result;
 }
 
+LCC_API_CLOUD_PROVIDER ExecutionEnvironment::guess_cloud_provider_by_os_quirks() const { return PROV_UNKNOWN; }
+
+LCC_API_VIRTUALIZATION_DETAIL ExecutionEnvironment::guess_virtualization_by_os_quirks() const { return BARE_TO_METAL; }
+
 }  // namespace os
 }  // namespace license

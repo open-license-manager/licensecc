@@ -2,12 +2,12 @@
 #include "../../base/file_utils.hpp"
 #include "../../base/string_utils.h"
 #include "../../base/logger.h"
-#include "../dmi_info.hpp"
+#include "../board_info.hpp"
 
 namespace license {
 namespace os {
 
-DmiInfo::DmiInfo() {
+BoardInfo::BoardInfo() {
 	try {
 		m_bios_vendor = toupper_copy(trim_copy(get_file_contents("/sys/class/dmi/id/bios_vendor", 256)));
 	} catch (const std::exception& e) {

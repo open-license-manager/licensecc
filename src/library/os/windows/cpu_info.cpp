@@ -5,7 +5,6 @@
  *      Author: devel
  */
 
-
 #include <intrin.h>
 #include <string>
 #include <unordered_set>
@@ -22,9 +21,9 @@ static string get_cpu_vendor() {
 
 	char vendor[13];
 	memset(vendor, 0, sizeof(vendor));
-	*reinterpret_cast<int *>(vendor) = cpui[1];
-	*reinterpret_cast<int *>(vendor + 4) = cpui[3];
-	*reinterpret_cast<int *>(vendor + 8) = cpui[2];
+	*reinterpret_cast<int*>(vendor) = cpui[1];
+	*reinterpret_cast<int*>(vendor + 4) = cpui[3];
+	*reinterpret_cast<int*>(vendor + 8) = cpui[2];
 	return string(vendor, 12);
 }
 
@@ -57,12 +56,18 @@ CpuInfo::~CpuInfo() {}
  * Detect Virtual machine using hypervisor bit.
  * @return true if the cpu hypervisor bit is set to 1
  */
-bool CpuInfo::is_hypervisor_set() const {
+bool CpuInfo::is_virtual() const {
 	int cpui[4] = {0};
 	__cpuid(cpui, 0x1);
 
 	return ((cpui[2] >> 31) & 1);
 }
+
+/**
+ * Check if virtualization information is available.
+ * @return true for Windows and Linux Intel processors, false for ARM
+ */
+bool CpuInfo::virt_info_available() const { return true; }
 
 uint32_t CpuInfo::model() const {
 	int cpui[4] = {0};
@@ -72,7 +77,6 @@ uint32_t CpuInfo::model() const {
 	// bx bits 0-7 brand index
 	return (cpui[0] & 0x3FFF) | (cpui[0] & 0x3FF8000) >> 2 | (cpui[1] & 0xff) << 24;
 }
-
 
 }  // namespace os
 } /* namespace license */

@@ -2,8 +2,14 @@ name: Windows build
 on:
   push:
     branches: [ "master", "develop" ]
-  #pull_request:
-  #  branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+    
+permissions:
+   contents: read
+   actions: read
+   packages: read
+
 jobs:
    build-windows:
       name: '${{ matrix.os }}, build: ${{ matrix.build_type }} static ${{ matrix.static }} ssl: ${{ matrix.openssl_version }} boost: ${{ matrix.boost_version }}'
@@ -79,14 +85,12 @@ jobs:
             ctest -C ${{ matrix.build_type }} --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
          env:
             CTEST_OUTPUT_ON_FAILURE: 1
+            BOOST_TEST_LOG_LEVEL: message
             VIRTUAL_ENV: VM
+            CLOUD_PROVIDER: AZURE
       -  name: Inspector
          run: |
            dir ${{ github.workspace }}\install\bin\test
            ${{ github.workspace }}\install\bin\test\lccinspector.exe
-#      - name: On Failure print logs
-#        if: ${{ failure() }}
-#        run: |
-#           type $env:temp/open-license.log
 
  

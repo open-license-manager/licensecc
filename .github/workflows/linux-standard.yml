@@ -16,14 +16,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #os: [ubuntu-24.04-arm, ubuntu-24.04, ubuntu-22.04, ubuntu-26.04]
-        os: [ubuntu-26.04]
+        os: [ubuntu-24.04-arm, ubuntu-24.04, ubuntu-22.04, ubuntu-26.04]
+        #os: [ubuntu-26.04]
         build_type: [Release]
         cpp_compiler: [g++]
         static: ["false"] #Linux libraries (Boost, OpenSSL) are linked to the dynamic version of libstdc++
         include:
         - os: ubuntu-26.04-arm
-          build_type: Release
+          build_type: Debug
           cpp_compiler: clang++
           static: "false"
     steps:
@@ -43,17 +43,17 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-26.04' || matrix.os == 'ubuntu-26.04-arm') }}
       run: >
         sudo apt-get install -y libjitterentropy3-dev valgrind lcov gcovr
-    - name: Inspect
-      run: |
-        ls -la /proc; 
-        cat /proc/cmdline;
-        cat /proc/cpuinfo; 
-        cat /proc/devices;
-        ls -la /sys
-        ls -la /sys/firmware
-        ls -la /sys/hypervisor
-        cat /sys/class/dmi/id/bios_vendor
-        cat /sys/class/dmi/id/modalias
+    #- name: Inspect
+    #  run: |
+    #    ls -la /proc; 
+    #    cat /proc/cmdline;
+    #    cat /proc/cpuinfo; 
+    #    cat /proc/devices;
+    #   ls -la /sys
+    #    ls -la /sys/firmware
+    #    ls -la /sys/hypervisor
+    #    cat /sys/class/dmi/id/bios_vendor
+    #    cat /sys/class/dmi/id/modalias
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type

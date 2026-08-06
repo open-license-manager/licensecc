@@ -26,7 +26,6 @@
 #include <cstdint>
 #include <iostream>
 #include <iomanip>
-#include <span>
 
 namespace license {
 namespace os {

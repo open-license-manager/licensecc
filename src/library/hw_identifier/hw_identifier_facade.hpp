@@ -7,10 +7,8 @@
 
 #ifndef SRC_LIBRARY_PC_IDENTIFIER_HW_IDENTIFIER_FACADE_HPP_
 #define SRC_LIBRARY_PC_IDENTIFIER_HW_IDENTIFIER_FACADE_HPP_
-#include "hw_identifier_facade.hpp"
 
 #include <string>
-#include <unordered_map>
 #include <licensecc/datatypes.h>
 #include "identification_strategy.hpp"
 
@@ -19,8 +17,9 @@ namespace hw_identifier {
 
 class HwIdentifierFacade {
 private:
-	HwIdentifierFacade(){}
-	virtual ~HwIdentifierFacade(){}
+	HwIdentifierFacade() {}
+	virtual ~HwIdentifierFacade() {}
+
 public:
 	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code);
 	/**

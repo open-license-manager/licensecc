@@ -31,10 +31,6 @@ const string pc_vendors[] = {"HEWLETT-PACKARD", "COMPAQ",  "DELL",	"ASUS",		"LEN
 							 "TOSHIBA",			"RAZER",   "APPLE", "HP",		"LG",	  "ASROCK",
 							 "GIGABYTE",		"BIOSTAR", "NZXT",	"FRAMEWORK"};
 
-const string pc_vendors[] = {"HEWLETT-PACKARD", "COMPAQ",  "DELL",	"ASUS",		"LENOVO", "ACER",
-							 "TOSHIBA",			"RAZER",   "APPLE", "HP",		"LG",	  "ASROCK",
-							 "GIGABYTE",		"BIOSTAR", "NZXT",	"FRAMEWORK"};
-
 static LCC_API_VIRTUALIZATION_DETAIL find_in_map(const unordered_map<string, LCC_API_VIRTUALIZATION_DETAIL>& map,
 												 const string& data) {
 	for (auto it : map) {

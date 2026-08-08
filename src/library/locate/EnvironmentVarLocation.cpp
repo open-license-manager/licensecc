@@ -6,7 +6,6 @@
  */
 
 #include <licensecc_properties.h>
-#include <memory>
 
 #include "../base/string_utils.h"
 #include "EnvironmentVarLocation.hpp"

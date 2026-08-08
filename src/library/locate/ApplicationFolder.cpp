@@ -7,8 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <iostream>
-#include <memory>
 
 #include <licensecc/datatypes.h>
 #include <licensecc_properties.h>

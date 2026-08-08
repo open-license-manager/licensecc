@@ -5,12 +5,9 @@
  *      Author: Gabriele Contini
  */
 
-#include <stdlib.h>
-#include <cstring>
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include <memory>
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"

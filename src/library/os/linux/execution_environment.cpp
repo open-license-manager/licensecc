@@ -94,19 +94,18 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::guess_cloud_provider_by_os_quirks()
 		getline(cmdline, cmd);
 		if (cmd.find("azure") != string::npos) {
 			result = AZURE_CLOUD;
-		} else if (cmd.find("gke") != string::npos || cmd.find("gcp")) {
+		} else if (cmd.find("gke") != string::npos || cmd.find("gcp") != string::npos) {
 			result = GOOGLE_CLOUD;
 		} else if (cmd.find("aws") != string::npos) {
 			result = AWS;
 		}
 	} else {
-		ifstream azure("/sys/firmware/acpi/tables/WAET"); //azure
+		ifstream azure("/sys/firmware/acpi/tables/WAET");  // azure
 		if (cmdline.is_open()) {
 			result = AZURE_CLOUD;
 		}
 	}
 
-	
 	return result;
 }
 

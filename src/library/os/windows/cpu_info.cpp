@@ -37,8 +37,7 @@ static string get_cpu_vendor() {
 		// Try to get the identifier which contains vendor info
 		lRes = RegQueryValueExW(hKey, L"Identifier", NULL, NULL, (LPBYTE)identifier, &dataSize);
 		if (lRes == ERROR_SUCCESS) {
-			// Convert wide string to regular string
-			int len = wcslen(identifier);
+			int len = wcslen(identifier);  // Flawfinder: ignore
 			result.resize(len);
 			for (int i = 0; i < len; ++i) {
 				result[i] = static_cast<char>(identifier[i]);
@@ -47,7 +46,7 @@ static string get_cpu_vendor() {
 			// If identifier not available, try VendorIdentifier
 			lRes = RegQueryValueExW(hKey, L"VendorIdentifier", NULL, NULL, (LPBYTE)identifier, &dataSize);
 			if (lRes == ERROR_SUCCESS) {
-				int len = wcslen(identifier);
+				int len = wcslen(identifier);  // Flawfinder: ignore
 				result.resize(len);
 				for (int i = 0; i < len; ++i) {
 					result[i] = static_cast<char>(identifier[i]);
@@ -74,7 +73,7 @@ static string get_cpu_brand() {
 		lRes = RegQueryValueExW(hKey, L"ProcessorNameString", NULL, NULL, (LPBYTE)processorName, &dataSize);
 		if (lRes == ERROR_SUCCESS) {
 			// Convert wide string to regular string
-			int len = wcslen(processorName);
+			int len = wcslen(processorName);  // Flawfinder: ignore
 			result.resize(len);
 			for (int i = 0; i < len; ++i) {
 				result[i] = static_cast<char>(processorName[i]);

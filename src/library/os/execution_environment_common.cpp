@@ -4,11 +4,13 @@
  *      Author: GC
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 #include <unordered_map>
 #include <array>
 #include <licensecc/datatypes.h>
+
+#include <iostream>
 
 #include "../base/base.h"
 #include "cpu_info.hpp"
@@ -101,7 +103,7 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 				   sys_vendor.find("AWS") != string::npos) {
 			result = AWS;
 		} else if (bios_vendor.find("MICROSOFT CORPORATION") != string::npos ||
-				   bios_description.find("MICROSOFTCORPORATION")) {
+				   bios_description.find("MICROSOFTCORPORATION") != string::npos) {
 			result = AZURE_CLOUD;
 		} else {
 			for (const auto& vendor : pc_vendors) {
@@ -112,7 +114,8 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 		}
 	}
 	if (result == PROV_UNKNOWN) {
-		result = guess_cloud_provider_by_os_quirks();
+		LCC_API_CLOUD_PROVIDER tmp_result = guess_cloud_provider_by_os_quirks();
+		result = (tmp_result == PROV_UNKNOWN) ? ON_PREMISE : tmp_result;
 	}
 	return result;
 }

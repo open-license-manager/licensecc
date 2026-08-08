@@ -37,7 +37,7 @@ const unordered_map<int, string> descByCloudProvider = {{PROV_UNKNOWN, "Provider
 														{GOOGLE_CLOUD, "Google Cloud"},
 														{AZURE_CLOUD, "Microsoft Azure"},
 														{AWS, "Amazon AWS"},
-														{ALI_CLOUD, "Alibaba Cloud (Chinese cloud provider)"}};
+														{ALI_CLOUD, "Alibaba Cloud"}};
 
 const unordered_map<int, string> stringByEventType = {
 	{LICENSE_OK, "OK "},

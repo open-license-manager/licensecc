@@ -25,14 +25,14 @@ BoardInfo::BoardInfo() {
 		LOG_DEBUG("Can not read bios_description %s", e.what());
 	}
 	try {
-		m_sys_vendor = get_file_contents("/sys/class/dmi/id/sys_vendor", 256);
+		m_sys_vendor = toupper_copy(trim_copy(get_file_contents("/sys/class/dmi/id/sys_vendor", 256)));
 		char last_char = m_sys_vendor[m_sys_vendor.length() - 2];
 		if (last_char == '\r' || last_char == '\n') {
 			m_sys_vendor = m_sys_vendor.erase(m_sys_vendor.length() - 1);
 		}
 	} catch (const std::exception& e) {
 		m_sys_vendor = "";
-		LOG_DEBUG("Can not read bios_description %s", e.what());
+		LOG_DEBUG("Can not read sys_vendor %s", e.what());
 	}
 }
 

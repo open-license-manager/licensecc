@@ -57,7 +57,9 @@
 /**
 This definition allows to specify a custom expression to verify the magic number passed in by the api.
 */
-#define LCC_VERIFY_MAGIC (lic_info.m_magic == @LCC_PROJECT_MAGIC_NUM @)
+// clang-format off
+#define LCC_VERIFY_MAGIC (lic_info.m_magic == @LCC_PROJECT_MAGIC_NUM@)
+// clang-format on
 
 /**
  *

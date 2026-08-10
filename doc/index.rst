@@ -162,12 +162,16 @@ We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow 
    development/*
 
 .. toctree::
-   :glob:
    :maxdepth: 2
    :hidden:
    :caption: Integrate and use:
-  
-   usage/*
+   
+   usage/quickstart
+   usage/concepts
+   usage/Hardware-identifiers
+   usage/integration
+   usage/issue-licenses
+   usage/License-retrieval
    
 
 .. toctree::

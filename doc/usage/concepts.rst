@@ -74,10 +74,3 @@ To verify a feature pass the feature name in the ``CallerInformations`` structur
 	
 For a working example see `program_features <https://github.com/open-license-manager/examples/program_features>`_ in 
 examples project.
-
-Versions
-================
-
-.. TODO::
-   
-   Versions are not yet implemented.

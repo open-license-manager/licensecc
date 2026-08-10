@@ -30,7 +30,7 @@ IF(POLICY CMP0144)
 ENDIF(POLICY CMP0144)
 cmake_policy(SET CMP0048 NEW)
 
-project (licensecc VERSION 2.1.0 LANGUAGES CXX DESCRIPTION "Copy protection and licensing library")
+project (licensecc VERSION 2.1.0 LANGUAGES CXX DESCRIPTION "C++ copy protection and licensing library")
 SET(licensecc_SHORT_LICENSE "BSD Software License")
 
 set(CMAKE_CXX_STANDARD 11)
@@ -214,7 +214,7 @@ IF(Doxygen_FOUND AND Sphinx_FOUND)
 	
 	#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/doc/sphinx/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 	set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/doc)
-	set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
+	set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/doc/v${PROJECT_VERSION})
  
 	add_custom_target(documentation
                   COMMAND

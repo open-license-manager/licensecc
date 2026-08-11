@@ -12,15 +12,22 @@
 
 namespace license {
 
+struct LicenseInfoEx {
+	LicenseInfo license_info;
+	FUNCTION_RETURN return_code;
+};
+
 class LicenseVerifier {
 private:
 	EventRegistry& m_event_registry;
 
-public:
-	LicenseVerifier(EventRegistry& er);
 	FUNCTION_RETURN verify_signature(const FullLicenseInfo& licInfo);
 	FUNCTION_RETURN verify_limits(const FullLicenseInfo& licInfo);
 	LicenseInfo toLicenseInfo(const FullLicenseInfo& fullLicInfo) const;
+
+public:
+	LicenseVerifier(EventRegistry& er);
+	LicenseInfoEx verify_license(const FullLicenseInfo& licInfo);
 	virtual ~LicenseVerifier();
 };
 

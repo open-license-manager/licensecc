@@ -23,9 +23,9 @@ namespace license {
  */
 class EventRegistry {
 private:
-	friend EventRegistry &operator<<(EventRegistry &, AuditEvent &);
-	friend EventRegistry &operator<<(EventRegistry &, EventRegistry &);
-	friend std::ostream &operator<<(std::ostream &out, const EventRegistry &er);
+	friend EventRegistry& operator<<(EventRegistry&, AuditEvent&);
+	friend EventRegistry& operator<<(EventRegistry&, EventRegistry&);
+	friend std::ostream& operator<<(std::ostream& out, const EventRegistry& er);
 
 	std::vector<AuditEvent> logs;
 	/**
@@ -34,11 +34,12 @@ private:
 	 */
 	std::map<std::string, size_t> mostAdvancedLogIdx_by_LicenseId;
 	int current_validation_step;
+	std::string currentLicenseId;
 
 public:
 	EventRegistry();
 	// operator <<
-	void append(const EventRegistry &eventRegistry);
+	void append(const EventRegistry& eventRegistry);
 	/**
 	 * Turn the event warning for the license with the most advanced status
 	 * into an error.
@@ -51,10 +52,14 @@ public:
 	 * for the license with the most advanced status.
 	 * @return NULL if no failures are found.
 	 */
-	const AuditEvent *getLastFailure() const;
-	void addEvent(LCC_EVENT_TYPE event, const std::string &licenseLocationId);
-	void addEvent(LCC_EVENT_TYPE event, const char *licenseLocationId = nullptr, const char *info = nullptr);
-	void exportLastEvents(AuditEvent *auditEvents, int nlogs);
+	const AuditEvent* getLastFailure() const;
+	//do not use the following method, It's deprecated.
+	void addEvent(LCC_EVENT_TYPE event, const char* licenseLocationId = nullptr, const char* info = nullptr);
+	//use this method instead
+	void addEvent(LCC_EVENT_TYPE event, const std::string& info); 
+	// Setter for currentLicenseId
+	void setCurrentLicenseId(const std::string& licenseLocationId);
+	void exportLastEvents(AuditEvent* auditEvents, int nlogs);
 	std::string to_string() const;
 };
 }  // namespace license

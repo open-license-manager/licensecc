@@ -14,6 +14,7 @@
 
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
+#include "limits/license_verifier.hpp"	// Include for LicenseInfoEx
 
 namespace license {
 
@@ -50,7 +51,7 @@ public:
 	 * @return LCC_EVENT_TYPE indicating success or failure
 	 */
 	LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
-								   LicenseInfo* license_out);
+								   LicenseInfo* license_out) noexcept;
 
 	/**
 	 * @brief Calculate the hardware identifier for the current PC
@@ -65,7 +66,7 @@ public:
 	 * @return true if successful, false otherwise
 	 */
 	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
-					 ExecutionEnvironmentInfo* execution_environment_info);
+					 ExecutionEnvironmentInfo* execution_environment_info) noexcept;
 
 private:
 	/**
@@ -74,10 +75,12 @@ private:
 	 * Selects the best license based on expiration date (choosing the one
 	 * that expires later).
 	 *
-	 * @param licenses Vector of licenses to merge
+	 * @param licenses Vector of extended license information with return codes
 	 * @param license_out Output license information
+	 * @return LCC_EVENT_TYPE indicating success or failure
 	 */
-	void mergeLicenses(const std::vector<LicenseInfo>& licenses, LicenseInfo* license_out);
+	LCC_EVENT_TYPE mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
+								 LicenseInfo* license_out) noexcept;
 };
 
 } /* namespace license */

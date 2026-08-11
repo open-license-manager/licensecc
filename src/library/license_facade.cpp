@@ -36,7 +36,8 @@ LicenseFacade::LicenseFacade() {}
 LicenseFacade::~LicenseFacade() {}
 
 LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerInformation,
-											  const LicenseLocation* licenseLocation, LicenseInfo* license_out) {
+											  const LicenseLocation* licenseLocation,
+											  LicenseInfo* license_out) noexcept {
 	const license::LicenseParser lp = license::LicenseParser(licenseLocation);
 	vector<license::FullLicenseInfo> licenses;
 	string project;
@@ -50,34 +51,16 @@ LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerIn
 	license::EventRegistry er = lp.readLicenses(string(project), licenses);
 	LCC_EVENT_TYPE result;
 	if (licenses.size() > 0) {
-		vector<LicenseInfo> licenses_with_errors;
-		vector<LicenseInfo> licenses_ok;
+		vector<LicenseInfoEx> all_license_results;
 		license::LicenseVerifier verifier(er);
 		for (auto full_lic_info_it = licenses.begin(); full_lic_info_it != licenses.end(); full_lic_info_it++) {
 			if (callerInformation != nullptr) {
 				full_lic_info_it->m_magic = callerInformation->magic;
 			}
-			const FUNCTION_RETURN signatureValid = verifier.verify_signature(*full_lic_info_it);
-			LicenseInfo licInfo = verifier.toLicenseInfo(*full_lic_info_it);
-			if (signatureValid == FUNC_RET_OK) {
-				if (verifier.verify_limits(*full_lic_info_it) == FUNC_RET_OK) {
-					licenses_ok.push_back(licInfo);
-				} else {
-					licenses_with_errors.push_back(licInfo);
-				}
-			} else {
-				licenses_with_errors.push_back(licInfo);
-			}
+			LicenseInfoEx licInfoEx = verifier.verify_license(*full_lic_info_it);
+			all_license_results.push_back(licInfoEx);
 		}
-		if (licenses_ok.size() > 0) {
-			er.turnErrorsIntoWarnings();
-			result = LICENSE_OK;
-			mergeLicenses(licenses_ok, license_out);
-		} else {
-			er.turnWarningsIntoErrors();
-			result = er.getLastFailure()->event_type;
-			mergeLicenses(licenses_with_errors, license_out);
-		}
+		result = mergeLicenses(all_license_results, er, license_out);
 	} else {
 		er.turnWarningsIntoErrors();
 		const AuditEvent* tmp = er.getLastFailure();
@@ -103,7 +86,7 @@ LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerIn
 }
 
 bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
-								ExecutionEnvironmentInfo* execution_environment_info) {
+								ExecutionEnvironmentInfo* execution_environment_info) noexcept {
 	bool result = false;
 	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
@@ -128,20 +111,54 @@ bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method,
 	return result;
 }
 
-void LicenseFacade::mergeLicenses(const vector<LicenseInfo>& licenses, LicenseInfo* license_out) {
+LCC_EVENT_TYPE LicenseFacade::mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
+											LicenseInfo* license_out) noexcept {
+	if (licenses.empty()) {
+		if (license_out != nullptr) {
+			license_out->proprietary_data[0] = '\0';
+			license_out->linked_to_pc = false;
+			license_out->days_left = 0;
+			license_out->has_expiry = true;
+		}
+		er.turnWarningsIntoErrors();
+		const AuditEvent* last_failure = er.getLastFailure();
+		return (last_failure != nullptr) ? last_failure->event_type : LICENSE_FILE_NOT_FOUND;
+	}
+
+	LCC_EVENT_TYPE error_code;
+	std::vector<LicenseInfoEx> licenses_to_process;
+	bool success = false;
+
+	for (const auto& lic_ex : licenses) {
+		if (lic_ex.return_code == FUNC_RET_OK) {
+			// if success process only good licenses
+			licenses_to_process.push_back(lic_ex);
+			success = true;
+		}
+	}
+	if (success) {
+		er.turnErrorsIntoWarnings();
+		error_code = LICENSE_OK;
+	} else {
+		er.turnWarningsIntoErrors();
+		error_code = er.getLastFailure()->event_type;
+		licenses_to_process = licenses;
+	}
+
 	if (license_out != nullptr) {
 		int days_left = INT_MIN;
 		for (auto it = licenses.begin(); it != licenses.end(); it++) {
 			// choose the license that expires later...
-			if (!it->has_expiry) {
-				*license_out = *it;
+			if (!it->license_info.has_expiry) {
+				*license_out = it->license_info;
 				break;
-			} else if (days_left < (int)it->days_left) {
-				*license_out = *it;
-				days_left = it->days_left;
+			} else if (days_left < (int)it->license_info.days_left) {
+				*license_out = it->license_info;
+				days_left = it->license_info.days_left;
 			}
 		}
 	}
+	return error_code;
 }
 
 } /* namespace license */

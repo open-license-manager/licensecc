@@ -94,4 +94,19 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 	return info;
 }
 
+LicenseInfoEx LicenseVerifier::verify_license(const FullLicenseInfo& licInfo) {
+	LicenseInfoEx result;
+
+	// Convert to LicenseInfo first
+	result.license_info = toLicenseInfo(licInfo);
+
+	// Verify signature
+	result.return_code = verify_signature(licInfo);
+	if (result.return_code == FUNC_RET_OK) {
+		result.return_code = verify_limits(licInfo);
+	}
+
+	return result;
+}
+
 } /* namespace license */

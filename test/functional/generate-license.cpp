@@ -39,9 +39,9 @@ string generate_license(const string& license_name, const vector<string>& other_
 
 	stringstream ss;
 	ss << LCC_EXE << " license issue";
-	ss << " --" PARAM_PRIMARY_KEY " " << LCC_PROJECT_PRIVATE_KEY;
-	ss << " --" PARAM_LICENSE_OUTPUT " " << license_fname_s;
-	ss << " --" PARAM_PROJECT_FOLDER " " << LCC_TEST_LICENSES_PROJECT;
+	ss << " --" PARAM_PRIMARY_KEY " " << "\"" << LCC_PROJECT_PRIVATE_KEY << "\"";
+	ss << " --" PARAM_LICENSE_OUTPUT " " << "\"" << license_fname_s << "\"";
+	ss << " --" PARAM_PROJECT_FOLDER " " << "\"" << LCC_TEST_LICENSES_PROJECT << "\"";
 
 	for (size_t i = 0; i < other_args.size(); i++) {
 		ss << " " << other_args[i];
@@ -72,7 +72,7 @@ string sign_data(const string& data, const string& test_name) {
 
 	stringstream ss;
 	ss << LCC_EXE << " test sign";
-	ss << " --" PARAM_PRIMARY_KEY " " << LCC_PROJECT_PRIVATE_KEY;
+	ss << " --" PARAM_PRIMARY_KEY " " << "\"" << LCC_PROJECT_PRIVATE_KEY << "\"";
 	ss << " -d " << data;
 	ss << " -o " << output_file_s;
 

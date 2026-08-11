@@ -14,24 +14,23 @@ namespace os {
 
 using namespace smbios;
 
-//#pragma pack()
+// #pragma pack()
 struct RawSMBIOSData {
 	BYTE Used20CallingMethod;
 	BYTE SMBIOSMajorVersion;
 	BYTE SMBIOSMinorVersion;
 	BYTE DmiRevision;
 	DWORD Length;
-	//BYTE SMBIOSTableData[1];
+	// BYTE SMBIOSTableData[1];
 };
 
-bool readSMBIOS(std::vector<uint8_t> &buffer) {
+bool readSMBIOS(std::vector<uint8_t>& buffer) {
 	const DWORD tableSignature = ('R' << 24) | ('S' << 16) | ('M' << 8) | 'B';
 	bool can_read = false;
 	uint32_t size = GetSystemFirmwareTable(tableSignature, 0, NULL, 0);
 	if (size > 0) {
 		buffer.resize(size);
-		if (GetSystemFirmwareTable(tableSignature, 0, buffer.data(), size)
-				> 0) {
+		if (GetSystemFirmwareTable(tableSignature, 0, buffer.data(), size) > 0) {
 			can_read = true;
 		}
 	}
@@ -42,35 +41,35 @@ BoardInfo::BoardInfo() {
 	std::vector<uint8_t> raw_smbios_data;
 	if (readSMBIOS(raw_smbios_data)) {
 		smbios::parser smbios_parser;
-		RawSMBIOSData *rawData = reinterpret_cast<RawSMBIOSData *>(raw_smbios_data.data());
+		RawSMBIOSData* rawData = reinterpret_cast<RawSMBIOSData*>(raw_smbios_data.data());
 		size_t length = static_cast<size_t>(rawData->Length);
-		uint8_t* buff= raw_smbios_data.data() + sizeof(RawSMBIOSData);
+		uint8_t* buff = raw_smbios_data.data() + sizeof(RawSMBIOSData);
 		smbios_parser.feed(buff, length);
 
-		for (auto &header : smbios_parser.headers) {
+		for (auto& header : smbios_parser.headers) {
 			string_array_t strings;
 			parser::extract_strings(header, strings);
 
 			switch (header->type) {
 				case types::baseboard_info: {
-					auto *const x = reinterpret_cast<baseboard_info *>(header);
+					auto* const x = reinterpret_cast<baseboard_info*>(header);
 
 					if (x->length == 0) break;
 					if (x->manufacturer_name > 0 && x->manufacturer_name < x->length) {
-						m_sys_vendor = strings[x->manufacturer_name];
+						m_sys_vendor = toupper_copy(strings[x->manufacturer_name]);
 					}
 				} break;
 
 				case types::bios_info: {
-					auto *const x = reinterpret_cast<bios_info *>(header);
+					auto* const x = reinterpret_cast<bios_info*>(header);
 					if (x->length == 0) break;
 					if (x->vendor > 0 && x->vendor < x->length) {
-						m_bios_vendor = strings[x->vendor];
+						m_bios_vendor = toupper_copy(strings[x->vendor]);
 					}
 				} break;
 
 				case types::processor_info: {
-					auto *const x = reinterpret_cast<proc_info *>(header);
+					auto* const x = reinterpret_cast<proc_info*>(header);
 
 					if (x->length == 0) break;
 					if (x->manufacturer > 0 && x->manufacturer < x->length) {
@@ -80,23 +79,21 @@ BoardInfo::BoardInfo() {
 				} break;
 
 				case types::system_info: {
-					auto *const x = reinterpret_cast<system_info *>(header);
+					auto* const x = reinterpret_cast<system_info*>(header);
 
 					if (x->length == 0) break;
-					if (x->manufacturer > 0 && x->manufacturer<x->length && x-> product_name > 0 &&
+					if (x->manufacturer > 0 && x->manufacturer < x->length && x->product_name > 0 &&
 						x->product_name < x->length) {
 						m_bios_description =
-							std::string(strings[x->manufacturer]) + std::string(strings[x->product_name]);
+							toupper_copy(std::string(strings[x->manufacturer]) + std::string(strings[x->product_name]));
 					}
 				} break;
 				default:;
 			}
 		}
-		//smbios_parser.clear();
-	}
-	else {
-
+		// smbios_parser.clear();
+	} else {
 	}
 }
-}
+}  // namespace os
 } /* namespace license */

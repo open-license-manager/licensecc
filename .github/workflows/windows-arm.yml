@@ -55,10 +55,10 @@ jobs:
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: >
             cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  
-            -DSTATIC_RUNTIME:BOOL=${{ matrix.static_runtime }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+            -DSTATIC_RUNTIME:BOOL=${{ matrix.static_runtime }} -DCMAKE_INSTALL_PREFIX=${{ steps.strings.outputs.build-output-dir }}/install
             -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} 
             -DUSE_OPENSSL=FALSE -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" 
-            -DVCPKG_TARGET_TRIPLET=${{ matrix.target_triple }}
+            -DVCPKG_TARGET_TRIPLET=${{ matrix.target_triple }} -DLCC_PROJECT_NAME:STRING=test 
 #-DCMAKE_GENERATOR=Ninja
       -  name: Compile
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
@@ -66,8 +66,8 @@ jobs:
             cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
       -  name: Inspector
          run: |
-           dir ${{ github.workspace }}\install\bin\test
-           ${{ github.workspace }}\install\bin\test\lccinspector.exe
+           dir ${{ steps.strings.outputs.build-output-dir }}\install\
+           ${{ steps.strings.outputs.build-output-dir }}\install\bin\test\lccinspector.exe
       -  name: Test
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: |

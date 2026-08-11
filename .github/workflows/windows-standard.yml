@@ -79,6 +79,10 @@ jobs:
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: >
             cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
+      -  name: Inspector
+         run: |
+           dir ${{ github.workspace }}\install\bin\test
+           ${{ github.workspace }}\install\bin\test\lccinspector.exe
       -  name: Test
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: |
@@ -88,9 +92,5 @@ jobs:
             BOOST_TEST_LOG_LEVEL: message
             VIRTUAL_ENV: VM
             CLOUD_PROVIDER: AZURE
-      -  name: Inspector
-         run: |
-           dir ${{ github.workspace }}\install\bin\test
-           ${{ github.workspace }}\install\bin\test\lccinspector.exe
 
  

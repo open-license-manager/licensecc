@@ -64,6 +64,10 @@ jobs:
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: >
             cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install --config ${{ matrix.build_type }}
+      -  name: Inspector
+         run: |
+           dir ${{ github.workspace }}\install\bin\test
+           ${{ github.workspace }}\install\bin\test\lccinspector.exe
       -  name: Test
          working-directory: ${{ steps.strings.outputs.build-output-dir }}
          run: |

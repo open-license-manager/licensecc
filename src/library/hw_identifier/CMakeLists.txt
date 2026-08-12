@@ -5,6 +5,7 @@ add_library(hw_identifier OBJECT
 	disk_strategy.cpp
 	identification_strategy.cpp
 	hw_identifier.cpp
+	system_id_strategy.cpp
 )
 
 if(CODE_COVERAGE AND UNIX)

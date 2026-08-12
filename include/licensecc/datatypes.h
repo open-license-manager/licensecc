@@ -38,6 +38,7 @@ typedef enum {
 	PRODUCT_EXPIRED = 7,  //!< PRODUCT_EXPIRED
 	LICENSE_CORRUPTED = 8,	// License signature didn't match with current license
 	IDENTIFIERS_MISMATCH = 9,  // Calculated identifier and the one provided in license didn't match
+	IDENTIFIER_NOT_AVAILABLE = 10,	// For some reason the method is unable to calculate the requested identifier
 
 	LICENSE_SPECIFIED = 100,  // license location was specified
 	LICENSE_FOUND = 101,  // License file has been found or license data has been located
@@ -145,7 +146,17 @@ typedef struct {
 	int license_version;  // license file version
 } LicenseInfo;
 
-typedef enum { BARE_TO_METAL, VMWARE, VIRTUALBOX, QEMU, V_XEN, KVM, HV, PARALLELS, V_OTHER } LCC_API_VIRTUALIZATION_DETAIL;
+typedef enum {
+	BARE_TO_METAL,
+	VMWARE,
+	VIRTUALBOX,
+	QEMU,
+	V_XEN,
+	KVM,
+	HV,
+	PARALLELS,
+	V_OTHER
+} LCC_API_VIRTUALIZATION_DETAIL;
 
 typedef enum {
 	PROV_UNKNOWN = 0,

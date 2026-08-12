@@ -38,7 +38,7 @@ else(licensecc_FIND_COMPONENTS)
 endif(licensecc_FIND_COMPONENTS)
 
 if(LCC_FOUND)
-	get_property(COMPILE_DEF TARGET licensecc::licensecc_static PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+	get_property(COMPILE_DEF TARGET licensecc::licensecc PROPERTY INTERFACE_COMPILE_DEFINITIONS)
 	if("HAS_OPENSSL" IN_LIST COMPILE_DEF AND NOT OpenSSL_FOUND)
 		#message( VERBOSE "Trying to find openssl (required by the target)")
 	    SET ( OPENSSL_USE_STATIC_LIBS ON )

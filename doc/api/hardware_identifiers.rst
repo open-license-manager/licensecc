@@ -2,20 +2,20 @@
 Customize hardware signature generators 
 ###############################################
 
-Hardware identifier encoding
-****************************
 
-Each hardware identifier is encoded as a 9-byte binary payload:
+PC Identifier generation workflow
+*************************************************
 
-- byte 0 contains the identification strategy used to generate the id.
-- bytes 1-8 hold the strategy-specific identification data.
+The licensed application must call the api method :ref:`identify_pc <api/public_api:Public api>` to generate an hardware 
+identifier and print it out to the user, the user then will contact the software licensor (you) to get an appropriate license.
 
-The payload is serialised as a base64 string for storage in license files
-and display. The identifier can be serialized as a string similar to 'AABm-73pY-0R4q'
-and it is usually passed between the final user of the software and the software vendor
-to generate an hardware linked license.
+The licensed application can either use a specific identification strategy by passing it in the ``identify_pc`` parameter ``hw_id_method``
+(see: :cpp:enum:`LCC_API_HW_IDENTIFICATION_STRATEGY` ) or let `licensecc` automatically choose a sensible one 
+ (by passing `hw_id_method=STRATEGY_DEFAULT`).   `licensecc` will select the best identification strategy for the  virtual environment the user is running in.
 
-For the full byte-level layout see :doxygenclass:`license::hw_identifier::HwIdentifier`.
+Below the full identifier generation workflow used by the :ref:`identify_pc <api/public_api:Public api>` method. 
+
+.. figure:: ../_static/pc-id-selection.png
 
 Change the hardware identification strategy
 *************************************************
@@ -33,7 +33,10 @@ Included with the library there are three hardware identification strategies: `I
 #define LCC_DOCKER_STRATEGIES { STRATEGY_NONE }
 #define LCC_CLOUD_STRATEGIES { STRATEGY_NONE }
 
+
 Implement your own hardware signature generator 
 *************************************************
+
+Extend the following class:
 
 .. doxygenclass:: license::hw_identifier::IdentificationStrategy

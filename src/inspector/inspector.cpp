@@ -98,9 +98,15 @@ int main(int argc, char* argv[]) {
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
 	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl;
 
+	string sn;
+	FUNCTION_RETURN ret = getOsSpecificIdentifier(sn);
+	if (ret != FUNCTION_RETURN::FUNC_RET_OK) {
+		sn = "NA";
+	}
+	cout << "Os specific sn   :" << sn << endl;
 	cout << "============ Network Adapters ============" << endl;
 	std::vector<license::os::OsAdapterInfo> adapterInfos;
-	FUNCTION_RETURN ret = license::os::getAdapterInfos(adapterInfos);
+	ret = license::os::getAdapterInfos(adapterInfos);
 	if (ret == FUNCTION_RETURN::FUNC_RET_OK) {
 		for (auto osAdapter : adapterInfos) {
 			cout << "Network adapter [" << osAdapter.id << "]: " << osAdapter.description << endl;

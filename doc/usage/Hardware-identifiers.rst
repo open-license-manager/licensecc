@@ -2,70 +2,112 @@
 Hardware Identifiers
 #######################
 
-Hardware identifiers are used to link the execution of the software to a physical hardware (a pc). 
-The software executing on client's hardware, when it finds the license is missing, calls the api 
-:ref:`identify_pc <api/public_api:Public api>`
-and generates an hardware identifier. The client has to communicate the hardware id back to the software publisher that 
+When the library was designed 15 years ago hardware identifiers were used to link the execution of the software to a physical hardware.
+With the coming of virtualization `hardware identifiers` are a way to limit the usage of the licensed software.
+
+The software executing on client's infrastructure (or physical hardware), when it finds the license is missing, calls the api 
+:ref:`identify_pc <api/public_api:Public api>` and generates an hardware identifier. 
+The client has to communicate the hardware id back to the software publisher (you) that 
 will issue a license for him (for details see: :ref:`issue licenses <usage/issue-licenses:Issue Licenses>`).   
 
 .. NOTE::
 
-  Licensecc will guess the environment where the user is trying to launch the software (eg. a Virtual Machine), 
-  embed the information into the hardware id and report it to the software publisher before he is issuing the license.
+  Licensecc will guess the infrastructure type where the user is trying to launch the software (eg. a Virtual Machine), 
+  embed the information into the hardware identifier and report it to the software publisher before he is issuing the license.
+  **Planned 2.5.0(?)**
+
+Hardware identifier encoding
+****************************
+
+The identifier is a 15 character string similar to 'AABm-73pY-0R4q'.
+
+Each hardware identifier is a 9-byte binary payload:
+
+- byte 0 contains the identification strategy used to generate the id, and the environment where it was generated (VM, docker...)
+- bytes 1-8 hold the strategy-specific identification data.
+
+The payload is serialised as a base64 string for storage in license files and display,  
+and it is usually passed from the final user to the software vendor to generate an hardware linked license.
+
+For the full byte-level layout see :doxygenclass:`license::hw_identifier::HwIdentifier`.
 
 *****************
-Usage scenarios
+Available identification methods
 *****************
-With the recent coming of virtualized environments the installation of software directly on the machine has been less and less.
+
+The software vendor should understand how the end user will run the software to choose the
+right identification strategy. For example, provisioning a short-lived virtual machine in a
+continuous integration system has very different hardware stability than a permanent on-premises 
+virtual server, but to `licensecc` they both appear as 'VM'. The chosen strategy should reflect that. 
+Though `licensecc` is trying to use sensible defaults, the software vendor may have to customize the behavior.
+
+The library offers the following strategies, each identified by a constant in
+:cpp:enum:`LCC_API_HW_IDENTIFICATION_STRATEGY`:
+
+.. _ETHERNET:
+
+``STRATEGY_ETHERNET`` (0)
+=========================
+
+Uses the **MAC address** of the system's "primary" network adapter to generate the hardware
+identifier. The implementation enumerates network adapters via the operating system, scores
+them to prefer physical and connected adapters over virtual/VPN/disconnected ones, and picks the first non-zero MAC
+address it finds.
+
+- **Bare to metal**: Stable — the MAC address of a physical NIC does not change. Survives across reinstallation of the SO.
+- **Virtual machine**: Works, if the machine is stable, but does not prevent the machine from being cloned with the same mac address. If you are using this inside a CI/CD and the VM is taken from a pool re-configured each time most probably won't work. 
+- **Container (Docker/LXC)**: Usually doesn't work, each container does not have a stable mac address.
+
+.. _IP_ADDRESS:
+
+``STRATEGY_IP_ADDRESS`` (1)
+===========================
+
+Uses the **IPv4 address** of the "primary" network adapter. The implementation is the same.
+as ``STRATEGY_ETHERNET`` but reads the IP address instead of the MAC address.
+
+- **Bare to metal**: ✅ Works, but IP addresses are typically assigned via DHCP and can change on reboot or network reconfiguration.
+- **Virtual machine**: ✅ Works, but subject to the same DHCP volatility.
+- **Container (Docker/LXC)**: ❓ Usually doesn't work: in orchestrated environments the IP may change on every deployment.
+
+.. _DISK:
+
+``STRATEGY_DISK`` (2)
+=====================
+
+Uses the **disk serial number** and **disk label** of the system's storage devices. The
+implementation queries the operating system for disk information, preferring the system
+drive (on Windows) or the root filesystem device (on Linux). It produces multiple candidate
+identifiers: one per disk, first by serial number then by label.
+
+- **Bare to metal**: ✅ Stable — disk serial numbers are set at manufacturing time and
+  rarely change.
+- **Virtual machine**: ✅ Works, but be aware that some hypervisors generate random disk
+  serials for each VM clone.
+- **Container (Docker/LXC)**: ❌ Not available — containers typically do not have direct access to the host's block devices.
+
+.. _SYSTEM_ID:
+
+``STRATEGY_SYSTEM_ID`` (5)
+==========================
+
+Uses the **OS-specific machine identifier**:
+
+- On **Linux**: reads ``/etc/machine-id`` (the systemd machine ID).
+- On **Windows**: uses ``GetSystemIdForPublisher`` if available, falling back to the
+  ``ProductId`` registry key under ``HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion``.
+
+- **Bare to metal**: ✅ Stable — the OS machine ID is set at installation time and
+  persists across reboots. Does not survive an OS reinstallation.
+- **Virtual machine**: ✅ Works — the identifier survives VM restarts, but may change
+  if the VM is re-deployed from a template.
+- **Container (Docker/LXC)**: ❓ To be tested, to understand the applicability.
 
 
-Execution in a physical hardware
-=================================
-If the client executes the software on a physical hardware it is possible to identify the 
-hardware by various parameters (cpu type/memory/disk label/mac address) see :ref:`features <analysis/features:Features>`
-for detail of supported identification strageties.
+``STRATEGY_DEFAULT`` (-1)
+==========================
 
-Execution in a virtual machine
-==============================
-If you're allowing software users to generate pc identifiers in a virtual machine
-you should ask yourself what's the real use of it, since the vm can be copied as a whole elsewhere 
-and there are few ways to detect this (without using an external license server that's not yet supported by this library).
-
-* Usually when the machine is copied the MAC address is changed. But sometimes it changes on its own. Software publishers may want to use this as a last resort to prevent the vm for being cloned. It has to be verified case by case.
-* Software editors may want to prevent people from extracting the software from the VM. They can use an hidden registry key or a specific file in a location outside the installation directory to verify the software is distributed in the original VM. Or they can link the execution to a specific kind of virtualization (this is supported by OpenLicenseManager).
-
-.. TIP::
-
-    In this case issuing a `demo` license with just a date limitation is advised.
-
-Execution in a container
-========================
-Depending on how containers are used having hardware identifiers may make sense or no sense at all. 
-For instance if containers are used to avoid to pollute the external distribution it makes perfect sense to have an 
-hardware identifier, if users are running dockers in a kubernetes cluster in the cloud it makes no sense at all.
-
-*************************************************
-Hardware Identifier Generation
-*************************************************
-
-The licensed application will call the api method :ref:`identify_pc <api/public_api:Public api>` to generate an hardware 
-identifier and print it out to the user, the user then will contact the software licensor to get an appropriate license.
-
-The licensed application can either decide an identification strategy by passing it in the ``identify_pc`` parameter ``hw_id_method``
-(see: :cpp:enum:`LCC_API_HW_IDENTIFICATION_STRATEGY` ) or let `licensecc` automatically choose how to generate the 
-identifier (by passing `hw_id_method=STRATEGY_DEFAULT`).   
-In this case `licensecc` is able to identify which virtual environment the user is running in and select the appropriate generation
-strategy. 
-
-Below the full identifier generation workflow used by the :ref:`identify_pc <api/public_api:Public api>` method. 
-
-.. figure:: ../_static/pc-id-selection.png
-
-
-Default identifier generation (implementation details)
-=======================================================
-
-This section describes the inner working of the default hardware identifer strategy.
+This is the strategy you should use in 99% of cases. It selects the best method based on the environment it detects.
 
 When the licensed software calls :ref:`identify_pc <api/public_api:Public api>` with :cpp:enumerator:`LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT` 
 the identifier generation will follow these steps:
@@ -89,3 +131,34 @@ if you're interested in implementing your own hardware identification strategy y
     
     `licensecc` will try to validate the identifier using the same strategy that was used to generate it, regardless  
     of what is the default method now in use. eg: disk identifiers will always be validated by ``DiskStrategy``.
+
+.. tip::
+
+    The default strategies used in each environment are defined by the macros
+    :c:macro:`LCC_BARE_TO_METAL_STRATEGIES`, :c:macro:`LCC_VM_STRATEGIES`,
+    :c:macro:`LCC_DOCKER_STRATEGIES`, and :c:macro:`LCC_CLOUD_STRATEGIES`.
+    These can be customized per-project in ``licensecc_properties.h``.
+
+.. tip::
+
+    Per-project customization of the strategy priorities requires editing
+    ``licensecc_properties.h`` and recompiling. A more flexible (dependency injection)
+    based approach is planned for **v2.5.0**.
+
+*****************
+Summary
+*****************
+
+ - Execution in a physical hardware: Use the (physical) disk SN. This survives a reinstallation of the pc, as a second choice use installation ID.
+ - Execution in a virtual machine: Use the mac address. This provide a tiny protection on cloning, as a second choice use the installation ID. If the machine is ephemeral (eg. CI/CD) there is not much you can do to limit. **change when cpuid strategy available**
+ - Execution in a docker: Use the installation ID strategy. This prevents the executable to be taken out of the docker and used elsewhere.
+
+This is what `STRATEGY_DEFAULT` does for you, but you may want to customize it, as described above.
+
+.. tip::
+
+
+
+
+
+

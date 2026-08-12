@@ -23,12 +23,15 @@ namespace hw_identifier {
  */
 class IdentificationStrategy {
 protected:
-	IdentificationStrategy(){}
+	IdentificationStrategy() {}
 
 public:
-	virtual ~IdentificationStrategy(){}
+	virtual ~IdentificationStrategy() {}
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
 	virtual FUNCTION_RETURN generate_pc_id(HwIdentifier& identifier_out) const;
+	/**
+	 * Implement this in subclasses to return a list of alternative identifiers.
+	 */
 	virtual std::vector<HwIdentifier> alternative_ids() const = 0;
 	virtual LCC_EVENT_TYPE validate_identifier(const HwIdentifier& identifier_in) const;
 

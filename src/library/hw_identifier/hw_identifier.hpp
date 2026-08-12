@@ -130,6 +130,20 @@ public:
 	void set_data(const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA>& data);
 
 	/**
+	 * @brief Store the proprietary data by encoding a string.
+	 *
+	 * Encodes the input string and stores it in the proprietary data portion.
+	 * @param data A string to encode and store.
+	 */
+	void set_data(const std::string& data);
+
+	/**
+	 * @brief Get a const reference to the internal data array.
+	 * @return Const reference to the internal data array.
+	 */
+	const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA + 1>& get_data() const;
+
+	/**
 	 * @brief Compare the stored proprietary data with a given payload.
 	 * @param data A 7-element array to compare against m_data[1..7].
 	 * @return true if all 7 bytes match exactly.

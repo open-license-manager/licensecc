@@ -56,9 +56,10 @@ add_subdirectory(submodules/licensecc)
 ```
 
 This makes the following targets available to your build:
-- `licensecc::licensecc_static` -- the licensing library. *Add it to your application*
-- `lccgen` -- the license generator executable 
+- `licensecc::licensecc` -- the licensing library. *Add it to your application*
+- `lccgen` -- the license generator executable (used internally by the build. Once it is built install it to a folder in your PATH to issue licenses)
 
+See [Locate and link the library](integration.rst#step-1-locate-and-link-the-library) for more details.
 
 ## Step 2: Launch cmake build
 
@@ -165,7 +166,7 @@ install/
 Since you added `add_subdirectory(submodules/licensecc)`, you can link directly:
 
 ```cmake
-target_link_libraries(my_app PRIVATE licensecc::licensecc_static)
+target_link_libraries(my_app PRIVATE licensecc::licensecc)
 ```
 
 No `find_package` or `Findlicensecc.cmake` is needed when using the submodule approach.
@@ -186,6 +187,8 @@ if (result == LICENSE_OK) {
 }
 ```
 
+See [Step 6 — Call Licensecc from your code](integration.rst#step-6-call-licensecc-from-your-code) for a detailed integration example with error handling.
+
 ```
 +-------------------+       +-------------------+
 |  Your App         |       |  licensecc        |
@@ -195,6 +198,7 @@ if (result == LICENSE_OK) {
 |  CMakeLists.txt   |       |  verification     |
 +-------------------+       +-------------------+
 ```
+
 
 ## Step 7: Issue Licenses
 

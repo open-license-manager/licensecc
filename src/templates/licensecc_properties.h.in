@@ -109,6 +109,13 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	 * Not yet implemented
 	 */
 	STRATEGY_HOST_NAME = 4,
+	/**
+	 * Uses OS-specific identifier to generate hardware id.
+	 *
+	 * This strategy uses the OS-specific machine identifier (e.g., /etc/machine-id on Linux,
+	 * ProductId on Windows) to generate the hardware identifier.
+	 */
+	STRATEGY_SYSTEM_ID = 5,
 	STRATEGY_NONE = -2
 };
 

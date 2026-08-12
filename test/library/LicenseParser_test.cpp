@@ -4,9 +4,7 @@
 #include <string>
 
 #include <boost/test/unit_test.hpp>
-#include <iostream>
 #include <vector>
-#include <stdlib.h>
 
 #include <licensecc_properties.h>
 #include <licensecc_properties_test.h>

@@ -3,16 +3,15 @@
 #include <stdio.h>
 #include <cerrno>
 #include <cstring>
-#include <iostream>
 #include <fstream>
-#include <unordered_map>
 #include <string>
-#include <stdio.h>
 #include <string.h>
 #include <sstream>
 #include "../os.h"
+#include "../os_common.h"
 #include "../../base/logger.h"
 #include "../../base/string_utils.h"
+#include <unordered_map>
 
 #include <sys/ioctl.h>
 #include <linux/nvme_ioctl.h>
@@ -76,25 +75,6 @@ static void parseUUID(const char* uuid, unsigned char* buffer_out, unsigned int 
 	}
 
 	free(hexuuid);
-}
-/**
- * Encode a string of arbitrary length into a fixed-size buffer by XORing
- * the string bytes into the buffer, wrapping around when the buffer end is reached.
-
- *
- * @param input the input string to encode
- * @param buffer_out output buffer to fill
- * @param out_size size of the output buffer (in bytes)
- */
-static void encode_string_to_buffer(const std::string& input, unsigned char* buffer_out, size_t out_size) {
-	memset(buffer_out, 0, out_size);
-	for (size_t i = 0; i < input.size(); i++) {
-		unsigned char current_byte = static_cast<unsigned char>(input[i]);
-		if (i % 2 == 1) {
-			current_byte = (current_byte << 4) | (current_byte >> 4);
-		}
-		buffer_out[i % out_size] ^= current_byte;
-	}
 }
 
 /**
@@ -335,8 +315,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 					PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
 					std::string serial;
 					if (getDiskSerial(device_name_s, serial) == FUNC_RET_OK) {
-						encode_string_to_buffer(serial, tmpDiskInfo.physical_serial,
-												sizeof(tmpDiskInfo.physical_serial));
+						tmpDiskInfo.physical_serial = serial;
 						tmpDiskInfo.physical_serial_initialized = true;
 					}
 					tmpDiskInfo.sn_initialized = true;
@@ -463,13 +442,13 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	return FUNC_RET_OK;
 }
 
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA]) {
+FUNCTION_RETURN getOsSpecificIdentifier(std::string& identifier) {
 #if USE_DBUS
 	char* dbus_id = dbus_get_local_machine_id();
 	if (dbus_id == NULL) {
 		return FUNC_RET_ERROR;
 	}
-	memcpy(identifier, dbus_id, HW_IDENTIFIER_PROPRIETARY_DATA);
+	identifier = std::string(dbus_id);
 	dbus_free(dbus_id);
 	return FUNC_RET_OK;
 #else
@@ -478,7 +457,7 @@ FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_P
 		return FUNC_RET_NOT_AVAIL;
 	}
 	std::string machine_id((std::istreambuf_iterator<char>(machine_id_file)), std::istreambuf_iterator<char>());
-	encode_string_to_buffer(machine_id, identifier, HW_IDENTIFIER_PROPRIETARY_DATA);
+	identifier = machine_id;
 	return FUNC_RET_OK;
 #endif
 }

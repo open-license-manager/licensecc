@@ -31,27 +31,10 @@ typedef struct {
 	char label[255];
 	bool label_initialized = false;
 	bool preferred = false;
-	unsigned char physical_serial[HW_IDENTIFIER_PROPRIETARY_DATA];
+	std::string physical_serial;
 	bool physical_serial_initialized = false;
 
-	std::string to_string() const {
-		std::string result = "DiskInfo{id=" + std::to_string(id) + ", device=" + std::string(device) + ", disk_sn=[";
-		for (int i = 0; i < 8; ++i) {
-			result += std::to_string(disk_sn[i]);
-		}
-		result += "], sn_initialized=" + std::to_string(sn_initialized) + ", label=" + std::string(label) +
-				  ", label_initialized=" + std::to_string(label_initialized) +
-				  ", preferred=" + std::to_string(preferred) + ", physical_serial=[";
-		for (int i = 0; i < 8; ++i) {
-			char hex[5];
-			snprintf(hex, sizeof(hex), "%02x", physical_serial[i]);
-			result += hex;
-			if (i < 7) result += ":";
-		}
-		result += "]}";
-
-		return result;
-	}
+	std::string to_string() const;
 } DiskInfo;
 
 FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos);
@@ -76,7 +59,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
  * @param identifier
  * @return
  */
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA]);
+FUNCTION_RETURN getOsSpecificIdentifier(std::string& identifier);
 
 #ifdef _WIN32
 #define SETENV(VAR, VAL) _putenv_s(VAR, VAL);

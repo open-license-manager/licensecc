@@ -11,7 +11,7 @@ add_executable( test_standard_license
 )
 
 target_link_libraries( test_standard_license
- licensecc_static
+ licensecc
  license_generator_snippet
 )
 
@@ -20,7 +20,7 @@ add_executable( test_date
 )
 
 target_link_libraries( test_date
- licensecc_static
+ licensecc
  license_generator_snippet
 )
 
@@ -30,7 +30,7 @@ add_executable( test_signature_verifier
 
 target_link_libraries(
  test_signature_verifier
- licensecc_static
+ licensecc
  license_generator_snippet
 )
 
@@ -39,14 +39,14 @@ add_executable(test_it_hw_identifier hw_identifier_it_test.cpp)
 
 target_link_libraries(test_it_hw_identifier
  license_generator_snippet
- licensecc_static
+ licensecc
 )
 
 add_executable(test_crack crack_test.cpp)
 
 target_link_libraries( test_crack
  license_generator_snippet
- licensecc_static
+ licensecc
 )
 
 ADD_TEST(NAME test_crack COMMAND test_crack WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

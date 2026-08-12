@@ -3,6 +3,7 @@
 #include "default_strategy.hpp"
 #include "ethernet.hpp"
 #include "disk_strategy.hpp"
+#include "system_id_strategy.hpp"
 namespace license {
 namespace hw_identifier {
 
@@ -32,7 +33,8 @@ FUNCTION_RETURN IdentificationStrategy::generate_pc_id(HwIdentifier& pc_id) cons
 	return result;
 }
 
-std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY strategy) {
+std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(
+	LCC_API_HW_IDENTIFICATION_STRATEGY strategy) {
 	unique_ptr<IdentificationStrategy> result;
 	switch (strategy) {
 		case STRATEGY_DEFAULT:
@@ -46,6 +48,9 @@ std::unique_ptr<IdentificationStrategy> IdentificationStrategy::get_strategy(LCC
 			break;
 		case STRATEGY_DISK:
 			result = unique_ptr<IdentificationStrategy>(dynamic_cast<IdentificationStrategy*>(new DiskStrategy()));
+			break;
+		case STRATEGY_SYSTEM_ID:
+			result = unique_ptr<IdentificationStrategy>(dynamic_cast<IdentificationStrategy*>(new SystemIdStrategy()));
 			break;
 		default:
 			throw logic_error("strategy not supported");

@@ -23,10 +23,9 @@
 #include <ifaddrs.h>
 #include <linux/if_link.h>
 #include <netpacket/packet.h>
-#include <stdio.h>
-#include <unordered_map>
 #include <string.h>
 #include <memory.h>
+#include <unordered_map>
 
 #include "../../base/string_utils.h"
 #include "../../base/logger.h"
@@ -36,14 +35,13 @@ namespace license {
 namespace os {
 using namespace std;
 
-
 /**
  *
  * @param adapterInfos
  * @param adapter_info_size
  * @return
  */
-FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
+FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 	unordered_map<string, OsAdapterInfo> adapterByName;
 
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
@@ -63,7 +61,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		string if_name(ifa->ifa_name, mstrnlen_s(ifa->ifa_name, LCC_ADAPTER_DESCRIPTION_LEN));
 		// if_name_position = ifname_position(ifnames, ifa->ifa_name, if_num);
 		// interface name not seen en advance
-		OsAdapterInfo *currentAdapter;
+		OsAdapterInfo* currentAdapter;
 		if (adapterByName.find(if_name) == adapterByName.end()) {
 			OsAdapterInfo newAdapter;
 			memset(&newAdapter, 0, sizeof(OsAdapterInfo));
@@ -76,13 +74,15 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		/* Display interface name and family (including symbolic
 		 form of the latter for the common families) */
 		LOG_DEBUG("%-8s %s (%d)\n", ifa->ifa_name,
-				  (family == AF_PACKET) ? "AF_PACKET"
-										: (family == AF_INET) ? "AF_INET" : (family == AF_INET6) ? "AF_INET6" : "???",
+				  (family == AF_PACKET)	 ? "AF_PACKET"
+				  : (family == AF_INET)	 ? "AF_INET"
+				  : (family == AF_INET6) ? "AF_INET6"
+										 : "???",
 				  family);
 		/* For an AF_INET* interface address, display the address
 		 * || family == AF_INET6*/
 		if (family == AF_INET) {
-			struct sockaddr_in *s1 = (struct sockaddr_in *)ifa->ifa_addr;
+			struct sockaddr_in* s1 = (struct sockaddr_in*)ifa->ifa_addr;
 			in_addr_t iaddr = s1->sin_addr.s_addr;
 			currentAdapter->ipv4_address[0] = (iaddr & 0x000000ff);
 			currentAdapter->ipv4_address[1] = (iaddr & 0x0000ff00) >> 8;
@@ -90,7 +90,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 			currentAdapter->ipv4_address[3] = (iaddr & 0xff000000) >> 24;
 
 		} else if (family == AF_PACKET && ifa->ifa_data != NULL) {
-			struct sockaddr_ll *s1 = (struct sockaddr_ll *)ifa->ifa_addr;
+			struct sockaddr_ll* s1 = (struct sockaddr_ll*)ifa->ifa_addr;
 			int i;
 			for (i = 0; i < 6; i++) {
 				currentAdapter->mac_address[i] = s1->sll_addr[i];
@@ -107,7 +107,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	} else {
 		f_return = FUNC_RET_OK;
 		adapterInfos.reserve(adapterByName.size());
-		for (auto &it : adapterByName) {
+		for (auto& it : adapterByName) {
 			adapterInfos.push_back(it.second);
 		}
 	}

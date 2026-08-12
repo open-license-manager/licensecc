@@ -2,17 +2,13 @@
  * license_facade.cpp
  *
  *  Created on: Aug 1, 2026
- *      Author: Your Name
+ *      Author: Gabriele Contini
  */
 
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <fstream>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <cstring>
-#include <iostream>
-#include <algorithm>
+#include <cstdlib>
 
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>

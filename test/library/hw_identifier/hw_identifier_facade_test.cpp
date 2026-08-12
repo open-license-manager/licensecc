@@ -3,6 +3,14 @@
  *
  *  Created on: Dec 26, 2019
  *      Author: devel
+ *
+ *
+ * N.B. this test is not compiled and ran because it fails sistematically.
+ *
+ * It has to be redesigned: eg. print an environment variable with the identifiers
+ * to check. Include the var in the environment to test. If the test finds the variable
+ * then it checks the identifiers inside, otherwise prints out the variable to be
+ * included.
  */
 
 #include "../../../src/library/hw_identifier/hw_identifier_facade.hpp"
@@ -14,7 +22,7 @@ namespace license {
  * 2) save it to disk
  * 3) every time check that the identifier can still be verified.
  */
-static void generate_reference_file(const string &idfileLocation, LCC_API_HW_IDENTIFICATION_STRATEGY strategies[],
+static void generate_reference_file(const string& idfileLocation, LCC_API_HW_IDENTIFICATION_STRATEGY strategies[],
 									int num_strategies) {
 	ofstream idfile(idfileLocation);
 	PcSignature identifier_out;

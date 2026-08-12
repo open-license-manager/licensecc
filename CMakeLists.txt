@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 ## configuration variables
 ## USE_OPENSSL: Enable/Disable OpenSSL support. If disabled, the generator will use Windows Crypto API on Windows and will fail to compile on Linux.
 ## STATIC_RUNTIME: Enable/Disable linking to the static version of the c libraries (/MT /MD in windows)
+## BUILD_SHARED_LIBS: available only when STATIC_RUNTIME is OFF, it will build a shared version of the library.
 ## Boost_ROOT: Hint for a path to the Boost installation. If not set, CMake will try to find Boost in the system paths.
 ## OpenSSL_ROOT: Hint for a path to the Openssl installation. 
 ## LCC_PROJECT_NAME
@@ -45,15 +46,36 @@ ENDIF()
 option(STATIC_RUNTIME "Compile a static executable or a dynamic linked one" ON)
 message( STATUS "Static   runtime          : ${STATIC_RUNTIME}")
 
+# The static library is always built. If BUILD_SHARED_LIBS is ON a dynamic
+# (DLL/SO) variant is additionally built. A shared library must be linked
+# against the dynamic C/C++ runtime, so it only makes sense when
+# STATIC_RUNTIME is OFF.
+option(BUILD_SHARED_LIBS "Build the dynamic (DLL/SO) variant of the library in addition to the static one" OFF)
+message( STATUS "Build  shared libs        : ${BUILD_SHARED_LIBS}")
+if(BUILD_SHARED_LIBS AND STATIC_RUNTIME)
+	message(FATAL_ERROR
+		"BUILD_SHARED_LIBS is ON but STATIC_RUNTIME is ON: a shared library "
+		"must use the dynamic runtime (/MD on Windows, dynamic libgcc/libstdc++ "
+		"on Linux). Reconfigure with -DSTATIC_RUNTIME=OFF.")
+endif()
+
+# A dynamically-linked / shared build needs position-independent code so the
+# object files can be linked into a .so/.dll. Only enable it when the static
+# runtime is not requested.
+if(NOT STATIC_RUNTIME)
+	set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+	message( STATUS "Position independent code : ON")
+endif()
+
 option(OPENSSL_USE_STATIC_LIBS "Use static libraries for openssl" ON)
 option(Boost_USE_STATIC_LIBS  "Use static libraries for Boost" ON)
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
-	IF(${STATIC_RUNTIME})
+	IF(STATIC_RUNTIME)
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 		unset(CMAKE_DL_LIBS)
 		add_definitions(-DBOOST_TEST_STATIC_LINK)
-	ENDIF(${STATIC_RUNTIME})
+	ENDIF(STATIC_RUNTIME)
 	find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
   		list(APPEND EXTERNAL_LIBS "-pthread")
@@ -106,13 +128,13 @@ else(UNIX) #windows and linux crosscompiling for windows target
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )
 		message(STATUS "Architecture detected     : ${TARGET_ARCHITECTURE}")
-		if(${STATIC_RUNTIME})
+		if(STATIC_RUNTIME)
 			SET(Boost_USE_STATIC_RUNTIME ON)
 			unset(CMAKE_DL_LIBS)
 			set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "")
-		ELSE(${STATIC_RUNTIME})
+		else()
 			set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE INTERNAL "")
-		endif(${STATIC_RUNTIME})
+		endif()
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 		add_compile_options("/EHsc")
 	else(MSVC)

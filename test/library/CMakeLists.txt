@@ -3,7 +3,7 @@ add_executable( test_license_reader
 )
 
 target_link_libraries( test_license_reader
-   licensecc_static
+   licensecc
    ${Boost_LIBRARIES}
 )
 
@@ -16,7 +16,7 @@ add_executable(
 
 target_link_libraries(
 	test_license_locator_strategies
-	licensecc_static
+	licensecc
 	${Boost_LIBRARIES}
 )
 
@@ -28,7 +28,7 @@ add_executable(
 
 target_link_libraries(
 	test_license_locator_facade
-	licensecc_static
+	licensecc
 	${Boost_LIBRARIES}
 )
 

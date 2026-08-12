@@ -15,7 +15,6 @@
 // Include cpuid.h only for x86/x64 architectures
 #if defined(__x86_64__) || defined(__i386__)
 #include <cpuid.h>
-#include <unordered_set>
 #include <memory.h>
 #endif
 

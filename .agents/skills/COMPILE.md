@@ -59,9 +59,26 @@ After building, run tests with:
 ctest ${ build-dir }
 ```
 
-
 ## Troubleshooting
+
 - If the project does not compile try to do the clean and configuration step again.
 - The configure step is necessary if any of the CMakeLists.txt is changed.
 - If OpenSSL is not found on Linux, install OpenSSL development packages
+
+### modifications to licensecc_properties.h.in
+
+when you modify licensecc_properties.h.in it is necessary to 
+```bash
+rm 'projects/DEFAULT/include/licensecc_properties.h'
+```
+and run the configuration step.
+
+### modification to private keys
+
+when you modify private or public key generation classes or you update
+licensecc-generator you need to clean up the project folder 
+```bash
+rm -Rf 'projects/*'
+```
+and run the configuration step again.
 

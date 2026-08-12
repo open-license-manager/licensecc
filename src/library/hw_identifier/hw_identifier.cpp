@@ -6,6 +6,7 @@
  */
 
 #include <algorithm>
+#include <cstring>
 #include "hw_identifier.hpp"
 #include "../base/base64.h"
 
@@ -13,6 +14,17 @@ namespace license {
 namespace hw_identifier {
 
 using namespace std;
+
+void encode_string_to_buffer(const std::string& input, unsigned char* buffer_out, size_t out_size) {
+	memset(buffer_out, 0, out_size);
+	for (size_t i = 0; i < input.size(); i++) {
+		unsigned char current_byte = static_cast<unsigned char>(input[i]);
+		if (i % 2 == 1) {
+			current_byte = (current_byte << 4) | (current_byte >> 4);
+		}
+		buffer_out[i % out_size] ^= current_byte;
+	}
+}
 
 HwIdentifier::HwIdentifier() {}
 
@@ -72,6 +84,12 @@ void HwIdentifier::set_data(const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_
 		m_data[i + 1] = data[i];
 	}
 }
+
+void HwIdentifier::set_data(const std::string& data) {
+	encode_string_to_buffer(data, m_data.data() + 1, HW_IDENTIFIER_PROPRIETARY_DATA);
+}
+
+const std::array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA + 1>& HwIdentifier::get_data() const { return m_data; }
 
 std::string HwIdentifier::print() const {
 	string result = base64(m_data.data(), m_data.size(), 5);

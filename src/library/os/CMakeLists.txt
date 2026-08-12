@@ -7,7 +7,8 @@ IF(UNIX OR OPENSSL_FOUND)
 		    linux/cpu_info.cpp
 		    linux/board_info.cpp
 		    linux/network.cpp
-		    linux/os_linux.cpp) 
+		    linux/os_linux.cpp
+		    os_common.cpp) 
 	ELSE(UNIX)
 	    #windows and openssl
   	    add_library(os OBJECT 
@@ -17,7 +18,8 @@ IF(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp 
         windows/execution_environment.cpp
   	    windows/os_win.cpp
-  	    windows/network.cpp)
+  	    windows/network.cpp
+  	    os_common.cpp)
 	ENDIF(UNIX)
 	target_include_directories(os PUBLIC ${OPENSSL_INCLUDE_DIR})
 ELSE(UNIX OR OPENSSL_FOUND)
@@ -29,7 +31,8 @@ ELSE(UNIX OR OPENSSL_FOUND)
         execution_environment_common.cpp 
         windows/execution_environment.cpp
         windows/os_win.cpp
-        windows/network.cpp)
+        windows/network.cpp
+        os_common.cpp)
 ENDIF(UNIX OR OPENSSL_FOUND)
 
 #dependency of signature_verifier.cpp

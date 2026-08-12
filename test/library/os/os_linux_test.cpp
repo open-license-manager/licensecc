@@ -6,9 +6,9 @@
 
 #include <licensecc_properties.h>
 #include <licensecc_properties_test.h>
-#include "../../src/library/base/string_utils.h"
-#include "../../src/library/os/os.h"
-#include "../../src/library/os/execution_environment.hpp"
+#include "../../../src/library/base/string_utils.h"
+#include "../../../src/library/os/os.h"
+#include "../../../src/library/os/execution_environment.hpp"
 
 FUNCTION_RETURN parse_blkid(const std::string& blkid_file_content, std::vector<DiskInfo>& diskInfos_out,
 							std::unordered_map<std::string, int>& disk_by_uuid);

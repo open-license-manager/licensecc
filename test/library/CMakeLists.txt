@@ -7,22 +7,6 @@ target_link_libraries( test_license_reader
    ${Boost_LIBRARIES}
 )
 
-IF(WIN32)
-#test windows
-ELSE(WIN32)
-    add_executable(
- 		test_os_linux
- 		os_linux_test.cpp
-	)
-
-	target_link_libraries(
- 		test_os_linux
- 		licensecc_static
-		${Boost_LIBRARIES}
-	)
-
-	ADD_TEST(NAME test_os_linux COMMAND test_os_linux)
-ENDIF(WIN32)
 
 ### LicenseLocator tests
 add_executable(
@@ -62,6 +46,7 @@ target_link_libraries(
 
 if(CODE_COVERAGE AND UNIX)
   target_link_libraries(test_event_registry gcov)
+  target_link_libraries(test_license_reader gcov)
 endif(CODE_COVERAGE AND UNIX)
 
 ADD_TEST(NAME test_license_reader COMMAND test_license_reader)

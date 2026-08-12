@@ -2,7 +2,12 @@
 Extension points
 #######################################
 
-The version 2.0 of the library comes with clear API extension and customization points. 
+Version 2.0 of the library comes with API extension and customization points. 
+
+
+The main configuration point is the file `licensecc_properties.h` in the project directory.
+This file is generated when the project is initialized (every time you generate a new project),
+it is not under source control and it is for you to customize the library.
 
 Tweak hardware signature generator
 ***************************************

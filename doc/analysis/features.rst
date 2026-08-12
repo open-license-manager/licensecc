@@ -16,15 +16,18 @@ Features and their status
 ======================================  ========================
 Trial license with expiry date          |:heavy_check_mark:|  
 Link software to "physical" hardware    |:heavy_check_mark:|  
-Virtual machine/docker detection        In progress           
+Virtual machine/docker detection        Partial (v2.5.0)          
 Easy license retrieval                  |:heavy_check_mark:|
 Licensed software components			|:heavy_check_mark:|
-ARM support								Planned
-Manage licenses                         Planned               
-Easy Customizable limits                Planned               
-Java/C# bindings                        Planned               
-Floating/network licenses               Planned               
+ARM support								|:heavy_check_mark:|
+Manage licenses                         Not yet planned               
+Easy Customizable limits                Planned (v2.5.0)               
+Java/Python bindings                    Not yet planned               
+Floating/network licenses               Not yet planned               
 ======================================  ========================
+
+To better understand the roadmap and the status of the project you can 
+have a look at the `release notes<https://github.com/open-license-manager/licensecc/releases/>` on the github repository.
 
 Issue a "demo" license with only expiry date.
 ==============================================

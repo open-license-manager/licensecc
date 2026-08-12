@@ -2,6 +2,21 @@
 Customize hardware signature generators 
 ###############################################
 
+Hardware identifier encoding
+****************************
+
+Each hardware identifier is encoded as a 9-byte binary payload:
+
+- byte 0 contains the identification strategy used to generate the id.
+- bytes 1-8 hold the strategy-specific identification data.
+
+The payload is serialised as a base64 string for storage in license files
+and display. The identifier can be serialized as a string similar to 'AABm-73pY-0R4q'
+and it is usually passed between the final user of the software and the software vendor
+to generate an hardware linked license.
+
+For the full byte-level layout see :doxygenclass:`license::hw_identifier::HwIdentifier`.
+
 Change the hardware identification strategy
 *************************************************
 

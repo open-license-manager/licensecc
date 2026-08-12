@@ -132,6 +132,15 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 #define LCC_CLOUD_STRATEGIES {STRATEGY_NONE}
 
 /**
+ * Lenght of the proprietary data contained in the pc identifier.
+ * The full lenght of the data is HW_IDENTIFIER_PROPRIETARY_DATA + 1
+ *
+ * To get the lenght of the pc identifier consider that the data will be encoded
+ * in base64 so the pc identifier will be (HW_IDENTIFIER_PROPRIETARY_DATA + 1)*4/3
+ * bytes long.
+ */
+#define HW_IDENTIFIER_PROPRIETARY_DATA 8
+/**
  * @}
  */
 

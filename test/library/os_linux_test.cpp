@@ -10,8 +10,8 @@
 #include "../../src/library/os/os.h"
 #include "../../src/library/os/execution_environment.hpp"
 
-FUNCTION_RETURN parse_blkid(const std::string &blkid_file_content, std::vector<DiskInfo> &diskInfos_out,
-							std::unordered_map<std::string, int> &disk_by_uuid);
+FUNCTION_RETURN parse_blkid(const std::string& blkid_file_content, std::vector<DiskInfo>& diskInfos_out,
+							std::unordered_map<std::string, int>& disk_by_uuid);
 
 namespace license {
 namespace test {
@@ -29,6 +29,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		bool preferred_found = false;
 		bool uuid_found = false;
 		bool label_found = false;
+		bool physical_sn_found = false;
 
 		for (auto disk_info : disk_infos) {
 			uuid_found = uuid_found || disk_info.sn_initialized;
@@ -42,10 +43,20 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 				}
 				BOOST_CHECK_MESSAGE(!all_zero, "disksn is not all zero");
 			}
+
+			if (disk_info.preferred) {
+				bool all_zero = true;
+				for (int i = 0; i < sizeof(disk_info.physical_serial) && all_zero; i++) {
+					all_zero = (disk_info.physical_serial[i] == '\0');
+				}
+				BOOST_CHECK_MESSAGE(!all_zero, "physical_id is not all zero for preferred disk");
+				BOOST_CHECK_MESSAGE(disk_info.sn_initialized, "serial number found");
+			}
 		}
 		BOOST_CHECK_MESSAGE(uuid_found, "At least one UUID initialized");
 		BOOST_CHECK_MESSAGE(label_found, "At least one label found");
 		BOOST_CHECK_MESSAGE(preferred_found, "At least one standard mounted file system");
+
 	} else if (virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
 		// in docker or lxc diskInfo is very likely not to find any good disk.
 		BOOST_CHECK_EQUAL(result, FUNC_RET_NOT_AVAIL);

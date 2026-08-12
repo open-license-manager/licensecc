@@ -77,13 +77,18 @@ static void parseUUID(const char* uuid, unsigned char* buffer_out, unsigned int 
 
 	free(hexuuid);
 }
-
-static void parse_disk_id(const char* uuid, unsigned char* buffer_out, size_t out_size) {
-	unsigned int i;
-	size_t len = strlen(uuid);
+/**
+ * Encode a string of arbitrary length into a fixed-size buffer by XORing
+ * the string bytes into the buffer, wrapping around when the buffer end is reached.
+ *
+ * @param input the input string to encode
+ * @param buffer_out output buffer to fill
+ * @param out_size size of the output buffer (in bytes)
+ */
+static void encode_string_to_buffer(const std::string& input, unsigned char* buffer_out, size_t out_size) {
 	memset(buffer_out, 0, out_size);
-	for (i = 0; i < len; i++) {
-		buffer_out[i % out_size] = buffer_out[i % out_size] ^ uuid[i];
+	for (size_t i = 0; i < input.size(); i++) {
+		buffer_out[i % out_size] ^= static_cast<unsigned char>(input[i]);
 	}
 }
 
@@ -206,6 +211,10 @@ inline void trim(std::string& s) {
 	ltrim(s);
 }
 
+/**
+ * return the disk physical serial number
+ * for nvme a Plain ASCII, null-padded to 20 bytes (eg S5H5NX0T100123)
+ */
 FUNCTION_RETURN getDiskSerial(const std::string& devname, std::string& out_serial) {
 	std::string filename("/dev/");
 	filename.append(devname);
@@ -307,7 +316,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 
 			std::string cur_dir = base_dir + dir->d_name;
 			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
-				DiskInfo tmpDiskInfo;
+				DiskInfo tmpDiskInfo = {};
 				tmpDiskInfo.id = sym_stat.st_ino;
 				ssize_t len = ::readlink(cur_dir.c_str(), device_name, MAX_PATH - 1);
 				if (len != -1) {
@@ -318,11 +327,12 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 						device_name_s = device_name_s.substr(pos + 1);
 					}
 					mstrlcpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
-					std::string serial(dir->d_name);
+					PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
+					std::string serial;
 					if (getDiskSerial(device_name_s, serial) == FUNC_RET_OK) {
-						PARSE_ID_FUNC(serial.c_str(), tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
-					} else {
-						PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
+						encode_string_to_buffer(serial, tmpDiskInfo.physical_serial,
+												sizeof(tmpDiskInfo.physical_serial));
+						tmpDiskInfo.physical_serial_initialized = true;
 					}
 					tmpDiskInfo.sn_initialized = true;
 					tmpDiskInfo.label_initialized = false;

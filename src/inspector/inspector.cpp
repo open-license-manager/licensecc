@@ -8,10 +8,11 @@
 #include <iomanip>
 #include "../library/base/string_utils.h"
 #include "../library/ini/SimpleIni.h"
+#include "../library/os/os.h"
 #include "../library/os/board_info.hpp"
 #include "../library/os/cpu_info.hpp"
-#include "../library/os/board_info.hpp"
 #include "../library/os/network.hpp"
+#include "../library/base/base.h"
 
 using namespace std;
 using namespace license::os;
@@ -97,6 +98,7 @@ int main(int argc, char* argv[]) {
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
 	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl;
 
+	cout << "============ Network Adapters ============" << endl;
 	std::vector<license::os::OsAdapterInfo> adapterInfos;
 	FUNCTION_RETURN ret = license::os::getAdapterInfos(adapterInfos);
 	if (ret == FUNCTION_RETURN::FUNC_RET_OK) {
@@ -119,6 +121,17 @@ int main(int argc, char* argv[]) {
 		cout << "problem in getting adapter informations:" << ret << endl;
 	}
 
+	cout << "============ Disks ============" << endl;
+	vector<DiskInfo> diskInfos;
+	ret = getDiskInfos(diskInfos);
+	if (ret == FUNCTION_RETURN::FUNC_RET_OK) {
+		for (auto diskInfo : diskInfos) {
+			cout << diskInfo.to_string() << endl;
+		}
+	} else {
+		cout << "problem in getting disk informations:" << ret << endl;
+	}
+	cout << "============ Cpu & bios ============" << endl;
 	license::os::CpuInfo cpu;
 	cout << "Cpu Vendor       :" << cpu.vendor() << endl;
 	cout << "Cpu Brand        :" << cpu.brand() << endl;
@@ -131,6 +144,7 @@ int main(int argc, char* argv[]) {
 	cout << "Cpu Vendor (dmi) :" << board_info.cpu_manufacturer() << endl;
 	cout << "Cpu Cores  (dmi) :" << board_info.cpu_cores() << endl;
 	cout << "==================" << endl;
+
 	if (argc == 2) {
 		const string fname(argv[1]);
 		ifstream license_file(fname);

@@ -55,7 +55,8 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 					diskInfo.id = (int)ndrives;
 					diskInfo.label_initialized = true;
 					license::mstrlcpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)));
-					license::mstrlcpy(diskInfo.label, fileSysName, min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
+					license::mstrlcpy(diskInfo.label, fileSysName,
+									  min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
 					memcpy(diskInfo.disk_sn, &volSerial, sizeof(DWORD));
 					diskInfo.sn_initialized = true;
 					diskInfo.preferred = (szSingleDrive[0] == 'C');
@@ -88,4 +89,8 @@ FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]) {
 		result = FUNC_RET_ERROR;
 	}
 	return result;
+}
+
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA]) {
+	return FUNC_RET_NOT_AVAIL;
 }

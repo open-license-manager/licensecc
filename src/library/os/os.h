@@ -31,7 +31,7 @@ typedef struct {
 	char label[255];
 	bool label_initialized = false;
 	bool preferred = false;
-	unsigned char physical_serial[8];
+	unsigned char physical_serial[HW_IDENTIFIER_PROPRIETARY_DATA];
 	bool physical_serial_initialized = false;
 
 	std::string to_string() const {
@@ -76,7 +76,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]);
  * @param identifier
  * @return
  */
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]);
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA]);
 
 #ifdef _WIN32
 #define SETENV(VAR, VAL) _putenv_s(VAR, VAL);

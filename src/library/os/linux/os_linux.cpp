@@ -80,6 +80,7 @@ static void parseUUID(const char* uuid, unsigned char* buffer_out, unsigned int 
 /**
  * Encode a string of arbitrary length into a fixed-size buffer by XORing
  * the string bytes into the buffer, wrapping around when the buffer end is reached.
+
  *
  * @param input the input string to encode
  * @param buffer_out output buffer to fill
@@ -88,7 +89,11 @@ static void parseUUID(const char* uuid, unsigned char* buffer_out, unsigned int 
 static void encode_string_to_buffer(const std::string& input, unsigned char* buffer_out, size_t out_size) {
 	memset(buffer_out, 0, out_size);
 	for (size_t i = 0; i < input.size(); i++) {
-		buffer_out[i % out_size] ^= static_cast<unsigned char>(input[i]);
+		unsigned char current_byte = static_cast<unsigned char>(input[i]);
+		if (i % 2 == 1) {
+			current_byte = (current_byte << 4) | (current_byte >> 4);
+		}
+		buffer_out[i % out_size] ^= current_byte;
 	}
 }
 
@@ -458,17 +463,23 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	return FUNC_RET_OK;
 }
 
-FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[6]) {
+FUNCTION_RETURN getOsSpecificIdentifier(unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA]) {
 #if USE_DBUS
 	char* dbus_id = dbus_get_local_machine_id();
 	if (dbus_id == NULL) {
 		return FUNC_RET_ERROR;
 	}
-	memcpy(identifier, dbus_id, 6);
+	memcpy(identifier, dbus_id, HW_IDENTIFIER_PROPRIETARY_DATA);
 	dbus_free(dbus_id);
 	return FUNC_RET_OK;
 #else
-	return FUNC_RET_NOT_AVAIL;
+	std::ifstream machine_id_file("/etc/machine-id");
+	if (!machine_id_file.is_open()) {
+		return FUNC_RET_NOT_AVAIL;
+	}
+	std::string machine_id((std::istreambuf_iterator<char>(machine_id_file)), std::istreambuf_iterator<char>());
+	encode_string_to_buffer(machine_id, identifier, HW_IDENTIFIER_PROPRIETARY_DATA);
+	return FUNC_RET_OK;
 #endif
 }
 

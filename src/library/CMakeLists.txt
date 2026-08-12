@@ -15,18 +15,6 @@ ADD_LIBRARY(licensecc_static STATIC
     $<TARGET_OBJECTS:base>
 )
 
-ADD_LIBRARY(licensecc_shared SHARED
-    licensecc.cpp
-    license_facade.cpp
-    LicenseParser.cpp
-    limits/license_verifier.cpp
-    ini/ConvertUTF.cpp
-    $<TARGET_OBJECTS:hw_identifier>
-    $<TARGET_OBJECTS:locate>
-    $<TARGET_OBJECTS:os>
-    $<TARGET_OBJECTS:base>
-)
-
 if(CODE_COVERAGE AND UNIX)
     target_compile_options(licensecc_static PUBLIC -O0 -g --coverage)
 	target_link_options(licensecc_static PUBLIC --coverage)
@@ -57,7 +45,6 @@ target_include_directories(licensecc_static
 )
 
 add_library(licensecc::licensecc_static ALIAS licensecc_static)
-add_library(licensecc::licensecc_shared ALIAS licensecc_shared)
 
 install(TARGETS licensecc_static EXPORT licensecc
 	ARCHIVE DESTINATION ${main_lib_dest}/${LCC_PROJECT_NAME})

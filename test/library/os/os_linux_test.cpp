@@ -82,5 +82,17 @@ BOOST_AUTO_TEST_CASE(parse_blkid_file) {
 	BOOST_CHECK_MESSAGE(disk_infos[0].preferred, "Preferred found");
 }
 
+BOOST_AUTO_TEST_CASE(test_os_specific_id) {
+	unsigned char identifier[HW_IDENTIFIER_PROPRIETARY_DATA];
+	FUNCTION_RETURN result = getOsSpecificIdentifier(identifier);
+	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
+
+	// Check that the buffer is not all zeros
+	bool all_zero = true;
+	for (int i = 0; i < HW_IDENTIFIER_PROPRIETARY_DATA && all_zero; i++) {
+		all_zero = (identifier[i] == 0);
+	}
+	BOOST_CHECK_MESSAGE(!all_zero, "OS specific identifier is not all zero");
+}
 }  // namespace test
 }  // namespace license

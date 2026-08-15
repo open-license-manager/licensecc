@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <unistd.h>
 
 // Include cpuid.h only for x86/x64 architectures
 #if defined(__x86_64__) || defined(__i386__)
@@ -21,6 +22,10 @@
 namespace license {
 namespace os {
 using namespace std;
+
+// Number of logical processors, obtained with OS calls (architecture independent).
+static int get_cpu_cores_value() { return static_cast<int>(sysconf(_SC_NPROCESSORS_CONF)); }
+static int get_max_cpu_value() { return static_cast<int>(sysconf(_SC_NPROCESSORS_ONLN)); }
 
 #if defined(__x86_64__) || defined(__i386__)
 // x86/x64 implementation
@@ -61,7 +66,11 @@ static string get_cpu_brand() {
 	return result;
 }
 
-CpuInfo::CpuInfo() : m_vendor(get_cpu_vendor()), m_brand(get_cpu_brand()) {}
+CpuInfo::CpuInfo()
+	: m_vendor(get_cpu_vendor()),
+	  m_brand(get_cpu_brand()),
+	  m_cpu_cores(get_cpu_cores_value()),
+	  m_max_cpu(get_max_cpu_value()) {}
 
 CpuInfo::~CpuInfo() {}
 
@@ -214,7 +223,11 @@ static bool is_arm_hypervisor() {
 	return false;
 }
 
-CpuInfo::CpuInfo() : m_vendor(get_arm_cpu_vendor()), m_brand(get_arm_cpu_brand()) {}
+CpuInfo::CpuInfo()
+	: m_vendor(get_arm_cpu_vendor()),
+	  m_brand(get_arm_cpu_brand()),
+	  m_cpu_cores(get_cpu_cores_value()),
+	  m_max_cpu(get_max_cpu_value()) {}
 
 CpuInfo::~CpuInfo() {}
 
@@ -231,7 +244,11 @@ bool CpuInfo::virt_info_available() const { return false; }
 #else
 // Generic/Unknown architecture fallback
 
-CpuInfo::CpuInfo() : m_vendor("Unknown"), m_brand("Unknown Processor") {}
+CpuInfo::CpuInfo()
+	: m_vendor("Unknown"),
+	  m_brand("Unknown Processor"),
+	  m_cpu_cores(get_cpu_cores_value()),
+	  m_max_cpu(get_max_cpu_value()) {}
 
 CpuInfo::~CpuInfo() {}
 

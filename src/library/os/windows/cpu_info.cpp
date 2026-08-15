@@ -8,10 +8,10 @@
 #include <string>
 #include <unordered_set>
 #include <cstring>
+#include <windows.h>
 #include "../cpu_info.hpp"
 
 #ifdef _M_ARM64
-#include <windows.h>
 #include <winreg.h>
 #else
 #include <intrin.h>
@@ -175,7 +175,19 @@ bool CpuInfo::is_virtual() const {
 bool CpuInfo::virt_info_available() const { return true; }
 #endif
 
-CpuInfo::CpuInfo() : m_vendor(get_cpu_vendor()), m_brand(get_cpu_brand()) {}
+// Number of logical processors, obtained with OS calls (architecture independent).
+static int get_cpu_cores_value() {
+	SYSTEM_INFO sysInfo;
+	GetSystemInfo(&sysInfo);
+	return static_cast<int>(sysInfo.dwNumberOfProcessors);
+}
+static int get_max_cpu_value() { return get_cpu_cores_value(); }
+
+CpuInfo::CpuInfo()
+	: m_vendor(get_cpu_vendor()),
+	  m_brand(get_cpu_brand()),
+	  m_cpu_cores(get_cpu_cores_value()),
+	  m_max_cpu(get_max_cpu_value()) {}
 
 CpuInfo::~CpuInfo() {}
 

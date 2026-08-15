@@ -75,7 +75,7 @@ LCC_API_VIRTUALIZATION_DETAIL ExecutionEnvironment::virtualization_detail() cons
 	}
 
 	if (result == BARE_TO_METAL) {
-		if (m_cpu_info.is_virtual() || is_cloud()) {
+		if (m_cpu_info.is_virtual() || is_cloud() || is_container()) {
 			result = V_OTHER;
 		}
 	}
@@ -104,8 +104,8 @@ LCC_API_CLOUD_PROVIDER ExecutionEnvironment::cloud_provider() const {
 			result = AWS;
 		} else if (bios_vendor.find("MICROSOFT CORPORATION") != string::npos ||
 				   bios_description.find("MICROSOFTCORPORATION") != string::npos) {
-			//maybe a Microsoft surface tablet falls here? please double check,
-			//i don't have this hardware
+			// maybe a Microsoft surface tablet falls here? please double check,
+			// i don't have this hardware
 			result = AZURE_CLOUD;
 		} else {
 			for (const auto& vendor : pc_vendors) {

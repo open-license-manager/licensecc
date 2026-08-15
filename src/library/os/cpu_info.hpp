@@ -19,6 +19,8 @@ class CpuInfo {
 private:
 	const std::string m_vendor;
 	const std::string m_brand;
+	const int m_cpu_cores;
+	const int m_max_cpu;
 
 public:
 	CpuInfo();
@@ -36,6 +38,22 @@ public:
 	bool virt_info_available() const;
 	const std::string& vendor() const { return m_vendor; }
 	const std::string& brand() const { return m_brand; }
+	/**
+	 * Number of logical processors of the system.
+	 * On Linux it is the total number of configured processors
+	 * (sysconf _SC_NPROCESSORS_CONF), ignoring any CPU affinity or cgroup limit.
+	 * On Windows it is the number of processors reported by GetSystemInfo.
+	 * @return number of logical processors, 0 if it cannot be determined
+	 */
+	int get_cpu_cores() const { return m_cpu_cores; }
+	/**
+	 * Maximum number of logical processors usable by the current process.
+	 * On Linux it is the number of online processors available to the process
+	 * (sysconf _SC_NPROCESSORS_ONLN), honoring CPU affinity and cgroup limits.
+	 * On Windows it is the same value as get_cpu_cores().
+	 * @return number of logical processors, 0 if it cannot be determined
+	 */
+	int get_max_cpu() const { return m_max_cpu; }
 };
 
 }  // namespace os

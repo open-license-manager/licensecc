@@ -27,11 +27,11 @@ const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtual
 													 {KVM, "KVM"},
 													 {HV, "Microsoft Hypervisor"},
 													 {PARALLELS, "Parallels Desktop"},
-													 {V_OTHER, "Other type of vm"}};
+													 {V_OTHER, "Other type of vm/container"}};
 
 const unordered_map<int, string> descByVirt = {{LCC_API_VIRTUALIZATION_SUMMARY::NONE, "No virtualization"},
 											   {LCC_API_VIRTUALIZATION_SUMMARY::VM, "Virtual machine"},
-											   {LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container"}};
+											   {LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER, "Container(docker/lxc)"}};
 
 const unordered_map<int, string> descByCloudProvider = {{PROV_UNKNOWN, "Provider unknown"},
 														{ON_PREMISE, "On premise hardware (no cloud)"},
@@ -110,10 +110,10 @@ int main(int argc, char* argv[]) {
 	if (ret == FUNCTION_RETURN::FUNC_RET_OK) {
 		for (auto osAdapter : adapterInfos) {
 			cout << "Network adapter [" << osAdapter.id << "]: " << osAdapter.description << endl;
-			cout << "   ip address [" << static_cast<unsigned int>(osAdapter.ipv4_address[3]) << "-"
-				 << static_cast<unsigned int>(osAdapter.ipv4_address[2]) << "-"
+			cout << "   ip address [" << static_cast<unsigned int>(osAdapter.ipv4_address[0]) << "-"
 				 << static_cast<unsigned int>(osAdapter.ipv4_address[1]) << "-"
-				 << static_cast<unsigned int>(osAdapter.ipv4_address[0]) << "]" << endl;
+				 << static_cast<unsigned int>(osAdapter.ipv4_address[2]) << "-"
+				 << static_cast<unsigned int>(osAdapter.ipv4_address[3]) << "]" << endl;
 			cout << "   mac address [" << std::hex;
 			for (int i = 0; i < sizeof(osAdapter.mac_address); i++) {
 				if (i != 0) {
@@ -143,6 +143,8 @@ int main(int argc, char* argv[]) {
 	cout << "Cpu Brand        :" << cpu.brand() << endl;
 	cout << "Cpu hypervisor   :" << cpu.is_virtual() << endl;
 	cout << "Cpu model        :0x" << std::hex << ((long)cpu.model()) << std::dec << endl;
+	cout << "Cpu cores        :" << cpu.get_cpu_cores() << endl;
+	cout << "Cpu max(cgroup)  :" << cpu.get_max_cpu() << endl;
 	license::os::BoardInfo board_info;
 	cout << "Bios vendor      :" << board_info.bios_vendor() << endl;
 	cout << "Bios description :" << board_info.bios_description() << endl;

@@ -23,6 +23,9 @@ BOOST_AUTO_TEST_CASE(cpu_info) {
 	}
 	BOOST_CHECK_MESSAGE(!cpuInfo.brand().empty(), "some cpu brand was returned");
 	BOOST_TEST_MESSAGE(string("Vendor: ") + cpuInfo.vendor() + ",brand:" + cpuInfo.brand());
+	BOOST_CHECK_MESSAGE(cpuInfo.get_cpu_cores() > 0, "number of cpu cores > 0");
+	BOOST_TEST_MESSAGE(string("Cpu cores: ") + to_string(cpuInfo.get_cpu_cores()) +
+					   ", max cpu: " + to_string(cpuInfo.get_max_cpu()));
 }
 
 }  // namespace test

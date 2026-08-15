@@ -31,6 +31,15 @@ typedef struct {
 	char label[255];
 	bool label_initialized = false;
 	bool preferred = false;
+
+	/**
+	 * Before 2.1.0
+	 * BUG: physical serial is only available in Linux if root.
+	 * remove this. improve the disk_sn (that is already doing the good stuff)
+	 * (just need to remove the -partxx in the end if present) and change disk_sn to string.
+	 * For windows use the same disk_sn both for physical and logical volume(as fallback.)
+	 */
+
 	std::string physical_serial;
 	bool physical_serial_initialized = false;
 

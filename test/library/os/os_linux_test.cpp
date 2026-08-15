@@ -45,12 +45,9 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 			}
 
 			if (disk_info.preferred) {
-				bool all_zero = true;
-				for (int i = 0; i < sizeof(disk_info.physical_serial) && all_zero; i++) {
-					all_zero = (disk_info.physical_serial[i] == '\0');
-				}
-				BOOST_CHECK_MESSAGE(!all_zero, "physical_id is not all zero for preferred disk");
 				BOOST_CHECK_MESSAGE(disk_info.sn_initialized, "serial number found");
+				BOOST_CHECK_MESSAGE(disk_info.label_initialized, "Label found");
+				BOOST_CHECK(strnlen(disk_info.label, sizeof(disk_info.label)) > 0);
 			}
 		}
 		BOOST_CHECK_MESSAGE(uuid_found, "At least one UUID initialized");

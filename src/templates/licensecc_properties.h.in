@@ -102,39 +102,43 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
 	STRATEGY_ETHERNET = 0,
 	STRATEGY_IP_ADDRESS = 1,
 	STRATEGY_DISK = 2,
-	/**
-	 * Not yet implemented
-	 */
-	STRATEGY_CPU_SIZE = 3,
-	STRATEGY_CPU_MODEL = 4,
+	STRATEGY_CPU_MODEL = 3,
 	/**
 	 * Uses OS-specific identifier to generate hardware id.
 	 *
 	 * This strategy uses the OS-specific machine identifier (e.g., /etc/machine-id on Linux,
 	 * ProductId on Windows) to generate the hardware identifier.
 	 */
-	STRATEGY_SYSTEM_ID = 5
+	STRATEGY_SYSTEM_ID = 4
 
 };
 
 /**
  * @addtogroup strategies
  * @{
+ *
+ * The following group of settings change the behavior of the underlying strategy selection
+ * when LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT is choosen.
  */
 /**
+ *
  * List the strategies used when no virtual envrionment is detected
  */
-#define LCC_BARE_TO_METAL_STRATEGIES {STRATEGY_DISK, STRATEGY_HOST_NAME, STRATEGY_NONE}
+#define LCC_BARE_TO_METAL_STRATEGIES {STRATEGY_DISK, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
 /**
  * List the strategies used when the software is executing in a virtual machine
  */
-#define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_NONE}
-#define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_NONE}
-#define LCC_DOCKER_STRATEGIES {STRATEGY_NONE}
+#define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_NONE}
+#define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
+#define LCC_DOCKER_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
 /**
  * List the strategies used when it's detected an execution in the cloud
  */
 #define LCC_CLOUD_STRATEGIES {STRATEGY_NONE}
+
+/**
+ * @}
+ */
 
 /**
  * Lenght of the proprietary data contained in the pc identifier.
@@ -145,9 +149,6 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
  * bytes long.
  */
 #define HW_IDENTIFIER_PROPRIETARY_DATA 8
-/**
- * @}
- */
 
 #endif
 /**

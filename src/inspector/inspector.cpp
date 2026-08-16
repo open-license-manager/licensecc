@@ -17,11 +17,9 @@
 using namespace std;
 using namespace license::os;
 
-const map<int, string> stringByStrategyId = {{STRATEGY_DEFAULT, "DEFAULT"},
-											 {STRATEGY_ETHERNET, "MAC"},
-											 {STRATEGY_IP_ADDRESS, "IP"},
-											 {STRATEGY_DISK, "Disk"},
-											 {STRATEGY_SYSTEM_ID, "System"}};
+const map<int, string> stringByStrategyId = {{STRATEGY_DEFAULT, "DEFAULT"},		{STRATEGY_ETHERNET, "MAC"},
+											 {STRATEGY_IP_ADDRESS, "IP"},		{STRATEGY_DISK, "Disk"},
+											 {STRATEGY_CPU_MODEL, "Cpu Model"}, {STRATEGY_SYSTEM_ID, "System"}};
 
 const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtualization"},
 													 {VMWARE, "Vmware"},

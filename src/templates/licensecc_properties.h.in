@@ -129,12 +129,14 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
  * List the strategies used when the software is executing in a virtual machine
  */
 #define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_NONE}
+/**
+ * List the strategies used when it's detected a VM executed execution in the cloud.
+ * CPU_MODEL is not very restrictive. Need to debug with Inspector.
+ */
+#define LCC_CLOUD_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
+
 #define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
 #define LCC_DOCKER_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
-/**
- * List the strategies used when it's detected an execution in the cloud
- */
-#define LCC_CLOUD_STRATEGIES {STRATEGY_NONE}
 
 /**
  * @}

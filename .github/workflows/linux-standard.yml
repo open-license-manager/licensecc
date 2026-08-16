@@ -43,8 +43,12 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-26.04' || matrix.os == 'ubuntu-26.04-arm') }}
       run: >
         sudo apt-get install -y libjitterentropy3-dev valgrind lcov gcovr
-    #- name: Inspect
-    #  run: |
+    - name: Inspect
+      continue-on-error: true
+      run: |
+        ls -lad /dev/disk/by-id/*
+        ls -lad /dev/disk/by-uuid/*
+        ls -lad /dev/disk/by-label/*
     #    ls -la /proc; 
     #    cat /proc/cmdline;
     #    cat /proc/cpuinfo; 

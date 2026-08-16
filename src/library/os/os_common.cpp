@@ -5,6 +5,7 @@
 #include <cstdint>
 #include "../base/string_utils.h"
 #include "../base/logger.h"
+#include "cpu_info.hpp"
 #include "os_common.h"
 #include "os.h"
 
@@ -12,10 +13,10 @@
  * Implementation of DiskInfo::to_string method
  */
 std::string DiskInfo::to_string() const {
-	std::string result = "DiskInfo{id=" + std::to_string(id) + ", device=" + std::string(device) + ", disk_sn=" + disk_sn +
-			  ", sn_initialized=" + std::to_string(sn_initialized) + ", label=" + std::string(label) +
-			  ", label_initialized=" + std::to_string(label_initialized) + ", preferred=" + std::to_string(preferred) +
-			  "}";
+	std::string result = "DiskInfo{id=" + std::to_string(id) + ", device=" + std::string(device) +
+						 ", disk_sn=" + disk_sn + ", sn_initialized=" + std::to_string(sn_initialized) +
+						 ", label=" + std::string(label) + ", label_initialized=" + std::to_string(label_initialized) +
+						 ", preferred=" + std::to_string(preferred) + "}";
 
 	return result;
 }
@@ -32,4 +33,10 @@ std::string guidToString(const unsigned char (&bytes)[16]) {
 			 (unsigned)((uint16_t)bytes[6] | ((uint16_t)bytes[7] << 8)), bytes[8], bytes[9], bytes[10], bytes[11],
 			 bytes[12], bytes[13], bytes[14], bytes[15]);
 	return std::string(buffer);
+}
+
+FUNCTION_RETURN getCPUModel(uint32_t& cpu_model) {
+	license::os::CpuInfo cpu;
+	cpu_model = cpu.model();
+	return FUNCTION_RETURN::FUNC_RET_OK;
 }

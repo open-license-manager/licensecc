@@ -98,8 +98,8 @@ Uses the **OS-specific machine identifier**:
 - On **ARM Linux**: cpu model are taken from `/proc/cpuinfo`.
 
 - **Bare to metal**: ✅ Stable — Does survive an OS reinstallation.
-- **Virtual machine**: ✅ Useless(?) — the cpu identifier is virtualized.
-- **Container (Docker/LXC)**: ❓ This is a good choice to lock the docker to the machine where it is executed.
+- **Virtual machine**: ✅ Not very useful — the cpu identifier is modified by the Hypervisor (KVM..).
+- **Container (Docker/LXC)**: Stable - This is a good choice to lock the docker to the machine where it is executed.
 
 .. _SYSTEM_ID:
 
@@ -115,7 +115,7 @@ Uses the **OS-specific machine identifier**:
 - **Bare to metal**: ✅ Stable — the OS machine ID is set at installation time and
   persists across reboots. Does not survive an OS reinstallation.
 - **Virtual machine**: ✅ Works — the identifier survives VM restarts, but may change
-  if the VM is re-deployed from a template.
+  if the VM is re-deployed from a template. So it may not be suitable for short lived VM [TO BE Tested]
 - **Container (Docker/LXC)**: ❓ To be tested, to understand the applicability.
 
 

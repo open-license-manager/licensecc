@@ -19,7 +19,6 @@
 #ifndef NDEBUG
 #include <valgrind/memcheck.h>
 #endif
-#include "../cpu_info.hpp"
 
 // disks by physical id (more stable than uuid)
 #define ID_FOLDER "/dev/disk/by-id"
@@ -321,13 +320,6 @@ static void set_preferred_disks(std::vector<DiskInfo>& diskInfos, std::unordered
 	}
 	endmntent(fstabFile);
 	return;
-}
-
-
-FUNCTION_RETURN getCPUModel(uint32_t &cpu_model){
-  license::os::CpuInfo cpu;
-  cpu_model = cpu.model();
-  return FUNCTION_RETURN::FUNC_RET_OK;
 }
 
 /**

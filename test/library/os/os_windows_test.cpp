@@ -35,12 +35,7 @@ BOOST_AUTO_TEST_CASE(test_get_disk_infos) {
 			BOOST_CHECK_MESSAGE(diskInfo.sn_initialized, "Disk serial number should be initialized");
 			BOOST_CHECK_MESSAGE(diskInfo.label_initialized, "Disk label should be initialized");
 
-			// Check that disk serial number is not all zeros
-			bool allZero = true;
-			for (int i = 0; i < sizeof(diskInfo.disk_sn) && allZero; i++) {
-				allZero = (diskInfo.disk_sn[i] == 0);
-			}
-			BOOST_CHECK_MESSAGE(!allZero, "Disk serial number should not be all zeros");
+			BOOST_CHECK_MESSAGE(!diskInfo.disk_sn.empty(), "Disk serial number should not be empty");
 		}
 	}
 }

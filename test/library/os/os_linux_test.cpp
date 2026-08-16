@@ -29,7 +29,6 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		bool preferred_found = false;
 		bool uuid_found = false;
 		bool label_found = false;
-		bool physical_sn_found = false;
 
 		for (auto disk_info : disk_infos) {
 			uuid_found = uuid_found || disk_info.sn_initialized;
@@ -37,11 +36,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 			label_found = label_found || disk_info.label_initialized;
 
 			if (disk_info.sn_initialized) {
-				bool all_zero = true;
-				for (int i = 0; i < sizeof(disk_info.disk_sn) && all_zero; i++) {
-					all_zero = (disk_info.disk_sn[i] == 0);
-				}
-				BOOST_CHECK_MESSAGE(!all_zero, "disksn is not all zero");
+				BOOST_CHECK_MESSAGE(!disk_info.disk_sn.empty(), "disksn is not empty");
 			}
 
 			if (disk_info.preferred) {
@@ -76,6 +71,8 @@ BOOST_AUTO_TEST_CASE(parse_blkid_file) {
 	BOOST_CHECK_MESSAGE(disk_infos.size() == 2, "Two disks found");
 	BOOST_CHECK_MESSAGE(string("Linux swap") == disk_infos[0].label, "Label parsed OK");
 	BOOST_CHECK_MESSAGE(string("/dev/sda3") == disk_infos[0].device, "device parsed");
+	BOOST_CHECK_MESSAGE(disk_infos[0].disk_sn == "baccfd49-5203-4e34-9b8b-a2bbaf9b4e24",
+						"disk serial set to disk uuid");
 	BOOST_CHECK_MESSAGE(disk_infos[0].preferred, "Preferred found");
 }
 

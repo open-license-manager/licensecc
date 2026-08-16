@@ -13,12 +13,6 @@
 #include "../../base/string_utils.h"
 #include <unordered_map>
 
-#include <sys/ioctl.h>
-#include <linux/nvme_ioctl.h>
-#include <scsi/sg.h>
-#include <fcntl.h>
-#include <algorithm>
-
 #include <mntent.h>
 #include <dirent.h>
 #include <sys/utsname.h>
@@ -26,14 +20,12 @@
 #include <valgrind/memcheck.h>
 #endif
 
-// #ifdef USE_DISK_MODEL
-/// #define PARSE_ID_FUNC parse_disk_id
-// #define ID_FOLDER "/dev/disk/by-id"
-// #else
-#define PARSE_ID_FUNC parseUUID
-#define ID_FOLDER "/dev/disk/by-uuid"
+// disks by physical id (more stable than uuid)
+#define ID_FOLDER "/dev/disk/by-id"
+#define UUID_FOLDER "/dev/disk/by-uuid"
 #define SERIAL_FOLDER "/run/udev/data"
-// #endif
+#define BLKID_LOCATIONS {"/run/blkid/blkid.tab", "/etc/blkid.tab"};
+
 #ifdef USE_DBUS
 #include <dbus-1.0/dbus/dbus.h>
 #endif
@@ -41,46 +33,9 @@
 using namespace license;
 
 /**
- *Usually uuid are hex number separated by "-". this method read up to 8 hex
- *numbers skipping - characters.
- *@param uuid uuid as read in /dev/disk/by-uuid
- *@param buffer_out: unsigned char buffer[8] output buffer for result
- */
-static void parseUUID(const char* uuid, unsigned char* buffer_out, unsigned int out_size) {
-	unsigned int i, j;
-	char* hexuuid;
-	unsigned char cur_character;
-	// remove characters not in hex set
-	size_t len = strlen(uuid);
-	hexuuid = (char*)malloc(sizeof(char) * len);
-	memset(buffer_out, 0, out_size);
-	memset(hexuuid, 0, sizeof(char) * len);
-
-	for (i = 0, j = 0; i < len; i++) {
-		if (isxdigit(uuid[i])) {
-			hexuuid[j] = uuid[i];
-			j++;
-		} else {
-			// skip
-			continue;
-		}
-	}
-	if (j % 2 == 1) {
-		hexuuid[j++] = '0';
-	}
-	hexuuid[j] = '\0';
-	for (i = 0; i < j / 2; i++) {
-		sscanf(&hexuuid[i * 2], "%2hhx", &cur_character);
-		buffer_out[i % out_size] = buffer_out[i % out_size] ^ cur_character;
-	}
-
-	free(hexuuid);
-}
-
-/**
  * 	int id;
 	char device[MAX_PATH];
-	unsigned char disk_sn[8];
+	std::string disk_sn;
 	char label[255];
 	int preferred;
  * @param blkidfile
@@ -108,21 +63,28 @@ FUNCTION_RETURN parse_blkid(const std::string& blkid_file_content, std::vector<D
 		std::string label = getAttribute(cur_dev, "PARTLABEL");
 		mstrlcpy(diskInfo.label, label.c_str(), 255);
 		std::string disk_sn = getAttribute(cur_dev, "UUID");
-		parseUUID(disk_sn.c_str(), diskInfo.disk_sn, sizeof(diskInfo.disk_sn));
+		if (!disk_sn.empty()) {
+			diskInfo.disk_sn = disk_sn;
+			diskInfo.sn_initialized = true;
+			// used later to set preferred disks
+			disk_by_uuid.insert(std::pair<std::string, int>(disk_sn, diskInfo.id));
+		} else {
+			std::string part_uuid = getAttribute(cur_dev, "PARTUUID");
+			if (!part_uuid.empty()) {
+				diskInfo.disk_sn = part_uuid;
+				diskInfo.sn_initialized = true;
+			}
+		}
 		std::string disk_type = getAttribute(cur_dev, "TYPE");
-		disk_by_uuid.insert(std::pair<std::string, int>(disk_sn, diskInfo.id));
 		diskInfo.label_initialized = true;
-		diskInfo.sn_initialized = true;
 		// unlikely that somebody put the swap on a removable disk.
 		// this is a first rough guess on what can be a preferred disk for blkid devices
-		// just in case /etc/fstab can't be accessed or it is not up to date.
+		// just in case /etc/fstab can't be accessed
 		diskInfo.preferred = (disk_type == "swap");
 		diskInfos_out.push_back(diskInfo);
 	}
 	return FUNCTION_RETURN::FUNC_RET_OK;
 }
-
-#define BLKID_LOCATIONS {"/run/blkid/blkid.tab", "/etc/blkid.tab"};
 
 static FUNCTION_RETURN getDiskInfos_blkid(std::vector<DiskInfo>& diskInfos,
 										  std::unordered_map<std::string, int>& disk_by_uuid) {
@@ -184,101 +146,48 @@ static void read_disk_labels(std::vector<DiskInfo>& disk_infos) {
 	}
 }
 
-inline void ltrim(std::string& s) {
-	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch) && 0 != ch; }));
-}
-inline void rtrim(std::string& s) {
-	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch) && 0 != ch; }).base(),
-			s.end());
-}
-inline void trim(std::string& s) {
-	rtrim(s);
-	ltrim(s);
+/*try to read disk_by_uuid map to set preferred disks later*/
+static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid) {
+	struct dirent* dir = NULL;
+	struct stat sym_stat;
+
+	DIR* disk_by_uuid_dir = opendir(UUID_FOLDER);
+	if (disk_by_uuid_dir == nullptr) {
+		LOG_DEBUG("Open " UUID_FOLDER " fail: %s", std::strerror(errno));
+	} else {
+		const std::string base_dir(ID_FOLDER "/");
+		while ((dir = readdir(disk_by_uuid_dir)) != nullptr) {
+			if (::strcmp(dir->d_name, ".") == 0 || ::strcmp(dir->d_name, "..") == 0 ||
+				::strncmp(dir->d_name, "usb", 3) == 0) {
+				continue;
+			}
+
+			std::string cur_dir = base_dir + dir->d_name;
+			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
+				int ino = sym_stat.st_ino;
+				disk_by_uuid.insert(std::pair<std::string, int>(std::string(dir->d_name), ino));
+			}
+		}
+	}
 }
 
 /**
- * return the disk physical serial number
- * for nvme a Plain ASCII, null-padded to 20 bytes (eg S5H5NX0T100123)
+ * Clean a disk identifier read from /dev/disk/by-id: strip a trailing "-part"
+ * suffix and any leading nvme- or ata- prefix.
  */
-FUNCTION_RETURN getDiskSerial(const std::string& devname, std::string& out_serial) {
-	std::string filename("/dev/");
-	filename.append(devname);
-	if (devname.compare(0, 4, "nvme") == 0) {
-		int fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
-		if (fd < 0) {
-			LOG_DEBUG("Can't open %s: %s", devname.c_str(), std::strerror(errno));
-			return FUNC_RET_ERROR;
-		}
-
-		char buf[4096] = {0};
-		struct nvme_admin_cmd mib = {0};
-		mib.opcode = 0x06;
-		mib.nsid = 0;
-		mib.addr = (__u64)buf;
-		mib.data_len = sizeof(buf);
-		mib.cdw10 = 1;
-
-		int ret = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &mib);
-		close(fd);
-		if (ret) {
-			LOG_DEBUG("Ioctl for %s failed: %s", devname.c_str(), std::strerror(errno));
-			return FUNC_RET_ERROR;
-		}
-
-		std::string serial(&buf[4], 20);
-		trim(serial);
-		out_serial = serial;
-		LOG_DEBUG("Disk: %s; Serial: %s", devname.c_str(), serial.c_str());
-	} else if (devname.compare(0, 2, "sd") == 0) {
-		int fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
-		if (fd < 0) {
-			LOG_DEBUG("Can't open %s: %s", devname.c_str(), std::strerror(errno));
-			return FUNC_RET_ERROR;
-		}
-		unsigned char cmd[] = {0x12, 0x01, 0x80, 0, 0, 0};
-		unsigned int data_size = 0x00ff;
-		char data[data_size];
-		unsigned int sense_len = 32;
-		unsigned char sense[sense_len];
-		int res, pl, i;
-
-		cmd[3] = (data_size >> 8) & 0xff;
-		cmd[4] = data_size & 0xff;
-		struct sg_io_hdr io_hdr = {0};
-		io_hdr.interface_id = 'S';
-		io_hdr.cmdp = cmd;
-		io_hdr.cmd_len = sizeof(cmd);
-		io_hdr.sbp = sense;
-		io_hdr.mx_sb_len = sense_len;
-		io_hdr.dxfer_direction = SG_DXFER_FROM_DEV;
-		io_hdr.dxferp = data;
-		io_hdr.dxfer_len = data_size;
-		io_hdr.timeout = 1000; /* SCSI timeout in ms */
-
-		int ret = ioctl(fd, SG_IO, &io_hdr);
-		close(fd);
-		if (ret < 0) {
-			LOG_DEBUG("Ioctl for %s failed: %s", devname.c_str(), std::strerror(errno));
-			return FUNC_RET_ERROR;
-		}
-		if ((io_hdr.info & SG_INFO_OK_MASK) != SG_INFO_OK) {
-			return FUNC_RET_ERROR;
-		}
-
-		std::string serial(&data[4], (uint8_t)data[3] - 2);
-		// serial = serial.c_str();
-		trim(serial);
-		out_serial = serial;
-		LOG_DEBUG("Disk: %s; Serial: %s", devname.c_str(), serial.c_str());
-	} else if (devname.compare(0, 2, "hd") == 0) {
-		LOG_DEBUG("%s disk not supported", devname.c_str());
-		return FUNC_RET_ERROR;
-	} else {
-		LOG_DEBUG("%s disk not supported", devname.c_str());
-		return FUNC_RET_ERROR;
+static std::string clean_disk_id(const std::string& id) {
+	std::string cleaned = id;
+	// strip everything from the trailing "-part" suffix on
+	const char* suffix = "-part";
+	const std::size_t suffix_pos = cleaned.rfind(suffix);
+	if (suffix_pos != std::string::npos) {
+		cleaned = cleaned.substr(0, suffix_pos);
 	}
-
-	return FUNCTION_RETURN::FUNC_RET_OK;
+	// strip leading "nvme-" or "ata-" prefix
+	if (cleaned.compare(0, 5, "nvme-") == 0 || cleaned.compare(0, 4, "ata-") == 0) {
+		cleaned = cleaned.substr(cleaned.find('-') + 1);
+	}
+	return cleaned;
 }
 
 FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
@@ -302,6 +211,10 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 			std::string cur_dir = base_dir + dir->d_name;
 			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
 				DiskInfo tmpDiskInfo = {};
+				// Possible error here, the symlink /dev/by-id/nvme-XXXXXX-part1 according to SO has its own
+				// inode. must find the inode of the device in /dev in order to be able to merge with
+				// /dev/by-label disks later. On my Ubuntu ls -d * reports the inode of the device in dev so
+				// it works. check for open bugs.
 				tmpDiskInfo.id = sym_stat.st_ino;
 				ssize_t len = ::readlink(cur_dir.c_str(), device_name, MAX_PATH - 1);
 				if (len != -1) {
@@ -312,15 +225,11 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 						device_name_s = device_name_s.substr(pos + 1);
 					}
 					mstrlcpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
-					PARSE_ID_FUNC(dir->d_name, tmpDiskInfo.disk_sn, sizeof(tmpDiskInfo.disk_sn));
-					std::string serial;
-					if (getDiskSerial(device_name_s, serial) == FUNC_RET_OK) {
-						tmpDiskInfo.physical_serial = serial;
-						tmpDiskInfo.physical_serial_initialized = true;
-					}
+					tmpDiskInfo.disk_sn = clean_disk_id(dir->d_name);
 					tmpDiskInfo.sn_initialized = true;
 					tmpDiskInfo.label_initialized = false;
 					tmpDiskInfo.preferred = false;
+					// avoid duplicates
 					bool found = false;
 					for (auto diskInfo : disk_infos) {
 						if (tmpDiskInfo.id == diskInfo.id) {
@@ -328,10 +237,9 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 							break;
 						}
 					}
-					disk_by_uuid.insert(std::pair<std::string, int>(std::string(dir->d_name), tmpDiskInfo.id));
 					if (!found) {
 						LOG_DEBUG("Found disk inode %d device %s, sn %s", sym_stat.st_ino, tmpDiskInfo.device,
-								  dir->d_name);
+								  tmpDiskInfo.disk_sn.c_str());
 						disk_infos.push_back(tmpDiskInfo);
 					}
 				} else {
@@ -345,7 +253,10 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 	}
 
 	result = disk_infos.size() > 0 ? FUNCTION_RETURN::FUNC_RET_OK : FUNCTION_RETURN::FUNC_RET_NOT_AVAIL;
-	read_disk_labels(disk_infos);
+	if (result == FUNCTION_RETURN::FUNC_RET_OK) {
+		read_disk_labels(disk_infos);
+		read_disk_uuids(disk_by_uuid);
+	}
 	return result;
 }
 

@@ -17,8 +17,11 @@
 using namespace std;
 using namespace license::os;
 
-const map<int, string> stringByStrategyId = {
-	{STRATEGY_DEFAULT, "DEFAULT"}, {STRATEGY_ETHERNET, "MAC"}, {STRATEGY_IP_ADDRESS, "IP"}, {STRATEGY_DISK, "Disk"}};
+const map<int, string> stringByStrategyId = {{STRATEGY_DEFAULT, "DEFAULT"},
+											 {STRATEGY_ETHERNET, "MAC"},
+											 {STRATEGY_IP_ADDRESS, "IP"},
+											 {STRATEGY_DISK, "Disk"},
+											 {STRATEGY_SYSTEM_ID, "System"}};
 
 const unordered_map<int, string> descByVirtDetail = {{BARE_TO_METAL, "No virtualization"},
 													 {VMWARE, "Vmware"},
@@ -94,6 +97,8 @@ int main(int argc, char* argv[]) {
 			std::cout << x.second << ": NA" << endl;
 		}
 	}
+
+	cout << "============ System ============" << endl;
 	cout << "Virtualiz. class :" << descByVirt.find(exec_env_info.virtualization)->second << endl;
 	cout << "Virtualiz. detail:" << descByVirtDetail.find(exec_env_info.virtualization_detail)->second << endl;
 	cout << "Cloud provider   :" << descByCloudProvider.find(exec_env_info.cloud_provider)->second << endl;

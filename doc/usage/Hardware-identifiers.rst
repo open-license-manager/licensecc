@@ -86,9 +86,24 @@ identifiers: one per disk, first by serial number then by label.
   serials for each VM clone.
 - **Container (Docker/LXC)**: ❌ Not available — containers typically do not have direct access to the host's block devices.
 
+.. _CPU_MODEL:
+
+``STRATEGY_CPU_MODEL`` (3)
+==========================
+
+Uses the **OS-specific machine identifier**:
+
+- On **Intel** (Linux/Windows): use ``__cpuid`` to get the cpu model. 
+- On **ARM Windows**: we can get cpu model information from registry.
+- On **ARM Linux**: cpu model are taken from `/proc/cpuinfo`.
+
+- **Bare to metal**: ✅ Stable — Does survive an OS reinstallation.
+- **Virtual machine**: ✅ Useless(?) — the cpu identifier is virtualized.
+- **Container (Docker/LXC)**: ❓ This is a good choice to lock the docker to the machine where it is executed.
+
 .. _SYSTEM_ID:
 
-``STRATEGY_SYSTEM_ID`` (5)
+``STRATEGY_SYSTEM_ID`` (4)
 ==========================
 
 Uses the **OS-specific machine identifier**:
@@ -156,6 +171,8 @@ Summary
 This is what `STRATEGY_DEFAULT` does for you, but you may want to customize it, as described above.
 
 .. tip::
+  For details on customizing the identifier generation, see the
+  :doc:`hardware identifiers reference <api/hardware_identifiers>`.
 
 
 

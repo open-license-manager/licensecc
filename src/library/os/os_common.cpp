@@ -13,10 +13,11 @@
  * Implementation of DiskInfo::to_string method
  */
 std::string DiskInfo::to_string() const {
-	std::string result = "DiskInfo{id=" + std::to_string(id) + ", device=" + std::string(device) +
-						 ", disk_sn=" + disk_sn + ", sn_initialized=" + std::to_string(sn_initialized) +
-						 ", label=" + std::string(label) + ", label_initialized=" + std::to_string(label_initialized) +
-						 ", preferred=" + std::to_string(preferred) + "}";
+	std::string result =
+		"DiskInfo{id=" + std::to_string(id) + ", device=" + std::string(device) + ", disk_uuid=" + disk_uuid +
+		", uuid_initialized=" + std::to_string(uuid_initialized) + ", disk_phys_id=" + disk_phys_id +
+		", disk_phys_id_initialized=" + std::to_string(disk_phys_id_initialized) + ", label=" + std::string(label) +
+		", label_initialized=" + std::to_string(label_initialized) + ", preferred=" + std::to_string(preferred) + "}";
 
 	return result;
 }

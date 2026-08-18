@@ -32,10 +32,16 @@ FUNCTION_RETURN DiskStrategy::alternative_ids(std::vector<HwIdentifier>& identif
 		bool preferred = (j == 0);
 		for (size_t i = 0; i < disk_infos.size(); i++) {
 			if (disk_infos[i].preferred == preferred) {
-				if (disk_infos[i].sn_initialized) {
+				if (disk_infos[i].disk_phys_id_initialized) {
 					HwIdentifier tmp_id;
 					tmp_id.set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DISK);
-					tmp_id.set_data(disk_infos[i].disk_sn);
+					tmp_id.set_data(disk_infos[i].disk_phys_id);
+					identifiers.push_back(tmp_id);
+				}
+				if (disk_infos[i].uuid_initialized) {
+					HwIdentifier tmp_id;
+					tmp_id.set_identification_strategy(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DISK);
+					tmp_id.set_data(disk_infos[i].disk_uuid);
 					identifiers.push_back(tmp_id);
 				}
 				if (disk_infos[i].label_initialized) {

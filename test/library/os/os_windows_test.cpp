@@ -32,10 +32,10 @@ BOOST_AUTO_TEST_CASE(test_get_disk_infos) {
 		BOOST_CHECK_MESSAGE(diskInfos.size() > 0, "Should have at least one disk");
 
 		for (const auto& diskInfo : diskInfos) {
-			BOOST_CHECK_MESSAGE(diskInfo.sn_initialized, "Disk serial number should be initialized");
+			BOOST_CHECK_MESSAGE(diskInfo.uuid_initialized, "Disk serial number should be initialized");
 			BOOST_CHECK_MESSAGE(diskInfo.label_initialized, "Disk label should be initialized");
 
-			BOOST_CHECK_MESSAGE(!diskInfo.disk_sn.empty(), "Disk serial number should not be empty");
+			BOOST_CHECK_MESSAGE(!diskInfo.disk_uuid.empty(), "Disk serial number should not be empty");
 		}
 	}
 }

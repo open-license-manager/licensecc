@@ -55,14 +55,14 @@ FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos) {
 				if (success) {
 					LOG_DEBUG("drive: %s,volume Name: %s, Volume Serial: 0x%x,Filesystem: %s", szSingleDrive, volName,
 							  volSerial, fileSysName);
-					DiskInfo diskInfo = {};
+					DiskInfo diskInfo = {0};
 					diskInfo.id = (int)ndrives;
 					diskInfo.label_initialized = true;
 					license::mstrlcpy(diskInfo.device, volName, min(std::size_t{MAX_PATH}, sizeof(volName)));
 					license::mstrlcpy(diskInfo.label, fileSysName,
 									  min(sizeof(diskInfos[ndrives].label), sizeof(fileSysName)));
-					diskInfo.disk_sn = std::to_string(volSerial);
-					diskInfo.sn_initialized = true;
+					diskInfo.disk_uuid = std::to_string(volSerial);
+					diskInfo.uuid_initialized = true;
 					diskInfo.preferred = (szSingleDrive[0] == 'C');
 					diskInfos.push_back(diskInfo);
 					ndrives++;
@@ -192,4 +192,3 @@ FUNCTION_RETURN getOsSpecificIdentifier(std::string& identifier) {
 							 identifier);
 	return ret;
 }
-

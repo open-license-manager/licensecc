@@ -27,17 +27,18 @@ typedef struct {
 	int id;
 	// e.g. C: or /dev/sda3
 	char device[MAX_PATH];
-	std::string disk_sn;
-	bool sn_initialized;
+	std::string disk_uuid;
+	bool uuid_initialized;
+	std::string disk_phys_id;
+	bool disk_phys_id_initialized;
 	char label[255];
 	bool label_initialized = false;
 	bool preferred = false;
-
 	std::string to_string() const;
 } DiskInfo;
 
 FUNCTION_RETURN getDiskInfos(std::vector<DiskInfo>& diskInfos);
-FUNCTION_RETURN getCPUModel(uint32_t &cpu_model);
+FUNCTION_RETURN getCPUModel(uint32_t& cpu_model);
 FUNCTION_RETURN getUserHomePath(char[MAX_PATH]);
 FUNCTION_RETURN getModuleName(char buffer[MAX_PATH]);
 FUNCTION_RETURN getMachineName(unsigned char identifier[6]);

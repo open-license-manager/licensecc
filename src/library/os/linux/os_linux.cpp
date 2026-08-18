@@ -35,7 +35,7 @@ using namespace license;
 /**
  * 	int id;
 	char device[MAX_PATH];
-	std::string disk_sn;
+	std::string disk_uuid;
 	char label[255];
 	int preferred;
  * @param blkidfile
@@ -62,17 +62,17 @@ FUNCTION_RETURN parse_blkid(const std::string& blkid_file_content, std::vector<D
 		mstrlcpy(diskInfo.device, device.c_str(), MAX_PATH);
 		std::string label = getAttribute(cur_dev, "PARTLABEL");
 		mstrlcpy(diskInfo.label, label.c_str(), 255);
-		std::string disk_sn = getAttribute(cur_dev, "UUID");
-		if (!disk_sn.empty()) {
-			diskInfo.disk_sn = disk_sn;
-			diskInfo.sn_initialized = true;
+		std::string disk_uuid = getAttribute(cur_dev, "UUID");
+		if (!disk_uuid.empty()) {
+			diskInfo.disk_uuid = disk_uuid;
+			diskInfo.uuid_initialized = true;
 			// used later to set preferred disks
-			disk_by_uuid.insert(std::pair<std::string, int>(disk_sn, diskInfo.id));
+			disk_by_uuid.insert(std::pair<std::string, int>(disk_uuid, diskInfo.id));
 		} else {
 			std::string part_uuid = getAttribute(cur_dev, "PARTUUID");
 			if (!part_uuid.empty()) {
-				diskInfo.disk_sn = part_uuid;
-				diskInfo.sn_initialized = true;
+				diskInfo.disk_uuid = part_uuid;
+				diskInfo.uuid_initialized = true;
 			}
 		}
 		std::string disk_type = getAttribute(cur_dev, "TYPE");
@@ -126,7 +126,6 @@ static void read_disk_labels(std::vector<DiskInfo>& disk_infos) {
 			}
 			std::string cur_disk_label = label_dir + "/" + dir->d_name;
 			if (stat(cur_disk_label.c_str(), &sym_stat) == 0) {
-				bool found = false;
 				for (auto& diskInfo : disk_infos) {
 					if (((int)(sym_stat.st_ino)) == diskInfo.id) {
 						mstrlcpy(diskInfo.label, dir->d_name, 255);
@@ -147,7 +146,7 @@ static void read_disk_labels(std::vector<DiskInfo>& disk_infos) {
 }
 
 /*try to read disk_by_uuid map to set preferred disks later*/
-static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid) {
+static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid, std::vector<DiskInfo>& disk_infos) {
 	struct dirent* dir = NULL;
 	struct stat sym_stat;
 
@@ -155,7 +154,7 @@ static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid) 
 	if (disk_by_uuid_dir == nullptr) {
 		LOG_DEBUG("Open " UUID_FOLDER " fail: %s", std::strerror(errno));
 	} else {
-		const std::string base_dir(ID_FOLDER "/");
+		const std::string base_dir(UUID_FOLDER "/");
 		while ((dir = readdir(disk_by_uuid_dir)) != nullptr) {
 			if (::strcmp(dir->d_name, ".") == 0 || ::strcmp(dir->d_name, "..") == 0 ||
 				::strncmp(dir->d_name, "usb", 3) == 0) {
@@ -166,6 +165,15 @@ static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid) 
 			if (stat(cur_dir.c_str(), &sym_stat) == 0) {
 				int ino = sym_stat.st_ino;
 				disk_by_uuid.insert(std::pair<std::string, int>(std::string(dir->d_name), ino));
+				for (auto& diskInfo : disk_infos) {
+					if (((int)(sym_stat.st_ino)) == diskInfo.id) {
+						diskInfo.disk_uuid = dir->d_name;
+						diskInfo.uuid_initialized = true;
+						LOG_DEBUG("UUID for disk ino %d device %s, set to %s", sym_stat.st_ino, diskInfo.device,
+								  diskInfo.disk_uuid);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -214,7 +222,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 				// Possible error here, the symlink /dev/by-id/nvme-XXXXXX-part1 according to SO has its own
 				// inode. must find the inode of the device in /dev in order to be able to merge with
 				// /dev/by-label disks later. On my Ubuntu ls -d * reports the inode of the device in dev so
-				// it works. check for open bugs.
+				// it works <for now>.
 				tmpDiskInfo.id = sym_stat.st_ino;
 				ssize_t len = ::readlink(cur_dir.c_str(), device_name, MAX_PATH - 1);
 				if (len != -1) {
@@ -225,8 +233,9 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 						device_name_s = device_name_s.substr(pos + 1);
 					}
 					mstrlcpy(tmpDiskInfo.device, device_name_s.c_str(), sizeof(tmpDiskInfo.device));
-					tmpDiskInfo.disk_sn = clean_disk_id(dir->d_name);
-					tmpDiskInfo.sn_initialized = true;
+					tmpDiskInfo.disk_phys_id = clean_disk_id(dir->d_name);
+					tmpDiskInfo.disk_phys_id_initialized = true;
+					tmpDiskInfo.uuid_initialized = false;
 					tmpDiskInfo.label_initialized = false;
 					tmpDiskInfo.preferred = false;
 					// avoid duplicates
@@ -239,7 +248,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 					}
 					if (!found) {
 						LOG_DEBUG("Found disk inode %d device %s, sn %s", sym_stat.st_ino, tmpDiskInfo.device,
-								  tmpDiskInfo.disk_sn.c_str());
+								  tmpDiskInfo.disk_uuid.c_str());
 						disk_infos.push_back(tmpDiskInfo);
 					}
 				} else {
@@ -255,7 +264,7 @@ FUNCTION_RETURN getDiskInfos_dev(std::vector<DiskInfo>& disk_infos,
 	result = disk_infos.size() > 0 ? FUNCTION_RETURN::FUNC_RET_OK : FUNCTION_RETURN::FUNC_RET_NOT_AVAIL;
 	if (result == FUNCTION_RETURN::FUNC_RET_OK) {
 		read_disk_labels(disk_infos);
-		read_disk_uuids(disk_by_uuid);
+		read_disk_uuids(disk_by_uuid, disk_infos);
 	}
 	return result;
 }

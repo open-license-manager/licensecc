@@ -31,11 +31,11 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		bool id_found = false;
 
 		for (auto disk_info : disk_infos) {
-			uuid_found = uuid_found || disk_info.sn_initialized;
+			uuid_found = uuid_found || disk_info.uuid_initialized;
 			preferred_found = preferred_found || disk_info.preferred;
 			id_found = id_found || disk_info.disk_phys_id_initialized;
 
-			if (disk_info.sn_initialized) {
+			if (disk_info.uuid_initialized) {
 				BOOST_CHECK_MESSAGE(!disk_info.disk_uuid.empty(), "disksn is not empty");
 			}
 			if (disk_info.disk_phys_id_initialized) {
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 			}
 
 			if (disk_info.preferred) {
-				BOOST_CHECK_MESSAGE(disk_info.disk_phys_id_initialized || disk_info.sn_initialized,
+				BOOST_CHECK_MESSAGE(disk_info.disk_phys_id_initialized || disk_info.uuid_initialized,
 									"serial number found on preferred disk");
 			}
 		}

@@ -18,12 +18,12 @@ LCC_API_HW_IDENTIFICATION_STRATEGY DiskStrategy::identification_strategy() const
 	return LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DISK;
 }
 
-std::vector<HwIdentifier> DiskStrategy::alternative_ids() const {
+FUNCTION_RETURN DiskStrategy::alternative_ids(std::vector<HwIdentifier>& identifiers) const noexcept {
 	std::vector<DiskInfo> disk_infos;
-	vector<HwIdentifier> identifiers;
+	identifiers.clear();
 	FUNCTION_RETURN result_diskinfos = getDiskInfos(disk_infos);
 	if (result_diskinfos != FUNC_RET_OK) {
-		return identifiers;
+		return FUNC_RET_NOT_AVAIL;
 	}
 
 	identifiers.reserve(disk_infos.size() * 2);
@@ -47,7 +47,7 @@ std::vector<HwIdentifier> DiskStrategy::alternative_ids() const {
 			}
 		}
 	}
-	return identifiers;
+	return FUNC_RET_OK;
 }
 
 }  // namespace hw_identifier

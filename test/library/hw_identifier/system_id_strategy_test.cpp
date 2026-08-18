@@ -18,7 +18,9 @@ namespace test {
 using namespace license::hw_identifier;
 BOOST_AUTO_TEST_CASE(returnsOneNonEmptyIdentifier) {
 	SystemIdStrategy strategy;
-	std::vector<HwIdentifier> identifiers = strategy.alternative_ids();
+	std::vector<HwIdentifier> identifiers;
+	FUNCTION_RETURN ret = strategy.alternative_ids(identifiers);
+	BOOST_CHECK_EQUAL(ret, FUNC_RET_OK);
 	BOOST_CHECK_EQUAL(identifiers.size(), 1);
 	const HwIdentifier& identifier = identifiers.at(0);
 	std::string serialized = identifier.print();

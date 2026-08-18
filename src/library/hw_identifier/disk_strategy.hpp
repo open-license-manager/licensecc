@@ -15,10 +15,10 @@ namespace hw_identifier {
 
 class DiskStrategy : public IdentificationStrategy {
 public:
-	inline DiskStrategy(){}
+	inline DiskStrategy() {}
 	virtual ~DiskStrategy();
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const;
-	virtual std::vector<HwIdentifier> alternative_ids() const;
+	virtual FUNCTION_RETURN alternative_ids(std::vector<HwIdentifier>& identifiers_out) const noexcept;
 };
 
 }  // namespace hw_identifier

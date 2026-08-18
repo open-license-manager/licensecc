@@ -23,7 +23,14 @@ std::string trim_copy(const std::string& string_to_trim);
 
 std::string toupper_copy(const std::string& lowercase);
 
-time_t seconds_from_epoch(const std::string& timeString);
+/**
+ * Convert a date string (YYYYMMDD, YYYY-MM-DD or YYYY/MM/DD) to seconds
+ * since the epoch.
+ * @param timeString the date string to parse
+ * @param out_seconds the result, set only on success
+ * @return true on success, false if the date is not recognized
+ */
+bool seconds_from_epoch(const std::string& timeString, time_t& out_seconds);
 
 /**
  * Split a string on a given character
@@ -36,12 +43,10 @@ size_t mstrnlen_s(const char* szptr, size_t maxsize);
 // strlcpy is not a standard function but it's the safest way to copy to c strings...
 // let's provide a custom implementation
 size_t mstrlcpy(char* dst, const char* src, size_t n);
-typedef enum {
-	INI, BASE64, UNKNOWN
-} FILE_FORMAT;
+typedef enum { INI, BASE64, UNKNOWN } FILE_FORMAT;
 
 FILE_FORMAT identify_format(const std::string& license);
-}
+}  // namespace license
 
 /* namespace license */
 

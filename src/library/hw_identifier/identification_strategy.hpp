@@ -30,9 +30,13 @@ public:
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const = 0;
 	virtual FUNCTION_RETURN generate_pc_id(HwIdentifier& identifier_out) const;
 	/**
-	 * Implement this in subclasses to return a list of alternative identifiers.
+	 * Implement this in subclasses to fill identifiers_out with a list of
+	 * alternative identifiers.
+	 * @param identifiers_out the output list, cleared before being filled
+	 * @return FUNC_RET_OK on success, FUNC_RET_NOT_AVAIL if no identifier
+	 *         could be generated.
 	 */
-	virtual std::vector<HwIdentifier> alternative_ids() const = 0;
+	virtual FUNCTION_RETURN alternative_ids(std::vector<HwIdentifier>& identifiers_out) const noexcept = 0;
 	virtual LCC_EVENT_TYPE validate_identifier(const HwIdentifier& identifier_in) const;
 
 	/**

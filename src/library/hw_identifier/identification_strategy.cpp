@@ -13,7 +13,8 @@ LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(const HwIdentifier& i
 	LCC_EVENT_TYPE result = IDENTIFIERS_MISMATCH;
 
 	if (identifier.get_identification_strategy() == identification_strategy()) {
-		const vector<HwIdentifier> available_ids = alternative_ids();
+		vector<HwIdentifier> available_ids;
+		alternative_ids(available_ids);
 		for (const auto& it : available_ids) {
 			if (it == identifier) {
 				result = LICENSE_OK;
@@ -25,9 +26,9 @@ LCC_EVENT_TYPE IdentificationStrategy::validate_identifier(const HwIdentifier& i
 }
 
 FUNCTION_RETURN IdentificationStrategy::generate_pc_id(HwIdentifier& pc_id) const {
-	const vector<HwIdentifier> available_ids = alternative_ids();
+	vector<HwIdentifier> available_ids;
 	FUNCTION_RETURN result = FUNC_RET_NOT_AVAIL;
-	if (available_ids.size() > 0) {
+	if (alternative_ids(available_ids) == FUNC_RET_OK && available_ids.size() > 0) {
 		pc_id = available_ids[0];
 		result = FUNC_RET_OK;
 	}

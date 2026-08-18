@@ -21,7 +21,7 @@ private:
 	virtual ~HwIdentifierFacade() {}
 
 public:
-	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code);
+	static LCC_EVENT_TYPE validate_pc_signature(const std::string& str_code) noexcept;
 	/**
 	 *
 	 * @throws logic_error if pc_identifier can't be generated.

@@ -11,7 +11,6 @@
 #include <sstream>
 #include <cstring>
 #include <algorithm>
-#include <stdexcept>
 #include <regex>
 #include "string_utils.h"
 
@@ -22,7 +21,7 @@
 namespace license {
 using namespace std;
 
-string trim_copy(const string &string_to_trim) {
+string trim_copy(const string& string_to_trim) {
 	std::string::const_iterator it = string_to_trim.begin();
 	while (it != string_to_trim.end() && isspace(*it)) {
 		++it;
@@ -34,30 +33,30 @@ string trim_copy(const string &string_to_trim) {
 	return std::string(it, rit.base());
 }
 
-string toupper_copy(const string &lowercase) {
+string toupper_copy(const string& lowercase) {
 	string cp(lowercase);
 	std::transform(cp.begin(), cp.end(), cp.begin(), (int (*)(int))toupper);
 	return cp;
 }
 
-time_t seconds_from_epoch(const string &timeString) {
+bool seconds_from_epoch(const string& timeString, time_t& out_seconds) {
 	int year, month, day;
 	tm tm;
 	if (timeString.size() == 8) {
 		const int nfield = sscanf(timeString.c_str(), "%4d%2d%2d", &year, &month, &day);
 		if (nfield != 3) {
-			throw invalid_argument("Date not recognized");
+			return false;
 		}
 	} else if (timeString.size() == 10) {
 		const int nfield = sscanf(timeString.c_str(), "%4d-%2d-%2d", &year, &month, &day);
 		if (nfield != 3) {
-			const int nfield = sscanf(timeString.c_str(), "%4d/%2d/%2d", &year, &month, &day);
-			if (nfield != 3) {
-				throw invalid_argument("Date [" + timeString + "] not recognized");
+			const int nfield2 = sscanf(timeString.c_str(), "%4d/%2d/%2d", &year, &month, &day);
+			if (nfield2 != 3) {
+				return false;
 			}
 		}
 	} else {
-		throw invalid_argument("Date [" + timeString + "] not recognized");
+		return false;
 	}
 	tm.tm_isdst = -1;
 	tm.tm_year = year - 1900;
@@ -68,10 +67,11 @@ time_t seconds_from_epoch(const string &timeString) {
 	tm.tm_sec = 0;
 	tm.tm_yday = -1;
 	tm.tm_wday = -1;
-	return mktime(&tm);
+	out_seconds = mktime(&tm);
+	return true;
 }
 
-const vector<string> split_string(const string &licensePositions, char splitchar) {
+const vector<string> split_string(const string& licensePositions, char splitchar) {
 	std::stringstream streamToSplit(licensePositions);
 	std::string segment;
 	std::vector<string> seglist;
@@ -85,7 +85,7 @@ const vector<string> split_string(const string &licensePositions, char splitchar
 const static regex iniSection("\\[.*?\\]");
 const static regex b64("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
 
-FILE_FORMAT identify_format(const string &license) {
+FILE_FORMAT identify_format(const string& license) {
 	FILE_FORMAT result = UNKNOWN;
 	if (regex_match(license, b64)) {
 		result = BASE64;
@@ -96,7 +96,7 @@ FILE_FORMAT identify_format(const string &license) {
 }
 
 // strnln_s is not well supported and strlen is marked unsafe..
-size_t mstrnlen_s(const char *szptr, size_t maxsize) {
+size_t mstrnlen_s(const char* szptr, size_t maxsize) {
 	if (szptr == nullptr) {
 		return 0;
 	}
@@ -107,11 +107,11 @@ size_t mstrnlen_s(const char *szptr, size_t maxsize) {
 	return count;
 }
 
-size_t mstrlcpy(char *dst, const char *src, size_t n) {
+size_t mstrlcpy(char* dst, const char* src, size_t n) {
 	size_t n_orig = n;
 	if (n > 0) {
-		char *pd;
-		const char *ps;
+		char* pd;
+		const char* ps;
 
 		for (--n, pd = dst, ps = src; n > 0 && *ps != '\0'; --n, ++pd, ++ps) *pd = *ps;
 

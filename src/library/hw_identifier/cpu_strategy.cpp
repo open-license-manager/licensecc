@@ -34,17 +34,18 @@ LCC_API_HW_IDENTIFICATION_STRATEGY CPUStrategy::identification_strategy() const 
 	return LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_CPU_MODEL;
 }
 
-std::vector<HwIdentifier> CPUStrategy::alternative_ids() const {
+FUNCTION_RETURN CPUStrategy::alternative_ids(std::vector<HwIdentifier>& identifiers) const noexcept {
 	array<uint8_t, HW_IDENTIFIER_PROPRIETARY_DATA> data = {};
 	FUNCTION_RETURN result = generate_cpu_pc_id(data);
-	vector<HwIdentifier> identifiers;
+	identifiers.clear();
 	if (result == FUNC_RET_OK) {
 		HwIdentifier pc_id;
 		pc_id.set_identification_strategy(identification_strategy());
 		pc_id.set_data(data);
 		identifiers.push_back(pc_id);
+		return FUNC_RET_OK;
 	}
-	return identifiers;
+	return FUNC_RET_NOT_AVAIL;
 }
 
 }  // namespace hw_identifier

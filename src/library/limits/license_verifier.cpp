@@ -42,14 +42,24 @@ FUNCTION_RETURN LicenseVerifier::verify_limits(const FullLicenseInfo& lic_info) 
 	const time_t now = time(nullptr);
 	auto expiry = lic_info.m_limits.find(PARAM_EXPIRY_DATE);
 	if (is_valid && expiry != lic_info.m_limits.end()) {
-		if (seconds_from_epoch(expiry->second) < now) {
-			m_event_registry.addEvent(PRODUCT_EXPIRED, lic_info.source.c_str(), ("Expired " + expiry->second).c_str());
+		const string& exp_string = expiry->second;
+		time_t expiry_seconds;
+		if (seconds_from_epoch(exp_string, expiry_seconds)) {
+			if (expiry_seconds < now) {
+				m_event_registry.addEvent(PRODUCT_EXPIRED, lic_info.source.c_str(), ("Expired " + exp_string).c_str());
+				is_valid = false;
+			}
+		} else {
+			m_event_registry.addEvent(LICENSE_CORRUPTED, lic_info.source.c_str(),
+									  (string("Expiry date :") + exp_string).c_str());
 			is_valid = false;
 		}
 	}
 	const auto start_date = lic_info.m_limits.find(PARAM_BEGIN_DATE);
 	if (is_valid && start_date != lic_info.m_limits.end()) {
-		if (seconds_from_epoch(start_date->second) > now) {
+		time_t start_seconds;
+
+		if (!seconds_from_epoch(start_date->second, start_seconds) || start_seconds > now) {
 			m_event_registry.addEvent(PRODUCT_EXPIRED, lic_info.source.c_str(),
 									  ("Valid from " + start_date->second).c_str());
 			is_valid = false;
@@ -72,8 +82,13 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 	if (expiry != fullLicInfo.m_limits.end()) {
 		mstrlcpy(info.expiry_date, expiry->second.c_str(), sizeof(info.expiry_date));
 		info.has_expiry = true;
-		const double secs = difftime(seconds_from_epoch(expiry->second), time(nullptr));
-		info.days_left = max((int)round(secs / (60 * 60 * 24)), 0);
+		time_t expiry_seconds;
+		if (seconds_from_epoch(expiry->second, expiry_seconds)) {
+			const double secs = difftime(expiry_seconds, time(nullptr));
+			info.days_left = max((int)round(secs / (60 * 60 * 24)), 0);
+		} else {
+			info.days_left = 0;
+		}
 	} else {
 		info.has_expiry = false;
 		info.days_left = 9999;
@@ -94,16 +109,21 @@ LicenseInfo LicenseVerifier::toLicenseInfo(const FullLicenseInfo& fullLicInfo) c
 	return info;
 }
 
-LicenseInfoEx LicenseVerifier::verify_license(const FullLicenseInfo& licInfo) {
+LicenseInfoEx LicenseVerifier::verify_license(const FullLicenseInfo& licInfo) noexcept {
 	LicenseInfoEx result;
 
 	// Convert to LicenseInfo first
 	result.license_info = toLicenseInfo(licInfo);
 
-	// Verify signature
-	result.return_code = verify_signature(licInfo);
-	if (result.return_code == FUNC_RET_OK) {
-		result.return_code = verify_limits(licInfo);
+	try {
+		// Verify signature
+		result.return_code = verify_signature(licInfo);
+		if (result.return_code == FUNC_RET_OK) {
+			result.return_code = verify_limits(licInfo);
+		}
+	} catch (const std::exception&) {
+		m_event_registry.addEvent(LICENSE_CORRUPTED, licInfo.source);
+		result.return_code = FUNC_RET_ERROR;
 	}
 
 	return result;

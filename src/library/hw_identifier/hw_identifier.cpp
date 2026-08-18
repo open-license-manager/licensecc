@@ -33,7 +33,6 @@ HwIdentifier::HwIdentifier(const std::string& param) {
 	std::replace(tmp_str.begin(), tmp_str.end(), '-', '\n');
 	vector<uint8_t> decoded = unbase64(tmp_str);
 	if (decoded.size() != HW_IDENTIFIER_PROPRIETARY_DATA + 1) {
-		cerr << decoded.size();
 		throw logic_error("wrong identifier size " + param);
 	}
 	std::copy_n(decoded.begin(), HW_IDENTIFIER_PROPRIETARY_DATA + 1, m_data.begin());

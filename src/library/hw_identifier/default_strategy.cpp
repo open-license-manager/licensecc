@@ -5,6 +5,7 @@
  *      Author: devel
  */
 
+#include <exception>
 #include <vector>
 #include "../os/execution_environment.hpp"
 #include "default_strategy.hpp"
@@ -55,24 +56,33 @@ FUNCTION_RETURN DefaultStrategy::generate_pc_id(HwIdentifier& pc_id) const {
 	return ret;
 }
 
-std::vector<HwIdentifier> DefaultStrategy::alternative_ids() const {
+FUNCTION_RETURN DefaultStrategy::alternative_ids(std::vector<HwIdentifier>& identifiers) const noexcept {
 	vector<LCC_API_HW_IDENTIFICATION_STRATEGY> strategy_to_try = available_strategies();
-	vector<HwIdentifier> identifiers;
+	identifiers.clear();
 	FUNCTION_RETURN ret = FUNC_RET_NOT_AVAIL;
 	for (auto it : strategy_to_try) {
 		LCC_API_HW_IDENTIFICATION_STRATEGY strat_to_try = it;
-		unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strat_to_try);
-		vector<HwIdentifier> alt_ids = strategy_ptr->alternative_ids();
-		identifiers.insert(alt_ids.begin(), alt_ids.end(), identifiers.end());
+		try {
+			unique_ptr<IdentificationStrategy> strategy_ptr = IdentificationStrategy::get_strategy(strat_to_try);
+			vector<HwIdentifier> alt_ids;
+			FUNCTION_RETURN alt_ret = strategy_ptr->alternative_ids(alt_ids);
+			if (alt_ret == FUNC_RET_OK) {
+				identifiers.insert(identifiers.end(), alt_ids.begin(), alt_ids.end());
+				ret = FUNC_RET_OK;
+			}
+		} catch (const std::exception&) {
+			// unknown strategy for this platform: skip it and keep going
+			continue;
+		}
 	}
-	return identifiers;
+	return ret;
 }
 /**
-* default strategy should never be used to validate an identifier. The strategy that was used in the first place to generate it
-* should handle it. DefaultStrategy is just a switch.
-*/
+ * default strategy should never be used to validate an identifier. The strategy that was used in the first place to
+ * generate it should handle it. DefaultStrategy is just a switch.
+ */
 LCC_EVENT_TYPE DefaultStrategy::validate_identifier(const HwIdentifier& identifier) const {
-	// 
+	//
 	return IDENTIFIERS_MISMATCH;
 }
 

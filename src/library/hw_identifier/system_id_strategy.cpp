@@ -21,8 +21,8 @@ SystemIdStrategy::~SystemIdStrategy() {}
 
 LCC_API_HW_IDENTIFICATION_STRATEGY SystemIdStrategy::identification_strategy() const { return STRATEGY_SYSTEM_ID; }
 
-std::vector<HwIdentifier> SystemIdStrategy::alternative_ids() const {
-	vector<HwIdentifier> identifiers;
+FUNCTION_RETURN SystemIdStrategy::alternative_ids(std::vector<HwIdentifier>& identifiers) const noexcept {
+	identifiers.clear();
 	std::string sys_id;
 
 	FUNCTION_RETURN ret = getOsSpecificIdentifier(sys_id);
@@ -31,9 +31,9 @@ std::vector<HwIdentifier> SystemIdStrategy::alternative_ids() const {
 		identifier.set_identification_strategy(identification_strategy());
 		identifier.set_data(sys_id);
 		identifiers.push_back(identifier);
+		return FUNC_RET_OK;
 	}
-
-	return identifiers;
+	return FUNC_RET_NOT_AVAIL;
 }
 
 }  // namespace hw_identifier

@@ -27,7 +27,7 @@ private:
 
 public:
 	LicenseVerifier(EventRegistry& er);
-	LicenseInfoEx verify_license(const FullLicenseInfo& licInfo);
+	LicenseInfoEx verify_license(const FullLicenseInfo& licInfo) noexcept;
 	virtual ~LicenseVerifier();
 };
 

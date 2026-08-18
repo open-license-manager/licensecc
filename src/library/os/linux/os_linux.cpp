@@ -170,7 +170,7 @@ static void read_disk_uuids(std::unordered_map<std::string, int>& disk_by_uuid, 
 						diskInfo.disk_uuid = dir->d_name;
 						diskInfo.uuid_initialized = true;
 						LOG_DEBUG("UUID for disk ino %d device %s, set to %s", sym_stat.st_ino, diskInfo.device,
-								  diskInfo.disk_uuid);
+								  diskInfo.disk_uuid.c_str());
 						break;
 					}
 				}

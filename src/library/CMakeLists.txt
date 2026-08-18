@@ -57,5 +57,8 @@ target_include_directories(licensecc PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
             $<BUILD_INTERFACE:${LCC_INCLUDE_DIR}>)
 
+install(TARGETS lccgen
+    RUNTIME DESTINATION bin)
+    
 install(EXPORT licensecc NAMESPACE licensecc:: DESTINATION  ${main_lib_dest}/${LCC_PROJECT_NAME}/cmake)
 export(EXPORT licensecc NAMESPACE licensecc:: FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.cmake)

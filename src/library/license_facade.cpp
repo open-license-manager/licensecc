@@ -84,10 +84,10 @@ LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerIn
 bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
 								ExecutionEnvironmentInfo* execution_environment_info) noexcept {
 	bool result = false;
-	if (*bufSize > LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
+	if (*bufSize >= LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
 			const string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
-			license::mstrlcpy(chbuffer, pc_id.c_str(), *bufSize);
+			strlcpy(chbuffer, pc_id.c_str(), LCC_API_PC_IDENTIFIER_SIZE);
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
@@ -96,7 +96,7 @@ bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method,
 #endif
 		}
 	} else {
-		*bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
+		*bufSize = LCC_API_PC_IDENTIFIER_SIZE;
 	}
 	static const license::os::ExecutionEnvironment exec_env;
 	if (execution_environment_info != nullptr) {

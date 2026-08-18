@@ -45,7 +45,11 @@
 #define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 4
 
 // define api structure sizes
-#define LCC_API_PC_IDENTIFIER_SIZE 19
+
+/*
+ * size of the buffer to allocate for the pc identifier
+ */
+#define LCC_API_PC_IDENTIFIER_SIZE 15
 #define LCC_API_PROPRIETARY_DATA_SIZE 64
 #define LCC_API_AUDIT_EVENT_NUM 5
 #define LCC_API_AUDIT_EVENT_PARAM2 255

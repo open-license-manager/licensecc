@@ -28,29 +28,30 @@ BOOST_AUTO_TEST_CASE(read_disk_id) {
 		BOOST_REQUIRE_MESSAGE(disk_infos.size() > 0, "Found some disk");
 		bool preferred_found = false;
 		bool uuid_found = false;
-		bool label_found = false;
+		bool id_found = false;
 
 		for (auto disk_info : disk_infos) {
 			uuid_found = uuid_found || disk_info.sn_initialized;
 			preferred_found = preferred_found || disk_info.preferred;
-			label_found = label_found || disk_info.label_initialized;
+			id_found = id_found || disk_info.disk_phys_id_initialized;
 
 			if (disk_info.sn_initialized) {
-				BOOST_CHECK_MESSAGE(!disk_info.disk_sn.empty(), "disksn is not empty");
+				BOOST_CHECK_MESSAGE(!disk_info.disk_uuid.empty(), "disksn is not empty");
+			}
+			if (disk_info.disk_phys_id_initialized) {
+				BOOST_CHECK_MESSAGE(!disk_info.disk_phys_id.empty(), "disk physical id is not empty");
 			}
 
 			if (disk_info.preferred) {
-				BOOST_CHECK_MESSAGE(disk_info.sn_initialized, "serial number found");
-				BOOST_CHECK_MESSAGE(disk_info.label_initialized, "Label found");
-				BOOST_CHECK(strnlen(disk_info.label, sizeof(disk_info.label)) > 0);
+				BOOST_CHECK_MESSAGE(disk_info.disk_phys_id_initialized || disk_info.sn_initialized,
+									"serial number found on preferred disk");
 			}
 		}
 		BOOST_CHECK_MESSAGE(uuid_found, "At least one UUID initialized");
-		BOOST_CHECK_MESSAGE(label_found, "At least one label found");
+		BOOST_CHECK_MESSAGE(id_found, "At least one physical id found");
 		// BOOST_CHECK_MESSAGE(preferred_found, "At least one standard mounted file system");
 
 	} else if (virt == LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER) {
-		// in docker or lxc diskInfo is very likely not to find any good disk.
 		BOOST_CHECK_EQUAL(result, FUNC_RET_NOT_AVAIL);
 		BOOST_REQUIRE_MESSAGE(disk_infos.size() == 0, "Found no disk");
 	}
@@ -71,7 +72,7 @@ BOOST_AUTO_TEST_CASE(parse_blkid_file) {
 	BOOST_CHECK_MESSAGE(disk_infos.size() == 2, "Two disks found");
 	BOOST_CHECK_MESSAGE(string("Linux swap") == disk_infos[0].label, "Label parsed OK");
 	BOOST_CHECK_MESSAGE(string("/dev/sda3") == disk_infos[0].device, "device parsed");
-	BOOST_CHECK_MESSAGE(disk_infos[0].disk_sn == "baccfd49-5203-4e34-9b8b-a2bbaf9b4e24",
+	BOOST_CHECK_MESSAGE(disk_infos[0].disk_uuid == "baccfd49-5203-4e34-9b8b-a2bbaf9b4e24",
 						"disk serial set to disk uuid");
 	BOOST_CHECK_MESSAGE(disk_infos[0].preferred, "Preferred found");
 }

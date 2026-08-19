@@ -16,9 +16,6 @@
 #include <mntent.h>
 #include <dirent.h>
 #include <sys/utsname.h>
-#ifndef NDEBUG
-#include <valgrind/memcheck.h>
-#endif
 
 // disks by physical id (more stable than uuid)
 #define ID_FOLDER "/dev/disk/by-id"

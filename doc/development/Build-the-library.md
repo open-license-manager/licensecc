@@ -1,8 +1,9 @@
 # Build - Linux
 
+For quick compilation instructions see the [`README.md`](https://github.com/open-license-manager/licensecc#how-to-build) file in the repository root. This page provides detailed, platform-specific instructions for Linux.
+
 ## Install prerequisites
-Below the prerequisites for compiling `licensecc`. For developing it we use Eclipse. 
-Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.
+Below the prerequisites for compiling `licensecc`.
  
 ### Ubuntu
 Supported Ubuntu distributions are 26.04, 24.04 (Noble Numbat) and 22.04 (Jammy Jellyfish), on both x86_64 and ARM.
@@ -22,19 +23,13 @@ Ubuntu 26.04 additionally requires `libjitterentropy3-dev` (its OpenSSL 3.x link
 sudo apt-get install libjitterentropy3-dev
 ```
 
-For development with eclipse:
-
-```console
-sudo apt-get install cmake-gui ninja-build
-```
-
 ### Other linux
 Licensecc should compile on any recent Linux distribution.
 
 Minimum prerequisites
 *   gcc => 4.9, cmake => 3.16
-*   zlib, openssl => 1.0.2
-*   Boost => 1.57 (If you want to compile your own boost version remember to use the flag `runtime-link=static`)
+*   zlib, openssl => 1.1.1
+*   Boost => 1.61 (If you want to compile your own boost version remember to use the flag `runtime-link=static`)
 
 Optional prerequisites:
 *   Doxygen, Sphynx for documentation
@@ -71,8 +66,8 @@ ctest -T memcheck
 
 |Definition name           |Description|
 |--------------------------|-----------|
-|LCC_PROJECT_NAME=<str>  | This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named `DEFAULT` for you |
-|LCC_LOCATION=<path>     | In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found |
+|`LCC_PROJECT_NAME=<str>`  | This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named `DEFAULT` for you |
+|`LCC_LOCATION=<path>`     | In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found |
 |CMAKE_BUILD_TYPE=Release| generate a release version of the library (should be used as default)|
 |CMAKE_INSTALL_PREFIX    | folder where to install compiled libraries and headers. (default: /usr/local)               |
 |BOOST_ROOT              | Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary) |

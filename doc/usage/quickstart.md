@@ -202,7 +202,7 @@ See [Step 6 — Call Licensecc from your code](integration.rst#step-6-call-licen
 
 ## Step 7: Issue Licenses
 
-License generation is described in detail in [License Generation](issue_licenses.md). 
+License generation is described in detail in [License Generation](issue-licenses.md). 
 Below a quick summary of what you can do.
 
 Use `lccgen` to sign and issue license files. Navigate to the project directory:
@@ -238,5 +238,5 @@ lccgen license issue \
 ```
 
 Place the generated `.lic` file in the application's expected license location
-(see [License Retrieval](License-retrieval.md) for supported locations).
+(see [License Retrieval](find-the-license.md) for supported locations).
 

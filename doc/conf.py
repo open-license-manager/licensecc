@@ -33,7 +33,8 @@
 # ones.
 extensions = ['sphinx.ext.todo',
     'sphinx.ext.githubpages', 'breathe', 'recommonmark', 'sphinx_markdown_tables', 'sphinx_rtd_theme',
-    'sphinx_sitemap','sphinx.ext.autosectionlabel', 'sphinxemoji.sphinxemoji' ]
+    'sphinx_sitemap','sphinx.ext.autosectionlabel', 'sphinxemoji.sphinxemoji',
+    'sphinxcontrib.googleanalytics' ]
 
 autosectionlabel_prefix_document = True
 
@@ -92,8 +93,6 @@ html_theme = 'sphinx_rtd_theme'
 # documentation.
 #
 html_theme_options = {
-  'canonical_url': 'http://open-license-manager.github.io/licensecc/',
-  'analytics_id': 'UA-160839650-1',  #  Provided by Google in your dashboard
   'titles_only': False
 }
 
@@ -183,6 +182,11 @@ texinfo_documents = [
 html_baseurl = f"http://open-license-manager.github.io/licensecc/v{version}/"
 #sitemap_url_scheme = "{lang}{version}subdir/{link}"
 sitemap_url_scheme = "{link}"
+
+# Google Analytics
+googleanalytics_id = 'G-XMTT2RVC77'
+# googleanalytics_enabled = True   # defaults to True
+# googleanalytics_domain = 'open-license-manager.github.io'
 
 sphinxemoji_style = 'twemoji'
 

@@ -240,7 +240,7 @@ IF(Doxygen_FOUND AND Sphinx_FOUND)
  
 	add_custom_target(documentation
                   COMMAND
-                  ${SPHINX_EXECUTABLE} -b html
+                  ${SPHINX_EXECUTABLE} -b html -a
                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
                   -Dbreathe_projects.licensecc=${CMAKE_CURRENT_BINARY_DIR}/xml
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

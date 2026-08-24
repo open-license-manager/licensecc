@@ -65,9 +65,9 @@ LCC_PROJECT_NAME       | Name of the project (the software being licensed). It m
                        | used.
 ==================== =====================================================================
 
-The directory structure created by ``make install`` looks like this::
+The directory structure created by ``make install`` looks like this:
 
-.. code-block:: 
+.. code-block::
 
    $CMAKE_INSTALL_PATH
       ├── bin
@@ -83,16 +83,17 @@ The directory structure created by ``make install`` looks like this::
       │       │   └── public_key.h
       │       └── licensecc.h
       └── lib
-            ├── cmake
-            │   └── licensecc                           <--- Point your licensecc_DIR here
-            │       ├── licensecc-config.cmake
-            │       └── licensecc-config-version.cmake
-            └── licensecc
-               └── <<PROJECT_NAME>>
-                   ├── cmake
-                   │   ├── licensecc.cmake
-                   │   └── licensecc-debug.cmake
-                   └── liblicensecc.a
+         ├── cmake
+         │   └── licensecc                           <--- Point your licensecc_DIR here
+         │       ├── licensecc-config.cmake
+         │       └── licensecc-config-version.cmake
+         └── licensecc
+            └── <<PROJECT_NAME>>
+               ├── cmake
+               │   ├── licensecc.cmake
+               │   └── licensecc-debug.cmake
+               └── liblicensecc.a
+
 
 
 Debugging ``find_package``
@@ -108,11 +109,7 @@ to see exactly where it searches:
 
 A complete working example using this method is available in the
 `simple_pc_identifier <https://github.com/open-license-manager/examples/tree/develop/simple_pc_identifier>`_
-project. Its ``CMakeLists.txt``:
-
-.. literalinclude:: ../../extern/examples/simple_pc_identifier/CMakeLists.txt
-   :language: cmake
-   :linenos:
+project.
 
 
 Call Licensecc from your code

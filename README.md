@@ -10,12 +10,12 @@
 [![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
 [![Forum](https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat)](https://github.com/open-license-manager/licensecc/discussions)
-[![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)]([MAINTENANCE.md](http://open-license-manager.github.io/licensecc/other/maintenance.html))
+[![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)]([MAINTENANCE.md](http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html))
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. It is an open source license library that helps to keep your software closed :smirk: . Among other features: it can generate a signature of that hardware it is running on and later report if the signature doesn't match (because the executable has been moved elsewhere).
 
-A comprehensive [list of features](http://open-license-manager.github.io/licensecc/analysis/features.html), and their status is available in the project site. 
+A comprehensive [list of features](http://open-license-manager.github.io/licensecc/v2.1.0/analysis/features.html), and their status is available in the project site. 
 
 If you're experiencing problems, or you need information you can't find in the [documentation](http://open-license-manager.github.io/licensecc) please contact us on [github discussions](https://github.com/open-license-manager/licensecc/discussions).
 
@@ -46,13 +46,13 @@ The software is made by 4 main sub-components:
 
 ## How to start
 
-* Read the [quickstart](http://open-license-manager.github.io/licensecc/usage/quickstart.html) and [concepts](http://open-license-manager.github.io/licensecc/usage/concepts.html) sections in the documentation. This is the fastest way to get acquainted with the project.
+* Read the [quickstart](http://open-license-manager.github.io/licensecc/v2.1.0/usage/quickstart.html) and [concepts](http://open-license-manager.github.io/licensecc/v2.1.0/usage/concepts.html) sections in the documentation. This is the fastest way to get acquainted with the project.
 * The [examples](https://github.com/open-license-manager/examples) repository that shows various ways to integrate `licensecc` into your project.
 
 ## How to build
 
-You can find detailed instructions for [Linux](http://open-license-manager.github.io/licensecc/development/Build-the-library.html) 
-or [Windows](http://open-license-manager.github.io/licensecc/development/Build-the-library-windows.html) in the project web site. 
+You can find detailed instructions for [Linux](http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library.html) 
+or [Windows](http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library-windows.html) in the project web site. 
 
 ### Prerequisites
 
@@ -61,7 +61,7 @@ or [Windows](http://open-license-manager.github.io/licensecc/development/Build-t
 -   tools           : cmake(>=3.16), git, make/ninja(linux)
 -   libs            : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
-For a complete list of dependencies and supported environments see [the project website](http://open-license-manager.github.io/licensecc/development/Dependencies.html)
+For a complete list of dependencies and supported environments see [the project website](http://open-license-manager.github.io/licensecc/v2.1.0/development/Dependencies.html)
 
 ### Configure & compile
 Clone the project. It has submodules, don't forget the `--recursive` option.

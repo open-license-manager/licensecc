@@ -29,11 +29,11 @@ Each hardware identifier is a 9-byte binary payload:
 The payload is serialised as a base64 string for storage in license files and display,  
 and it is usually passed from the final user to the software vendor to generate an hardware linked license.
 
-For the full byte-level layout see :doxygenclass:`license::hw_identifier::HwIdentifier`.
+For the full byte-level layout see :cpp:class:`license::hw_identifier::HwIdentifier`.
 
-*****************
+****************************************
 Available identification methods
-*****************
+****************************************
 
 The software vendor should understand how the end user will run the software to choose the
 right identification strategy. For example, provisioning a short-lived virtual machine in a
@@ -172,7 +172,7 @@ This is what `STRATEGY_DEFAULT` does for you, but you may want to customize it, 
 
 .. tip::
   For details on customizing the identifier generation, see the
-  :doc:`hardware identifiers reference <api/hardware_identifiers>`.
+  :doc:`hardware identifiers reference </api/hardware_identifiers>`.
 
 
 

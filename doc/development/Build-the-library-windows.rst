@@ -4,23 +4,27 @@ Build - Windows
 
 This page describes how to build the library under windows with licensecc 2.1.0.
 
+For quick compilation instructions see the `README.md <https://github.com/open-license-manager/licensecc#how-to-build>`_ file in the repository root. This page provides detailed, platform-specific instructions for Windows.
+
 MSVC
 *****************
 
 Supported Visual Studio versions are:
 
-* Visual Studio 2022 (used in development and in the automated builds)
-* Visual Studio 2026 (used in development)
-* Visual Studio 2019 and 2017 are not actively tested anymore but should still work.
+* Visual Studio 2026 (used in development).
+* Visual Studio 2022 (used in the automated builds). The lowest
+  supported version is the latest minor release/servicing update of Visual Studio 2022
+  (v17.x).
+* Visual Studio 2019 and 2017 are not tested anymore (though they should still work).
 
-Automated tests run on Windows Server 2022, Windows Server 2025 and Windows 11 (arm64).
+Automated tests run on Windows Server 2022, Windows Server 2026 and Windows 11 (arm64).
 
 Libraries supported/tested in 2.1.0 (Windows x64):
 
 * CMake: >= 3.16.
 * Boost: tested with 1.64.0, 1.78.0 and 1.90.0. Boost is only needed to run the tests
   and to build ``lccgen`` and ``lcc-inspector``; it's never linked into ``liblicensecc``.
-  The pre-compiled binaries should match the compiler version: ``msvc-14.3``.
+  The pre-compiled binaries should match the compiler version.
 * OpenSSL: optional. 
 
 MSVC install prerequisites
@@ -79,11 +83,11 @@ Below a list of some useful cmake configurations:
 Definition name                Description
 ============================== ====================================================================================================
 -DSTATIC_RUNTIME=ON            link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
--DBUILD_SHARED_LIBS=ON         additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
--DUSE_OPENSSL=ON               search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead).
+-DBUILD_SHARED_LIBS=OFF        additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
+-DUSE_OPENSSL=OFF              search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead, no additional feature from OpenSSL).
 -DOpenSSL_ROOT_DIR=C:\..       (Optional) folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64).
 -DCMAKE_BUILD_TYPE=Release     link to the release version of the boost libraries
--DCMAKE_INSTALL_PREFIX=C:\..   folder where to install libraries and headers 
+-DCMAKE_INSTALL_PREFIX=C:\XX   folder where to install libraries and headers 
 -DBOOST_ROOT=C:\..             folder where boost is installed. If cmake is reporting boost not found consider updating cmake.
 -DLCC_PROJECT_NAME=<name>      name of the software you want to issue a license for. Defaults to "DEFAULT".
 ============================== ====================================================================================================
@@ -133,7 +137,7 @@ cryptography APIs are used):
 MINGW 
 *****************
 Mingw is not tested (=unsupported) in 2.1.0 but it was by version 2.0 and it may be in future. 
-This section is a placeholder 
+This section is a placeholder from the old release (BTW if it works please comment in the forum)
 
 .. TODO::
    
@@ -150,12 +154,12 @@ Install and compile boost:
 
 .. code-block:: console
 
-    wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z
-    7z x boost_1_68_0.7z -oC:/local
-    cd "C:\local\boost_1_68_0"
+    wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.7z
+    7z x boost_1_64_0.7z -oC:/local
+    cd "C:\local\boost_1_64_0"
     bootstrap.bat gcc 
     b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:\local\boost_1_68_0\boost-mingw install
-    cd C:/local/boost_1_68_0/boost-mingw/lib
+    cd C:/local/boost_1_64_0/boost-mingw/lib
     dir 
 
 Verify boost is really compiled. Go to the folder where you want to download `licensecc` 

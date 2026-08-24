@@ -8,7 +8,6 @@
 		<tab type="pages" visible="no" title="" intro="" />
 		<tab type="usergroup" title="Usage">
 			<tab type="user" url="http://www.google.com" title="Google" />
-			<tab type="user" url="@ref mypage" title="My Page" />
 		</tab>
 		<tab type="usergroup" title="Development">
 			<tab type="user" url="http://www.google.com" title="Google" />

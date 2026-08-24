@@ -33,7 +33,7 @@ To issue a license linked to a specific machine you first need to retrieve an ha
 This can be done running an executable in the destination machine (usually it is your own software, 
 that calls `licensecc` api and prints out the required identifier).
 
-If you are just experimenting the library you can compile and use the [examples project]() to print out such hardware signature or
+If you are just experimenting the library you can compile and use the [examples project](https://github.com/open-license-manager/examples) to print out such hardware signature or
 you can run `lccinspector` in the destination machine.
 
 Once you have the hardware identifier you can issue the command:

@@ -48,7 +48,7 @@ Another use case is the software is to be used only in a specific class of virtu
 Licenses retrieval
 =======================
 Open License Manager, when integrated into a licensed software will find its license file based on many different strategies.
-It can handle multiple licenses at the same time. See the wiki page about :ref:`license retrieval <usage/License-retrieval:License retrieval>` for details.
+It can handle multiple licenses at the same time. See the wiki page about :ref:`license retrieval <usage/find-the-license:Find the license file>` for details.
  
 Licensed software components/features
 =========================================================

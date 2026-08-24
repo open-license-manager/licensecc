@@ -11,11 +11,11 @@ These are the dependencies of the library you have to link to your code. We try 
 
 | Operating System      | Openssl    | Other                       | Boost<sup>2</sup>   |
 |-----------------------|:----------:|:---------------------------:|:-------------------:| 
-| Ubuntu 26.04     | :heavy_check_mark: => v1.1 | libjitterentropy3-dev | optional(test) => 1.71 |
-| Ubuntu 24.04     | :heavy_check_mark: => v1.1 |                       | optional(test) => 1.71 |
-| Ubuntu 22.04     | :heavy_check_mark: => v1.1 |                       | optional(test) => 1.71 |
-| Windows MSVC 2022| optional<sup>1</sup>       |                       | optional(test) => 1.71 |
-| Windows MinGW<sup>4</sup>| optional<sup>1</sup>       |                       | optional(test) => 1.71 |
+| Ubuntu 26.04     | :heavy_check_mark: => v1.1 | libjitterentropy3-dev | optional(test) => 1.64 |
+| Ubuntu 24.04     | :heavy_check_mark: => v1.1 |                       | optional(test) => 1.64 |
+| Ubuntu 22.04     | :heavy_check_mark: => v1.1 |                       | optional(test) => 1.64 |
+| Windows MSVC 2022| optional<sup>1</sup>       |                       | optional(test) => 1.64 |
+| Windows MinGW<sup>4</sup>| optional<sup>1</sup>       |               | optional(test) => 1.64 |
 
 You may have to install ZLib if your openssl version was compiled with it, in Debian it comes via dependency mechanism.
 
@@ -23,18 +23,18 @@ You may have to install ZLib if your openssl version was compiled with it, in De
 
 | Operating System               | Openssl      | Other                      | Boost<sup>3</sup>         |
 |--------------------------------|:------------:|:--------------------------:|:-----------------------:| 
-| Ubuntu 26.04        |:heavy_check_mark:  => v1.1 | libjitterentropy3-dev   |:heavy_check_mark: => 1.71 |
-| Ubuntu 24.04        |:heavy_check_mark:  => v1.1 |                         |:heavy_check_mark: => 1.71 |
-| Ubuntu 22.04        |:heavy_check_mark:  => v1.1 |                         |:heavy_check_mark: => 1.71 |
-| Windows MSVC 2022   | optional<sup>1</sup>       |                         |:heavy_check_mark: => 1.71 |
-| Windows MinGW<sup>4</sup>| optional<sup>1</sup>|                           |:heavy_check_mark: => 1.71 |
+| Ubuntu 26.04        |:heavy_check_mark:  => v1.1 | libjitterentropy3-dev   |:heavy_check_mark: => 1.64 |
+| Ubuntu 24.04        |:heavy_check_mark:  => v1.1 |                         |:heavy_check_mark: => 1.64 |
+| Ubuntu 22.04        |:heavy_check_mark:  => v1.1 |                         |:heavy_check_mark: => 1.64 |
+| Windows MSVC 2022   | optional<sup>1</sup>       |                         |:heavy_check_mark: => 1.64 |
+| Windows MinGW<sup>4</sup>| optional<sup>1</sup>|                           |:heavy_check_mark: => 1.64 |
 
 You may have to install ZLib if your openssl version was compiled with it.
 
 Notes:
 <sup>1</sup> There is no added feature in compiling `licensecc` with OpenSSL under windows, do so if it's already part of your project otherwise go without. 
 
-<sup>2</sup> Boost components required to run tests `unit_test_framework`,`system` (boost < 1.90),`filesystem`. But then since `licensecc` uses `lccgen` in the build process you need to download and install `lccgen` separately.
+<sup>2</sup> Boost components required to run tests `unit_test_framework`,`system` (boost < 1.90),`filesystem`. But then if you don't want to install boost since `licensecc` uses `lccgen` in the build process you need to download and install `lccgen` separately.
 
 <sup>3</sup> Boost is mandadory dependency of `lccgen` executable. Components: `unit_test_framework`,`system` (boost < 1.90),`filesystem`
 

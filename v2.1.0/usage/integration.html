@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrate Licensecc in your application &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/usage/integration.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Issue licenses" href="issue-licenses.html" />
+    <link rel="prev" title="Find the license file" href="find-the-license.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integrate Licensecc in your application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-locate-and-link-the-library-cmake">Step 1 — Locate and link the library (CMake)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#method-a-add-subdirectory-recommended">Method A — <code class="docutils literal notranslate"><span class="pre">add_subdirectory</span></code> (recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-b-find-package">Method B — <code class="docutils literal notranslate"><span class="pre">find_package</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging-find-package">Debugging <code class="docutils literal notranslate"><span class="pre">find_package</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#call-licensecc-from-your-code">Call Licensecc from your code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Integrate Licensecc in your application</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integrate-licensecc-in-your-application">
+<h1>Integrate Licensecc in your application<a class="headerlink" href="#integrate-licensecc-in-your-application" title="Link to this heading"></a></h1>
+<p>This guide shows how to integrate <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> into a C++ application,
+expanding the content of <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">quickstart</span></a>.</p>
+<p>Working examples are provided in the <a class="reference external" href="https://github.com/open-license-manager/examples">examples</a> project.</p>
+<section id="step-1-locate-and-link-the-library-cmake">
+<h2>Step 1 — Locate and link the library (CMake)<a class="headerlink" href="#step-1-locate-and-link-the-library-cmake" title="Link to this heading"></a></h2>
+<p>Two integration methods are supported.</p>
+<section id="method-a-add-subdirectory-recommended">
+<h3>Method A — <code class="docutils literal notranslate"><span class="pre">add_subdirectory</span></code> (recommended)<a class="headerlink" href="#method-a-add-subdirectory-recommended" title="Link to this heading"></a></h3>
+<p>Add <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> as a git submodule and include it directly in your build.
+This is the simplest approach — no <code class="docutils literal notranslate"><span class="pre">find_package</span></code> or extra CMake modules needed.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /path/to/your/project</span>
+<span class="go">git submodule add https://github.com/open-license-manager/licensecc.git submodules/licensecc</span>
+<span class="go">git submodule update --init --recursive</span>
+</pre></div>
+</div>
+<p>In your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">add_subdirectory</span><span class="p">(</span><span class="s">submodules/licensecc</span><span class="p">)</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">my_app</span><span class="w"> </span><span class="s">src/main.cpp</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">my_app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">licensecc::licensecc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is the method used in the basic_features <a class="reference external" href="https://github.com/open-license-manager/examples/tree/develop/basic_features">examples</a></p>
+</section>
+<section id="method-b-find-package">
+<h3>Method B — <code class="docutils literal notranslate"><span class="pre">find_package</span></code><a class="headerlink" href="#method-b-find-package" title="Link to this heading"></a></h3>
+<p>Use this method when <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> is built and installed externally (not as a
+submodule). This usually makes your build a bit faster.</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">licensecc</span><span class="w"> </span><span class="s">2.1.0</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">my_app</span><span class="w"> </span><span class="s">src/main.cpp</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">my_app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">licensecc::licensecc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters to pass to cmake in the configuration</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>CMake variable</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CMAKE_PREFIX_PATH</p></td>
+<td><div class="line-block">
+<div class="line">Installation prefix of <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> (the folder passed to</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">-DCMAKE_INSTALL_PREFIX</span></code> when you built the library). This</div>
+<div class="line">lets <code class="docutils literal notranslate"><span class="pre">find_package</span></code> locate the package.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>licensecc_DIR</p></td>
+<td><div class="line-block">
+<div class="line">Direct path to the directory containing <code class="docutils literal notranslate"><span class="pre">licensecc-config.cmake</span></code>,</div>
+<div class="line">i.e. <code class="docutils literal notranslate"><span class="pre">$LCC_INSTALLATION_DIR/lib/cmake/licensecc</span></code>. Use this if</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">find_package</span></code> still cannot find the library.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>LCC_PROJECT_NAME</p></td>
+<td><div class="line-block">
+<div class="line">Name of the project (the software being licensed). It must match</div>
+<div class="line">the project name you used when you compiled <code class="docutils literal notranslate"><span class="pre">licensecc</span></code>. If you</div>
+<div class="line">didn’t specify one, leave it unset and the default <code class="docutils literal notranslate"><span class="pre">DEFAULT</span></code> is</div>
+<div class="line">used.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The directory structure created by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$CMAKE_INSTALL_PATH
+   ├── bin
+   │   ├── &lt;&lt;PROJECT_NAME&gt;&gt;                        &lt;--- &quot;DEFAULT&quot;
+   │   │   └── lccinspector
+   │   ├── lccgen -&gt; lccgen-2.1.0
+   │   └── lccgen-2.1.0
+   ├── include
+   │   └── licensecc
+   │       ├── datatypes.h
+   │       ├── &lt;&lt;PROJECT_NAME&gt;&gt;
+   │       │   ├── licensecc_properties.h
+   │       │   └── public_key.h
+   │       └── licensecc.h
+   └── lib
+      ├── cmake
+      │   └── licensecc                           &lt;--- Point your licensecc_DIR here
+      │       ├── licensecc-config.cmake
+      │       └── licensecc-config-version.cmake
+      └── licensecc
+         └── &lt;&lt;PROJECT_NAME&gt;&gt;
+            ├── cmake
+            │   ├── licensecc.cmake
+            │   └── licensecc-debug.cmake
+            └── liblicensecc.a
+</pre></div>
+</div>
+</section>
+<section id="debugging-find-package">
+<h3>Debugging <code class="docutils literal notranslate"><span class="pre">find_package</span></code><a class="headerlink" href="#debugging-find-package" title="Link to this heading"></a></h3>
+<p>If <code class="docutils literal notranslate"><span class="pre">find_package(licensecc</span> <span class="pre">...)</span></code> fails, use CMake’s built-in debugging output
+to see exactly where it searches:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake .. -DCMAKE_FIND_DEBUG_MODE=ON</span>
+</pre></div>
+</div>
+<p>A complete working example using this method is available in the
+<a class="reference external" href="https://github.com/open-license-manager/examples/tree/develop/simple_pc_identifier">simple_pc_identifier</a>
+project.</p>
+</section>
+</section>
+<section id="call-licensecc-from-your-code">
+<h2>Call Licensecc from your code<a class="headerlink" href="#call-licensecc-from-your-code" title="Link to this heading"></a></h2>
+<p>The public API is declared in <code class="docutils literal notranslate"><span class="pre">include/licensecc/licensecc.h</span></code>. The two main
+entry points are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">identify_pc()</span></code> — compute a hardware identifier for the current machine.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acquire_license()</span></code> — locate, parse, and verify a license file.</p></li>
+</ul>
+<p>A typical usage pattern:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;licensecc/licensecc.h&gt;</span>
+
+<span class="n">LicenseInfo</span><span class="w"> </span><span class="n">licenseInfo</span><span class="p">;</span>
+<span class="n">LCC_EVENT_TYPE</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acquire_license</span><span class="p">(</span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">licenseInfo</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">LICENSE_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// License is valid -- proceed</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">LICENSE_FILE_NOT_FOUND</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// No license found -- print hardware identifier so the user can request one</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">pc_identifier</span><span class="p">[</span><span class="n">LCC_API_PC_IDENTIFIER_SIZE</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">pc_id_sz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">pc_identifier</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">identify_pc</span><span class="p">(</span><span class="n">STRATEGY_DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">pc_identifier</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">pc_id_sz</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hardware ID: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pc_identifier</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For a complete working example with error handling and event-type mapping, see
+the <a class="reference external" href="https://github.com/open-license-manager/examples/tree/develop/basic_features">basic features examples</a>
+on GitHub.</p>
+<p>See the <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">public api</span></a> reference for full
+documentation of all types and functions.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="find-the-license.html" class="btn btn-neutral float-left" title="Find the license file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="issue-licenses.html" class="btn btn-neutral float-right" title="Issue licenses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

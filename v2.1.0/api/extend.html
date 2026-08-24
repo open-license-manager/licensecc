@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extension points &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/api/extend.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Customize hardware signature generators" href="hardware_identifiers.html" />
+    <link rel="prev" title="Public api" href="public_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="public_api.html">Public api</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Extension points</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api-parameters-constants-defaults">API parameters, constants, defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tweak-hardware-signature-generator">Tweak hardware signature generator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-license-locator">Custom license locator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Extension points</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="extension-points">
+<h1>Extension points<a class="headerlink" href="#extension-points" title="Link to this heading"></a></h1>
+<p>Version 2.0 of the library comes with defined customization points.</p>
+<section id="api-parameters-constants-defaults">
+<h2>API parameters, constants, defaults<a class="headerlink" href="#api-parameters-constants-defaults" title="Link to this heading"></a></h2>
+<p>The main configuration point is the file <cite>licensecc_properties.h</cite> in the project directory.
+This contains the default buffer sizes used in the API, environment variable names, default strategies behavior.</p>
+<p>If one buffer isn’t large enough have a look here. You may find his definition here.</p>
+<p>This file is generated when the project is initialized (every time you generate a new project),
+it is not under source control and it is for you to customize the library.</p>
+</section>
+<section id="tweak-hardware-signature-generator">
+<h2>Tweak hardware signature generator<a class="headerlink" href="#tweak-hardware-signature-generator" title="Link to this heading"></a></h2>
+<p>If the provided hardware signatures don’t behave well for your customers, or you want to change the default
+way the library generates the pc identifier you can have a look at the following section.</p>
+<p>First of all be sure to read about the standard behavior of <code class="xref c c-func docutils literal notranslate"><span class="pre">identify_pc()</span></code> here:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware_identifiers.html#pc-identifier-generation-workflow">PC Identifier generation workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_identifiers.html#change-the-hardware-identification-strategy">Change the hardware identification strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_identifiers.html#implement-your-own-hardware-signature-generator">Implement your own hardware signature generator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware_identifiers.html#_CPPv4N7license13hw_identifier22IdentificationStrategyE"><code class="docutils literal notranslate"><span class="pre">license::hw_identifier::IdentificationStrategy</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="custom-license-locator">
+<h2>Custom license locator<a class="headerlink" href="#custom-license-locator" title="Link to this heading"></a></h2>
+<p>Your software struggle to find the license file? you can implement your own way to find it. For instance if you want
+to download the license from a remote server, you could implement the logic here.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>this section need to be completed</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="public_api.html" class="btn btn-neutral float-left" title="Public api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hardware_identifiers.html" class="btn btn-neutral float-right" title="Customize hardware signature generators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

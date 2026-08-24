@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/usage/quickstart.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Public api" href="../api/public_api.html" />
+    <link rel="prev" title="Issue licenses" href="issue-licenses.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-overview">Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-add-submodule-configure-cmake">Step 1: Add submodule + configure CMake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-launch-cmake-build">Step 2: Launch cmake build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#licensecc-build-steps-3-5">[licensecc build] Steps 3-5</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-build-lccgen-license-generator">Step 3: Build lccgen (License Generator)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-initialize-your-project">Step 4: Initialize Your Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-compile-the-library">Step 5: Compile the Library</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#step-6-integrate-into-your-application">Step 6: Integrate into Your Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-cmake-recommended">Using CMake (recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-usage">API Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#step-7-issue-licenses">Step 7: Issue Licenses</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#time-limited-license-30-day-demo">Time-limited license (30-day demo)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hardware-locked-license">Hardware-locked license</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
+<p>This guide walks through the complete integration workflow step by step.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Licensecc</span></code> in the build process generates an rsa keypair that is stored in the file system.
+Using the private key you will generate the licenses and distribute them to the users.
+The public key is buried inside the library where (hopefully) nobody will find it.</p>
+<p>This is why we don’t distribute a pre-compiled version of the library. Each build contains the <code class="docutils literal notranslate"><span class="pre">secret</span></code> “public” key (though this may change in future).</p>
+<p>The proposed workflow assumes you are using <code class="docutils literal notranslate"><span class="pre">cmake</span></code> in your project. If not you will start from step 2 and you will have to adapt the rest.</p>
+<section id="workflow-overview">
+<h2>Workflow Overview<a class="headerlink" href="#workflow-overview" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+----------------------------------------------+</span>
+<span class="o">|</span>  <span class="n">Step</span> <span class="mi">1</span><span class="p">:</span> <span class="n">Add</span> <span class="n">submodule</span> <span class="o">+</span> <span class="n">add_subdirectory</span><span class="p">()</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="ow">in</span> <span class="n">CMakeLists</span><span class="o">.</span><span class="n">txt</span>                           <span class="o">|</span>
+<span class="o">+--------------------+-------------------------+</span>
+                     <span class="o">|</span>
+                     <span class="n">v</span>
+<span class="o">+----------------------------+</span>  <span class="o">+----------------------------------------------------------+</span>
+<span class="o">|</span>  <span class="n">Step</span> <span class="mi">2</span><span class="p">:</span> <span class="n">Launch</span> <span class="n">cmake</span>      <span class="o">|</span>  <span class="o">|</span>                    <span class="p">[</span><span class="n">licensecc</span> <span class="n">build</span><span class="p">]</span>                     <span class="o">|</span>
+<span class="o">|</span>         <span class="n">build</span>              <span class="o">|</span>  <span class="o">|</span>                                                          <span class="o">|</span>
+<span class="o">|</span>                            <span class="o">|</span>  <span class="o">|</span>     <span class="o">+----------+</span>     <span class="o">+----------+</span>     <span class="o">+----------+</span>       <span class="o">|</span>
+<span class="o">|</span>                            <span class="o">|</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">Step</span> <span class="mi">3</span><span class="p">:</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">Step</span> <span class="mi">4</span><span class="p">:</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">Step</span> <span class="mi">5</span><span class="p">:</span>  <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>                            <span class="o">|</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">Build</span>    <span class="o">+---&gt;+|</span> <span class="n">Init</span>     <span class="o">+---&gt;+|</span> <span class="n">Compile</span>  <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>                            <span class="o">|</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">lccgen</span>   <span class="o">|</span>     <span class="o">|</span> <span class="n">Project</span>  <span class="o">|</span>     <span class="o">|</span> <span class="n">library</span>  <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>                            <span class="o">|</span>  <span class="o">|</span>     <span class="o">+----------+</span>     <span class="o">+----------+</span>     <span class="o">+----------+</span>       <span class="o">|</span>
+<span class="o">+----------------------------+</span>  <span class="o">+----------------------------------------------------------+</span>
+                     <span class="o">|</span>
+                     <span class="n">v</span>
+<span class="o">+----------------------------+</span>  <span class="o">+----------------------------+</span>
+<span class="o">|</span>  <span class="n">Step</span> <span class="mi">6</span><span class="p">:</span> <span class="n">Integrate</span> <span class="n">into</span>    <span class="o">|</span>  <span class="o">|</span>  <span class="n">Step</span> <span class="mi">7</span><span class="p">:</span> <span class="n">Issue</span> <span class="n">licenses</span>    <span class="o">|</span>
+<span class="o">|</span>  <span class="n">your</span> <span class="n">application</span>          <span class="o">|</span>  <span class="o">|</span>  <span class="p">(</span><span class="n">lccgen</span><span class="p">)</span>                  <span class="o">|</span>
+<span class="o">+----------------------------+</span>  <span class="o">+----------------------------+</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-add-submodule-configure-cmake">
+<h2>Step 1: Add submodule + configure CMake<a class="headerlink" href="#step-1-add-submodule-configure-cmake" title="Link to this heading"></a></h2>
+<p>Add <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> as a submodule and include it in your build:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /path/to/your/project</span>
+<span class="go">git submodule add https://github.com/open-license-manager/licensecc.git submodules/licensecc</span>
+<span class="go">git submodule update --init --recursive</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> flag is required because <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> itself contains submodules
+(notably the license generator <code class="docutils literal notranslate"><span class="pre">lccgen</span></code>).</p>
+<p>In your project’s <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, add the subdirectory:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">add_subdirectory</span><span class="p">(</span><span class="s">submodules/licensecc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This makes the following targets available to your build:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">licensecc::licensecc</span></code> – the licensing library. <em>Add it to your application</em></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lccgen</span></code> – the license generator executable (used internally by the build. Once it is built install it to a folder in your PATH to issue licenses)</p></li>
+</ul>
+<p>See <a class="reference external" href="integration.rst#step-1-locate-and-link-the-library">Locate and link the library</a> for more details.</p>
+</section>
+<section id="step-2-launch-cmake-build">
+<h2>Step 2: Launch cmake build<a class="headerlink" href="#step-2-launch-cmake-build" title="Link to this heading"></a></h2>
+<p>Configure and build your project as usual:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir -p build &amp;&amp; cd build</span>
+<span class="go">cmake .. -DLCC_PROJECT_NAME=MyApp</span>
+<span class="go">make</span>
+</pre></div>
+</div>
+<p>This triggers the full <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> build pipeline (detailed in the next section).</p>
+</section>
+<hr class="docutils" />
+<section id="licensecc-build-steps-3-5">
+<h2>[licensecc build] Steps 3-5<a class="headerlink" href="#licensecc-build-steps-3-5" title="Link to this heading"></a></h2>
+<p>The following steps happen automatically inside the <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> build tree when
+you run <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">..</span> <span class="pre">&amp;&amp;</span> <span class="pre">make</span></code>.</p>
+<section id="step-3-build-lccgen-license-generator">
+<h3>Step 3: Build lccgen (License Generator)<a class="headerlink" href="#step-3-build-lccgen-license-generator" title="Link to this heading"></a></h3>
+<p>The license generator is built first as a build dependency of the library.
+It is compiled from the <code class="docutils literal notranslate"><span class="pre">extern/license-generator/</span></code> submodule.</p>
+<p>Output:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lccgen</span></code> – the license generator executable</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+---------------------+</span>
+<span class="o">|</span>  <span class="n">extern</span><span class="o">/</span>            <span class="o">|</span>
+<span class="o">|</span>  <span class="n">license</span><span class="o">-</span><span class="n">generator</span>  <span class="o">+-----&gt;</span> <span class="n">lccgen</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">submodule</span><span class="p">)</span>        <span class="o">|</span>       
+<span class="o">+---------------------+</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-initialize-your-project">
+<h3>Step 4: Initialize Your Project<a class="headerlink" href="#step-4-initialize-your-project" title="Link to this heading"></a></h3>
+<p>After <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> is built, CMake runs it to generate the project key pair and
+headers. The project name is set via <code class="docutils literal notranslate"><span class="pre">-DLCC_PROJECT_NAME=MyApp</span></code>.</p>
+<p>This creates the following structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>projects/
+└── MyApp/
+    ├── include/
+    │   └── licensecc/
+    │       └── MyApp/
+    │           ├── licensecc_properties.h   # Project customizations **This is an important customization point**
+    │           └── public_key.h             # Public key (it will be embedded in `licensecc`)
+    ├── private_key.rsa                      # Private key (keep secret!)
+    └── licenses/                            # The license files you will generate
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+<span class="o">|</span>  <span class="n">lccgen</span> \         <span class="o">+------&gt;+</span>  <span class="n">projects</span><span class="o">/</span><span class="n">MyApp</span><span class="o">/</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="n">project</span> <span class="n">init</span>     <span class="o">|</span>       <span class="o">|</span>                   <span class="o">|</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">cmake</span> <span class="n">build</span><span class="p">)</span>    <span class="o">|</span>       <span class="o">|</span>  <span class="o">+</span> <span class="n">public_key</span><span class="o">.</span><span class="n">h</span>   <span class="o">|</span>
+<span class="o">|</span>                   <span class="o">|</span>       <span class="o">|</span>  <span class="o">+</span> <span class="n">private_key</span><span class="o">.</span><span class="n">rsa</span><span class="o">|</span>
+<span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Warning</strong>: The private key (<code class="docutils literal notranslate"><span class="pre">private_key.rsa</span></code>) must be kept secret. Anyone with access
+to it can issue valid licenses for your software. The public key is compiled into the
+library and distributed with your application.</p>
+</div></blockquote>
+</section>
+<section id="step-5-compile-the-library">
+<h3>Step 5: Compile the Library<a class="headerlink" href="#step-5-compile-the-library" title="Link to this heading"></a></h3>
+<p>The library is compiled with your public key embedded. The static library
+<code class="docutils literal notranslate"><span class="pre">liblicensecc_static.a</span></code> (or <code class="docutils literal notranslate"><span class="pre">licensecc_static.lib</span></code> on Windows) is produced.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------+</span>       <span class="o">+---------------------------+</span>
+<span class="o">|</span>  <span class="n">projects</span><span class="o">/</span><span class="n">MyApp</span><span class="o">/</span>  <span class="o">|</span>       <span class="o">|</span>  <span class="n">liblicensecc_static</span><span class="o">.</span><span class="n">a</span>    <span class="o">|</span>
+<span class="o">|</span>                   <span class="o">|</span>       <span class="o">|</span>                           <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+</span> <span class="n">public_key</span><span class="o">.</span><span class="n">h</span>   <span class="o">+------&gt;+</span>  <span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">h</span> <span class="n">embedded</span><span class="p">)</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+</span> <span class="n">properties</span>     <span class="o">|</span>       <span class="o">|</span>  <span class="p">(</span><span class="n">verification</span> <span class="n">logic</span><span class="p">)</span>     <span class="o">|</span>
+<span class="o">+-------------------+</span>       <span class="o">+---------------------------+</span>
+</pre></div>
+</div>
+<p>The library is installed to the CMake install prefix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>install/
+├── include/
+│   └── licensecc/
+│       ├── licensecc.h                # Public C API
+│       └── MyApp/
+│           ├── licensecc_properties.h
+│           └── public_key.h
+└── lib/
+    └── MyApp/
+        ├── liblicensecc_static.a
+        └── cmake/
+            └── licenseccConfig.cmake
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-6-integrate-into-your-application">
+<h2>Step 6: Integrate into Your Application<a class="headerlink" href="#step-6-integrate-into-your-application" title="Link to this heading"></a></h2>
+<section id="using-cmake-recommended">
+<h3>Using CMake (recommended)<a class="headerlink" href="#using-cmake-recommended" title="Link to this heading"></a></h3>
+<p>Since you added <code class="docutils literal notranslate"><span class="pre">add_subdirectory(submodules/licensecc)</span></code>, you can link directly:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">my_app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">licensecc::licensecc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>No <code class="docutils literal notranslate"><span class="pre">find_package</span></code> or <code class="docutils literal notranslate"><span class="pre">Findlicensecc.cmake</span></code> is needed when using the submodule approach.</p>
+</section>
+<section id="api-usage">
+<h3>API Usage<a class="headerlink" href="#api-usage" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;licensecc/licensecc.h&gt;</span>
+
+<span class="cm">/* Acquire and verify a license */</span>
+<span class="n">LicenseInfo</span><span class="w"> </span><span class="n">info</span><span class="p">;</span>
+<span class="n">LCC_EVENT_TYPE</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acquire_license</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">info</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">LICENSE_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* License is valid -- proceed */</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* Handle license error */</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="integration.rst#step-6-call-licensecc-from-your-code">Step 6 — Call Licensecc from your code</a> for a detailed integration example with error handling.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+<span class="o">|</span>  <span class="n">Your</span> <span class="n">App</span>         <span class="o">|</span>       <span class="o">|</span>  <span class="n">licensecc</span>        <span class="o">|</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">CMake</span> <span class="n">project</span><span class="p">)</span>  <span class="o">+------&gt;+</span>  <span class="n">static</span> <span class="n">library</span>   <span class="o">|</span>
+<span class="o">|</span>                   <span class="o">|</span>       <span class="o">|</span>                   <span class="o">|</span>
+<span class="o">|</span>  <span class="n">main</span><span class="o">.</span><span class="n">cpp</span>         <span class="o">|</span>       <span class="o">|</span>  <span class="n">public_key</span><span class="o">.</span><span class="n">h</span>     <span class="o">|</span>
+<span class="o">|</span>  <span class="n">CMakeLists</span><span class="o">.</span><span class="n">txt</span>   <span class="o">|</span>       <span class="o">|</span>  <span class="n">verification</span>     <span class="o">|</span>
+<span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-7-issue-licenses">
+<h2>Step 7: Issue Licenses<a class="headerlink" href="#step-7-issue-licenses" title="Link to this heading"></a></h2>
+<p>License generation is described in detail in <a class="reference internal" href="issue-licenses.html"><span class="doc">License Generation</span></a>.
+Below a quick summary of what you can do.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> to sign and issue license files. Navigate to the project directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd projects/MyApp</span>
+</pre></div>
+</div>
+<section id="time-limited-license-30-day-demo">
+<h3>Time-limited license (30-day demo)<a class="headerlink" href="#time-limited-license-30-day-demo" title="Link to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">lccgen license issue --expiry-date 30 -o licenses/my_app_demo.lic</span>
+</pre></div>
+</div>
+</section>
+<section id="hardware-locked-license">
+<h3>Hardware-locked license<a class="headerlink" href="#hardware-locked-license" title="Link to this heading"></a></h3>
+<p>First, obtain the hardware signature from the target machine (run <code class="docutils literal notranslate"><span class="pre">lccinspector</span></code> or
+your app calling <code class="docutils literal notranslate"><span class="pre">identify_pc()</span></code>), then:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">lccgen license issue \</span>
+<span class="go">    --client-signature XXXX-XXXX-XXXX-XXXX \</span>
+<span class="go">    -o licenses/my_app_hw.lic</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+<span class="o">|</span>  <span class="n">projects</span><span class="o">/</span><span class="n">MyApp</span><span class="o">/</span>  <span class="o">|</span>       <span class="o">|</span>  <span class="n">License</span> <span class="n">File</span>     <span class="o">|</span>
+<span class="o">|</span>                   <span class="o">|</span>       <span class="o">|</span>                   <span class="o">|</span>
+<span class="o">|</span>  <span class="n">private_key</span><span class="o">.</span><span class="n">rsa</span>  <span class="o">+------&gt;+</span>  <span class="n">my_app</span><span class="o">.</span><span class="n">lic</span>       <span class="o">|</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">signing</span> <span class="n">key</span><span class="p">)</span>    <span class="o">|</span>       <span class="o">|</span>  <span class="p">(</span><span class="n">signed</span> <span class="n">output</span><span class="p">)</span>  <span class="o">|</span>
+<span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
+</pre></div>
+</div>
+<p>Place the generated <code class="docutils literal notranslate"><span class="pre">.lic</span></code> file in the application’s expected license location
+(see <a class="reference internal" href="find-the-license.html"><span class="doc">License Retrieval</span></a> for supported locations).</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="issue-licenses.html" class="btn btn-neutral float-left" title="Issue licenses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/public_api.html" class="btn btn-neutral float-right" title="Public api" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

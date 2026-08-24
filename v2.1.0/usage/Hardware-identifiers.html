@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hardware Identifiers &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/usage/Hardware-identifiers.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Projects, features and versions" href="concepts.html" />
+    <link rel="prev" title="Developer’s environment setup" href="../development/Development-Environment-Setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware Identifiers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-identifier-encoding">Hardware identifier encoding</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#available-identification-methods">Available identification methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-ethernet-0"><code class="docutils literal notranslate"><span class="pre">STRATEGY_ETHERNET</span></code> (0)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-ip-address-1"><code class="docutils literal notranslate"><span class="pre">STRATEGY_IP_ADDRESS</span></code> (1)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-disk-2"><code class="docutils literal notranslate"><span class="pre">STRATEGY_DISK</span></code> (2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-cpu-model-3"><code class="docutils literal notranslate"><span class="pre">STRATEGY_CPU_MODEL</span></code> (3)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-system-id-4"><code class="docutils literal notranslate"><span class="pre">STRATEGY_SYSTEM_ID</span></code> (4)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strategy-default-1"><code class="docutils literal notranslate"><span class="pre">STRATEGY_DEFAULT</span></code> (-1)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Hardware Identifiers</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hardware-identifiers">
+<h1>Hardware Identifiers<a class="headerlink" href="#hardware-identifiers" title="Link to this heading"></a></h1>
+<p>When the library was designed 15 years ago hardware identifiers were used to link the execution of the software to a physical hardware.
+With the coming of virtualization <cite>hardware identifiers</cite> are a way to limit the usage of the licensed software.</p>
+<p>The software executing on client’s infrastructure (or physical hardware), when it finds the license is missing, calls the api
+<a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a> and generates an hardware identifier.
+The client has to communicate the hardware id back to the software publisher (you) that
+will issue a license for him (for details see: <a class="reference internal" href="issue-licenses.html#issue-licenses"><span class="std std-ref">issue licenses</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Licensecc will guess the infrastructure type where the user is trying to launch the software (eg. a Virtual Machine),
+embed the information into the hardware identifier and report it to the software publisher before he is issuing the license.
+<strong>Planned 2.5.0(?)</strong></p>
+</div>
+<section id="hardware-identifier-encoding">
+<h2>Hardware identifier encoding<a class="headerlink" href="#hardware-identifier-encoding" title="Link to this heading"></a></h2>
+<p>The identifier is a 15 character string similar to ‘AABm-73pY-0R4q’.</p>
+<p>Each hardware identifier is a 9-byte binary payload:</p>
+<ul class="simple">
+<li><p>byte 0 contains the identification strategy used to generate the id, and the environment where it was generated (VM, docker…)</p></li>
+<li><p>bytes 1-8 hold the strategy-specific identification data.</p></li>
+</ul>
+<p>The payload is serialised as a base64 string for storage in license files and display,
+and it is usually passed from the final user to the software vendor to generate an hardware linked license.</p>
+<p>For the full byte-level layout see <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">license::hw_identifier::HwIdentifier</span></code>.</p>
+<section id="available-identification-methods">
+<h3>Available identification methods<a class="headerlink" href="#available-identification-methods" title="Link to this heading"></a></h3>
+<p>The software vendor should understand how the end user will run the software to choose the
+right identification strategy. For example, provisioning a short-lived virtual machine in a
+continuous integration system has very different hardware stability than a permanent on-premises
+virtual server, but to <cite>licensecc</cite> they both appear as ‘VM’. The chosen strategy should reflect that.
+Though <cite>licensecc</cite> is trying to use sensible defaults, the software vendor may have to customize the behavior.</p>
+<p>The library offers the following strategies, each identified by a constant in
+<a class="reference internal" href="../api/public_api.html#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY</span></code></a>:</p>
+<section id="strategy-ethernet-0">
+<span id="ethernet"></span><h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_ETHERNET</span></code> (0)<a class="headerlink" href="#strategy-ethernet-0" title="Link to this heading"></a></h4>
+<p>Uses the <strong>MAC address</strong> of the system’s “primary” network adapter to generate the hardware
+identifier. The implementation enumerates network adapters via the operating system, scores
+them to prefer physical and connected adapters over virtual/VPN/disconnected ones, and picks the first non-zero MAC
+address it finds.</p>
+<ul class="simple">
+<li><p><strong>Bare to metal</strong>: Stable — the MAC address of a physical NIC does not change. Survives across reinstallation of the SO.</p></li>
+<li><p><strong>Virtual machine</strong>: Works, if the machine is stable, but does not prevent the machine from being cloned with the same mac address. If you are using this inside a CI/CD and the VM is taken from a pool re-configured each time most probably won’t work.</p></li>
+<li><p><strong>Container (Docker/LXC)</strong>: Usually doesn’t work, each container does not have a stable mac address.</p></li>
+</ul>
+</section>
+<section id="strategy-ip-address-1">
+<span id="ip-address"></span><h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_IP_ADDRESS</span></code> (1)<a class="headerlink" href="#strategy-ip-address-1" title="Link to this heading"></a></h4>
+<p>Uses the <strong>IPv4 address</strong> of the “primary” network adapter. The implementation is the same.
+as <code class="docutils literal notranslate"><span class="pre">STRATEGY_ETHERNET</span></code> but reads the IP address instead of the MAC address.</p>
+<ul class="simple">
+<li><p><strong>Bare to metal</strong>: ✅ Works, but IP addresses are typically assigned via DHCP and can change on reboot or network reconfiguration.</p></li>
+<li><p><strong>Virtual machine</strong>: ✅ Works, but subject to the same DHCP volatility.</p></li>
+<li><p><strong>Container (Docker/LXC)</strong>: ❓ Usually doesn’t work: in orchestrated environments the IP may change on every deployment.</p></li>
+</ul>
+</section>
+<section id="strategy-disk-2">
+<span id="disk"></span><h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_DISK</span></code> (2)<a class="headerlink" href="#strategy-disk-2" title="Link to this heading"></a></h4>
+<p>Uses the <strong>disk serial number</strong> and <strong>disk label</strong> of the system’s storage devices. The
+implementation queries the operating system for disk information, preferring the system
+drive (on Windows) or the root filesystem device (on Linux). It produces multiple candidate
+identifiers: one per disk, first by serial number then by label.</p>
+<ul class="simple">
+<li><p><strong>Bare to metal</strong>: ✅ Stable — disk serial numbers are set at manufacturing time and
+rarely change.</p></li>
+<li><p><strong>Virtual machine</strong>: ✅ Works, but be aware that some hypervisors generate random disk
+serials for each VM clone.</p></li>
+<li><p><strong>Container (Docker/LXC)</strong>: ❌ Not available — containers typically do not have direct access to the host’s block devices.</p></li>
+</ul>
+</section>
+<section id="strategy-cpu-model-3">
+<span id="cpu-model"></span><h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_CPU_MODEL</span></code> (3)<a class="headerlink" href="#strategy-cpu-model-3" title="Link to this heading"></a></h4>
+<p>Uses the <strong>OS-specific machine identifier</strong>:</p>
+<ul class="simple">
+<li><p>On <strong>Intel</strong> (Linux/Windows): use <code class="docutils literal notranslate"><span class="pre">__cpuid</span></code> to get the cpu model.</p></li>
+<li><p>On <strong>ARM Windows</strong>: we can get cpu model information from registry.</p></li>
+<li><p>On <strong>ARM Linux</strong>: cpu model are taken from <cite>/proc/cpuinfo</cite>.</p></li>
+<li><p><strong>Bare to metal</strong>: ✅ Stable — Does survive an OS reinstallation.</p></li>
+<li><p><strong>Virtual machine</strong>: ✅ Not very useful — the cpu identifier is modified by the Hypervisor (KVM..).</p></li>
+<li><p><strong>Container (Docker/LXC)</strong>: Stable - This is a good choice to lock the docker to the machine where it is executed.</p></li>
+</ul>
+</section>
+<section id="strategy-system-id-4">
+<span id="system-id"></span><h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_SYSTEM_ID</span></code> (4)<a class="headerlink" href="#strategy-system-id-4" title="Link to this heading"></a></h4>
+<p>Uses the <strong>OS-specific machine identifier</strong>:</p>
+<ul class="simple">
+<li><p>On <strong>Linux</strong>: reads <code class="docutils literal notranslate"><span class="pre">/etc/machine-id</span></code> (the systemd machine ID).</p></li>
+<li><p>On <strong>Windows</strong>: uses <code class="docutils literal notranslate"><span class="pre">GetSystemIdForPublisher</span></code> if available, falling back to the
+<code class="docutils literal notranslate"><span class="pre">ProductId</span></code> registry key under <code class="docutils literal notranslate"><span class="pre">HKLM\SOFTWARE\Microsoft\Windows</span> <span class="pre">NT\CurrentVersion</span></code>.</p></li>
+<li><p><strong>Bare to metal</strong>: ✅ Stable — the OS machine ID is set at installation time and
+persists across reboots. Does not survive an OS reinstallation.</p></li>
+<li><p><strong>Virtual machine</strong>: ✅ Works — the identifier survives VM restarts, but may change
+if the VM is re-deployed from a template. So it may not be suitable for short lived VM [TO BE Tested]</p></li>
+<li><p><strong>Container (Docker/LXC)</strong>: ❓ To be tested, to understand the applicability.</p></li>
+</ul>
+</section>
+<section id="strategy-default-1">
+<h4><code class="docutils literal notranslate"><span class="pre">STRATEGY_DEFAULT</span></code> (-1)<a class="headerlink" href="#strategy-default-1" title="Link to this heading"></a></h4>
+<p>This is the strategy you should use in 99% of cases. It selects the best method based on the environment it detects.</p>
+<p>When the licensed software calls <a class="reference internal" href="../api/public_api.html#public-api"><span class="std std-ref">identify_pc</span></a> with <a class="reference internal" href="../api/public_api.html#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE" title="LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT</span></code></a>
+the identifier generation will follow these steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It will first look to the environment variable <code class="docutils literal notranslate"><span class="pre">IDENTIFICATION_STRATEGY</span></code>. If set it will use the identification strategy in that variable.</p></li>
+<li><dl class="simple">
+<dt>It will try to determine which virtual environment the licensed software is running in.</dt><dd><ul>
+<li><p>If no virtual environment found it will use the strategies in <a class="reference internal" href="../api/public_api.html#c.LCC_BARE_TO_METAL_STRATEGIES" title="LCC_BARE_TO_METAL_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_BARE_TO_METAL_STRATEGIES</span></code></a>, it will try them one by one until the first one succeeds.</p></li>
+<li><p>If it detects it’s running in a Virtual Machine it will try the strategies in <a class="reference internal" href="../api/public_api.html#c.LCC_VM_STRATEGIES" title="LCC_VM_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_VM_STRATEGIES</span></code></a>, it will try them one by one until the first one succeeds.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>if you’re interested in implementing your own hardware identification strategy you can have a look to the library</dt><dd><p><a class="reference internal" href="../api/extend.html#tweak-hardware-signature-generator"><span class="std std-ref">extension points</span></a>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><cite>licensecc</cite> will try to validate the identifier using the same strategy that was used to generate it, regardless
+of what is the default method now in use. eg: disk identifiers will always be validated by <code class="docutils literal notranslate"><span class="pre">DiskStrategy</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The default strategies used in each environment are defined by the macros
+<a class="reference internal" href="../api/public_api.html#c.LCC_BARE_TO_METAL_STRATEGIES" title="LCC_BARE_TO_METAL_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_BARE_TO_METAL_STRATEGIES</span></code></a>, <a class="reference internal" href="../api/public_api.html#c.LCC_VM_STRATEGIES" title="LCC_VM_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_VM_STRATEGIES</span></code></a>,
+<a class="reference internal" href="../api/public_api.html#c.LCC_DOCKER_STRATEGIES" title="LCC_DOCKER_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_DOCKER_STRATEGIES</span></code></a>, and <a class="reference internal" href="../api/public_api.html#c.LCC_CLOUD_STRATEGIES" title="LCC_CLOUD_STRATEGIES"><code class="xref c c-macro docutils literal notranslate"><span class="pre">LCC_CLOUD_STRATEGIES</span></code></a>.
+These can be customized per-project in <code class="docutils literal notranslate"><span class="pre">licensecc_properties.h</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Per-project customization of the strategy priorities requires editing
+<code class="docutils literal notranslate"><span class="pre">licensecc_properties.h</span></code> and recompiling. A more flexible (dependency injection)
+based approach is planned for <strong>v2.5.0</strong>.</p>
+</div>
+</section>
+</section>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Execution in a physical hardware: Use the (physical) disk SN. This survives a reinstallation of the pc, as a second choice use installation ID.</p></li>
+<li><p>Execution in a virtual machine: Use the mac address. This provide a tiny protection on cloning, as a second choice use the installation ID. If the machine is ephemeral (eg. CI/CD) there is not much you can do to limit. <strong>change when cpuid strategy available</strong></p></li>
+<li><p>Execution in a docker: Use the installation ID strategy. This prevents the executable to be taken out of the docker and used elsewhere.</p></li>
+</ul>
+</div></blockquote>
+<p>This is what <cite>STRATEGY_DEFAULT</cite> does for you, but you may want to customize it, as described above.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For details on customizing the identifier generation, see the
+<a class="reference internal" href="../api/hardware_identifiers.html"><span class="doc">hardware identifiers reference</span></a>.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../development/Development-Environment-Setup.html" class="btn btn-neutral float-left" title="Developer’s environment setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="concepts.html" class="btn btn-neutral float-right" title="Projects, features and versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

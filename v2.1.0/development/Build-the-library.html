@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build - Linux &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Build - Windows" href="Build-the-library-windows.html" />
+    <link rel="prev" title="Licensecc" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build - Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-prerequisites">Install prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-linux">Other linux</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#download-and-compile">Download and compile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download">Download:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure">Configure:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-and-test">Compile and test:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cmake-useful-flags">cmake useful flags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-compile-on-linux-for-windows-untested">Cross compile on Linux for Windows (UNTESTED)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Build-the-library-windows.html">Build - Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Build - Linux</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-linux">
+<h1>Build - Linux<a class="headerlink" href="#build-linux" title="Link to this heading"></a></h1>
+<p>For quick compilation instructions see the <a class="reference external" href="https://github.com/open-license-manager/licensecc#how-to-build"><code class="docutils literal notranslate"><span class="pre">README.md</span></code></a> file in the repository root. This page provides detailed, platform-specific instructions for Linux.</p>
+<section id="install-prerequisites">
+<h2>Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Link to this heading"></a></h2>
+<p>Below the prerequisites for compiling <code class="docutils literal notranslate"><span class="pre">licensecc</span></code>.</p>
+<section id="ubuntu">
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Link to this heading"></a></h3>
+<p>Supported Ubuntu distributions are 26.04, 24.04 (Noble Numbat) and 22.04 (Jammy Jellyfish), on both x86_64 and ARM.
+It should be possible to build on any recent Debian-derivate distribution.</p>
+<p>Install prerequisites (Ubuntu 24.04 and 22.04):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev \</span>
+<span class="go">     libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev \</span>
+<span class="go">     libboost-date-time-dev build-essential </span>
+</pre></div>
+</div>
+<p>Ubuntu 26.04 additionally requires <code class="docutils literal notranslate"><span class="pre">libjitterentropy3-dev</span></code> (its OpenSSL 3.x links against the Jitter RNG entropy source):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install libjitterentropy3-dev</span>
+</pre></div>
+</div>
+</section>
+<section id="other-linux">
+<h3>Other linux<a class="headerlink" href="#other-linux" title="Link to this heading"></a></h3>
+<p>Licensecc should compile on any recent Linux distribution.</p>
+<p>Minimum prerequisites</p>
+<ul class="simple">
+<li><p>gcc =&gt; 4.9, cmake =&gt; 3.16</p></li>
+<li><p>zlib, openssl =&gt; 1.1.1</p></li>
+<li><p>Boost =&gt; 1.61 (If you want to compile your own boost version remember to use the flag <code class="docutils literal notranslate"><span class="pre">runtime-link=static</span></code>)</p></li>
+</ul>
+<p>Optional prerequisites:</p>
+<ul class="simple">
+<li><p>Doxygen, Sphynx for documentation</p></li>
+</ul>
+</section>
+</section>
+<section id="download-and-compile">
+<h2>Download and compile<a class="headerlink" href="#download-and-compile" title="Link to this heading"></a></h2>
+<section id="download">
+<h3>Download:<a class="headerlink" href="#download" title="Link to this heading"></a></h3>
+<p>This project has a submodule (the license generator). Remember to add the option <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> to clone it.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/licensecc.git</span>
+</pre></div>
+</div>
+</section>
+<section id="configure">
+<h3>Configure:<a class="headerlink" href="#configure" title="Link to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd licensecc/build</span>
+<span class="go">cmake .. -DCMAKE_INSTALL_PREFIX=../install</span>
+</pre></div>
+</div>
+</section>
+<section id="compile-and-test">
+<h3>Compile and test:<a class="headerlink" href="#compile-and-test" title="Link to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make</span>
+<span class="go">make install</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make test</span>
+<span class="go">ctest -T memcheck</span>
+</pre></div>
+</div>
+</section>
+<section id="cmake-useful-flags">
+<h3>cmake useful flags<a class="headerlink" href="#cmake-useful-flags" title="Link to this heading"></a></h3>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Definition name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LCC_PROJECT_NAME=&lt;str&gt;</code></td>
+<td>This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named <code>DEFAULT</code> for you</td>
+</tr>
+<tr>
+<td><code>LCC_LOCATION=&lt;path&gt;</code></td>
+<td>In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found</td>
+</tr>
+<tr>
+<td>CMAKE_BUILD_TYPE=Release</td>
+<td>generate a release version of the library (should be used as default)</td>
+</tr>
+<tr>
+<td>CMAKE_INSTALL_PREFIX</td>
+<td>folder where to install compiled libraries and headers. (default: /usr/local)</td>
+</tr>
+<tr>
+<td>BOOST_ROOT</td>
+<td>Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary)</td>
+</tr>
+<tr>
+<td>OPENSSL_ROOT</td>
+<td>Folder where OpenSSL was installed (optional: if you installed openssl as system package this should not be necessary)</td>
+</tr>
+</tbody>
+</table></section>
+</section>
+<section id="cross-compile-on-linux-for-windows-untested">
+<h2>Cross compile on Linux for Windows (UNTESTED)<a class="headerlink" href="#cross-compile-on-linux-for-windows-untested" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p><strong>Note:</strong> The procedure below is currently untested and may be outdated
+(it was last verified on Ubuntu 18.04). It is not covered by CI —
+Windows builds are produced natively, see <code class="docutils literal notranslate"><span class="pre">.github/workflows/windows-standard.yml</span></code>.</p>
+</div></blockquote>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install cmake valgrind binutils-mingw-w64 mingw-w64 mingw-w64-tools \ </span>
+<span class="go">	mingw-w64-x86-64-dev libz-mingw-w64-dev wine-stable wine-binfmt p7zip-full</span>
+</pre></div>
+</div>
+<p>Download and compile boost:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export CUR_PATH=$(pwd)</span>
+<span class="go">wget -c https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2</span>
+<span class="go">tar xjf boost_1_71_0.tar.bz2</span>
+<span class="go">rm boost_1_71_0.tar.bz2</span>
+<span class="go">cd boost_1_71_0</span>
+<span class="go">sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++-mingw </span>
+<span class="go">./bootstrap.sh</span>
+<span class="go">./b2 toolset=gcc-mingw target-os=windows address-model=64 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static --prefix=./dist release install</span>
+</pre></div>
+</div>
+<p>Install OpenSSL:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --no-check-certificate https://bintray.com/vszakats/generic/download_file?file_path=openssl-1.0.2h-win64-mingw.7z -O openssl.7z</span>
+<span class="go">7z x openssl.7z</span>
+<span class="go">rm openssl.7z</span>
+</pre></div>
+</div>
+<p>Configure and compile:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DOPENSSL_ROOT_DIR=$CUR_PATH/openssl-OpenSSL_1_1_1d/dist -DCMAKE_FIND_DEBUG_MODE=ON -DOPENSSL_USE_STATIC_LIBS=ON -DBOOST_ROOT=$CUR_PATH/boost_1_71_0/dist  ..
+</pre></div>
+</div>
+<p>###Build documentation</p>
+<p>Setup the python virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+
+<span class="o">.</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">wheel</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Build the docs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="n">documentation</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Licensecc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Build-the-library-windows.html" class="btn btn-neutral float-right" title="Build - Windows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

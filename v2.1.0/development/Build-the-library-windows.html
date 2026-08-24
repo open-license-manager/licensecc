@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-160839650-1');
+    </script>
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build - Windows &mdash; Licensecc  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=98b44b8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/twemoji.css?v=2199c511" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4c79eb15" />
+
+  
+    <link rel="shortcut icon" href="../_static/lock_32.ico"/>
+    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library-windows.html" />
+      <script src="../_static/jquery.js?v=958b65b0"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+      <script src="../_static/twemoji.js?v=a4381b3f"></script>
+      <script src="https://buttons.github.io/buttons.js"></script>
+      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dependencies" href="Dependencies.html" />
+    <link rel="prev" title="Build - Linux" href="Build-the-library.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Licensecc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Build the library:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Build-the-library.html">Build - Linux</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build - Windows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#msvc">MSVC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#msvc-install-prerequisites">MSVC install prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checkout-the-code">Checkout the code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-and-build-command-line">Compile and build (command line)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-cmake-definitions-options">Supported cmake definitions/options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-and-build-visual-studio-2026">Compile and build (Visual studio 2026)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windows-arm64">Windows ARM64</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mingw">MINGW</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Environment-Setup.html">Developer’s environment setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrate and use:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/Hardware-identifiers.html">Hardware Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/concepts.html">Projects, features and versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/find-the-license.html">Find the license file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/integration.html">Integrate Licensecc in your application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/issue-licenses.html">Issue licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/public_api.html">Public api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/extend.html">Extension points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/hardware_identifiers.html">Customize hardware signature generators</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/CREDITS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/QA.html">Q&amp;A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/maintenance.html">Maintenance Status</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Licensecc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Build - Windows</li>
+<li class="breadcrumbs-aside wy-breadcrumbs-aside">
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc"
+		data-color-scheme="no-preference: light; light: light; dark: dark;"
+		data-icon="octicon-star" data-size="large" data-show-count="true"
+		aria-label="Star open-license-manager/licensecc on GitHub">Star</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/fork"
+		data-icon="octicon-repo-forked" data-size="large"
+		data-show-count="true"
+		aria-label="Fork open-license-manager/licensecc on GitHub">Fork</a>
+	<a class="github-button"
+		href="https://github.com/open-license-manager/licensecc/issues"
+		data-icon="octicon-issue-opened" data-size="large"
+		data-show-count="true"
+		aria-label="Issue open-license-manager/licensecc on GitHub">Issue</a>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-windows">
+<h1>Build - Windows<a class="headerlink" href="#build-windows" title="Link to this heading"></a></h1>
+<p>This page describes how to build the library under windows with licensecc 2.1.0.</p>
+<p>For quick compilation instructions see the <a class="reference external" href="https://github.com/open-license-manager/licensecc#how-to-build">README.md</a> file in the repository root. This page provides detailed, platform-specific instructions for Windows.</p>
+<section id="msvc">
+<h2>MSVC<a class="headerlink" href="#msvc" title="Link to this heading"></a></h2>
+<p>Supported Visual Studio versions are:</p>
+<ul class="simple">
+<li><p>Visual Studio 2026 (used in development).</p></li>
+<li><p>Visual Studio 2022 (used in the automated builds). The lowest
+supported version is the latest minor release/servicing update of Visual Studio 2022
+(v17.x).</p></li>
+<li><p>Visual Studio 2019 and 2017 are not tested anymore (though they should still work).</p></li>
+</ul>
+<p>Automated tests run on Windows Server 2022, Windows Server 2026 and Windows 11 (arm64).</p>
+<p>Libraries supported/tested in 2.1.0 (Windows x64):</p>
+<ul class="simple">
+<li><p>CMake: &gt;= 3.16.</p></li>
+<li><p>Boost: tested with 1.64.0, 1.78.0 and 1.90.0. Boost is only needed to run the tests
+and to build <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> and <code class="docutils literal notranslate"><span class="pre">lcc-inspector</span></code>; it’s never linked into <code class="docutils literal notranslate"><span class="pre">liblicensecc</span></code>.
+The pre-compiled binaries should match the compiler version.</p></li>
+<li><p>OpenSSL: optional.</p></li>
+</ul>
+<section id="msvc-install-prerequisites">
+<h3>MSVC install prerequisites<a class="headerlink" href="#msvc-install-prerequisites" title="Link to this heading"></a></h3>
+<p>Git is of course a prerequisite, if you don’t have it you can download it from <a class="reference external" href="https://git-scm.com/download/win">git-scm.com</a>.</p>
+<p>Pre-compiled versions of boost for windows can be downloaded from the
+<a class="reference external" href="https://github.com/userdocs/boost/releases">userdocs/boost</a> releases (the same source
+used by the project CI). Choose the installer that matches the desired architecture and
+compiler, eg. for Visual Studio 2022 64 bit download <code class="docutils literal notranslate"><span class="pre">boost_1_90_0-msvc-14.3-64.exe</span></code>.</p>
+<p>Alternatively pre-compiled boost binaries are available at
+<a class="reference external" href="https://sourceforge.net/projects/boost/files/boost-binaries/">SourceForge</a>.</p>
+</section>
+<section id="checkout-the-code">
+<h3>Checkout the code<a class="headerlink" href="#checkout-the-code" title="Link to this heading"></a></h3>
+<p>Check out the code using git:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project has a submodule (the license generator). Remember to add the option <cite>–recursive</cite> to clone it.</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/licensecc.git</span>
+</pre></div>
+</div>
+</section>
+<section id="compile-and-build-command-line">
+<h3>Compile and build (command line)<a class="headerlink" href="#compile-and-build-command-line" title="Link to this heading"></a></h3>
+<p>Open a command prompt in the folder where you checked out the library.</p>
+<p>Configure the library (windows x64):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd build</span>
+<span class="go">cmake .. -G &quot;Visual Studio 17 2022&quot; -A x64 -DBOOST_ROOT=&quot;C:\local\boost&quot;  //(or where boost was installed)</span>
+</pre></div>
+</div>
+<p>Configure the library (windows x86):</p>
+<p>For some configuration reason we’re unable to build using x86 using visual studio generators. We recommend to use Ninja
+build system.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd build</span>
+<span class="go">&quot;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat&quot; x86</span>
+
+<span class="go">cmake .. -G &quot;Ninja&quot; [-DBOOST_ROOT=&quot;C:\local\boost&quot;  //(or where boost was installed)]</span>
+</pre></div>
+</div>
+</section>
+<section id="supported-cmake-definitions-options">
+<h3>Supported cmake definitions/options<a class="headerlink" href="#supported-cmake-definitions-options" title="Link to this heading"></a></h3>
+<p>Below a list of some useful cmake configurations:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Definition name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-DSTATIC_RUNTIME=ON</p></td>
+<td><p>link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DBUILD_SHARED_LIBS=OFF</p></td>
+<td><p>additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DUSE_OPENSSL=OFF</p></td>
+<td><p>search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead, no additional feature from OpenSSL).</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DOpenSSL_ROOT_DIR=C:..</p></td>
+<td><p>(Optional) folder where OpenSSL is installed (eg. C:Program FilesOpenSSL-Win64).</p></td>
+</tr>
+<tr class="row-even"><td><p>-DCMAKE_BUILD_TYPE=Release</p></td>
+<td><p>link to the release version of the boost libraries</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DCMAKE_INSTALL_PREFIX=C:XX</p></td>
+<td><p>folder where to install libraries and headers</p></td>
+</tr>
+<tr class="row-even"><td><p>-DBOOST_ROOT=C:..</p></td>
+<td><p>folder where boost is installed. If cmake is reporting boost not found consider updating cmake.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DLCC_PROJECT_NAME=&lt;name&gt;</p></td>
+<td><p>name of the software you want to issue a license for. Defaults to “DEFAULT”.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Compile and test</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build . --target install --config Release</span>
+<span class="go">ctest -C Release</span>
+</pre></div>
+</div>
+</section>
+<section id="compile-and-build-visual-studio-2026">
+<h3>Compile and build (Visual studio 2026)<a class="headerlink" href="#compile-and-build-visual-studio-2026" title="Link to this heading"></a></h3>
+<p>Visual Studio 2022 integrates with CMake (the process requires a couple of restarts and it’s all but “fluid”).</p>
+<p>After opening the project “as a CMake project” a CMakeSettings.json should appear in the base folder. Edit the file as
+below (the file is for an x86 architecture). In a special way:</p>
+<ul class="simple">
+<li><p>remove the “-v” switch from “buildCommandArgs”</p></li>
+<li><p>add the variable BOOST_ROOT pointing to where your boost installation is.</p></li>
+</ul>
+<p>Restart, delete and rebuild the cache a couple of time, until Visual Studio understands the new options.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;configurations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x86-Debug&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Visual Studio 17 2022&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;configurationType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Debug&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;buildRoot&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${projectDir}\\out\\build\\${name}&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;installRoot&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${projectDir}\\out\\install\\${name}&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cmakeExecutable&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C:/Program Files/CMake/bin/cmake.exe&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cmakeCommandArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;buildCommandArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ctestCommandArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;inheritEnvironments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;msvc_x86&quot;</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;intelliSenseMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;windows-msvc-x86&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BOOST_ROOT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C:/local/boost&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PATH&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="windows-arm64">
+<h2>Windows ARM64<a class="headerlink" href="#windows-arm64" title="Link to this heading"></a></h2>
+<p>Windows on ARM (arm64) is supported and tested in CI on a Windows 11 arm64 runner.
+Boost is provided by <a class="reference external" href="https://vcpkg.io/">vcpkg</a> (packages <code class="docutils literal notranslate"><span class="pre">boost-program-options</span></code>,
+<code class="docutils literal notranslate"><span class="pre">boost-test</span></code>, <code class="docutils literal notranslate"><span class="pre">boost-filesystem</span></code>, <code class="docutils literal notranslate"><span class="pre">boost-date-time</span></code> with the
+<code class="docutils literal notranslate"><span class="pre">arm64-windows-static-release</span></code> triplet) and OpenSSL is disabled (the Windows
+cryptography APIs are used):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -S . -B build -DSTATIC_RUNTIME=ON -DUSE_OPENSSL=OFF -DCMAKE_BUILD_TYPE=Release ^</span>
+<span class="go">      -DCMAKE_TOOLCHAIN_FILE=&quot;&lt;vcpkg folder&gt;\scripts\buildsystems\vcpkg.cmake&quot; ^</span>
+<span class="go">      -DVCPKG_TARGET_TRIPLET=arm64-windows-static-release</span>
+<span class="go">cmake --build build --target install --config Release</span>
+<span class="go">ctest -C Release --test-dir build</span>
+</pre></div>
+</div>
+</section>
+<section id="mingw">
+<h2>MINGW<a class="headerlink" href="#mingw" title="Link to this heading"></a></h2>
+<p>Mingw is not tested (=unsupported) in 2.1.0 but it was by version 2.0 and it may be in future.
+This section is a placeholder from the old release (BTW if it works please comment in the forum)</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Describe how to install and configure mingw</p>
+</div>
+<p>Prerequistites:</p>
+<ul class="simple">
+<li><p>Powershell</p></li>
+<li><p>7zip</p></li>
+<li><p>git</p></li>
+<li><p>cmake</p></li>
+</ul>
+<p>Install and compile boost:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.7z</span>
+<span class="go">7z x boost_1_64_0.7z -oC:/local</span>
+<span class="go">cd &quot;C:\local\boost_1_64_0&quot;</span>
+<span class="go">bootstrap.bat gcc</span>
+<span class="go">b2.exe -d0 --with-date_time --with-test --with-filesystem --with-program_options --with-regex --with-serialization --with-system runtime-link=static toolset=gcc --prefix=C:\local\boost_1_68_0\boost-mingw install</span>
+<span class="go">cd C:/local/boost_1_64_0/boost-mingw/lib</span>
+<span class="go">dir</span>
+</pre></div>
+</div>
+<p>Verify boost is really compiled. Go to the folder where you want to download <cite>licensecc</cite></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/open-license-manager/licensecc.git</span>
+<span class="go">cd licensecc/build &amp;&amp; cmake -G &quot;MinGW Makefiles&quot; -DBOOST_ROOT=&quot;C:/local/boost_1_68_0/boost-mingw&quot; -DBoost_ARCHITECTURE=&quot;-x64&quot; -DCMAKE_CXX_COMPILER_ARCHITECTURE_ID=&quot;x64&quot; -DCMAKE_SH=&quot;CMAKE_SH-NOTFOUND&quot; ..</span>
+<span class="go">cmake --build . --target install --config Release</span>
+</pre></div>
+</div>
+<p>And then you can test it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ctest -C Release</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Build-the-library.html" class="btn btn-neutral float-left" title="Build - Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Dependencies.html" class="btn btn-neutral float-right" title="Dependencies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Open License Manager.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

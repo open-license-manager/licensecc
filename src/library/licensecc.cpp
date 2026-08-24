@@ -39,7 +39,3 @@ LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, cons
 	static license::LicenseFacade facade;
 	return facade.acquire_license(callerInformation, licenseLocation, license_out);
 }
-
-LCC_EVENT_TYPE confirm_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }
-
-LCC_EVENT_TYPE release_license(char* product, LicenseLocation licenseLocation) { return LICENSE_OK; }

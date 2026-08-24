@@ -91,9 +91,6 @@ bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method,
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
-#ifndef NDEBUG
-			cerr << "Error occurred in identify_pc: " << ex.what() << std::endl;
-#endif
 		}
 	} else {
 		*bufSize = LCC_API_PC_IDENTIFIER_SIZE;

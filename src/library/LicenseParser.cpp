@@ -61,7 +61,7 @@ EventRegistry LicenseParser::readLicenses(const string& product, vector<FullLice
 		}
 		for (auto it = licenseLocations.begin(); it != licenseLocations.end(); it++) {
 			const string license = locator->retrieve_license_content((*it).c_str());
-			{ //extract this to a public method: parse_license
+			{  // extract this to a public method: parse_license
 				CSimpleIniA ini;
 				ini.Reset();
 				const SI_Error rc = ini.LoadData(license.c_str(), license.size());
@@ -119,9 +119,7 @@ string FullLicenseInfo::printForSign() const {
 		}
 	}
 
-#ifndef NDEBUG
-	cout << "license to sign [" << oss.str() << "]" << endl;
-#endif
+	LOG_DEBUG("license to sign [%s]", oss.str().c_str());
 	return oss.str();
 }
 

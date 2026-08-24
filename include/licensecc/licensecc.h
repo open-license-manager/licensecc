@@ -22,8 +22,9 @@ void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licens
 /**
  * \brief Calculates the hardware identifier associated with a specific pc.
  * \details
- * The caller, when it doesn't find a valid license (see `acquire_license` below) should show to the user the calculated identifier.
- * The user should report the pc_identifier to the software editor that will in turn use it to issue a license.
+ * The caller, when it doesn't find a valid license (see `acquire_license` below) should show to the user the calculated
+ * identifier. The user should report the pc_identifier to the software editor that will in turn use it to issue a
+ * license.
  *
  * pc_id_method = ::STRATEGY_DEFAULT is usually the best choice.
  *
@@ -50,7 +51,7 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifi
  *
  * @param callerInformation[in] optional, can be NULL.
  * 			contains informations on the software that is requesting the license verification. Let the software
- * 			specify its version or request verification for features that need to be enabled separately.  
+ * 			specify its version or request verification for features that need to be enabled separately.
  * @param licenseLocation[in] optional, can be NULL.
  * 					licenseLocation, either the name of the file
  * 								or the name of the environment variable should be !='\0'
@@ -58,18 +59,7 @@ bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifi
  */
 
 LCC_EVENT_TYPE acquire_license(const CallerInformations* callerInformation, const LicenseLocation* licenseLocation,
-						   LicenseInfo* license_out);
-
-/**
- * Not implemented yet, useful (later) for network licenses.
- * Should be called from time to time to confirm we're still using the
- * license.
- */
-LCC_EVENT_TYPE confirm_license(char* featureName, LicenseLocation* licenseLocation);
-/**
- * Not implemented yet, useful (later) for network licenses.
- */
-LCC_EVENT_TYPE release_license(char* featureName, LicenseLocation licenseLocation);
+							   LicenseInfo* license_out);
 
 #ifdef __cplusplus
 }

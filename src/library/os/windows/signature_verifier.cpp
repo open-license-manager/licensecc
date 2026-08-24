@@ -39,12 +39,12 @@ static const void formatError(DWORD status, const char* description) {
 	LOG_DEBUG("error %s : %s %h", description, msgBuffer, status);
 }
 
-//#pragma pack(push, 1)
-//typedef struct {
+// #pragma pack(push, 1)
+// typedef struct {
 //	BCRYPT_RSAKEY_BLOB rsakey;
 //	BYTE pkExp[3];	// Fixed size for exponent
-//} PUBKEY_HEADER, *P_PUBKEY_HEADER;
-//#pragma pack(pop)
+// } PUBKEY_HEADER, *P_PUBKEY_HEADER;
+// #pragma pack(pop)
 
 static BCRYPT_ALG_HANDLE openHashProvider() {
 	DWORD status;
@@ -127,7 +127,6 @@ static FUNCTION_RETURN read_integer(uint8_t*& ptr, BYTE* buffer, const size_t bu
 	}
 	for (size_t i = 0; i < length; i++) {
 		buffer[i] = *(ptr++);
-		
 	}
 	return FUNC_RET_OK;
 }
@@ -142,9 +141,9 @@ static FUNCTION_RETURN read_integer(uint8_t*& ptr, BYTE* buffer, const size_t bu
  *
  * The structure starts with a SEQUENCE tag (0x30), followed by the length,
  * then two INTEGER values: the modulus and the public exponent.
- * 
+ *
  * The target structure in the windows API to hold the public key format has the following structure:
- * 
+ *
  * BCRYPT_RSAKEY_BLOB
  * PublicExponent[cbPublicExp] // Big-endian.
  * Modulus[cbModulus] // Big-endian.
@@ -161,17 +160,15 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	if (read_sequence(pub_key_idx, seq_len) != FUNC_RET_OK) {
 		return FUNC_RET_ERROR;
 	}
-	cout << "seq:" << seq_len << endl;
-	
-	uint8_t* modulus_idx = pub_key_idx; //remembers the modulus position.
+
+	uint8_t* modulus_idx = pub_key_idx;	 // remembers the modulus position.
 	size_t mod_size = 0;  // read the modulus size
 	if (read_integer(pub_key_idx, nullptr, 0, mod_size) != FUNC_RET_BUFFER_TOO_SMALL) {
 		return FUNC_RET_ERROR;
 	}
-	cout << "mod_len:" << mod_size << endl;
 
 	size_t exp_size = 0;  // read the exponent size
-	uint8_t* exponent_idx = pub_key_idx; // remembers the exponent position
+	uint8_t* exponent_idx = pub_key_idx;  // remembers the exponent position
 	if (read_integer(pub_key_idx, nullptr, 0, exp_size) != FUNC_RET_BUFFER_TOO_SMALL) {
 		return FUNC_RET_ERROR;
 	}
@@ -182,7 +179,8 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	// Calculate the key bit length
 	size_t key_bitlen = mod_size * 8;
 	// Now allocate memory for the key blob with the correct size
-	size_t total_blob_size = sizeof(BCRYPT_RSAKEY_BLOB) + exp_size + mod_size;	 // 3 for exponent, modulus_size for modulus
+	size_t total_blob_size =
+		sizeof(BCRYPT_RSAKEY_BLOB) + exp_size + mod_size;  // 3 for exponent, modulus_size for modulus
 	vector<BYTE> blob_buffer(total_blob_size);
 
 	// Set up the key blob
@@ -197,7 +195,7 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	// Get pointers to the exponent and modulus areas
 	BYTE* blob_exp_ptr = blob_buffer.data() + sizeof(BCRYPT_RSAKEY_BLOB);
 	BYTE* blob_modulus_ptr = blob_exp_ptr + exp_size;
-	//read the modulus into the blob
+	// read the modulus into the blob
 	if (read_integer(modulus_idx, blob_modulus_ptr, mod_size, mod_size) != FUNC_RET_OK) {
 		return FUNC_RET_ERROR;
 	}
@@ -213,8 +211,8 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	for (auto it = first; it != last; ++it) {
 		std::cout << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(*it) << ":";
 	}*/
-	if (NT_SUCCESS(status = BCryptImportKeyPair(sig_alg, nullptr, BCRYPT_RSAPUBLIC_BLOB, hKey, (PUCHAR)blob_buffer.data(),
-												total_blob_size, 0))) {
+	if (NT_SUCCESS(status = BCryptImportKeyPair(sig_alg, nullptr, BCRYPT_RSAPUBLIC_BLOB, hKey,
+												(PUCHAR)blob_buffer.data(), total_blob_size, 0))) {
 		result = FUNC_RET_OK;
 	} else {
 #ifndef NDEBUG
@@ -222,7 +220,7 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 #endif
 	}
 
-	//free(blob_buffer);
+	// free(blob_buffer);
 	return result;
 }
 

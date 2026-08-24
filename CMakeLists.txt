@@ -43,7 +43,7 @@ IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT
 	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
 ENDIF()
 
-option(STATIC_RUNTIME "Compile a static executable or a dynamic linked one" ON)
+option(STATIC_RUNTIME "Compile a static executable or a dynamic linked one" OFF)
 message( STATUS "Static   runtime          : ${STATIC_RUNTIME}")
 
 # The static library is always built. If BUILD_SHARED_LIBS is ON a dynamic

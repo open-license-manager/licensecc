@@ -12,12 +12,12 @@ See [Development and Usage](../analysis/Development-And-Usage-Workflow)
 ### Help! it doesn't compile!
 Every `licensecc` release is tested in the following environments:
 
-* Centos 7-8
-* Ubuntu 16.04-18.04 (boost 1.65~1.71, openssl 1.1)
-* Windows server 1809 (MSVC 2017, boost 1.71)
-* Windows 7-10 (MSVC 2019, boost 1.71)
+* Ubuntu 22.04-26.04 (x86_64 and ARM, GCC and Clang, boost 1.74~1.90, openssl 3.x)
+* Windows server 2022-2025 (MSVC, boost 1.71+)
+* Windows 11 ARM (MSVC)
 
-Tests are carried out automatically every commit. You can see the current build status on [travis-ci](https://travis-ci.org/open-license-manager/licensecc).
+Tests are carried out automatically every commit. You can see the current build status in the
+[GitHub Actions](https://github.com/open-license-manager/licensecc/actions) tab of the repository.
 
 If you can't get it compiling: 
 

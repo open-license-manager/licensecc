@@ -13,7 +13,7 @@
 [![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)]([MAINTENANCE.md](http://open-license-manager.github.io/licensecc/other/maintenance.html))
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
-machines, or prevent the usage in  virtualized environments. It is an open source license library that helps to keep your software closed :smirk: . Among other features if it runs on a "real hardware" it can generate a signature of that hardware and report if the signature doesn't match.
+machines, or prevent the usage in  virtualized environments. It is an open source license library that helps to keep your software closed :smirk: . Among other features: it can generate a signature of that hardware it is running on and later report if the signature doesn't match (because the executable has been moved elsewhere).
 
 A comprehensive [list of features](http://open-license-manager.github.io/licensecc/analysis/features.html), and their status is available in the project site. 
 

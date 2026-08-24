@@ -1,4 +1,4 @@
-# License retrieval
+# Find the license file
 
 ## how `licensecc` find the license file
 

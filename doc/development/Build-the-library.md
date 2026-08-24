@@ -5,15 +5,21 @@ Below the prerequisites for compiling `licensecc`. For developing it we use Ecli
 Recent CDT works smoothly with CMake. Remember to install the Ninja package as build system and Cmake Gui for a good eclipse integration.
  
 ### Ubuntu
-Supported Ubuntu distributions are 20.04 (Focal Fossa), 18.04 (Bionic Beaver) and 16.04 (Xenial). 
+Supported Ubuntu distributions are 26.04, 24.04 (Noble Numbat) and 22.04 (Jammy Jellyfish), on both x86_64 and ARM.
 It should be possible to build on any recent Debian-derivate distribution.
 
-Install prerequisites:
+Install prerequisites (Ubuntu 24.04 and 22.04):
 
 ```console
-sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libzstd-dev libboost-test-dev libboost-filesystem-dev \
+sudo apt-get install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev \
      libboost-iostreams-dev libboost-program-options-dev libboost-system-dev libboost-thread-dev \
      libboost-date-time-dev build-essential 
+```
+
+Ubuntu 26.04 additionally requires `libjitterentropy3-dev` (its OpenSSL 3.x links against the Jitter RNG entropy source):
+
+```console
+sudo apt-get install libjitterentropy3-dev
 ```
 
 For development with eclipse:
@@ -22,59 +28,12 @@ For development with eclipse:
 sudo apt-get install cmake-gui ninja-build
 ```
 
-### CentOS 7
-
-CentOS 7 ships with gcc 4.8 that isn't compiling for a bug on regular expression. It's necessary to update to gcc 4.9 or later.
-Install prerequisites:
-
-```console
-yum -y update && yum -y install install centos-release-scl
-yum -y install wget boost boost-devel boost-static openssl openssl-devel openssl-static 
-yum -y install glibc-static devtoolset-7-toolchain devtoolset-7-gcc devtoolset-7-gcc-c++ devtoolset-7-valgrind-devel
-
-export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
-export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
-```
-
-Centos 7 ships with CMake 2.8.11 that's not supported. You need to compile and install a newer (>3.6) version of CMake.
-
-```console
-wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz 
-tar zxvf cmake-3.11.0.tar.gz 
-cd cmake-3.11.0
-./bootstrap 
-make 
-sudo make install
-cmake --version #(check it's 3.11.0) 
-```
-
-If you don't want to install all these prerequisites in your machine you can also build the library in a docker container. 
-Check for the corresponding Centos 7 section in the `.travis.yml` file at the base of the project.
-
-### CentOS 8
-Install prerequisites:
-
-```console
-yum -y update && yum -y groupinstall 'Development Tools' 
-yum -y install wget cmake boost boost-devel openssl-devel zlib-devel  
-dnf -y --enablerepo=PowerTools install boost-static 
-```
-
-CentOS 8 doesn't ship with a static version of openssl. It is necessary to compile it from sources.
-
-```console
-wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz 
-tar xzf OpenSSL_1_1_1d.tar.gz && cd openssl-OpenSSL_1_1_1d 
-./config && make -j 8
-sudo make install 
-```
-
 ### Other linux
-Licensecc should compile on any recent (2020) linux distribution. Being CentOS 7 the older distribution we keep compatibilty with. 
+Licensecc should compile on any recent Linux distribution.
 
 Minimum prerequisites
-*   gcc => 4.9, cmake => 3.6
-*   zlib, openssl => 1.0.2 
+*   gcc => 4.9, cmake => 3.16
+*   zlib, openssl => 1.0.2
 *   Boost => 1.57 (If you want to compile your own boost version remember to use the flag `runtime-link=static`)
 
 Optional prerequisites:
@@ -119,8 +78,10 @@ ctest -T memcheck
 |BOOST_ROOT              | Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary) |
 |OPENSSL_ROOT            | Folder where OpenSSL was installed (optional: if you installed openssl as system package this should not be necessary) |
 
-## Cross compile on Linux for Windows
-Tested on host: Ubuntu 18.04
+## Cross compile on Linux for Windows (UNTESTED)
+> **Note:** The procedure below is currently untested and may be outdated
+> (it was last verified on Ubuntu 18.04). It is not covered by CI —
+> Windows builds are produced natively, see `.github/workflows/windows-standard.yml`.
 
 ### Prerequisites
 
@@ -152,7 +113,7 @@ rm openssl.7z
 Configure and compile:
  
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=../modules/toolchain-ubuntu-mingw64.cmake -DOPENSSL_ROOT_DIR=$CUR_PATH/openssl-OpenSSL_1_1_1d/dist -DCMAKE_FIND_DEBUG_MODE=ON -DOPENSSL_USE_STATIC_LIBS=ON -DBOOST_ROOT=$CUR_PATH/boost_1_71_0/dist  ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DOPENSSL_ROOT_DIR=$CUR_PATH/openssl-OpenSSL_1_1_1d/dist -DCMAKE_FIND_DEBUG_MODE=ON -DOPENSSL_USE_STATIC_LIBS=ON -DBOOST_ROOT=$CUR_PATH/boost_1_71_0/dist  ..
 
 ```
 

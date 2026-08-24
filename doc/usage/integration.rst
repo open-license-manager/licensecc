@@ -29,34 +29,82 @@ In your ``CMakeLists.txt``:
 .. code-block:: cmake
 
    add_subdirectory(submodules/licensecc)
-
    add_executable(my_app src/main.cpp)
    target_link_libraries(my_app PRIVATE licensecc::licensecc)
 
-Method B — ``find_package`` with ``Findlicensecc.cmake`` (alternative)
+
+This is the method used in the basic_features `examples <https://github.com/open-license-manager/examples/tree/develop/basic_features>`_
+
+Method B — ``find_package`` 
 ----------------------------------------------------------------------
 
 Use this method when ``licensecc`` is built and installed externally (not as a
-submodule). Copy the CMake module ``Findlicensecc.cmake`` into your project's
-CMake modules directory, then add to your ``CMakeLists.txt``:
+submodule). This usually makes your build a bit faster. 
 
 .. code-block:: cmake
 
-   find_package(licensecc 2.0.0 REQUIRED)
-
+   find_package(licensecc 2.1.0 REQUIRED)
    add_executable(my_app src/main.cpp)
    target_link_libraries(my_app PRIVATE licensecc::licensecc)
 
-``Findlicensecc.cmake`` recognises the following input variables:
+
+Parameters to pass to cmake in the configuration
 
 ==================== =====================================================================
 CMake variable         Description
 ==================== =====================================================================
-LICENSECC_LOCATION     | Hint to locate the library when not checked out as a submodule.
-                       | May point to the installation folder or the source folder.
-LCC_PROJECT_NAME       | Name of the project (the software being licensed).
-                       | Alternatively, pass it as a component in ``find_package``.
+CMAKE_PREFIX_PATH      | Installation prefix of ``licensecc`` (the folder passed to
+                       | ``-DCMAKE_INSTALL_PREFIX`` when you built the library). This
+                       | lets ``find_package`` locate the package.
+licensecc_DIR          | Direct path to the directory containing ``licensecc-config.cmake``,
+                       | i.e. ``$LCC_INSTALLATION_DIR/lib/cmake/licensecc``. Use this if
+                       | ``find_package`` still cannot find the library.
+LCC_PROJECT_NAME       | Name of the project (the software being licensed). It must match
+                       | the project name you used when you compiled ``licensecc``. If you
+                       | didn't specify one, leave it unset and the default ``DEFAULT`` is
+                       | used.
 ==================== =====================================================================
+
+The directory structure created by ``make install`` looks like this::
+
+.. code-block:: 
+
+   $CMAKE_INSTALL_PATH
+      ├── bin
+      │   ├── <<PROJECT_NAME>>                        <--- "DEFAULT"
+      │   │   └── lccinspector
+      │   ├── lccgen -> lccgen-2.1.0
+      │   └── lccgen-2.1.0
+      ├── include
+      │   └── licensecc
+      │       ├── datatypes.h
+      │       ├── <<PROJECT_NAME>>
+      │       │   ├── licensecc_properties.h
+      │       │   └── public_key.h
+      │       └── licensecc.h
+      └── lib
+            ├── cmake
+            │   └── licensecc                           <--- Point your licensecc_DIR here
+            │       ├── licensecc-config.cmake
+            │       └── licensecc-config-version.cmake
+            └── licensecc
+               └── <<PROJECT_NAME>>
+                   ├── cmake
+                   │   ├── licensecc.cmake
+                   │   └── licensecc-debug.cmake
+                   └── liblicensecc.a
+
+
+Debugging ``find_package``
+--------------------------
+
+If ``find_package(licensecc ...)`` fails, use CMake's built-in debugging output
+to see exactly where it searches:
+
+.. code-block:: console
+
+   cmake .. -DCMAKE_FIND_DEBUG_MODE=ON
+
 
 A complete working example using this method is available in the
 `simple_pc_identifier <https://github.com/open-license-manager/examples/tree/develop/simple_pc_identifier>`_
@@ -66,7 +114,8 @@ project. Its ``CMakeLists.txt``:
    :language: cmake
    :linenos:
 
-Step 6 — Call Licensecc from your code
+
+Call Licensecc from your code
 ***************************************
 
 The public API is declared in ``include/licensecc/licensecc.h``. The two main
@@ -97,7 +146,7 @@ A typical usage pattern:
    }
 
 For a complete working example with error handling and event-type mapping, see
-the `simple_pc_identifier example <https://github.com/open-license-manager/examples/blob/develop/simple_pc_identifier/src/example.cpp>`_
+the `basic features examples <https://github.com/open-license-manager/examples/tree/develop/basic_features>`_
 on GitHub.
 
 See the :ref:`public api <api/public_api:Public api>` reference for full

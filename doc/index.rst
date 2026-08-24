@@ -63,9 +63,9 @@ for your operating system: :ref:`Linux <development/Build-the-library:Build - Li
 Prerequisites
 ===================
 
-* Operating system : Linux(Ubuntu, CentOS), Windows
+* Operating system : Linux(Ubuntu), Windows
 * compilers        : GCC (Linux) MINGW (Linux cross compile for Windows), MINGW or MSVC (Windows) 
-* tools            : Cmake(>3.6), git, make/ninja(linux)
+* tools            : Cmake(>3.16), git, make/ninja(linux)
 * libraries        : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
 For a complete list of dependencies and supported environments see the :ref:`dependencies <development/Dependencies:Dependencies>` section.
@@ -166,12 +166,7 @@ We use `GitFlow`_ (or at least a subset of it). Remember to install the gitflow 
    :hidden:
    :caption: Integrate and use:
    
-   usage/quickstart
-   usage/concepts
-   usage/Hardware-identifiers
-   usage/integration
-   usage/issue-licenses
-   usage/License-retrieval
+   usage/*
    
 
 .. toctree::

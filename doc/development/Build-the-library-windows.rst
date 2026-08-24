@@ -2,26 +2,38 @@
 Build - Windows
 #######################################
 
-This page describes how to build the library under windows. Both MSVC compiler and MinGW are supported.
+This page describes how to build the library under windows with licensecc 2.1.0.
 
-MSVC (2017~2019)
+MSVC
 *****************
 
-Supported Visual Studio versions are: 
+Supported Visual Studio versions are:
 
-* the latest Visual Studio 2019 (used in development) 
-* Visual Studio 2017 used in `travis.ci <https://docs.travis-ci.com/user/reference/windows/>`_ for automated tests.
+* Visual Studio 2022 (used in development and in the automated builds)
+* Visual Studio 2026 (used in development)
+* Visual Studio 2019 and 2017 are not actively tested anymore but should still work.
+
+Automated tests run on Windows Server 2022, Windows Server 2025 and Windows 11 (arm64).
+
+Libraries supported/tested in 2.1.0 (Windows x64):
+
+* CMake: >= 3.16.
+* Boost: tested with 1.64.0, 1.78.0 and 1.90.0. Boost is only needed to run the tests
+  and to build ``lccgen`` and ``lcc-inspector``; it's never linked into ``liblicensecc``.
+  The pre-compiled binaries should match the compiler version: ``msvc-14.3``.
+* OpenSSL: optional. 
 
 MSVC install prerequisites
 ============================= 
 Git is of course a prerequisite, if you don't have it you can download it from `git-scm.com <https://git-scm.com/download/win>`_. 
 
-Pre-compiled `versions of boost <https://sourceforge.net/projects/boost/files/boost-binaries/>`_ for windows are available 
-at SourceForge. Choose the version that matches the desired architecture (eg. for Visual Studio 2019 64 bit you can download
-`boost 1.71 msvc-14.2 <https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-msvc-14.2-64.exe>`_ ) or 
-if unsure download the full `boost_1_71_0-bin-msvc-all-32-64.7z <https://dl.bintray.com/boostorg/release/1.71.0/binaries/boost_1_71_0-bin-msvc-all-32-64.7z>`_ archive. 
+Pre-compiled versions of boost for windows can be downloaded from the
+`userdocs/boost <https://github.com/userdocs/boost/releases>`_ releases (the same source
+used by the project CI). Choose the installer that matches the desired architecture and
+compiler, eg. for Visual Studio 2022 64 bit download ``boost_1_90_0-msvc-14.3-64.exe``.
 
-With boost 1.71 it is recommended to download one of the `latest cmake <https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-win64-x64.msi>`_ (>3.16). The version with Visual Studio 2019 isn't the most up to date.
+Alternatively pre-compiled boost binaries are available at
+`SourceForge <https://sourceforge.net/projects/boost/files/boost-binaries/>`_.
 
 Checkout the code
 ==================
@@ -45,7 +57,7 @@ Configure the library (windows x64):
 .. code-block:: console
   
   cd build
-  cmake .. -G "Visual Studio 16 2019" -A x64 -DBOOST_ROOT="C:\local\boost"  //(or where boost was installed)
+  cmake .. -G "Visual Studio 17 2022" -A x64 -DBOOST_ROOT="C:\local\boost"  //(or where boost was installed)
 
 Configure the library (windows x86):
 
@@ -55,21 +67,26 @@ build system.
 .. code-block:: console
 
   cd build
-  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
-  cmake .. -G "Ninja" -DBOOST_ROOT="C:\local\boost"  //(or where boost was installed)
+  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
+
+  cmake .. -G "Ninja" [-DBOOST_ROOT="C:\local\boost"  //(or where boost was installed)]
 
 Supported cmake definitions/options
 =======================================
 Below a list of some useful cmake configurations:
 
-============================== ==============================================================================================
+============================== ====================================================================================================
 Definition name                Description
-============================== ==============================================================================================
--DSTATIC_RUNTIME=1             link statically to the standard and runtime support libraries (compiler flag /MT)
+============================== ====================================================================================================
+-DSTATIC_RUNTIME=ON            link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
+-DBUILD_SHARED_LIBS=ON         additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
+-DUSE_OPENSSL=ON               search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead).
+-DOpenSSL_ROOT_DIR=C:\..       (Optional) folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64).
 -DCMAKE_BUILD_TYPE=Release     link to the release version of the boost libraries
 -DCMAKE_INSTALL_PREFIX=C:\..   folder where to install libraries and headers 
--DBOOST_ROOT=C:\..             folder where boost is installed. If cmake is reporting boost not found consider updating cmake. 
-============================== ==============================================================================================
+-DBOOST_ROOT=C:\..             folder where boost is installed. If cmake is reporting boost not found consider updating cmake.
+-DLCC_PROJECT_NAME=<name>      name of the software you want to issue a license for. Defaults to "DEFAULT".
+============================== ====================================================================================================
 
 Compile and test 
 
@@ -79,10 +96,10 @@ Compile and test
   ctest -C Release
 
 
-Compile and build (Visual studio 2019)
+Compile and build (Visual studio 2026)
 ==========================================
 
-Visual Studio 2019 integrates with CMake (the process requires a couple of restarts and it's all but "fluid").
+Visual Studio 2022 integrates with CMake (the process requires a couple of restarts and it's all but "fluid").
 
 After opening the project "as a CMake project" a CMakeSettings.json should appear in the base folder. Edit the file as 
 below (the file is for an x86 architecture). In a special way:
@@ -90,15 +107,33 @@ below (the file is for an x86 architecture). In a special way:
 * remove the "-v" switch from "buildCommandArgs" 
 * add the variable BOOST_ROOT pointing to where your boost installation is.
 
-Restart, delete and rebuild the cache a couple of time, until Visual Studio understands the new options 
-(tested with Visual Studio 2019 16.5.1).
+Restart, delete and rebuild the cache a couple of time, until Visual Studio understands the new options.
 
 .. literalinclude:: CMakeSettings.json
    :language: json
+
+
+Windows ARM64
+*****************
+Windows on ARM (arm64) is supported and tested in CI on a Windows 11 arm64 runner.
+Boost is provided by `vcpkg <https://vcpkg.io/>`_ (packages ``boost-program-options``,
+``boost-test``, ``boost-filesystem``, ``boost-date-time`` with the
+``arm64-windows-static-release`` triplet) and OpenSSL is disabled (the Windows
+cryptography APIs are used):
+
+.. code-block:: console
+
+  cmake -S . -B build -DSTATIC_RUNTIME=ON -DUSE_OPENSSL=OFF -DCMAKE_BUILD_TYPE=Release ^
+        -DCMAKE_TOOLCHAIN_FILE="<vcpkg folder>\scripts\buildsystems\vcpkg.cmake" ^
+        -DVCPKG_TARGET_TRIPLET=arm64-windows-static-release
+  cmake --build build --target install --config Release
+  ctest -C Release --test-dir build
    
 
-MINGW
+MINGW 
 *****************
+Mingw is not tested (=unsupported) in 2.1.0 but it was by version 2.0 and it may be in future. 
+This section is a placeholder 
 
 .. TODO::
    
@@ -136,6 +171,6 @@ And then you can test it:
 .. code-block:: console
 
    ctest -C Release
-    
+
 
 

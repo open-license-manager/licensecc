@@ -10,14 +10,14 @@
 [![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
 [![Forum](https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat)](https://github.com/open-license-manager/licensecc/discussions)
-[![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)]([MAINTENANCE.md](http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html))
+[![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)](http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html)
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. It is an open source license library that helps to keep your software closed :smirk: . Among other features: it can generate a signature of that hardware it is running on and later report if the signature doesn't match (because the executable has been moved elsewhere).
 
 A comprehensive [list of features](http://open-license-manager.github.io/licensecc/v2.1.0/analysis/features.html), and their status is available in the project site. 
 
-If you're experiencing problems, or you need information you can't find in the [documentation](http://open-license-manager.github.io/licensecc) please contact us on [github discussions](https://github.com/open-license-manager/licensecc/discussions).
+If you're experiencing problems, or you need information you can't find in the **[documentation](http://open-license-manager.github.io/licensecc/v2.1.0/index.html)** please contact us on [github discussions](https://github.com/open-license-manager/licensecc/discussions).
 
 ## License
 
@@ -33,7 +33,7 @@ The project is fully open source with no hidden costs or premium tiers.
 - Your project already uses CMake
 
 **Consider alternatives if:**
-- You need commercial support or guaranteed response times — see [maintenance status](MAINTENANCE.md)
+- You need commercial support or guaranteed response times — see [maintenance status](http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html)
 - You need a full license management system for distributing and renewing licenses at scale
 
 ## Project Structure
@@ -58,7 +58,7 @@ or [Windows](http://open-license-manager.github.io/licensecc/v2.1.0/development/
 
 -   Operating system: Ubuntu 22.04 to 26.04 (tested), other may be supported. Windows server 2022
 -   compilers       : GCC (Linux), Visual Studio 2022 or 2026 (Windows) 
--   tools           : cmake(>=3.16), git, make/ninja(linux)
+-   tools           : cmake(>=3.16), git, make/ninja
 -   libs            : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
 For a complete list of dependencies and supported environments see [the project website](http://open-license-manager.github.io/licensecc/v2.1.0/development/Dependencies.html)

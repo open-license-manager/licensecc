@@ -95,7 +95,7 @@ disk label                      |:heavy_check_mark:| |:heavy_check_mark:|  |:x:|
 disk id                         |:heavy_check_mark:| |:heavy_check_mark:|  |:x:|\ :sup:`1`                |:heavy_check_mark:|
 ip address                      |:heavy_check_mark:| |:heavy_check_mark:|  |:interrobang:|\ :sup:`2`      |:heavy_check_mark:|
 mac address                     |:heavy_check_mark:| |:heavy_check_mark:|  |:interrobang:|\ :sup:`2`      |:heavy_check_mark:|
-cpu number                      Planned              Planned               Planned                        Planned
+cpu number                      |:heavy_check_mark:| |:heavy_check_mark:|  |:heavy_check_mark:|           |:x:|
 process memory                  Planned              Planned               Planned                        Planned
 machine memory                  Planned              Planned               Planned                        Planned
 virtualization type             Planned              Planned               Planned                        Planned
@@ -106,6 +106,12 @@ licensed sw version             Planned              Planned               Plann
 Date
 =========
 This is the most common limit set on a license, allow the software to expire after the defined date.
+
+.. note::
+
+This feature will take the date of the host pc. It doesn't connect to Internet to check if the date is right.
+It's a known limitation, making it 'right' requires an external server or that an NTP server is in reach, 
+and it's out of scope for now.
 
 Disk label/Disk id
 ==============================

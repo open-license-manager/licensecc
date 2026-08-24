@@ -25,10 +25,10 @@ Licensecc
 .. _maintenance: http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
-machines, or prevent the usage in  virtualized environments. `Licensecc` is an open source license management system 
+machines, or prevent the usage in  virtualized environments. `Licensecc` is an open source licensing library 
 that helps to keep your software closed |:smirk:| . 
 
-Among the other features the most notable one is: if it runs on a "real hardware" (not a container/vm)
+Among the other features the most notable one is: if it runs on 'metal' (not a container/vm)
 it can generate a signature of that hardware and report if the signature doesn't match, because for instance 
 the software has been copied to another place.
 

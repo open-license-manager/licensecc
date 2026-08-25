@@ -34,6 +34,7 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "code-coverage=${{ matrix.os == 'ubuntu-26.04' && 'ON' || 'OFF' }}" >> "$GITHUB_OUTPUT"
     - name: Dependencies
       run: >
           sudo apt-get update && sudo apt-get -y install cmake valgrind libssl-dev zlib1g-dev libboost-test-dev libboost-filesystem-dev 
@@ -70,6 +71,7 @@ jobs:
         -DSTATIC_RUNTIME:BOOL=${{matrix.static}}
         -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
         -DLCC_PROJECT_NAME=MYPROJECT
+        -DCODE_COVERAGE=${{ steps.strings.outputs.code-coverage }}
     - name: Build
       # Build your program with the given configuration. 
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
@@ -88,4 +90,30 @@ jobs:
          BOOST_TEST_LOG_LEVEL: message
          VIRTUAL_ENV: VM
          CLOUD_PROVIDER: AZURE
+    - name: Filter Coverage
+      if: ${{ matrix.os == 'ubuntu-26.04' }}
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: >
+        gcovr -r ${{ github.workspace }}
+        --exclude '.*/test/.*'
+        --exclude '.*/src/ini/.*'
+        --exclude '.*/src/inja/.*'
+        --exclude '.*/extern/.*'
+        --txt --cobertura ${{ steps.strings.outputs.build-output-dir }}/coverage.xml
+    - name: Run codacy-coverage-reporter
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      continue-on-error: true
+      if: ${{ matrix.os == 'ubuntu-26.04' }}
+      with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ${{ steps.strings.outputs.build-output-dir }}/coverage.xml
+          language: 'Cpp'
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      continue-on-error: true
+      if: ${{ matrix.os == 'ubuntu-26.04' }}
+      with:
+        files: ${{ steps.strings.outputs.build-output-dir }}/coverage.xml
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
 

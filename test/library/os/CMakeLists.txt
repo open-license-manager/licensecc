@@ -66,7 +66,7 @@ ENDIF(WIN32)
 #check if still needed, maybe exported by the base lib
 if(CODE_COVERAGE AND UNIX)
 	IF(NOT DEFINED MINGW)
-		target_compile_options(test_dmi_info PUBLIC -O0 -g --coverage)
+		target_compile_options(test_board_info PUBLIC -O0 -g --coverage)
 	ENDIF(NOT DEFINED MINGW)
 	
 	target_compile_options(test_execution_environment PUBLIC -O0 -g --coverage)

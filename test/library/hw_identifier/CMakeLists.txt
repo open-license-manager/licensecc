@@ -21,10 +21,8 @@ target_link_libraries( test_system_id
 if(CODE_COVERAGE AND UNIX)
 	target_compile_options(test_hw_identifier PUBLIC -O0 -g --coverage)
 	target_link_options(test_hw_identifier PUBLIC --coverage)
-	target_link_libraries(test_hw_identifier PUBLIC gcov)
 	target_compile_options(test_system_id PUBLIC -O0 -g --coverage)
 	target_link_options(test_system_id PUBLIC --coverage)
-	target_link_libraries(test_system_id PUBLIC gcov)
 
 endif(CODE_COVERAGE AND UNIX)
 

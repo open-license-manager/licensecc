@@ -179,7 +179,7 @@ texinfo_documents = [
 ]
 
 # Sitemap plugin
-html_baseurl = f"http://open-license-manager.github.io/licensecc/v{version}/"
+html_baseurl = f"https://open-license-manager.github.io/licensecc/v{version}/"
 #sitemap_url_scheme = "{lang}{version}subdir/{link}"
 sitemap_url_scheme = "{link}"
 

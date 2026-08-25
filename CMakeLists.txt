@@ -1,13 +1,29 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-## configuration variables
-## USE_OPENSSL: Enable/Disable OpenSSL support. If disabled, the generator will use Windows Crypto API on Windows and will fail to compile on Linux.
-## STATIC_RUNTIME: Enable/Disable linking to the static version of the c libraries (/MT /MD in windows)
-## BUILD_SHARED_LIBS: available only when STATIC_RUNTIME is OFF, it will build a shared version of the library.
-## Boost_ROOT: Hint for a path to the Boost installation. If not set, CMake will try to find Boost in the system paths.
-## OpenSSL_ROOT: Hint for a path to the Openssl installation. 
-## LCC_PROJECT_NAME
-## LCC_PROJECTS_BASE_DIR
+## Build options (set them with -D<OPTION>=<VALUE>):
+## BUILD_SHARED_LIBS           Build the shared (DLL/SO) variant of the library in addition
+##                             to the static one. Available only when STATIC_RUNTIME is OFF.
+##                             Default OFF.
+## STATIC_RUNTIME              Link statically to the C/C++ runtime libraries (/MT on
+##                             Windows, -static on Linux). Default OFF.
+## USE_OPENSSL                 Enable/Disable OpenSSL support. On Linux it is always
+##                             required and cannot be disabled. On Windows, when disabled,
+##                             the Windows Crypto API (BCrypt) is used instead. Default OFF
+##                             on Windows only.
+## BOOST_ROOT                  Hint for a path to the Boost installation. If not set, CMake
+##                             will try to find Boost in the system paths. Boost is used
+##                             only by the tests and the inspector, never by liblicensecc.
+## OPENSSL_ROOT_DIR            Hint for a path to the OpenSSL installation. If not set, CMake
+##                             will try to find OpenSSL in the system paths.
+## LCC_PROJECT_NAME            Name of the software you want to protect. It is included in the
+##                             license and used to name the project folders. If not specified
+##                             the project 'DEFAULT' is used.
+## LCC_PROJECTS_BASE_DIR       Base folder where the projects are stored. Only needed if you
+##                             generated a project with `lccgen` in a non default location
+##                             (not in `<<CMAKE_SOURCE_DIR>>/projects/<<PROJECT_NAME>>`).
+## LCC_LOCATION                Hint for locating the lccgen executable, in case you
+##                             downloaded it separately instead of building it from the
+##                             extern/license-generator submodule.
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)

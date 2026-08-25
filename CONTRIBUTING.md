@@ -1,6 +1,6 @@
 # Contributing to Licensecc
 
-Contributions are what keep this project alive. See [MAINTENANCE.md](http://open-license-manager.github.io/licensecc/v2.1.0/other/maintenance.html) for ways to help beyond code — answering questions, reviewing PRs, testing, documentation, or becoming a maintainer.
+Contributions are what keep this project alive. See [MAINTENANCE.md](https://open-license-manager.github.io/licensecc/licensecc/other/maintenance.html) for ways to help beyond code — answering questions, reviewing PRs, testing, documentation, or becoming a maintainer.
 
 ## Questions & Discussions
 

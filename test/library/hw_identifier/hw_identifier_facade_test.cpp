@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(generated_identifiers_stability) {
 		for (unsigned int i = 0; i < reference_signatures.size(); i++) {
 			if (reference_signatures[i] == "0000-0000-0000-0000") continue;
 			PcSignature pcsig;
-			strncpy(pcsig, reference_signatures[i].c_str(), sizeof(PcSignature) - 1);
+			mstrlcpy(pcsig, reference_signatures[i].c_str(), sizeof(pcsig));
 			LCC_EVENT_TYPE val_result = validate_pc_signature(pcsig);
 			BOOST_TEST_CHECKPOINT("Verifying signature: ");
 			BOOST_CHECK_EQUAL(val_result, LICENSE_OK);

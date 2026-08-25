@@ -26,7 +26,7 @@ private:
 	LicenseInfo toLicenseInfo(const FullLicenseInfo& fullLicInfo) const;
 
 public:
-	LicenseVerifier(EventRegistry& er);
+	explicit LicenseVerifier(EventRegistry& er);
 	LicenseInfoEx verify_license(const FullLicenseInfo& licInfo) noexcept;
 	virtual ~LicenseVerifier();
 };

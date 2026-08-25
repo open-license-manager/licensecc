@@ -13,6 +13,7 @@
 #include <sstream>
 
 #include "EventRegistry.h"
+#include "string_utils.h"
 #define LIC_ID_NOT_DEFINED "UNDEF"
 
 namespace license {
@@ -90,15 +91,15 @@ void EventRegistry::addEvent(LCC_EVENT_TYPE event, const char* licenseLocationId
 	audit.severity = successEvent ? SVRT_INFO : SVRT_WARN;
 	audit.event_type = event;
 	if (licenseLocationId == nullptr) {
-		strncpy(audit.license_reference, currentLicenseId.c_str(), min((size_t)MAX_PATH, currentLicenseId.length()));
+		mstrlcpy(audit.license_reference, currentLicenseId.c_str(), sizeof(audit.license_reference));
 	} else {
-		strncpy(audit.license_reference, licenseLocationId, MAX_PATH);
+		mstrlcpy(audit.license_reference, licenseLocationId, sizeof(audit.license_reference));
 		currentLicenseId = audit.license_reference;
 	}
 	if (info == nullptr) {
 		audit.param2[0] = '\0';
 	} else {
-		strncpy(audit.param2, info, 255);
+		mstrlcpy(audit.param2, info, sizeof(audit.param2));
 	}
 	logs.push_back(audit);
 	// update the status of the log

@@ -55,7 +55,7 @@ private:
 	const LicenseLocation* licenseLocation;
 
 public:
-	LicenseParser(const LicenseLocation* licenseLocation);
+	explicit LicenseParser(const LicenseLocation* licenseLocation);
 	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut) const;
 	virtual ~LicenseParser();
 };

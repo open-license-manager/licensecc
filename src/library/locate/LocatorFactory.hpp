@@ -66,7 +66,7 @@ public:
 
 	public:
 		// Iterator support
-		RawLicenseCursor(LocatorFactory& factory);
+		explicit RawLicenseCursor(LocatorFactory& factory);
 
 		RawLicenseCursor& operator++();	 // Prefix increment
 		RawLicenseData operator*() const;  // Dereference operator

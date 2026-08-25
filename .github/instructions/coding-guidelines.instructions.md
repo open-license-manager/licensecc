@@ -79,6 +79,22 @@ is unavoidable (e.g. interop with an OS or OpenSSL API that wants a raw pointer)
 scope its lifetime with a smart pointer with an array deleter or a `std::vector`'s
 `.data()`, not a bare `new[]` paired with a manual `delete[]`.
 
+### String copying into fixed-size buffers
+
+`strncpy` is banned: it doesn't always NUL-terminate (when the source is ≥ n bytes)
+and silently truncates. Use the repo's `mstrlcpy` helper (declared in
+`src/library/base/string_utils.h`, a `strlcpy`-style implementation) for any copy
+into a fixed-size C buffer, and pass the full destination size — it always writes
+the terminating `\0`:
+
+```cpp
+// WRONG: may leave the buffer unterminated when src >= sizeof(dst)
+strncpy(dst, src, sizeof(dst) - 1);
+
+// CORRECT: always NUL-terminates, copies at most sizeof(dst) - 1 bytes
+mstrlcpy(dst, src, sizeof(dst));
+```
+
 ## General C++ Guidance
 
 ### 1. Resource Management

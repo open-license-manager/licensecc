@@ -138,8 +138,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 					allzero = allzero && (pAdapter->Address[i] == 0);
 				}
 				if (!allzero) {
-					strncpy(ai.description, pAdapter->Description,
-						min(sizeof(ai.description) - 1, (size_t)MAX_ADAPTER_DESCRIPTION_LENGTH));
+					mstrlcpy(ai.description, pAdapter->Description, sizeof(ai.description));
 					memcpy(ai.mac_address, pAdapter->Address, size_to_be_copied);
 					translate(pAdapter->IpAddressList.IpAddress.String, ai.ipv4_address);
 					ai.type = IFACE_TYPE_ETHERNET;

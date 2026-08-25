@@ -14,11 +14,12 @@
 namespace license {
 namespace locate {
 
-class ExternalDefinition: public LocatorStrategy {
+class ExternalDefinition : public LocatorStrategy {
 private:
 	const LicenseLocation* m_location;
+
 public:
-	ExternalDefinition(const LicenseLocation* location);
+	explicit ExternalDefinition(const LicenseLocation* location);
 	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
 	const virtual std::string retrieve_license_content(const std::string& licenseLocation) const;
 	virtual std::unique_ptr<LocatorStrategy> clone() const override;

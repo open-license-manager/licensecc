@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "string_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,11 +15,11 @@
 #include <windows.h>
 #endif
 
-static FILE *logFile = NULL;
+static FILE* logFile = NULL;
 
-static void timenow(char * buffer) {
+static void timenow(char* buffer) {
 	time_t rawtime;
-	struct tm *timeinfo;
+	struct tm* timeinfo;
 
 	time(&rawtime);
 	timeinfo = localtime(&rawtime);
@@ -28,15 +29,15 @@ static void timenow(char * buffer) {
 
 static void getLogFname(char* logpath) {
 #ifdef __unix__
-	const char *folder = getenv("TMPDIR");
-	if (folder == nullptr) {
+	const char* folder = getenv("TMPDIR");
+	if (folder == nullptr || folder[0] == '\0') {
 		folder = "/tmp";
 	}
-	strncpy(logpath, folder, MAX_PATH);
+	license::mstrlcpy(logpath, folder, MAX_PATH);
 	strncat(logpath, "/open-license.log", MAX_PATH - strlen(logpath));
 #else
 	const int plen = GetTempPath(MAX_PATH, logpath);
-	if(plen == 0) {
+	if (plen == 0) {
 		fprintf(stderr, "Error getting temporary directory path");
 	}
 	strncat(logpath, "open-license.log", MAX_PATH - strlen(logpath));
@@ -45,7 +46,7 @@ static void getLogFname(char* logpath) {
 
 void _log(const char* format, ...) {
 	va_list args;
-	char * buffer;
+	char* buffer;
 	if (logFile == NULL) {
 		char logpath[MAX_PATH];
 		getLogFname(logpath);
@@ -54,7 +55,7 @@ void _log(const char* format, ...) {
 			return;
 		}
 	}
-	buffer = (char *) malloc(sizeof(char) * strlen(format) + 64);
+	buffer = (char*)malloc(sizeof(char) * strlen(format) + 64);
 	timenow(buffer);
 	strcat(buffer, format);
 	va_start(args, format);

@@ -24,7 +24,7 @@ namespace locate {
 class LocatorStrategy {
 protected:
 	const std::string m_strategy_name;
-	inline LocatorStrategy(const std::string &strategyName) : m_strategy_name(strategyName) {}
+	inline explicit LocatorStrategy(const std::string& strategyName) : m_strategy_name(strategyName) {}
 
 public:
 	const virtual std::string get_strategy_name() const { return m_strategy_name; }
@@ -34,7 +34,7 @@ public:
 	 * @return
 	 * A list of identifiers for call retrieve_license_content.
 	 */
-	const virtual std::vector<std::string> license_locations(EventRegistry &eventRegistry) = 0;
+	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) = 0;
 
 	/**
 	 * Default implementation is to retrieve the license from file.
@@ -45,8 +45,8 @@ public:
 	 * @return
 	 * 	a string containing the license data in INI format.
 	 */
-	const virtual std::string retrieve_license_content(const std::string &licenseLocationId) const;
-	
+	const virtual std::string retrieve_license_content(const std::string& licenseLocationId) const;
+
 	virtual std::unique_ptr<LocatorStrategy> clone() const = 0;
 	inline virtual ~LocatorStrategy() {}
 };

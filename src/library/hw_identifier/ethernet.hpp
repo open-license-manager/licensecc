@@ -18,7 +18,7 @@ private:
 	const bool use_ip;
 
 public:
-	Ethernet(bool use_ip);
+	explicit Ethernet(bool use_ip);
 	virtual ~Ethernet();
 	virtual LCC_API_HW_IDENTIFICATION_STRATEGY identification_strategy() const;
 	virtual FUNCTION_RETURN alternative_ids(std::vector<HwIdentifier>& identifiers_out) const noexcept;

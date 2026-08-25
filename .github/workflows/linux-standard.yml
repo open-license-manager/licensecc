@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    name: '${{ matrix.os }}, build:${{ matrix.build_type }}, static:${{ matrix.static }}, ccov:${{ matrix.code_coverage }}'
+    name: '${{ matrix.os }}, build:${{ matrix.build_type }}, static:${{ matrix.static }}'
     strategy:
       fail-fast: false
       matrix:
@@ -96,8 +96,7 @@ jobs:
       run: >
         gcovr -r ${{ github.workspace }}
         --exclude '.*/test/.*'
-        --exclude '.*/src/ini/.*'
-        --exclude '.*/src/inja/.*'
+        --exclude '.*/src/library/ini/.*'
         --exclude '.*/extern/.*'
         --txt --cobertura ${{ steps.strings.outputs.build-output-dir }}/coverage.xml
     - name: Run codacy-coverage-reporter

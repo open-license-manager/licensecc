@@ -7,3 +7,5 @@ recommonmark >= 0.6.0
 sphinx-sitemap >= 2.2.0 
 sphinxcontrib-googleanalytics >= 0.4.1
 sphinxemoji >= 0.1.8
+sphinxcontrib-mermaid >= 2.0.0
+canonical-sphinx

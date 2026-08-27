@@ -22,7 +22,7 @@ Licensecc
 .. |forum| image:: https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat
 .. _forum: https://github.com/open-license-manager/licensecc/discussions
 .. |maintenance| image:: https://img.shields.io/badge/maintenance-seeking--maintainers-yellow
-.. _maintenance: https://open-license-manager.github.io/licensecc/licensecc/other/maintenance.html
+.. _maintenance: https://open-license-manager.github.io/licensecc/latest/other/maintenance.html
 
 Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of 
 machines, or prevent the usage in  virtualized environments. `Licensecc` is an open source licensing library 

@@ -23,8 +23,8 @@ jobs:
           os: ["windows-2025", "windows-2022"]
           boost_version: [1.78.0, 1.90.0]
           boost_msvc_version: [14.3]
-          #openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.1"]
-          openssl_version: ["None", "4.0.1"]
+          #openssl_version: ["None", "1.1.1.2100", "3.1.1", "4.0.2"]
+          openssl_version: ["None", "4.0.2"]
           
           include:
           - os: windows-2025

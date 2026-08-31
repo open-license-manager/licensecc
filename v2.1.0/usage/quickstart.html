@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/usage/quickstart.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/usage/quickstart.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -106,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -207,7 +208,7 @@ The public key is buried inside the library where (hopefully) nobody will find i
 <li><p><code class="docutils literal notranslate"><span class="pre">licensecc::licensecc</span></code> – the licensing library. <em>Add it to your application</em></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lccgen</span></code> – the license generator executable (used internally by the build. Once it is built install it to a folder in your PATH to issue licenses)</p></li>
 </ul>
-<p>See <a class="reference external" href="integration.rst#step-1-locate-and-link-the-library">Locate and link the library</a> for more details.</p>
+<p>See <a class="reference internal" href="integration.html#step-1-locate-and-link-the-library"><span class="std std-ref">Locate and link the library</span></a> for more details.</p>
 </section>
 <section id="step-2-launch-cmake-build">
 <h2>Step 2: Launch cmake build<a class="headerlink" href="#step-2-launch-cmake-build" title="Link to this heading"></a></h2>
@@ -324,7 +325,7 @@ library and distributed with your application.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>See <a class="reference external" href="integration.rst#step-6-call-licensecc-from-your-code">Step 6 — Call Licensecc from your code</a> for a detailed integration example with error handling.</p>
+<p>See <a class="reference internal" href="integration.html#step-6-call-licensecc-from-your-code"><span class="std std-ref">Step 6 — Call Licensecc from your code</span></a> for a detailed integration example with error handling.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------+</span>       <span class="o">+-------------------+</span>
 <span class="o">|</span>  <span class="n">Your</span> <span class="n">App</span>         <span class="o">|</span>       <span class="o">|</span>  <span class="n">licensecc</span>        <span class="o">|</span>
 <span class="o">|</span>  <span class="p">(</span><span class="n">CMake</span> <span class="n">project</span><span class="p">)</span>  <span class="o">+------&gt;+</span>  <span class="n">static</span> <span class="n">library</span>   <span class="o">|</span>
@@ -338,7 +339,7 @@ library and distributed with your application.</p>
 </section>
 <section id="step-7-issue-licenses">
 <h2>Step 7: Issue Licenses<a class="headerlink" href="#step-7-issue-licenses" title="Link to this heading"></a></h2>
-<p>License generation is described in detail in <a class="reference internal" href="issue-licenses.html"><span class="doc">License Generation</span></a>.
+<p>License generation is described in detail in <a class="reference internal" href="issue-licenses.html"><span class="std std-doc">License Generation</span></a>.
 Below a quick summary of what you can do.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> to sign and issue license files. Navigate to the project directory:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd projects/MyApp</span>
@@ -368,7 +369,7 @@ your app calling <code class="docutils literal notranslate"><span class="pre">id
 </pre></div>
 </div>
 <p>Place the generated <code class="docutils literal notranslate"><span class="pre">.lic</span></code> file in the application’s expected license location
-(see <a class="reference internal" href="find-the-license.html"><span class="doc">License Retrieval</span></a> for supported locations).</p>
+(see <a class="reference internal" href="find-the-license.html"><span class="std std-doc">License Retrieval</span></a> for supported locations).</p>
 </section>
 </section>
 </section>

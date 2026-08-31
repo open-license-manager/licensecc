@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const jsonUrl = `${siteRoot}/versions.json`;
 
     fetch(jsonUrl)
-        .then(response => response.json())
-        .then(versions => {
+        .then((response) => response.json())
+        .then((versions) => {
             let select = document.createElement("select");
             select.id = "version-switcher";
             select.style.margin = "10px";
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             const currentPath = window.location.pathname;
             
-            versions.forEach(v => {
+            versions.forEach((v) => {
                 let option = document.createElement("option");
                 option.value = v.url;
                 option.text = v.version;
@@ -39,5 +39,5 @@ document.addEventListener("DOMContentLoaded", function() {
                 searchBox.insertBefore(select,title.nextSibling);
             }
         })
-        .catch(error => console.error("Error loading versions.json:", error));
+        .catch((error) => console.error("Error loading versions.json:", error));
 });

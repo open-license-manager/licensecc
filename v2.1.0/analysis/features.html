@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/analysis/features.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/analysis/features.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,11 +32,11 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Credits" href="../other/CREDITS.html" />
+    <link rel="next" title="License acquisition flow" href="license_acquisition_flow.html" />
     <link rel="prev" title="Development and usage workflow" href="Development-And-Usage-Workflow.html" /> 
 </head>
 
@@ -108,6 +108,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -313,10 +314,10 @@ Depending on the execution environment some criteria may not be applicable:</p>
 <td><p>✔️</p></td>
 </tr>
 <tr class="row-odd"><td><p>cpu number</p></td>
-<td><p>Planned</p></td>
-<td><p>Planned</p></td>
-<td><p>Planned</p></td>
-<td><p>Planned</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
 </tr>
 <tr class="row-even"><td><p>process memory</p></td>
 <td><p>Planned</p></td>
@@ -353,6 +354,12 @@ Depending on the execution environment some criteria may not be applicable:</p>
 <section id="date">
 <h3>Date<a class="headerlink" href="#date" title="Link to this heading"></a></h3>
 <p>This is the most common limit set on a license, allow the software to expire after the defined date.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This feature will take the date of the host pc. It doesn’t connect to Internet to check if the date is right.
+It’s a known limitation, making it ‘right’ requires an external server or that an NTP server is in reach,
+and it’s out of scope for now.</p>
+</div>
 </section>
 <section id="disk-label-disk-id">
 <h3>Disk label/Disk id<a class="headerlink" href="#disk-label-disk-id" title="Link to this heading"></a></h3>
@@ -393,7 +400,7 @@ This feature is being implemented.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Development-And-Usage-Workflow.html" class="btn btn-neutral float-left" title="Development and usage workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../other/CREDITS.html" class="btn btn-neutral float-right" title="Credits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="license_acquisition_flow.html" class="btn btn-neutral float-right" title="License acquisition flow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

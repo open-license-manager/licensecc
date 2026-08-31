@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library-windows.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/development/Build-the-library-windows.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -97,6 +97,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -217,29 +218,29 @@ build system.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>-DSTATIC_RUNTIME=ON</p></td>
-<td><p>link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.</p></td>
+<tr class="row-even"><td><p>-DBOOST_ROOT=C:..</p></td>
+<td><p>Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by <code class="docutils literal notranslate"><span class="pre">liblicensecc</span></code> itself. If cmake is reporting Boost not found consider updating cmake.</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DBUILD_SHARED_LIBS=OFF</p></td>
-<td><p>additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.</p></td>
-</tr>
-<tr class="row-even"><td><p>-DUSE_OPENSSL=OFF</p></td>
-<td><p>search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead, no additional feature from OpenSSL).</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DOpenSSL_ROOT_DIR=C:..</p></td>
-<td><p>(Optional) folder where OpenSSL is installed (eg. C:Program FilesOpenSSL-Win64).</p></td>
+<td><p>Additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.</p></td>
 </tr>
 <tr class="row-even"><td><p>-DCMAKE_BUILD_TYPE=Release</p></td>
-<td><p>link to the release version of the boost libraries</p></td>
+<td><p>Build configuration, use Release for a release build (should be used as default).</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DCMAKE_INSTALL_PREFIX=C:XX</p></td>
-<td><p>folder where to install libraries and headers</p></td>
+<td><p>Folder where to install libraries and headers.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DBOOST_ROOT=C:..</p></td>
-<td><p>folder where boost is installed. If cmake is reporting boost not found consider updating cmake.</p></td>
+<tr class="row-even"><td><p>-DLCC_PROJECT_NAME=&lt;name&gt;</p></td>
+<td><p>Name of the software you want to issue a license for. Defaults to “DEFAULT”.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DLCC_PROJECT_NAME=&lt;name&gt;</p></td>
-<td><p>name of the software you want to issue a license for. Defaults to “DEFAULT”.</p></td>
+<tr class="row-odd"><td><p>-DOPENSSL_ROOT_DIR=C:..</p></td>
+<td><p>(Optional) Folder where OpenSSL is installed (eg. C:Program FilesOpenSSL-Win64). Only used when OpenSSL support is enabled.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DSTATIC_RUNTIME=ON</p></td>
+<td><p>Link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DUSE_OPENSSL=OFF</p></td>
+<td><p>Enable/Disable OpenSSL support (search for and link against OpenSSL). Default OFF on Windows: the Windows crypto APIs are used instead, no additional feature from OpenSSL. If enabled and OpenSSL is not found the build fails.</p></td>
 </tr>
 </tbody>
 </table>

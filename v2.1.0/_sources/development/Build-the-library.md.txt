@@ -65,13 +65,17 @@ ctest -T memcheck
 ### cmake useful flags
 
 |Definition name           |Description|
-|--------------------------|-----------|
-|`LCC_PROJECT_NAME=<str>`  | This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named `DEFAULT` for you |
-|`LCC_LOCATION=<path>`     | In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found |
-|CMAKE_BUILD_TYPE=Release| generate a release version of the library (should be used as default)|
-|CMAKE_INSTALL_PREFIX    | folder where to install compiled libraries and headers. (default: /usr/local)               |
-|BOOST_ROOT              | Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary) |
-|OPENSSL_ROOT            | Folder where OpenSSL was installed (optional: if you installed openssl as system package this should not be necessary) |
+|---------------------------|-----------|
+|BOOST_ROOT <dir>          | Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by `liblicensecc` itself. |
+|BUILD_SHARED_LIBS         | Build the shared (DLL/SO) variant of the library in addition to the static one. Available only when `STATIC_RUNTIME` is OFF. Default OFF. |
+|CMAKE_BUILD_TYPE          | Build configuration, use `Release` for a release build (should be used as default). |
+|CMAKE_INSTALL_PREFIX      | Folder where to install compiled libraries and headers. (default: /usr/local) |
+|LCC_LOCATION <path>       | In case you download the license generator separately, this is the folder where it was installed or where its `lccgen-config.cmake` can be found. |
+|LCC_PROJECT_NAME <str>    | Name of the software you want to protect. It is included in the license and used to name the project folders. If not specified, `DEFAULT` is used. |
+|LCC_PROJECTS_BASE_DIR <dir>| Base folder where the projects are stored. Only needed if you generated a project with `lccgen` in a non default location (not in `<<CMAKE_SOURCE_DIR>>/projects/<<PROJECT_NAME>>`). |
+|OPENSSL_ROOT_DIR <dir>    | Folder where OpenSSL is installed. Not needed if OpenSSL is installed as a system package. |
+|STATIC_RUNTIME            | Link statically to the C/C++ runtime libraries (/MT on Windows, `-static` on Linux). Default OFF on Linux, ON on Windows. |
+|USE_OPENSSL               | Enable/Disable OpenSSL support. On Linux it is mandatory and cannot be disabled. Default ON |
 
 ## Cross compile on Linux for Windows (UNTESTED)
 > **Note:** The procedure below is currently untested and may be outdated

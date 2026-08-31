@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Development-Environment-Setup.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/development/Development-Environment-Setup.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -89,6 +89,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -144,7 +145,7 @@ We don’t have any specific dependency on development tools, you can choose the
 you’re required to  format the code using <code class="docutils literal notranslate"><span class="pre">clang-format</span></code> before you submit the pull request.</p>
 <section id="linux-setup">
 <h2>Linux setup<a class="headerlink" href="#linux-setup" title="Link to this heading"></a></h2>
-<p>First of all download the source code and compile it from command line as described in <a class="reference internal" href="Build-the-library.html"><span class="doc">build the library</span></a>
+<p>First of all download the source code and compile it from command line as described in <a class="reference internal" href="Build-the-library.html"><span class="doc std std-doc">build the library</span></a>
 Download prerequisites:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="s2">&quot;https://github.com/google/styleguide/blob/gh-pages/cpplint/cpplint.py&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cpplint</span><span class="o">.</span><span class="n">py</span>
 <span class="n">sudo</span> <span class="n">chmod</span> <span class="n">a</span><span class="o">+</span><span class="n">x</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cpplint</span><span class="o">.</span><span class="n">py</span>

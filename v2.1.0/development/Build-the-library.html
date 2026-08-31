@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Build-the-library.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/development/Build-the-library.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -103,6 +103,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -225,31 +226,48 @@ It should be possible to build on any recent Debian-derivate distribution.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>LCC_PROJECT_NAME=&lt;str&gt;</code></td>
-<td>This correspond to the name of the project you're generating licenses for. The flag is optional, if you don't specify it the build system will create a project named <code>DEFAULT</code> for you</td>
+<td>BOOST_ROOT <dir></td>
+<td>Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by <code>liblicensecc</code> itself.</td>
 </tr>
 <tr>
-<td><code>LCC_LOCATION=&lt;path&gt;</code></td>
-<td>In case you download the license generator separately this is the folder where it was installed or where his lcc-config.cmake can be found</td>
+<td>BUILD_SHARED_LIBS</td>
+<td>Build the shared (DLL/SO) variant of the library in addition to the static one. Available only when <code>STATIC_RUNTIME</code> is OFF. Default OFF.</td>
 </tr>
 <tr>
-<td>CMAKE_BUILD_TYPE=Release</td>
-<td>generate a release version of the library (should be used as default)</td>
+<td>CMAKE_BUILD_TYPE</td>
+<td>Build configuration, use <code>Release</code> for a release build (should be used as default).</td>
 </tr>
 <tr>
 <td>CMAKE_INSTALL_PREFIX</td>
-<td>folder where to install compiled libraries and headers. (default: /usr/local)</td>
+<td>Folder where to install compiled libraries and headers. (default: /usr/local)</td>
 </tr>
 <tr>
-<td>BOOST_ROOT</td>
-<td>Folder where boost was installed (optional: if you installed boost using system package manager this should not be necessary)</td>
+<td>LCC_LOCATION <path></td>
+<td>In case you download the license generator separately, this is the folder where it was installed or where its <code>lccgen-config.cmake</code> can be found.</td>
 </tr>
 <tr>
-<td>OPENSSL_ROOT</td>
-<td>Folder where OpenSSL was installed (optional: if you installed openssl as system package this should not be necessary)</td>
+<td>LCC_PROJECT_NAME <str></td>
+<td>Name of the software you want to protect. It is included in the license and used to name the project folders. If not specified, <code>DEFAULT</code> is used.</td>
+</tr>
+<tr>
+<td>LCC_PROJECTS_BASE_DIR <dir></td>
+<td>Base folder where the projects are stored. Only needed if you generated a project with <code>lccgen</code> in a non default location (not in <code>&lt;&lt;CMAKE_SOURCE_DIR&gt;&gt;/projects/&lt;&lt;PROJECT_NAME&gt;&gt;</code>).</td>
+</tr>
+<tr>
+<td>OPENSSL_ROOT_DIR <dir></td>
+<td>Folder where OpenSSL is installed. Not needed if OpenSSL is installed as a system package.</td>
+</tr>
+<tr>
+<td>STATIC_RUNTIME</td>
+<td>Link statically to the C/C++ runtime libraries (/MT on Windows, <code>-static</code> on Linux). Default OFF on Linux, ON on Windows.</td>
+</tr>
+<tr>
+<td>USE_OPENSSL</td>
+<td>Enable/Disable OpenSSL support. On Linux it is mandatory and cannot be disabled. Default ON</td>
 </tr>
 </tbody>
-</table></section>
+</table>
+</section>
 </section>
 <section id="cross-compile-on-linux-for-windows-untested">
 <h2>Cross compile on Linux for Windows (UNTESTED)<a class="headerlink" href="#cross-compile-on-linux-for-windows-untested" title="Link to this heading"></a></h2>
@@ -283,6 +301,7 @@ Windows builds are produced natively, see <code class="docutils literal notransl
 </div>
 <p>Configure and compile:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain-ubuntu-mingw64.cmake -DOPENSSL_ROOT_DIR=$CUR_PATH/openssl-OpenSSL_1_1_1d/dist -DCMAKE_FIND_DEBUG_MODE=ON -DOPENSSL_USE_STATIC_LIBS=ON -DBOOST_ROOT=$CUR_PATH/boost_1_71_0/dist  ..
+
 </pre></div>
 </div>
 <p>###Build documentation</p>
@@ -292,6 +311,7 @@ Windows builds are produced natively, see <code class="docutils literal notransl
 <span class="o">.</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">wheel</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+
 </pre></div>
 </div>
 <p>Build the docs:</p>

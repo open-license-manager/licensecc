@@ -82,14 +82,14 @@ Below a list of some useful cmake configurations:
 ============================== ====================================================================================================
 Definition name                Description
 ============================== ====================================================================================================
--DSTATIC_RUNTIME=ON            link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
--DBUILD_SHARED_LIBS=OFF        additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
--DUSE_OPENSSL=OFF              search for and link against OpenSSL. Default OFF on Windows (Windows crypto APIs are used instead, no additional feature from OpenSSL).
--DOpenSSL_ROOT_DIR=C:\..       (Optional) folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64).
--DCMAKE_BUILD_TYPE=Release     link to the release version of the boost libraries
--DCMAKE_INSTALL_PREFIX=C:\XX   folder where to install libraries and headers 
--DBOOST_ROOT=C:\..             folder where boost is installed. If cmake is reporting boost not found consider updating cmake.
--DLCC_PROJECT_NAME=<name>      name of the software you want to issue a license for. Defaults to "DEFAULT".
+-DBOOST_ROOT=C:\..             Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by ``liblicensecc`` itself. If cmake is reporting Boost not found consider updating cmake.
+-DBUILD_SHARED_LIBS=OFF        Additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
+-DCMAKE_BUILD_TYPE=Release     Build configuration, use Release for a release build (should be used as default).
+-DCMAKE_INSTALL_PREFIX=C:\XX   Folder where to install libraries and headers.
+-DLCC_PROJECT_NAME=<name>      Name of the software you want to issue a license for. Defaults to "DEFAULT".
+-DOPENSSL_ROOT_DIR=C:\..       (Optional) Folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64). Only used when OpenSSL support is enabled.
+-DSTATIC_RUNTIME=ON            Link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
+-DUSE_OPENSSL=OFF              Enable/Disable OpenSSL support (search for and link against OpenSSL). Default OFF on Windows: the Windows crypto APIs are used instead, no additional feature from OpenSSL. If enabled and OpenSSL is not found the build fails.
 ============================== ====================================================================================================
 
 Compile and test 

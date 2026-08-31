@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/api/public_api.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/api/public_api.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -79,7 +79,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Public api</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#print-hardware-identifier">Print hardware identifier</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7license13LicenseFacade11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"><code class="docutils literal notranslate"><span class="pre">identify_pc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7license9Licensecc11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"><code class="docutils literal notranslate"><span class="pre">identify_pc()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY"><code class="docutils literal notranslate"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY13STRATEGY_NONEE"><code class="docutils literal notranslate"><span class="pre">STRATEGY_NONE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N34LCC_API_HW_IDENTIFICATION_STRATEGY16STRATEGY_DEFAULTE"><code class="docutils literal notranslate"><span class="pre">STRATEGY_DEFAULT</span></code></a></li>
@@ -98,7 +98,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#verify-a-license">Verify a license</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7license13LicenseFacade15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"><code class="docutils literal notranslate"><span class="pre">acquire_license()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7license9Licensecc15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"><code class="docutils literal notranslate"><span class="pre">acquire_license()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv418CallerInformations"><code class="docutils literal notranslate"><span class="pre">CallerInformations</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N18CallerInformations7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N18CallerInformations12feature_nameE"><code class="docutils literal notranslate"><span class="pre">feature_name</span></code></a></li>
@@ -122,6 +122,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -177,8 +178,8 @@ include when you want to use the library.</p>
 <section id="print-hardware-identifier">
 <h2>Print hardware identifier<a class="headerlink" href="#print-hardware-identifier" title="Link to this heading"></a></h2>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N7license13LicenseFacade11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo">
-<span id="_CPPv3N7license13LicenseFacade11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="_CPPv2N7license13LicenseFacade11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="license::LicenseFacade::identify_pc__LCC_API_HW_IDENTIFICATION_STRATEGY.cP.sP.ExecutionEnvironmentInfoP"></span><span class="target" id="classlicense_1_1LicenseFacade_1a06173afe3de67aec4c269a5f41978475"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">license</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">LicenseFacade</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">identify_pc</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY"><span class="n"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">hw_id_method</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">identifier_out</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf_size</span></span>, <span class="n"><span class="pre">ExecutionEnvironmentInfo</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">execution_environment_info</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N7license13LicenseFacade11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N7license9Licensecc11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo">
+<span id="_CPPv3N7license9Licensecc11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="_CPPv2N7license9Licensecc11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo"></span><span id="license::Licensecc::identify_pc__LCC_API_HW_IDENTIFICATION_STRATEGY.cP.sP.ExecutionEnvironmentInfoP"></span><span class="target" id="classlicense_1_1Licensecc_1a8d19f71e4e1273e26cf7ae3ee2cc26f0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">license</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Licensecc</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">identify_pc</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv434LCC_API_HW_IDENTIFICATION_STRATEGY" title="LCC_API_HW_IDENTIFICATION_STRATEGY"><span class="n"><span class="pre">LCC_API_HW_IDENTIFICATION_STRATEGY</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">hw_id_method</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">identifier_out</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf_size</span></span>, <span class="n"><span class="pre">ExecutionEnvironmentInfo</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">execution_environment_info</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N7license9Licensecc11identify_pcE34LCC_API_HW_IDENTIFICATION_STRATEGYPcP6size_tP24ExecutionEnvironmentInfo" title="Link to this definition"></a><br /></dt>
 <dd><p>Calculate the hardware identifier for the current PC. </p>
 <p>This method generates a unique hardware identifier based on the specified identification strategy.</p>
 <dl class="field-list simple">
@@ -283,8 +284,8 @@ include when you want to use the library.</p>
 <section id="verify-a-license">
 <h2>Verify a license<a class="headerlink" href="#verify-a-license" title="Link to this heading"></a></h2>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N7license13LicenseFacade15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo">
-<span id="_CPPv3N7license13LicenseFacade15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="_CPPv2N7license13LicenseFacade15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="license::LicenseFacade::acquire_license__CallerInformationsCP.LicenseLocationCP.LicenseInfoP"></span><span class="target" id="classlicense_1_1LicenseFacade_1a426eae524e40fa412d7974b8196cc8ba"></span><span class="n"><span class="pre">LCC_EVENT_TYPE</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">license</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">LicenseFacade</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">acquire_license</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv418CallerInformations" title="CallerInformations"><span class="n"><span class="pre">CallerInformations</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">callerInformation</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415LicenseLocation" title="LicenseLocation"><span class="n"><span class="pre">LicenseLocation</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">licenseLocation</span></span>, <a class="reference internal" href="#_CPPv411LicenseInfo" title="LicenseInfo"><span class="n"><span class="pre">LicenseInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">license_out</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N7license13LicenseFacade15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N7license9Licensecc15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo">
+<span id="_CPPv3N7license9Licensecc15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="_CPPv2N7license9Licensecc15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo"></span><span id="license::Licensecc::acquire_license__CallerInformationsCP.LicenseLocationCP.LicenseInfoP"></span><span class="target" id="classlicense_1_1Licensecc_1a6025d146402a4444da88d09923454737"></span><span class="n"><span class="pre">LCC_EVENT_TYPE</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">license</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Licensecc</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">acquire_license</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv418CallerInformations" title="CallerInformations"><span class="n"><span class="pre">CallerInformations</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">callerInformation</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415LicenseLocation" title="LicenseLocation"><span class="n"><span class="pre">LicenseLocation</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">licenseLocation</span></span>, <a class="reference internal" href="#_CPPv411LicenseInfo" title="LicenseInfo"><span class="n"><span class="pre">LicenseInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">license_out</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N7license9Licensecc15acquire_licenseEPK18CallerInformationsPK15LicenseLocationP11LicenseInfo" title="Link to this definition"></a><br /></dt>
 <dd><p>Acquire a license for the specified product. </p>
 <p>This method coordinates the license acquisition process by:<ol class="loweralpha simple">
 <li><p>Reading licenses from various locations</p></li>

@@ -25,7 +25,7 @@
 
   
     <link rel="shortcut icon" href="_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/index.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/index.html" />
       <script src="_static/jquery.js?v=958b65b0"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -34,7 +34,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="_static/version_switcher.js?v=5d81f692"></script>
+      <script src="_static/version_switcher.js?v=0e2f798a"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -86,6 +86,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -137,11 +138,11 @@
   <section id="licensecc">
 <h1>Licensecc<a class="headerlink" href="#licensecc" title="Link to this heading"></a></h1>
 <p><em>Copy protection, licensing library and license generator for Windows and Linux.</em></p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/C%2B%2B#Standardization"><img alt="c11" src="https://img.shields.io/badge/c%2B%2B-11-blue.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml"><img alt="LinuxBuild" src="https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml"><img alt="WindowsBuild" src="https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml/badge.svg" /></a> <a class="reference external" href="https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=open-license-manager/licensecc&amp;amp;utm_campaign=Badge_Grade"><img alt="CodacyBadge" src="https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206" /></a> <a class="reference external" href="https://codecov.io/gh/open-license-manager/licensecc"><img alt="codecov" src="https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl" /></a> <a class="reference external" href="http://github.com/open-license-manager/licensecc/issues"><img alt="issues" src="https://img.shields.io/github/issues/open-license-manager/licensecc" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/discussions"><img alt="forum" src="https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat" /></a> <a class="reference external" href="http://open-license-manager.github.io/licensecc/other/maintenance.html"><img alt="maintenance" src="https://img.shields.io/badge/maintenance-seeking--maintainers-yellow" /></a></p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/C%2B%2B#Standardization"><img alt="c11" src="https://img.shields.io/badge/c%2B%2B-11-blue.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml"><img alt="LinuxBuild" src="https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml"><img alt="WindowsBuild" src="https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml/badge.svg" /></a> <a class="reference external" href="https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=open-license-manager/licensecc&amp;amp;utm_campaign=Badge_Grade"><img alt="CodacyBadge" src="https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206" /></a> <a class="reference external" href="https://codecov.io/gh/open-license-manager/licensecc"><img alt="codecov" src="https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl" /></a> <a class="reference external" href="http://github.com/open-license-manager/licensecc/issues"><img alt="issues" src="https://img.shields.io/github/issues/open-license-manager/licensecc" /></a> <a class="reference external" href="https://github.com/open-license-manager/licensecc/discussions"><img alt="forum" src="https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat" /></a> <a class="reference external" href="https://open-license-manager.github.io/licensecc/latest/other/maintenance.html"><img alt="maintenance" src="https://img.shields.io/badge/maintenance-seeking--maintainers-yellow" /></a></p>
 <p>Protect the software you develop from unauthorized copies, limit the usage in time, to a specific set of
-machines, or prevent the usage in  virtualized environments. <cite>Licensecc</cite> is an open source license management system
+machines, or prevent the usage in  virtualized environments. <cite>Licensecc</cite> is an open source licensing library
 that helps to keep your software closed 😏 .</p>
-<p>Among the other features the most notable one is: if it runs on a “real hardware” (not a container/vm)
+<p>Among the other features the most notable one is: if it runs on ‘metal’ (not a container/vm)
 it can generate a signature of that hardware and report if the signature doesn’t match, because for instance
 the software has been copied to another place.</p>
 <p>A comprehensive <a class="reference internal" href="analysis/features.html#features"><span class="std std-ref">list of features</span></a>, and their status is available in the project wiki.</p>

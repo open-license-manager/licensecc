@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/development/Dependencies.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/development/Dependencies.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -89,6 +89,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -186,7 +187,8 @@
 <td style="text-align: center;">optional(test) =&gt; 1.64</td>
 </tr>
 </tbody>
-</table><p>You may have to install ZLib if your openssl version was compiled with it, in Debian it comes via dependency mechanism.</p>
+</table>
+<p>You may have to install ZLib if your openssl version was compiled with it, in Debian it comes via dependency mechanism.</p>
 </section>
 <section id="license-generator-executable-lccgen-dependencies">
 <h2>License generator executable <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> dependencies<a class="headerlink" href="#license-generator-executable-lccgen-dependencies" title="Link to this heading"></a></h2>
@@ -231,7 +233,8 @@
 <td style="text-align: center;">:heavy_check_mark: =&gt; 1.64</td>
 </tr>
 </tbody>
-</table><p>You may have to install ZLib if your openssl version was compiled with it.</p>
+</table>
+<p>You may have to install ZLib if your openssl version was compiled with it.</p>
 <p>Notes:
 <sup>1</sup> There is no added feature in compiling <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> with OpenSSL under windows, do so if it’s already part of your project otherwise go without.</p>
 <p><sup>2</sup> Boost components required to run tests <code class="docutils literal notranslate"><span class="pre">unit_test_framework</span></code>,<code class="docutils literal notranslate"><span class="pre">system</span></code> (boost &lt; 1.90),<code class="docutils literal notranslate"><span class="pre">filesystem</span></code>. But then if you don’t want to install boost since <code class="docutils literal notranslate"><span class="pre">licensecc</span></code> uses <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> in the build process you need to download and install <code class="docutils literal notranslate"><span class="pre">lccgen</span></code> separately.</p>

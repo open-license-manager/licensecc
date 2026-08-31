@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160839650-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XMTT2RVC77"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-160839650-1');
+        gtag('config', 'G-XMTT2RVC77');
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,7 +23,7 @@
 
   
     <link rel="shortcut icon" href="../_static/lock_32.ico"/>
-    <link rel="canonical" href="http://open-license-manager.github.io/licensecc/v2.1.0/api/extend.html" />
+    <link rel="canonical" href="https://open-license-manager.github.io/licensecc/latest/api/extend.html" />
       <script src="../_static/jquery.js?v=958b65b0"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
@@ -32,7 +32,7 @@
       <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
       <script src="../_static/twemoji.js?v=a4381b3f"></script>
       <script src="https://buttons.github.io/buttons.js"></script>
-      <script src="../_static/version_switcher.js?v=5d81f692"></script>
+      <script src="../_static/version_switcher.js?v=0e2f798a"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -79,12 +79,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="public_api.html">Public api</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extension points</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#api-parameters-constants-defaults">API parameters, constants, defaults</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tweak-hardware-signature-generator">Tweak hardware signature generator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-parameters-constants-defaults-licensecc-properties-h">API parameters, constants, defaults: licensecc_properties.h</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tweak-default-hardware-signature-generator">Tweak default hardware signature generator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-license-locator">Custom license locator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-the-licenses-in-new-places-custom-license-locators">Finding the licenses in new places: custom license locators</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="hardware_identifiers.html">Customize hardware signature generators</a></li>
@@ -93,6 +95,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/Development-And-Usage-Workflow.html">Development and usage workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/license_acquisition_flow.html">License acquisition flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous:</span></p>
 <ul>
@@ -143,17 +146,45 @@
              
   <section id="extension-points">
 <h1>Extension points<a class="headerlink" href="#extension-points" title="Link to this heading"></a></h1>
-<p>Version 2.0 of the library comes with defined customization points.</p>
-<section id="api-parameters-constants-defaults">
-<h2>API parameters, constants, defaults<a class="headerlink" href="#api-parameters-constants-defaults" title="Link to this heading"></a></h2>
-<p>The main configuration point is the file <cite>licensecc_properties.h</cite> in the project directory.
-This contains the default buffer sizes used in the API, environment variable names, default strategies behavior.</p>
-<p>If one buffer isn’t large enough have a look here. You may find his definition here.</p>
-<p>This file is generated when the project is initialized (every time you generate a new project),
-it is not under source control and it is for you to customize the library.</p>
-</section>
-<section id="tweak-hardware-signature-generator">
-<h2>Tweak hardware signature generator<a class="headerlink" href="#tweak-hardware-signature-generator" title="Link to this heading"></a></h2>
+<p>Version 2.1 of the library comes with predefined customization points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>For “no code customization”   : change default behaviors, enable/disable features customize pre-defined behaviors</p></li>
+<li><p>Implement new features        : if you need a feature that is not supported licensecc provides 4 extension points.
+- locators  : find and read a license file
+- parser    : modify the license format
+- verifier  : change how the license is validated (signature/limits/hardware identifiers)
+- merger    : if multiple licenses or errors are found change the strategy the error is reported.</p></li>
+</ul>
+</div></blockquote>
+<section id="api-parameters-constants-defaults-licensecc-properties-h">
+<h2>API parameters, constants, defaults: licensecc_properties.h<a class="headerlink" href="#api-parameters-constants-defaults-licensecc-properties-h" title="Link to this heading"></a></h2>
+<p>The easiest configuration point is the file <cite>licensecc_properties.h</cite> in your project directory.
+This file is generated per project, when the project is first built near your public and private key.
+If you placed your projects outside <cite>licensecc</cite> source tree it may be committed in your private git.</p>
+<p>The file is never overwritten once it’s generated.</p>
+<p>It contains the default buffer sizes used in the API, environment variable names, default
+strategies behavior. If there is some arbitrary name in the library, you may find it here.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">//names of the environment variables to find</span>
+<span class="cp">#define LCC_LICENSE_LOCATION_ENV_VAR &quot;LICENSE_LOCATION&quot;</span>
+<span class="cp">#define LCC_LICENSE_DATA_ENV_VAR &quot;LICENSE_DATA&quot;</span>
+
+<span class="c1">//Maximum size of a license file or base64 data (we don&#39;t want somebody to crash our software)</span>
+<span class="cp">#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 8</span>
+
+<span class="c1">// Miscellaneous api data structure sizes</span>
+<span class="cp">#define LCC_API_PC_IDENTIFIER_SIZE 15</span>
+<span class="cp">#define LCC_API_PROPRIETARY_DATA_SIZE 64</span>
+<span class="cp">#define LCC_API_AUDIT_EVENT_NUM 5</span>
+<span class="cp">#define LCC_API_AUDIT_EVENT_PARAM2 255</span>
+<span class="cp">#define LCC_API_VERSION_LENGTH 15</span>
+<span class="cp">#define LCC_API_FEATURE_NAME_SIZE 15</span>
+<span class="cp">#define LCC_API_EXPIRY_DATE_SIZE 10</span>
+<span class="cp">#define LCC_API_ERROR_BUFFER_SIZE 256</span>
+</pre></div>
+</div>
+<section id="tweak-default-hardware-signature-generator">
+<h3>Tweak default hardware signature generator<a class="headerlink" href="#tweak-default-hardware-signature-generator" title="Link to this heading"></a></h3>
 <p>If the provided hardware signatures don’t behave well for your customers, or you want to change the default
 way the library generates the pc identifier you can have a look at the following section.</p>
 <p>First of all be sure to read about the standard behavior of <code class="xref c c-func docutils literal notranslate"><span class="pre">identify_pc()</span></code> here:</p>
@@ -170,9 +201,32 @@ way the library generates the pc identifier you can have a look at the following
 </li>
 </ul>
 </div>
+<p>Then you can change the way the default strategy works in <cite>licensecc</cite> by changing
+the underlying strategies in this section of <cite>licensecc_properties.h</cite>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * The following group of settings change the behavior of the underlying strategy selection</span>
+<span class="cm"> * when LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT is choosen.</span>
+<span class="cm"> *--------</span>
+<span class="cm"> * List the strategies used when no virtual envrionment is detected</span>
+<span class="cm"> */</span>
+<span class="cp">#define LCC_BARE_TO_METAL_STRATEGIES {STRATEGY_DISK, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}</span>
+<span class="cm">/**</span>
+<span class="cm"> * List the strategies used when the software is executing in a virtual machine</span>
+<span class="cm"> */</span>
+<span class="cp">#define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_NONE}</span>
+<span class="cm">/**</span>
+<span class="cm"> * List the strategies used when it&#39;s detected a VM executed execution in the cloud.</span>
+<span class="cm"> * CPU_MODEL is not very restrictive. Need to debug with Inspector.</span>
+<span class="cm"> */</span>
+<span class="cp">#define LCC_CLOUD_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}</span>
+<span class="cp">#define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}</span>
+<span class="cp">#define LCC_DOCKER_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}</span>
+</pre></div>
+</div>
 </section>
-<section id="custom-license-locator">
-<h2>Custom license locator<a class="headerlink" href="#custom-license-locator" title="Link to this heading"></a></h2>
+</section>
+<section id="finding-the-licenses-in-new-places-custom-license-locators">
+<h2>Finding the licenses in new places: custom license locators<a class="headerlink" href="#finding-the-licenses-in-new-places-custom-license-locators" title="Link to this heading"></a></h2>
 <p>Your software struggle to find the license file? you can implement your own way to find it. For instance if you want
 to download the license from a remote server, you could implement the logic here.</p>
 <div class="admonition-todo admonition" id="id1">

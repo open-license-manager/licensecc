@@ -28,7 +28,6 @@ extern "C" {
 #include <licensecc_properties.h>
 
 typedef enum {
-	LICENSE_OK = 0,	 // OK
 	LICENSE_FILE_NOT_FOUND = 1,	 // license file not found
 	LICENSE_SERVER_NOT_FOUND = 2,  // license server can't be contacted
 	ENVIRONMENT_VARIABLE_NOT_DEFINED = 3,  // environment variable not defined
@@ -40,10 +39,12 @@ typedef enum {
 	IDENTIFIERS_MISMATCH = 9,  // Calculated identifier and the one provided in license didn't match
 	IDENTIFIER_NOT_AVAILABLE = 10,	// For some reason the method is unable to calculate the requested identifier
 
-	LICENSE_SPECIFIED = 100,  // license location was specified
-	LICENSE_FOUND = 101,  // License file has been found or license data has been located
-	PRODUCT_FOUND = 102,  // License has been loaded and the declared product has been found
-	SIGNATURE_VERIFIED = 103  //!< SIGNATURE_VERIFIED
+	////////////////// LCC_EVENT_TYPE<100 errors , LCC_EVENT_TYPE>100 OK
+	LICENSE_OK = 100,  // OK
+	LICENSE_SPECIFIED = 101,  // license location was specified
+	LICENSE_FOUND = 102,  // License file has been found or license data has been located
+	PRODUCT_FOUND = 103,  // License has been loaded and the declared product has been found
+	SIGNATURE_VERIFIED = 104  // SIGNATURE_VERIFIED
 } LCC_EVENT_TYPE;
 
 typedef enum {

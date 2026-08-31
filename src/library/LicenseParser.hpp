@@ -9,6 +9,7 @@
 #define LICENSEPARSER_H_
 #include <string>
 #include <ctime>
+#include <vector>
 
 #define SI_SUPPORT_IOSTREAMS
 #include <licensecc/datatypes.h>
@@ -16,6 +17,7 @@
 #include "base/EventRegistry.h"
 #include "os/os.h"
 #include "ini/SimpleIni.h"
+#include "locate/LocatorFactory.hpp"
 
 namespace license {
 
@@ -52,11 +54,12 @@ public:
  */
 class LicenseParser {
 private:
-	const LicenseLocation* licenseLocation;
+	EventRegistry& eventRegistry;
 
 public:
-	explicit LicenseParser(const LicenseLocation* licenseLocation);
-	EventRegistry readLicenses(const std::string& product, std::vector<FullLicenseInfo>& licenseInfoOut) const;
+	LicenseParser(EventRegistry& eventRegistry);
+	std::vector<FullLicenseInfo> parseLicense(const std::string& product,
+											  const locate::RawLicenseData& rawLicense) const;
 	virtual ~LicenseParser();
 };
 }  // namespace license

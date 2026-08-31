@@ -29,15 +29,19 @@ RSA/SHA256 verification as security-critical:
 ## Architecture (this repo)
 
 - `include/licensecc/` — public C API headers (`licensecc.h`, `datatypes.h`).
-- `src/library/licensecc.cpp` — thin C API surface. `identify_pc` and `acquire_license`
-  just delegate to `LicenseFacade`. **Do not change these function signatures.**
-- `src/library/license_facade.{hpp,cpp}` — `LicenseFacade`: the actual entry point that
+- `src/library/license.cpp` — thin C API surface. `identify_pc` and `acquire_license`
+  just delegate to `Licensecc`. **Do not change these function signatures.**
+- `src/library/Licensecc.{hpp,cpp}` — `Licensecc`: the actual entry point that
   coordinates locating, parsing, and verifying licenses. Most new logic belongs here or
-  in the components it calls, not in `licensecc.cpp`.
+  in the components it calls, not in `license.cpp`. Its flow (locator strategies →
+  `FoundLicenseCursor` → `parseLicense` → `verify_limit` → `mergeLicenses`) is
+  documented in `doc/analysis/license_acquisition_flow.rst`; keep that page in sync
+  when the flow changes.
 - `src/library/LicenseParser.{hpp,cpp}` — reads/parses license `.ini` files (class is
   `LicenseParser`, *not* `LicenseReader`).
-- `src/library/limits/license_verifier.{hpp,cpp}` — `LicenseVerifier`: signature and
-  limit checking.
+- `src/library/limits/` — `LimitVerifier` interface and its concrete verifiers
+  (`DateVerifier`, `PcSignatureVerifier`, `SignatureVerifier`) plus the
+  `CompositeLimitVerifier` that aggregates them.
 - `src/library/hw_identifier/` — `HwIdentifierFacade` + `IdentificationStrategy`
   subclasses (Ethernet, disk, default) that generate the PC signature.
 - `src/library/locate/` — strategies for finding a license (file, env var, application

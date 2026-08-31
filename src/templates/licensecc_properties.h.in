@@ -41,8 +41,9 @@
 // Api structure limits
 /**
  * Maximum size of a license file or base64 data
+ * Prevent people from replacing the license with a large file and make the software crash.
  */
-#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 4
+#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 8
 
 // define api structure sizes
 

@@ -49,10 +49,10 @@ internal C++ code, but every function exported through the C API
 `confirm_license`, `release_license`) is a hard boundary: **no exception may cross
 it**, since callers may be linking from C, a different runtime, or across a DLL
 boundary, where an escaping exception is undefined behavior, not a catchable error.
-- `LicenseFacade::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
+- `Licensecc::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
   and logs/degrades gracefully — this is the pattern to copy.
-- `LicenseFacade::acquire_license` currently does **not** wrap its call chain
-  (`LicenseParser::readLicenses`, `LicenseVerifier`) in a try/catch, even though
+- `Licensecc::acquire_license` currently does **not** wrap its call chain
+  (`LicenseParser::parseLicense`, `CompositeLimitVerifier::verify_limit`) in a try/catch, even though
   those paths can throw. Don't replicate this gap in new code — any new logic
   reachable from a C API entry point needs its own top-level `try/catch`, and if
   you're touching `acquire_license`, wrapping it is an in-scope fix, not scope creep.
@@ -131,6 +131,10 @@ Unlike Java's garbage collection, C++ uses RAII for automatic resource managemen
 - Design exception-safe code using RAII
 - Prefer stack unwinding over manual error handling
 - Use RAII for automatic cleanup in exception paths
+
+### 6. Method visibility
+
+- Prefer static methods inside .cpp files over methods in 'private:' sections. Keep it as preference. Evaluate case by case depending on how much the method needs to access class fields.
 
 ## Avoid C++ Common Errors
 

@@ -5,6 +5,7 @@ add_library(locate OBJECT
     ExternalDefinition.cpp
     LocatorStrategy.cpp
     LocatorFactory.cpp
+    FoundLicenseCursor.cpp
 )
 
 target_include_directories(locate PRIVATE

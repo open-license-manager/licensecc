@@ -2,7 +2,7 @@
 License acquisition flow
 ########################
 
-Short description of the architecture used by ``LicenseFacade::acquire_license``
+Short description of the architecture used by ``Licensecc::acquire_license``
 after the cursor/parser refactor.
 
 Components
@@ -14,7 +14,7 @@ Components
 
    * - Component
      - Responsibility
-   * - ``LicenseFacade``
+   * - ``Licensecc``
      - Orchestrates the whole flow; owns the ``EventRegistry`` and the
        ``LicenseVerifier``.
    * - ``LocatorFactory::get_active_strategies``
@@ -26,10 +26,11 @@ Components
        are skipped.
    * - ``LicenseParser::parseLicense``
      - Parses one ``RawLicenseData`` (INI) into zero or more ``FullLicenseInfo``.
-   * - ``LicenseVerifier::verify_license``
-     - Verifies (signature and limits) one ``FullLicenseInfo``, returns
-       ``LicenseInfoEx`` (``LicenseInfo`` + ``FUNCTION_RETURN``).
-   * - ``LicenseFacade::mergeLicenses``
+   * - ``LicenseVerifier::verify_limit``
+     - Verifies (signature and limits) one ``FullLicenseInfo``, registers the
+       outcome events into the ``EventRegistry`` and returns ``LicenseInfoEx``
+       (``LicenseInfo`` + ``FUNCTION_RETURN``).
+   * - ``Licensecc::mergeLicenses``
      - Picks the best valid license (no-input, or latest expiry) and fills
        ``LicenseInfo``; decides the final ``LCC_EVENT_TYPE``.
 
@@ -40,7 +41,7 @@ Sequence diagram
 
    sequenceDiagram
       participant C as C API
-      participant F as LicenseFacade
+      participant F as Licensecc
       participant LF as LocatorFactory
       participant P as LicenseParser
       participant V as LicenseVerifier
@@ -53,7 +54,7 @@ Sequence diagram
           F->>+P: parseLicense(RawLicenseData)
           P-->>-F: vector <FullLicenseInfo>
           loop each FullLicenseInfo
-              F->>+V: verify_license(fullLicenseInfo)
+              F->>+V: verify_limit(fullLicenseInfo, er, LicenseInfoEx)
               V-->>-F: LicenseInfoEx (return_code + LicenseInfo)
           end
       end

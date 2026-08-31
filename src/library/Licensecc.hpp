@@ -1,20 +1,20 @@
 /*
- * license_facade.hpp
+ * Licensecc.hpp
  *
  *  Created on: Aug 1, 2026
- *      Author: Your Name
+ *      Author: Gabriele Contini
  */
 
-#ifndef INCLUDE_LICENSECC_LICENSE_FACADE_HPP_
-#define INCLUDE_LICENSECC_LICENSE_FACADE_HPP_
+#ifndef INCLUDE_LICENSECC_LICENSECC_HPP_
+#define INCLUDE_LICENSECC_LICENSECC_HPP_
 
 #include <string>
 #include <vector>
 #include <memory>
-
+#include "locate/LocatorStrategy.hpp"
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
-#include "limits/license_verifier.hpp"	// Include for LicenseInfoEx
+#include "limits/limit_verifier.hpp"  // Include for LicenseInfoEx
 
 namespace license {
 
@@ -24,18 +24,27 @@ namespace license {
  * This class provides a unified interface for license acquisition and
  * hardware identification while maintaining backward compatibility
  * with the existing C API.
+ *
+ * The license acquisition flow (locator strategies loop, parsing,
+ * verification and merge) is described in the "License acquisition flow"
+ * documentation page: doc/analysis/license_acquisition_flow.rst in this
+ * repository, rendered at
+ * https://open-license-manager.github.io/licensecc/latest/ (Analysis section).
  */
-class LicenseFacade {
+class Licensecc {
+private:
+	const std::vector<std::unique_ptr<locate::LocatorStrategy>>* m_strategies;
+
 public:
 	/**
-	 * @brief Constructor
+	 * @brief
 	 */
-	LicenseFacade();
+	Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in = nullptr);
 
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~LicenseFacade();
+	virtual ~Licensecc();
 
 	/**
 	 * @brief Acquire a license for the specified product
@@ -85,4 +94,4 @@ private:
 
 } /* namespace license */
 
-#endif /* INCLUDE_LICENSECC_LICENSE_FACADE_HPP_ */
+#endif /* INCLUDE_LICENSECC_LICENSECC_HPP_ */

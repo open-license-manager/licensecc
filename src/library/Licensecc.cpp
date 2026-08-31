@@ -1,5 +1,5 @@
 /*
- * license_facade.cpp
+ * Licensecc.cpp
  *
  *  Created on: Aug 1, 2026
  *      Author: Gabriele Contini
@@ -21,21 +21,51 @@
 #include "limits/license_verifier.hpp"
 #include "base/string_utils.h"
 #include "LicenseParser.hpp"
-#include "license_facade.hpp"
+#include "Licensecc.hpp"
+#include "locate/LocatorFactory.hpp"
+#include "locate/FoundLicenseCursor.hpp"
 
 using namespace std;
 
 namespace license {
 
-LicenseFacade::LicenseFacade() {}
+Licensecc::Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in) {
+	m_strategies = strategies_in;
+}
 
-LicenseFacade::~LicenseFacade() {}
+Licensecc::~Licensecc() {}
 
-LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerInformation,
-											  const LicenseLocation* licenseLocation,
-											  LicenseInfo* license_out) noexcept {
-	const license::LicenseParser lp = license::LicenseParser(licenseLocation);
-	vector<license::FullLicenseInfo> licenses;
+FUNCTION_RETURN getLocatorStrategies(std::vector<std::unique_ptr<locate::LocatorStrategy>>& strategiesOut,
+									 const LicenseLocation* locationHint, EventRegistry& eventRegistryRef,
+									 const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in) {
+	FUNCTION_RETURN result = FUNC_RET_ERROR;
+	if (strategies_in == nullptr) {
+		result = locate::LocatorFactory::get_active_strategies(strategiesOut, locationHint);
+	} else {
+		if (strategies_in->size() > 0) {
+			for (const auto& strategy : *strategies_in) {
+				strategiesOut.push_back(strategy->clone());
+			}
+			result = FUNC_RET_OK;
+		}
+	}
+	return result;
+}
+
+static LCC_EVENT_TYPE no_license_found(EventRegistry& er, LicenseInfo* license_out) noexcept {
+	if (license_out != nullptr) {
+		license_out->proprietary_data[0] = '\0';
+		license_out->linked_to_pc = false;
+		license_out->days_left = 0;
+		license_out->has_expiry = false;
+	}
+	er.turnWarningsIntoErrors();
+	const AuditEvent* last_failure = er.getLastFailure();
+	return (last_failure != nullptr) ? last_failure->event_type : LICENSE_FILE_NOT_FOUND;
+}
+
+LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInformation,
+										  const LicenseLocation* licenseLocation, LicenseInfo* license_out) noexcept {
 	string project;
 	size_t str_size;
 	if (callerInformation != nullptr &&
@@ -44,31 +74,30 @@ LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerIn
 	} else {
 		project = string(LCC_PROJECT_NAME);
 	}
-	license::EventRegistry er = lp.readLicenses(string(project), licenses);
-	LCC_EVENT_TYPE result;
-	if (licenses.size() > 0) {
+	EventRegistry er;
+	LCC_EVENT_TYPE result = LICENSE_FILE_NOT_FOUND;
+	std::vector<std::unique_ptr<locate::LocatorStrategy>> strategies;
+	const FUNCTION_RETURN strategiesRet = getLocatorStrategies(strategies, licenseLocation, er, m_strategies);
+	license::LicenseVerifier verifier;
+	if (strategiesRet == FUNC_RET_OK && strategies.size() > 0) {
+		const license::LicenseParser lp = license::LicenseParser(er);
+		locate::FoundLicenseCursor cursor(strategies, er);
 		vector<LicenseInfoEx> all_license_results;
-		license::LicenseVerifier verifier(er);
-		for (auto full_lic_info_it = licenses.begin(); full_lic_info_it != licenses.end(); full_lic_info_it++) {
-			if (callerInformation != nullptr) {
-				full_lic_info_it->m_magic = callerInformation->magic;
+		for (auto it : cursor) {
+			const locate::RawLicenseData rawLicense = it;
+			vector<license::FullLicenseInfo> parsed = lp.parseLicense(project, rawLicense);
+			for (auto& licInfo : parsed) {
+				if (callerInformation != nullptr) {
+					licInfo.m_magic = callerInformation->magic;
+				}
+				LicenseInfoEx licInfoEx;
+				verifier.verify_limit(licInfo, er, licInfoEx);
+				all_license_results.push_back(licInfoEx);
 			}
-			LicenseInfoEx licInfoEx = verifier.verify_license(*full_lic_info_it);
-			all_license_results.push_back(licInfoEx);
 		}
 		result = mergeLicenses(all_license_results, er, license_out);
 	} else {
-		er.turnWarningsIntoErrors();
-		const AuditEvent* tmp = er.getLastFailure();
-		if (tmp != nullptr)
-			result = tmp->event_type;
-		else
-			result = LICENSE_FILE_NOT_FOUND;
-		if (license_out != nullptr) {
-			license_out->proprietary_data[0] = '\0';
-			license_out->linked_to_pc = false;
-			license_out->days_left = 0;
-		}
+		result = no_license_found(er, license_out);
 	}
 #ifndef NDEBUG
 	const string evlog = er.to_string();
@@ -81,8 +110,8 @@ LCC_EVENT_TYPE LicenseFacade::acquire_license(const CallerInformations* callerIn
 	return result;
 }
 
-bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
-								ExecutionEnvironmentInfo* execution_environment_info) noexcept {
+bool Licensecc::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
+							ExecutionEnvironmentInfo* execution_environment_info) noexcept {
 	bool result = false;
 	if (*bufSize >= LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
 		try {
@@ -104,18 +133,10 @@ bool LicenseFacade::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method,
 	return result;
 }
 
-LCC_EVENT_TYPE LicenseFacade::mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
-											LicenseInfo* license_out) noexcept {
+LCC_EVENT_TYPE Licensecc::mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
+										LicenseInfo* license_out) noexcept {
 	if (licenses.empty()) {
-		if (license_out != nullptr) {
-			license_out->proprietary_data[0] = '\0';
-			license_out->linked_to_pc = false;
-			license_out->days_left = 0;
-			license_out->has_expiry = true;
-		}
-		er.turnWarningsIntoErrors();
-		const AuditEvent* last_failure = er.getLastFailure();
-		return (last_failure != nullptr) ? last_failure->event_type : LICENSE_FILE_NOT_FOUND;
+		return no_license_found(er, license_out);
 	}
 
 	LCC_EVENT_TYPE error_code;

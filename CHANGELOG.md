@@ -14,7 +14,7 @@
 3. **New identification strategies** — `CpuModelStrategy` (`#134`) and a system-id strategy with OS-specific identifier detection, selectable via dependency-injection refactoring.
 4. **ARM / ARM64 support** — comprehensive CPU detection for ARM, ARM64, and NVIDIA Jetson, including ARM hypervisor/VM detection (`#83`).
 5. **Execution-environment detection** — improved on-premise vs. cloud (Azure) detection.
-6. **Improved `lcc-inspector`** — added CPU-cores detection, fixed a license signature mismatch on Windows, and hardened it against crashes on ARM.
+6. **Improved `lcc-inspector`** — added CPU-cores detection, fixed a license signature mismatch on Windows.
 7. **Customizable `LicenseLocator`s** — locators are now clonable and injectable, allowing integrators to plug in custom license-discovery logic.
 8. **Larger default proprietary-data buffer** (`#198`) and fixed identifier buffer sizing.
 9. **Modernized build & CI** — GitHub Actions replaces Travis, OpenSSL up to **4.0.x** supported, Boost 1.65–1.90 compatibility, optional shared-library build.

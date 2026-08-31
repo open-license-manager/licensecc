@@ -185,5 +185,4 @@ BOOST_AUTO_TEST_CASE(environment_var_location_not_defined) {
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	BOOST_CHECK_MESSAGE(registry.getLastFailure()->event_type == ENVIRONMENT_VARIABLE_NOT_DEFINED, "Error detected");
 }
-
 }  // namespace test

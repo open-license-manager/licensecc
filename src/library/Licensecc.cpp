@@ -12,6 +12,7 @@
 
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
+#include <licensecc/Licensecc.hpp>
 #include <licensecc_properties.h>
 
 #include "base/logger.h"
@@ -21,7 +22,6 @@
 #include "limits/license_verifier.hpp"
 #include "base/string_utils.h"
 #include "LicenseParser.hpp"
-#include "Licensecc.hpp"
 #include "locate/LocatorFactory.hpp"
 #include "locate/FoundLicenseCursor.hpp"
 
@@ -29,9 +29,14 @@ using namespace std;
 
 namespace license {
 
+struct LicenseInfoEx {
+	LicenseInfo license_info;
+	FUNCTION_RETURN return_code;
+};
+
 Licensecc::Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in,
 					 const std::vector<LimitVerifierFn>& extra_verifiers)
-	: m_strategies(strategies_in), m_verifier(extra_verifiers) {}
+	: m_strategies(strategies_in), m_verifier(new LicenseVerifier(extra_verifiers)) {}
 
 Licensecc::~Licensecc() {}
 
@@ -64,6 +69,9 @@ static LCC_EVENT_TYPE no_license_found(EventRegistry& er, LicenseInfo* license_o
 	return (last_failure != nullptr) ? last_failure->event_type : LICENSE_FILE_NOT_FOUND;
 }
 
+static LCC_EVENT_TYPE merge_licenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
+									 LicenseInfo* license_out) noexcept;
+
 LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInformation,
 										  const LicenseLocation* licenseLocation, LicenseInfo* license_out) noexcept {
 	string project;
@@ -90,11 +98,11 @@ LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInform
 					licInfo.m_magic = callerInformation->magic;
 				}
 				LicenseInfoEx licInfoEx;
-				m_verifier.verify_limit(licInfo, er, licInfoEx);
+				licInfoEx.return_code = m_verifier->verify_limit(licInfo, er, licInfoEx.license_info);
 				all_license_results.push_back(licInfoEx);
 			}
 		}
-		result = mergeLicenses(all_license_results, er, license_out);
+		result = merge_licenses(all_license_results, er, license_out);
 	} else {
 		result = no_license_found(er, license_out);
 	}
@@ -132,8 +140,8 @@ bool Licensecc::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, cha
 	return result;
 }
 
-LCC_EVENT_TYPE Licensecc::mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
-										LicenseInfo* license_out) noexcept {
+static LCC_EVENT_TYPE merge_licenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
+									 LicenseInfo* license_out) noexcept {
 	if (licenses.empty()) {
 		return no_license_found(er, license_out);
 	}

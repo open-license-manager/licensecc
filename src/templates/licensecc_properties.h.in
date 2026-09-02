@@ -157,6 +157,12 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
  */
 #define HW_IDENTIFIER_PROPRIETARY_DATA 8
 
+/**
+ * If == 0 do not add default limits to the verifier.
+ *
+ */
+#define ADD_DEFAULT_LIMITS 1
+
 #endif
 /**
  * @}

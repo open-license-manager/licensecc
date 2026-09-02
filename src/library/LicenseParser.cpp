@@ -24,20 +24,16 @@
 
 #include <licensecc/licensecc.h>
 
+#define SI_SUPPORT_IOSTREAMS
 #include "base/base.h"
 #include "LicenseParser.hpp"
+#include "ini/SimpleIni.h"
 #include "base/string_utils.h"
 #include "base/logger.h"
 #include "locate/LocatorFactory.hpp"
 
 namespace license {
 using namespace std;
-
-FullLicenseInfo::FullLicenseInfo(const string& source, const string& product, const string& license_signature)
-	: source(source),
-	  m_project(product),  //
-	  license_signature(license_signature),
-	  m_magic(0) {}
 
 LicenseParser::LicenseParser(EventRegistry& eventRegistry) : eventRegistry(eventRegistry) {}
 
@@ -76,7 +72,11 @@ std::vector<FullLicenseInfo> LicenseParser::parseLicense(const std::string& prod
 	if (license_signature != nullptr && license_version <= 210) {
 		CSimpleIniA::TNamesDepend keys;
 		ini.GetAllKeys(productNamePtr, keys);
-		FullLicenseInfo licInfo(locationId, product, license_signature);
+		FullLicenseInfo licInfo;
+		licInfo.license_signature = license_signature;
+		licInfo.source = locationId;
+		licInfo.m_project = product;
+		licInfo.m_magic = 0;
 		for (auto& key : keys) {
 			licInfo.m_limits[key.pItem] = ini.GetValue(productNamePtr, key.pItem, nullptr);
 		}
@@ -88,18 +88,5 @@ std::vector<FullLicenseInfo> LicenseParser::parseLicense(const std::string& prod
 }
 
 LicenseParser::~LicenseParser() {}
-
-string FullLicenseInfo::printForSign() const {
-	ostringstream oss;
-	oss << toupper_copy(trim_copy(m_project));
-	for (auto& it : m_limits) {
-		if (it.first != LICENSE_SIGNATURE) {
-			oss << trim_copy(it.first) << trim_copy(it.second);
-		}
-	}
-
-	LOG_DEBUG("license to sign [%s]", oss.str().c_str());
-	return oss.str();
-}
 
 }  // namespace license

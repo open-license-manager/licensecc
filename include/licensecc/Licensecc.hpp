@@ -8,16 +8,18 @@
 #ifndef INCLUDE_LICENSECC_LICENSECC_HPP_
 #define INCLUDE_LICENSECC_LICENSECC_HPP_
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include "locate/LocatorStrategy.hpp"
+
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
-#include "limits/limit_verifier.hpp"  // Include for LicenseInfoEx
-#include "limits/license_verifier.hpp"
+#include <licensecc/LocatorStrategy.hpp>
+#include <licensecc/datatypes_cpp.hpp>
 
 namespace license {
+
+class LicenseVerifier;
 
 /**
  * @brief Facade class to unify all license library access points
@@ -35,7 +37,7 @@ namespace license {
 class Licensecc {
 private:
 	const std::vector<std::unique_ptr<locate::LocatorStrategy>>* m_strategies;
-	LicenseVerifier m_verifier;
+	std::unique_ptr<LicenseVerifier> m_verifier;
 
 public:
 	/**
@@ -79,20 +81,6 @@ public:
 	 */
 	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
 					 ExecutionEnvironmentInfo* execution_environment_info) noexcept;
-
-private:
-	/**
-	 * @brief Helper method to merge multiple licenses into one
-	 *
-	 * Selects the best license based on expiration date (choosing the one
-	 * that expires later).
-	 *
-	 * @param licenses Vector of extended license information with return codes
-	 * @param license_out Output license information
-	 * @return LCC_EVENT_TYPE indicating success or failure
-	 */
-	LCC_EVENT_TYPE mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
-								 LicenseInfo* license_out) noexcept;
 };
 
 } /* namespace license */

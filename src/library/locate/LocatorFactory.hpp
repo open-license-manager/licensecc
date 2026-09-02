@@ -10,8 +10,8 @@
 #include <licensecc_properties.h>
 
 #include "../base/base.h"
-#include "LocatorStrategy.hpp"
-#include "../base/EventRegistry.h"
+#include <licensecc/LocatorStrategy.hpp>
+#include <licensecc/EventRegistry.h>
 
 namespace license {
 namespace locate {

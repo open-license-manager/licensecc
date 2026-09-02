@@ -28,7 +28,10 @@ RSA/SHA256 verification as security-critical:
 
 ## Architecture (this repo)
 
-- `include/licensecc/` — public C API headers (`licensecc.h`, `datatypes.h`).
+- `include/licensecc/` — public API headers: the C API (`licensecc.h`,
+  `datatypes.h`) and the C++ API (`Licensecc.hpp` plus its public dependencies
+  `LocatorStrategy.hpp`, `datatypes_cpp.hpp`, `EventRegistry.h`,
+  `datatypes_cpp.hpp`).
 - `src/library/license.cpp` — thin C API surface. `identify_pc` and `acquire_license`
   just delegate to `Licensecc`. **Do not change these function signatures.**
 - `src/library/Licensecc.{hpp,cpp}` — `Licensecc`: the actual entry point that
@@ -87,8 +90,7 @@ C++ RAII / value-semantics / const-correctness rules and common pitfalls
 File Instructions that auto-attach to C++ files:
 `.github/instructions/coding-guidelines.instructions.md`.
 
-- Format with the repo's `.clang-format` before finishing any edit; don't reformat
-  unrelated code (see `CONTRIBUTING.md`).
+- Format with the repo's `.clang-format` before finishing any edit.
 - C++11 is the language standard — don't introduce newer-standard-only features.
 - Target branch for PRs is `develop` (GitFlow), from a feature branch — never suggest
   committing straight to `develop` or `master`.

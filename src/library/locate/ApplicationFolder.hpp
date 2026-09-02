@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 
 namespace license {
 namespace locate {

@@ -9,7 +9,7 @@
 #define SRC_LIBRARY_LOCATE_EXTERNALDEFINITION_HPP_
 
 #include <memory>
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 
 namespace license {
 namespace locate {

@@ -7,14 +7,14 @@
 
 #include <licensecc_properties.h>
 
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 #include "../base/file_utils.hpp"
 
 namespace license {
 namespace locate {
 using namespace std;
 
-const string LocatorStrategy::retrieve_license_content(const string &licenseLocation) const {
+const string LocatorStrategy::retrieve_license_content(const string& licenseLocation) const {
 	return get_file_contents(licenseLocation.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH);
 }
 

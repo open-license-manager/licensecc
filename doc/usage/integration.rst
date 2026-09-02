@@ -77,11 +77,16 @@ The directory structure created by ``make install`` looks like this:
       │   └── lccgen-2.1.0
       ├── include
       │   └── licensecc
-      │       ├── datatypes.h
-      │       ├── <<PROJECT_NAME>>
-      │       │   ├── licensecc_properties.h
-      │       │   └── public_key.h
-      │       └── licensecc.h
+      │       ├── datatypes.h                     <--- C API    
+      │       ├── licensecc.h
+      │       ├── Licensecc.hpp                   <--- C++ API
+      │       ├── LocatorStrategy.hpp
+      │       ├── datatypes_cpp.hpp               <--- C++ data types (``FullLicenseInfo``, ``LimitVerifierFn``)
+      │       ├── EventRegistry.h
+      │       └── <<PROJECT_NAME>>
+      │           ├── licensecc_properties.h
+      │           └── public_key.h
+
       └── lib
          ├── cmake
          │   └── licensecc                           <--- Point your licensecc_DIR here
@@ -115,11 +120,15 @@ project.
 Call Licensecc from your code
 ***************************************
 
-The public API is declared in ``include/licensecc/licensecc.h``. The two main
+The public C API is declared in ``include/licensecc/licensecc.h``. The two main
 entry points are:
 
 - ``identify_pc()`` — compute a hardware identifier for the current machine.
 - ``acquire_license()`` — locate, parse, and verify a license file.
+
+C++ applications may instead use the C++ api declared in
+``include/licensecc/Licensecc.hpp`` (class ``license::Licensecc``), which wraps
+the same functionality in an object oriented interface.
 
 A typical usage pattern:
 

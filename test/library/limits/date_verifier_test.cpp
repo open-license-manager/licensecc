@@ -5,7 +5,7 @@
 #include <licensecc_properties.h>
 #include <licensecc/datatypes.h>
 
-#include "../../../src/library/base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "../../../src/library/LicenseParser.hpp"
 #include "../../../src/library/limits/limit_verifiers.hpp"
 
@@ -15,7 +15,10 @@ namespace test {
 using namespace std;
 
 static FullLicenseInfo make_license() {
-	FullLicenseInfo lic("test_license.lic", "PRODUCT", "signature");
+	FullLicenseInfo lic;
+	lic.source = "test_license.lic";
+	lic.m_project = "PRODUCT";
+	lic.license_signature = "signature";
 	return lic;
 }
 

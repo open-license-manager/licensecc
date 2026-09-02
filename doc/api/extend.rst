@@ -85,6 +85,21 @@ Finding the licenses in new places: custom license locators
 Your software struggle to find the license file? you can implement your own way to find it. For instance if you want 
 to download the license from a remote server, you could implement the logic here. 
  
+The extension points are declared in the public C++ header
+``include/licensecc/LocatorStrategy.hpp`` (``license::locate::LocatorStrategy``).
+
+
+.. TODO::
+   
+   this section need to be completed
+
+**************************************************************
+Adding new limits: 
+**************************************************************
+
+Verifiers use ``include/licensecc/datatypes_cpp.hpp``
+(``license::LimitVerifierFn``).
+
 .. TODO::
    
    this section need to be completed

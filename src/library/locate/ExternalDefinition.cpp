@@ -11,7 +11,7 @@
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"
-#include "../base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "../base/string_utils.h"
 
 #include "ExternalDefinition.hpp"

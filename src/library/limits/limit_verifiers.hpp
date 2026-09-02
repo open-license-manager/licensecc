@@ -8,9 +8,16 @@
 #ifndef SRC_LIBRARY_LIMITS_LIMIT_VERIFIERS_HPP_
 #define SRC_LIBRARY_LIMITS_LIMIT_VERIFIERS_HPP_
 
-#include "limit_verifier.hpp"
+#include <licensecc/datatypes_cpp.hpp>
 
 namespace license {
+
+/**
+ * Builds the textual representation of a license (product name in upper case
+ * followed by each limit, excluding the signature itself) that is fed to the
+ * signature verification.
+ */
+std::string printForSign(const FullLicenseInfo& licInfo);
 
 /**
  * Verifies the license begin/expiry dates and populates the date fields of

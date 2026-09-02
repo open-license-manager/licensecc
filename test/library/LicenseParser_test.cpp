@@ -10,7 +10,7 @@
 #include <licensecc_properties_test.h>
 #include <licensecc/datatypes.h>
 
-#include "../../src/library/base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "../../src/library/base/file_utils.hpp"
 #include "../../src/library/os/os.h"
 #include "../../src/library/locate/LocatorFactory.hpp"

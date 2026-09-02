@@ -11,28 +11,13 @@
 #include <ctime>
 #include <vector>
 
-#define SI_SUPPORT_IOSTREAMS
 #include <licensecc/datatypes.h>
+#include <licensecc/datatypes_cpp.hpp>
+#include <licensecc/EventRegistry.h>
 
-#include "base/EventRegistry.h"
-#include "os/os.h"
-#include "ini/SimpleIni.h"
 #include "locate/LocatorFactory.hpp"
 
 namespace license {
-
-struct FullLicenseInfo {
-public:
-	const std::string license_signature;
-	const std::string source;
-	const std::string m_project;
-	unsigned int m_magic;
-	std::map<std::string, std::string> m_limits;
-
-	FullLicenseInfo(const std::string& source, const std::string& product, const std::string& license_signature);
-	std::string printForSign() const;
-	operator LicenseInfo() const;
-};
 
 /**
  * This class it is responsible to read the licenses from the disk

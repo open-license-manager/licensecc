@@ -7,14 +7,30 @@
 
 #include <algorithm>
 #include <cmath>
+#include <sstream>
 
 #include "limit_verifiers.hpp"
+#include "../base/base.h"
 #include "../base/string_utils.h"
+#include "../base/logger.h"
 #include "../hw_identifier/hw_identifier_facade.hpp"
 #include "../os/signature_verifier.hpp"
 
 namespace license {
 using namespace std;
+
+string printForSign(const FullLicenseInfo& licInfo) {
+	ostringstream oss;
+	oss << toupper_copy(trim_copy(licInfo.m_project));
+	for (auto& it : licInfo.m_limits) {
+		if (it.first != LICENSE_SIGNATURE) {
+			oss << trim_copy(it.first) << trim_copy(it.second);
+		}
+	}
+
+	LOG_DEBUG("license to sign [%s]", oss.str().c_str());
+	return oss.str();
+}
 
 LCC_EVENT_TYPE verify_date(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
 	try {
@@ -70,7 +86,7 @@ LCC_EVENT_TYPE verify_pc_signature(const FullLicenseInfo& licInfo, LicenseInfo& 
 
 LCC_EVENT_TYPE verify_signature(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
 	try {
-		const string licInfoData(licInfo.printForSign());
+		const string licInfoData(printForSign(licInfo));
 
 		const FUNCTION_RETURN ret = license::os::verify_signature(licInfoData, licInfo.license_signature);
 

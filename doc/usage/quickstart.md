@@ -149,6 +149,10 @@ install/
 ├── include/
 │   └── licensecc/
 │       ├── licensecc.h                # Public C API
+│       ├── Licensecc.hpp              # Public C++ API
+│       ├── LocatorStrategy.hpp
+│       ├── datatypes_cpp.hpp          # C++ data types (FullLicenseInfo, LimitVerifierFn)
+│       ├── EventRegistry.h
 │       └── MyApp/
 │           ├── licensecc_properties.h
 │           └── public_key.h
@@ -185,6 +189,15 @@ if (result == LICENSE_OK) {
 } else {
     /* Handle license error */
 }
+```
+
+C++ applications can use the C++ facade instead:
+
+```cpp
+#include <licensecc/Licensecc.hpp>
+
+license::Licensecc licensecc;
+LCC_EVENT_TYPE result = licensecc.acquire_license(nullptr, nullptr, &info);
 ```
 
 See [Step 6 — Call Licensecc from your code](integration.rst#step-6-call-licensecc-from-your-code) for a detailed integration example with error handling.

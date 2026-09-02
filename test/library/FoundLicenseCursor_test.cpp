@@ -11,9 +11,9 @@
 #include <string>
 #include <vector>
 
-#include "../../src/library/base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "../../src/library/locate/LocatorFactory.hpp"
-#include "../../src/library/locate/LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 #include "../../src/library/locate/FoundLicenseCursor.hpp"
 
 namespace test {

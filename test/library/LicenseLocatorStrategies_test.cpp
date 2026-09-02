@@ -16,7 +16,7 @@
 #include <licensecc_properties_test.h>
 
 #include "../../src/library/os/os.h"
-#include "../../src/library/base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "../../src/library/locate/ApplicationFolder.hpp"
 #include "../../src/library/locate/EnvironmentVarLocation.hpp"
 #include "../../src/library/locate/ExternalDefinition.hpp"

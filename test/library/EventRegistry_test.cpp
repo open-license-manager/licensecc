@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <cstdio>
 
-#include "../../src/library/base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 
 namespace test {
 
@@ -54,7 +54,6 @@ BOOST_AUTO_TEST_CASE(test_current_license_id_functionality) {
 	BOOST_CHECK_MESSAGE(eventStr.find("test_license_123") != string::npos, "Event should contain the set license ID");
 	BOOST_CHECK_MESSAGE(eventStr.find("ev:0") != string::npos, "Should have LICENSE_SPECIFIED event (value 0)");
 }
-
 
 BOOST_AUTO_TEST_CASE(test_default_current_license_id_behavior) {
 	EventRegistry er;

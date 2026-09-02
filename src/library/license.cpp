@@ -21,7 +21,7 @@
 #include "hw_identifier/hw_identifier_facade.hpp"
 #include "os/execution_environment.hpp"
 #include "LicenseParser.hpp"
-#include "Licensecc.hpp"
+#include <licensecc/Licensecc.hpp>
 
 using namespace std;
 

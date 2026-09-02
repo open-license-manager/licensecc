@@ -10,8 +10,11 @@
 
 #include <vector>
 
-#include "../base/EventRegistry.h"
-#include "limit_verifier.hpp"
+#include <licensecc/datatypes.h>
+#include <licensecc/datatypes_cpp.hpp>
+#include <licensecc/EventRegistry.h>
+
+#include "../base/base.h"
 
 namespace license {
 
@@ -35,7 +38,7 @@ public:
 	 */
 	explicit LicenseVerifier(const std::vector<LimitVerifierFn>& verifiers);
 
-	FUNCTION_RETURN verify_limit(const FullLicenseInfo& licInfo, EventRegistry& event_registry, LicenseInfoEx& out);
+	FUNCTION_RETURN verify_limit(const FullLicenseInfo& licInfo, EventRegistry& event_registry, LicenseInfo& out);
 	~LicenseVerifier() {}
 };
 

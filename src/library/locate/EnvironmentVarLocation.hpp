@@ -9,7 +9,7 @@
 #define SRC_LIBRARY_LOCATE_ENVIRONMENTVARLOCATION_H_
 
 #include <memory>
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 
 namespace license {
 namespace locate {

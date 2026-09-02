@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-#include "../base/EventRegistry.h"
+#include <licensecc/EventRegistry.h>
 #include "LocatorFactory.hpp"
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 
 namespace license {
 namespace locate {

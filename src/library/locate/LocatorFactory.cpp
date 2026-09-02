@@ -5,7 +5,7 @@
  *      Author: Gabriele Contini
  */
 
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 #include "LocatorFactory.hpp"
 #include "ApplicationFolder.hpp"
 #include "EnvironmentVarData.hpp"

@@ -24,24 +24,24 @@ The file is never overwritten once it's generated.
 It contains the default buffer sizes used in the API, environment variable names, default 
 strategies behavior. If there is some arbitrary name in the library, you may find it here.
 
-```c
-//names of the environment variables to find 
-#define LCC_LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
-#define LCC_LICENSE_DATA_ENV_VAR "LICENSE_DATA"
+.. code-block:: c
 
-//Maximum size of a license file or base64 data (we don't want somebody to crash our software)
-#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 8
+   //names of the environment variables to find 
+   #define LCC_LICENSE_LOCATION_ENV_VAR "LICENSE_LOCATION"
+   #define LCC_LICENSE_DATA_ENV_VAR "LICENSE_DATA"
 
-// Miscellaneous api data structure sizes
-#define LCC_API_PC_IDENTIFIER_SIZE 15
-#define LCC_API_PROPRIETARY_DATA_SIZE 64
-#define LCC_API_AUDIT_EVENT_NUM 5
-#define LCC_API_AUDIT_EVENT_PARAM2 255
-#define LCC_API_VERSION_LENGTH 15
-#define LCC_API_FEATURE_NAME_SIZE 15
-#define LCC_API_EXPIRY_DATE_SIZE 10
-#define LCC_API_ERROR_BUFFER_SIZE 256
-```
+   //Maximum size of a license file or base64 data (we don't want somebody to crash our software)
+   #define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 8
+
+   // Miscellaneous api data structure sizes
+   #define LCC_API_PC_IDENTIFIER_SIZE 15
+   #define LCC_API_PROPRIETARY_DATA_SIZE 64
+   #define LCC_API_AUDIT_EVENT_NUM 5
+   #define LCC_API_AUDIT_EVENT_PARAM2 255
+   #define LCC_API_VERSION_LENGTH 15
+   #define LCC_API_FEATURE_NAME_SIZE 15
+   #define LCC_API_EXPIRY_DATE_SIZE 10
+   #define LCC_API_ERROR_BUFFER_SIZE 256
 
 Tweak default hardware signature generator
 =============================================
@@ -58,26 +58,26 @@ First of all be sure to read about the standard behavior of :c:func:`identify_pc
 Then you can change the way the default strategy works in `licensecc` by changing 
 the underlying strategies in this section of `licensecc_properties.h`:
 
-```C
-/*
- * The following group of settings change the behavior of the underlying strategy selection
- * when LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT is choosen.
- *--------
- * List the strategies used when no virtual envrionment is detected
- */
-#define LCC_BARE_TO_METAL_STRATEGIES {STRATEGY_DISK, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
-/**
- * List the strategies used when the software is executing in a virtual machine
- */
-#define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_NONE}
-/**
- * List the strategies used when it's detected a VM executed execution in the cloud.
- * CPU_MODEL is not very restrictive. Need to debug with Inspector.
- */
-#define LCC_CLOUD_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
-#define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
-#define LCC_DOCKER_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
-```
+.. code-block:: c
+
+   /*
+    * The following group of settings change the behavior of the underlying strategy selection
+    * when LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_DEFAULT is choosen.
+    *--------
+    * List the strategies used when no virtual envrionment is detected
+    */
+   #define LCC_BARE_TO_METAL_STRATEGIES {STRATEGY_DISK, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
+   /**
+    * List the strategies used when the software is executing in a virtual machine
+    */
+   #define LCC_VM_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_NONE}
+   /**
+    * List the strategies used when it's detected a VM executed execution in the cloud.
+    * CPU_MODEL is not very restrictive. Need to debug with Inspector.
+    */
+   #define LCC_CLOUD_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
+   #define LCC_LXC_STRATEGIES {STRATEGY_ETHERNET, STRATEGY_SYSTEM_ID, STRATEGY_CPU_MODEL, STRATEGY_NONE}
+   #define LCC_DOCKER_STRATEGIES {STRATEGY_CPU_MODEL, STRATEGY_NONE}
 
 **************************************************************
 Finding the licenses in new places: custom license locators 

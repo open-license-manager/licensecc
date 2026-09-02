@@ -15,6 +15,7 @@
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
 #include "limits/limit_verifier.hpp"  // Include for LicenseInfoEx
+#include "limits/license_verifier.hpp"
 
 namespace license {
 
@@ -34,12 +35,14 @@ namespace license {
 class Licensecc {
 private:
 	const std::vector<std::unique_ptr<locate::LocatorStrategy>>* m_strategies;
+	LicenseVerifier m_verifier;
 
 public:
 	/**
 	 * @brief
 	 */
-	Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in = nullptr);
+	Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in = nullptr,
+			  const std::vector<LimitVerifierFn>& extra_verifiers = std::vector<LimitVerifierFn>());
 
 	/**
 	 * @brief Destructor

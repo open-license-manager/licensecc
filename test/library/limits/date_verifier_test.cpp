@@ -7,7 +7,7 @@
 
 #include "../../../src/library/base/EventRegistry.h"
 #include "../../../src/library/LicenseParser.hpp"
-#include "../../../src/library/limits/date_verifier.hpp"
+#include "../../../src/library/limits/limit_verifiers.hpp"
 
 namespace license {
 namespace test {
@@ -20,11 +20,10 @@ static FullLicenseInfo make_license() {
 }
 
 BOOST_AUTO_TEST_CASE(no_dates_is_valid) {
-	DateVerifier verifier;
 	FullLicenseInfo lic = make_license();
 	LicenseInfo out;
 
-	const LCC_EVENT_TYPE result = verifier.verify_limit(lic, out);
+	const LCC_EVENT_TYPE result = verify_date(lic, out);
 
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(out.has_expiry, false);
@@ -32,12 +31,11 @@ BOOST_AUTO_TEST_CASE(no_dates_is_valid) {
 }
 
 BOOST_AUTO_TEST_CASE(not_expired_is_valid) {
-	DateVerifier verifier;
 	FullLicenseInfo lic = make_license();
 	lic.m_limits[PARAM_EXPIRY_DATE] = "2050-10-10";
 	LicenseInfo out;
 
-	const LCC_EVENT_TYPE result = verifier.verify_limit(lic, out);
+	const LCC_EVENT_TYPE result = verify_date(lic, out);
 
 	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 	BOOST_CHECK_EQUAL(out.has_expiry, true);
@@ -46,35 +44,32 @@ BOOST_AUTO_TEST_CASE(not_expired_is_valid) {
 }
 
 BOOST_AUTO_TEST_CASE(expired_is_error) {
-	DateVerifier verifier;
 	FullLicenseInfo lic = make_license();
 	lic.m_limits[PARAM_EXPIRY_DATE] = "2013-10-10";
 	LicenseInfo out;
 
-	const LCC_EVENT_TYPE result = verifier.verify_limit(lic, out);
+	const LCC_EVENT_TYPE result = verify_date(lic, out);
 
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 	BOOST_CHECK_EQUAL(out.days_left, (unsigned int)0);
 }
 
 BOOST_AUTO_TEST_CASE(future_start_date_is_error) {
-	DateVerifier verifier;
 	FullLicenseInfo lic = make_license();
 	lic.m_limits[PARAM_BEGIN_DATE] = "2050-10-10";
 	LicenseInfo out;
 
-	const LCC_EVENT_TYPE result = verifier.verify_limit(lic, out);
+	const LCC_EVENT_TYPE result = verify_date(lic, out);
 
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 }
 
 BOOST_AUTO_TEST_CASE(malformed_expiry_is_error) {
-	DateVerifier verifier;
 	FullLicenseInfo lic = make_license();
 	lic.m_limits[PARAM_EXPIRY_DATE] = "not-a-date";
 	LicenseInfo out;
 
-	const LCC_EVENT_TYPE result = verifier.verify_limit(lic, out);
+	const LCC_EVENT_TYPE result = verify_date(lic, out);
 
 	BOOST_CHECK_EQUAL(result, PRODUCT_EXPIRED);
 }

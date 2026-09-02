@@ -1,5 +1,5 @@
 /*
- * date_verifier.cpp
+ * limit_verifiers.cpp
  *
  *  Created on: Aug 31, 2026
  *      Author: GC
@@ -8,13 +8,15 @@
 #include <algorithm>
 #include <cmath>
 
-#include "date_verifier.hpp"
+#include "limit_verifiers.hpp"
 #include "../base/string_utils.h"
+#include "../hw_identifier/hw_identifier_facade.hpp"
+#include "../os/signature_verifier.hpp"
 
 namespace license {
 using namespace std;
 
-LCC_EVENT_TYPE DateVerifier::verify_limit(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
+LCC_EVENT_TYPE verify_date(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
 	try {
 		bool is_valid = true;
 		const time_t now = time(nullptr);
@@ -53,8 +55,29 @@ LCC_EVENT_TYPE DateVerifier::verify_limit(const FullLicenseInfo& licInfo, Licens
 	}
 }
 
-std::unique_ptr<LimitVerifier> DateVerifier::clone() const {
-	return std::unique_ptr<LimitVerifier>(new DateVerifier());
+LCC_EVENT_TYPE verify_pc_signature(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
+	try {
+		const auto client_sig = licInfo.m_limits.find(PARAM_CLIENT_SIGNATURE);
+		out.linked_to_pc = (client_sig != licInfo.m_limits.end());
+		if (client_sig == licInfo.m_limits.end()) {
+			return LICENSE_OK;
+		}
+		return hw_identifier::HwIdentifierFacade::validate_pc_signature(client_sig->second);
+	} catch (const std::exception&) {
+		return IDENTIFIER_NOT_AVAILABLE;
+	}
+}
+
+LCC_EVENT_TYPE verify_signature(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
+	try {
+		const string licInfoData(licInfo.printForSign());
+
+		const FUNCTION_RETURN ret = license::os::verify_signature(licInfoData, licInfo.license_signature);
+
+		return (ret == FUNC_RET_OK) ? SIGNATURE_VERIFIED : LICENSE_CORRUPTED;
+	} catch (const std::exception&) {
+		return LICENSE_CORRUPTED;
+	}
 }
 
 } /* namespace license */

@@ -8,7 +8,6 @@
 #ifndef SRC_LIBRARY_LIMITS_LICENSE_VERIFIER_HPP_
 #define SRC_LIBRARY_LIMITS_LICENSE_VERIFIER_HPP_
 
-#include <memory>
 #include <vector>
 
 #include "../base/EventRegistry.h"
@@ -23,7 +22,7 @@ namespace license {
  */
 class LicenseVerifier {
 private:
-	std::vector<std::unique_ptr<LimitVerifier>> m_verifiers;
+	std::vector<LimitVerifierFn> m_verifiers;
 
 public:
 	/**
@@ -34,7 +33,7 @@ public:
 	/**
 	 * Builds a verifier from an explicit list of limit verifiers.
 	 */
-	explicit LicenseVerifier(std::vector<std::unique_ptr<LimitVerifier>> verifiers);
+	explicit LicenseVerifier(const std::vector<LimitVerifierFn>& verifiers);
 
 	FUNCTION_RETURN verify_limit(const FullLicenseInfo& licInfo, EventRegistry& event_registry, LicenseInfoEx& out);
 	~LicenseVerifier() {}

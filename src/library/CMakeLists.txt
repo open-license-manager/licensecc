@@ -7,10 +7,7 @@ set(LICENSECC_SOURCES
     license.cpp
     Licensecc.cpp
     LicenseParser.cpp
-    limits/limit_verifier.cpp
-    limits/date_verifier.cpp
-    limits/pc_signature_verifier.cpp
-    limits/signature_verifier.cpp
+    limits/limit_verifiers.cpp
     limits/license_verifier.cpp
     ini/ConvertUTF.cpp
     $<TARGET_OBJECTS:hw_identifier>

@@ -17,22 +17,10 @@ using namespace std;
 
 namespace {
 
-class OkVerifier : public LimitVerifier {
-public:
-	virtual LCC_EVENT_TYPE verify_limit(const FullLicenseInfo&, LicenseInfo&) noexcept override { return LICENSE_OK; }
-	virtual std::unique_ptr<LimitVerifier> clone() const override {
-		return std::unique_ptr<LimitVerifier>(new OkVerifier());
-	}
-};
+const LimitVerifierFn ok_verifier = [](const FullLicenseInfo&, LicenseInfo&) -> LCC_EVENT_TYPE { return LICENSE_OK; };
 
-class FailVerifier : public LimitVerifier {
-public:
-	virtual LCC_EVENT_TYPE verify_limit(const FullLicenseInfo&, LicenseInfo&) noexcept override {
-		return LICENSE_CORRUPTED;
-	}
-	virtual std::unique_ptr<LimitVerifier> clone() const override {
-		return std::unique_ptr<LimitVerifier>(new FailVerifier());
-	}
+const LimitVerifierFn fail_verifier = [](const FullLicenseInfo&, LicenseInfo&) -> LCC_EVENT_TYPE {
+	return LICENSE_CORRUPTED;
 };
 
 static FullLicenseInfo make_license() {
@@ -44,9 +32,9 @@ static FullLicenseInfo make_license() {
 
 BOOST_AUTO_TEST_CASE(all_ok_is_valid) {
 	EventRegistry registry;
-	std::vector<std::unique_ptr<LimitVerifier>> verifiers;
-	verifiers.push_back(std::unique_ptr<LimitVerifier>(new OkVerifier()));
-	verifiers.push_back(std::unique_ptr<LimitVerifier>(new OkVerifier()));
+	std::vector<LimitVerifierFn> verifiers;
+	verifiers.push_back(ok_verifier);
+	verifiers.push_back(ok_verifier);
 	LicenseVerifier verifier(move(verifiers));
 	FullLicenseInfo lic = make_license();
 	LicenseInfoEx out;
@@ -59,9 +47,9 @@ BOOST_AUTO_TEST_CASE(all_ok_is_valid) {
 
 BOOST_AUTO_TEST_CASE(one_failing_is_error) {
 	EventRegistry registry;
-	std::vector<std::unique_ptr<LimitVerifier>> verifiers;
-	verifiers.push_back(std::unique_ptr<LimitVerifier>(new OkVerifier()));
-	verifiers.push_back(std::unique_ptr<LimitVerifier>(new FailVerifier()));
+	std::vector<LimitVerifierFn> verifiers;
+	verifiers.push_back(ok_verifier);
+	verifiers.push_back(fail_verifier);
 	LicenseVerifier verifier(move(verifiers));
 	FullLicenseInfo lic = make_license();
 	LicenseInfoEx out;
@@ -74,8 +62,8 @@ BOOST_AUTO_TEST_CASE(one_failing_is_error) {
 
 BOOST_AUTO_TEST_CASE(populates_base_fields) {
 	EventRegistry registry;
-	std::vector<std::unique_ptr<LimitVerifier>> verifiers;
-	verifiers.push_back(std::unique_ptr<LimitVerifier>(new OkVerifier()));
+	std::vector<LimitVerifierFn> verifiers;
+	verifiers.push_back(ok_verifier);
 	LicenseVerifier verifier(move(verifiers));
 	FullLicenseInfo lic = make_license();
 	lic.m_limits[PARAM_EXTRA_DATA] = "proprietary";

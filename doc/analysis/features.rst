@@ -109,9 +109,9 @@ This is the most common limit set on a license, allow the software to expire aft
 
 .. note::
 
-This feature will take the date of the host pc. It doesn't connect to Internet to check if the date is right.
-It's a known limitation, making it 'right' requires an external server or that an NTP server is in reach, 
-and it's out of scope for now.
+   This feature will take the date of the host pc. It doesn't connect to Internet to check if the date is right.
+   It's a known limitation, making it 'right' requires an external server or that an NTP server is in reach, 
+   and it's out of scope for now.
 
 Disk label/Disk id
 ==============================

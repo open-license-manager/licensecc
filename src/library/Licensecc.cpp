@@ -29,9 +29,9 @@ using namespace std;
 
 namespace license {
 
-Licensecc::Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in) {
-	m_strategies = strategies_in;
-}
+Licensecc::Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in,
+					 const std::vector<LimitVerifierFn>& extra_verifiers)
+	: m_strategies(strategies_in), m_verifier(extra_verifiers) {}
 
 Licensecc::~Licensecc() {}
 
@@ -78,7 +78,6 @@ LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInform
 	LCC_EVENT_TYPE result = LICENSE_FILE_NOT_FOUND;
 	std::vector<std::unique_ptr<locate::LocatorStrategy>> strategies;
 	const FUNCTION_RETURN strategiesRet = getLocatorStrategies(strategies, licenseLocation, er, m_strategies);
-	license::LicenseVerifier verifier;
 	if (strategiesRet == FUNC_RET_OK && strategies.size() > 0) {
 		const license::LicenseParser lp = license::LicenseParser(er);
 		locate::FoundLicenseCursor cursor(strategies, er);
@@ -91,7 +90,7 @@ LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInform
 					licInfo.m_magic = callerInformation->magic;
 				}
 				LicenseInfoEx licInfoEx;
-				verifier.verify_limit(licInfo, er, licInfoEx);
+				m_verifier.verify_limit(licInfo, er, licInfoEx);
 				all_license_results.push_back(licInfoEx);
 			}
 		}

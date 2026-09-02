@@ -7,21 +7,18 @@
 
 #include "license_verifier.hpp"
 #include "../base/string_utils.h"
-#include "date_verifier.hpp"
-#include "pc_signature_verifier.hpp"
-#include "signature_verifier.hpp"
+#include "limit_verifiers.hpp"
 
 namespace license {
 using namespace std;
 
-LicenseVerifier::LicenseVerifier() {
-	m_verifiers.push_back(std::unique_ptr<LimitVerifier>(new DateVerifier()));
-	m_verifiers.push_back(std::unique_ptr<LimitVerifier>(new PcSignatureVerifier()));
-	m_verifiers.push_back(std::unique_ptr<LimitVerifier>(new SignatureVerifier()));
-}
+LicenseVerifier::LicenseVerifier() : LicenseVerifier(std::vector<LimitVerifierFn>()) {}
 
-LicenseVerifier::LicenseVerifier(std::vector<std::unique_ptr<LimitVerifier>> verifiers)
-	: m_verifiers(move(verifiers)) {}
+LicenseVerifier::LicenseVerifier(const std::vector<LimitVerifierFn>& extra_verifiers) : m_verifiers(extra_verifiers) {
+	m_verifiers.push_back(verify_date);
+	m_verifiers.push_back(verify_pc_signature);
+	m_verifiers.push_back(verify_signature);
+}
 
 FUNCTION_RETURN LicenseVerifier::verify_limit(const FullLicenseInfo& licInfo, EventRegistry& event_registry,
 											  LicenseInfoEx& out) {
@@ -37,14 +34,14 @@ FUNCTION_RETURN LicenseVerifier::verify_limit(const FullLicenseInfo& licInfo, Ev
 
 	bool all_ok = true;
 	for (const auto& verifier : m_verifiers) {
-		if (verifier == nullptr) {
+		if (!verifier) {
 			continue;
 		}
-		const LCC_EVENT_TYPE event = verifier->verify_limit(licInfo, out.license_info);
+		const LCC_EVENT_TYPE event = verifier(licInfo, out.license_info);
 		if (event != LICENSE_OK) {
 			event_registry.addEvent(event, licInfo.source.c_str());
 		}
-		all_ok = all_ok && (event < LICENSE_OK);
+		all_ok = all_ok && (event >= LICENSE_OK);
 	}
 
 	if (all_ok) {

@@ -13,8 +13,8 @@
 
 #include <licensecc/datatypes.h>
 #include <licensecc/datatypes_cpp.hpp>
-#include <licensecc/EventRegistry.h>
 
+#include "base/EventRegistry.h"
 #include "locate/LocatorFactory.hpp"
 
 namespace license {
@@ -44,7 +44,7 @@ private:
 public:
 	LicenseParser(EventRegistry& eventRegistry);
 	std::vector<FullLicenseInfo> parseLicense(const std::string& product,
-											  const locate::RawLicenseData& rawLicense) const;
+											  const locate::RawLicenseData& rawLicense) const noexcept;
 	virtual ~LicenseParser();
 };
 }  // namespace license

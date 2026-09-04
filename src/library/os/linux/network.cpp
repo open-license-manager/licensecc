@@ -82,7 +82,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 		/* For an AF_INET* interface address, display the address
 		 * || family == AF_INET6*/
 		if (family == AF_INET) {
-			struct sockaddr_in* s1 = (struct sockaddr_in*)ifa->ifa_addr;
+			struct sockaddr_in* s1 = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr);
 			in_addr_t iaddr = s1->sin_addr.s_addr;
 			currentAdapter->ipv4_address[0] = (iaddr & 0x000000ff);
 			currentAdapter->ipv4_address[1] = (iaddr & 0x0000ff00) >> 8;
@@ -90,7 +90,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 			currentAdapter->ipv4_address[3] = (iaddr & 0xff000000) >> 24;
 
 		} else if (family == AF_PACKET && ifa->ifa_data != NULL) {
-			struct sockaddr_ll* s1 = (struct sockaddr_ll*)ifa->ifa_addr;
+			struct sockaddr_ll* s1 = reinterpret_cast<struct sockaddr_ll*>(ifa->ifa_addr);
 			int i;
 			for (i = 0; i < 6; i++) {
 				currentAdapter->mac_address[i] = s1->sll_addr[i];

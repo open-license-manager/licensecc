@@ -29,7 +29,8 @@ private:
 
 public:
 	/**
-	 * Builds the default verifier: date + pc signature + license signature.
+	 * Builds the default verifier: date + pc signature + virtualization type +
+	 * license signature.
 	 */
 	LicenseVerifier();
 

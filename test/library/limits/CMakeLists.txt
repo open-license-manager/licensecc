@@ -36,4 +36,5 @@ target_link_libraries(
 
 ADD_TEST(NAME test_date_verifier COMMAND test_date_verifier)
 ADD_TEST(NAME test_pc_signature_verifier COMMAND test_pc_signature_verifier)
+ADD_TEST(NAME test_virtualization_verifier COMMAND test_virtualization_verifier)
 ADD_TEST(NAME test_license_verifier COMMAND test_license_verifier)

@@ -56,11 +56,19 @@ target_link_libraries(test_pc_identifier
  Boost::unit_test_framework
 )
 
+add_executable(test_virtualization virtualization_test.cpp)
+
+target_link_libraries(test_virtualization
+ license_generator_snippet
+ licensecc
+)
+
 ADD_TEST(NAME test_crack COMMAND test_crack WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 ADD_TEST(NAME test_date COMMAND test_date WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 ADD_TEST(NAME test_it_hw_identifier COMMAND test_it_hw_identifier WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 ADD_TEST(NAME test_pc_identifier COMMAND test_pc_identifier WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 ADD_TEST(NAME test_standard_license COMMAND test_standard_license WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 ADD_TEST(NAME test_signature_verifier COMMAND test_signature_verifier WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+ADD_TEST(NAME test_virtualization COMMAND test_virtualization WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 

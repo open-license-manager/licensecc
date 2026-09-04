@@ -95,10 +95,10 @@ disk label                      |:heavy_check_mark:| |:heavy_check_mark:|  |:x:|
 disk id                         |:heavy_check_mark:| |:heavy_check_mark:|  |:x:|\ :sup:`1`                |:heavy_check_mark:|
 ip address                      |:heavy_check_mark:| |:heavy_check_mark:|  |:interrobang:|\ :sup:`2`      |:heavy_check_mark:|
 mac address                     |:heavy_check_mark:| |:heavy_check_mark:|  |:interrobang:|\ :sup:`2`      |:heavy_check_mark:|
-cpu number                      |:heavy_check_mark:| |:heavy_check_mark:|  |:heavy_check_mark:|           |:x:|
+cpu model                       |:heavy_check_mark:| |:heavy_check_mark:|  |:heavy_check_mark:|           |:x:|
 process memory                  Planned              Planned               Planned                        Planned
 machine memory                  Planned              Planned               Planned                        Planned
-virtualization type             Planned              Planned               Planned                        Planned
+virtualization type             |:heavy_check_mark:| |:heavy_check_mark:|  |:heavy_check_mark:|           |:heavy_check_mark:|
 concurrent execution            Planned              Planned               Planned                        Planned
 licensed sw version             Planned              Planned               Planned                        Planned
 =============================== ==================== ====================  ============================== ==================== 
@@ -139,8 +139,9 @@ Status of this implementation is tracked in `issue #3 <https://github.com/open-l
 Virtualization type
 ==========================
 Allow the execution of the licensed software only on some type of hardware or virtualized environment 
-eg. only bare to metal, only in virtual machine, only in docker.
-This feature is being implemented. 
+eg. only bare to metal, only in virtual machine, only in a container.
+The license parameter ``virtualization-type`` accepts the values ``NONE``, ``CONTAINER`` and ``VM``;
+if the parameter is absent the limit is not enforced.
 
 Licensed software version
 ===========================

@@ -50,7 +50,8 @@ static FUNCTION_RETURN openHashProvider(BCRYPT_ALG_HANDLE& hash_alg) {
 
 static DWORD hashData(BCRYPT_HASH_HANDLE& hHash, const string& data, PBYTE pbHash, DWORD hashDataLenght) {
 	DWORD status;
-	if (NT_SUCCESS(status = BCryptHashData(hHash, (BYTE*)data.c_str(), (ULONG)data.length(), 0))) {
+	BYTE* pInput = const_cast<BYTE*>(reinterpret_cast<const BYTE*>(data.c_str()));
+	if (NT_SUCCESS(status = BCryptHashData(hHash, pInput, (ULONG)data.length(), 0))) {
 		status = BCryptFinishHash(hHash, pbHash, hashDataLenght, 0);
 	}
 	return status;
@@ -177,7 +178,7 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	vector<BYTE> blob_buffer(total_blob_size);
 
 	// Set up the key blob
-	BCRYPT_RSAKEY_BLOB* pubk_header = (BCRYPT_RSAKEY_BLOB*)blob_buffer.data();
+	BCRYPT_RSAKEY_BLOB* pubk_header = reinterpret_cast<BCRYPT_RSAKEY_BLOB*>(blob_buffer.data());
 	pubk_header->Magic = BCRYPT_RSAPUBLIC_MAGIC;
 	pubk_header->BitLength = (ULONG)key_bitlen;
 	pubk_header->cbPublicExp = (ULONG)exp_size;

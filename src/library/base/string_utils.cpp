@@ -35,7 +35,7 @@ string trim_copy(const string& string_to_trim) {
 
 string toupper_copy(const string& lowercase) {
 	string cp(lowercase);
-	std::transform(cp.begin(), cp.end(), cp.begin(), (int (*)(int))toupper);
+	std::transform(cp.begin(), cp.end(), cp.begin(), static_cast<int (*)(int)>(toupper));
 	return cp;
 }
 

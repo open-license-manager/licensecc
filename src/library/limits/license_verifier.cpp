@@ -18,6 +18,7 @@ LicenseVerifier::LicenseVerifier(const std::vector<LimitVerifierFn>& extra_verif
 #if (ADD_DEFAULT_LIMITS == 1)
 	m_verifiers.push_back(verify_date);
 	m_verifiers.push_back(verify_pc_signature);
+	m_verifiers.push_back(verify_virtualization);
 	m_verifiers.push_back(verify_signature);
 #else
 	if (extra_verifiers.size() == 0) {

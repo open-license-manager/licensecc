@@ -87,7 +87,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 	DWORD dwStatus;
 
 	ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO) * 10;
-	IP_ADAPTER_INFO* pAdapterInfo = (IP_ADAPTER_INFO*)MALLOC(sizeof(IP_ADAPTER_INFO) * 10);
+	IP_ADAPTER_INFO* pAdapterInfo = static_cast<IP_ADAPTER_INFO*>(MALLOC(sizeof(IP_ADAPTER_INFO) * 10));
 
 	if (pAdapterInfo == nullptr) {
 		return FUNC_RET_ERROR;
@@ -100,7 +100,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 	// Incase the buffer was too small, reallocate with the returned dwBufLen
 	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
 		FREE(pAdapterInfo);
-		pAdapterInfo = (IP_ADAPTER_INFO*)MALLOC(ulOutBufLen);
+		pAdapterInfo = static_cast<IP_ADAPTER_INFO*>(MALLOC(ulOutBufLen));
 
 		// Will only fail if buffer cannot be allocated (out of memory)
 		if (pAdapterInfo == nullptr) {

@@ -14,6 +14,7 @@
 #include "../base/string_utils.h"
 #include "../base/logger.h"
 #include "../hw_identifier/hw_identifier_facade.hpp"
+#include "../os/execution_environment.hpp"
 #include "../os/signature_verifier.hpp"
 
 namespace license {
@@ -80,6 +81,32 @@ LCC_EVENT_TYPE verify_pc_signature(const FullLicenseInfo& licInfo, LicenseInfo& 
 		}
 		return hw_identifier::HwIdentifierFacade::validate_pc_signature(client_sig->second);
 	} catch (const std::exception&) {
+		return IDENTIFIER_NOT_AVAILABLE;
+	}
+}
+
+LCC_EVENT_TYPE verify_virtualization(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept {
+	try {
+		const auto virt_type = licInfo.m_limits.find(PARAM_VIRTUALIZATION_TYPE);
+		if (virt_type == licInfo.m_limits.end()) {
+			return LICENSE_OK;
+		}
+		const string required = toupper_copy(trim_copy(virt_type->second));
+		LCC_API_VIRTUALIZATION_SUMMARY required_summary;
+		if (required == "NONE") {
+			required_summary = LCC_API_VIRTUALIZATION_SUMMARY::NONE;
+		} else if (required == "CONTAINER") {
+			required_summary = LCC_API_VIRTUALIZATION_SUMMARY::CONTAINER;
+		} else if (required == "VM") {
+			required_summary = LCC_API_VIRTUALIZATION_SUMMARY::VM;
+		} else {
+			LOG_WARN("Unrecognized %s value [%s]", PARAM_VIRTUALIZATION_TYPE, virt_type->second.c_str());
+			return LICENSE_MALFORMED;
+		}
+		const os::ExecutionEnvironment exec_env;
+		return (exec_env.virtualization() == required_summary) ? LICENSE_OK : IDENTIFIERS_MISMATCH;
+	} catch (const std::exception& ex) {
+		LOG_ERROR("Error verifying virtualization type: %s", ex.what());
 		return IDENTIFIER_NOT_AVAILABLE;
 	}
 }

@@ -32,6 +32,13 @@ LCC_EVENT_TYPE verify_date(const FullLicenseInfo& licInfo, LicenseInfo& out) noe
 LCC_EVENT_TYPE verify_pc_signature(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept;
 
 /**
+ * Verifies that the virtualization type of the current execution environment
+ * matches the one declared in the license (`virtualization-type` parameter,
+ * values NONE, CONTAINER, VM). Licenses without the parameter are accepted.
+ */
+LCC_EVENT_TYPE verify_virtualization(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept;
+
+/**
  * Verifies the cryptographic signature of the license file.
  */
 LCC_EVENT_TYPE verify_signature(const FullLicenseInfo& licInfo, LicenseInfo& out) noexcept;

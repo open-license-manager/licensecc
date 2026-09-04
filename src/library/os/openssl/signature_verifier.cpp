@@ -48,7 +48,7 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	int func_ret = 0;
 	initialize();
 
-	BIO* bio = BIO_new_mem_buf((void*)(pubKey), sizeof(pubKey));
+	BIO* bio = BIO_new_mem_buf(static_cast<const void*>(pubKey), sizeof(pubKey));
 	RSA* rsa = d2i_RSAPublicKey_bio(bio, NULL);
 	if (rsa == NULL) {
 		BIO_free(bio);
@@ -72,10 +72,10 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 	std::vector<unsigned char> buffer(estimated_max_size);
 
 	BIO* b64 = BIO_new(BIO_f_base64());
-	BIO* encoded_signature = BIO_new_mem_buf((const void*)signatureB64.c_str(), signatureB64.size());
+	BIO* encoded_signature = BIO_new_mem_buf(static_cast<const void*>(signatureB64.c_str()), signatureB64.size());
 	BIO* biosig = BIO_push(b64, encoded_signature);
 	BIO_set_flags(biosig, BIO_FLAGS_BASE64_NO_NL);	// Do not use newlines to flush buffer
-	const int decoded = BIO_read(biosig, (void*)buffer.data(), estimated_max_size);
+	const int decoded = BIO_read(biosig, static_cast<void*>(buffer.data()), estimated_max_size);
 	// Can test here if len == decodeLen - if not, then return an error
 	if (decoded <= 0) {
 		BIO_free_all(biosig);
@@ -99,7 +99,7 @@ FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::s
 		return FUNC_RET_ERROR;
 	}
 
-	func_ret = EVP_DigestVerifyUpdate(mdctx, (const void*)stringToVerify.c_str(), stringToVerify.size());
+	func_ret = EVP_DigestVerifyUpdate(mdctx, static_cast<const void*>(stringToVerify.c_str()), stringToVerify.size());
 	if (1 != func_ret) {
 		LOG_ERROR("Error verifying digest %d", func_ret);
 		free_resources(pkey, mdctx);

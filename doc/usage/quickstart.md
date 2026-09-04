@@ -152,7 +152,6 @@ install/
 │       ├── Licensecc.hpp              # Public C++ API
 │       ├── LocatorStrategy.hpp
 │       ├── datatypes_cpp.hpp          # C++ data types (FullLicenseInfo, LimitVerifierFn)
-│       ├── EventRegistry.h
 │       └── MyApp/
 │           ├── licensecc_properties.h
 │           └── public_key.h

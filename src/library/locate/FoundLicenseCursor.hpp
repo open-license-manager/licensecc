@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include <licensecc/EventRegistry.h>
+#include "../base/EventRegistry.h"
 #include "LocatorFactory.hpp"
 #include <licensecc/LocatorStrategy.hpp>
 

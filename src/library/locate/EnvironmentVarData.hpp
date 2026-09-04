@@ -19,7 +19,7 @@ private:
 
 public:
 	EnvironmentVarData();
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistr);
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out);
 	const virtual std::string retrieve_license_content(const std::string& licenseLocation) const;
 	virtual std::unique_ptr<LocatorStrategy> clone() const override;
 	virtual ~EnvironmentVarData();

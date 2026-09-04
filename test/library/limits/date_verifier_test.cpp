@@ -5,7 +5,6 @@
 #include <licensecc_properties.h>
 #include <licensecc/datatypes.h>
 
-#include <licensecc/EventRegistry.h>
 #include "../../../src/library/LicenseParser.hpp"
 #include "../../../src/library/limits/limit_verifiers.hpp"
 

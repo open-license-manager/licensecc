@@ -17,7 +17,7 @@
 #include <licensecc_properties_test.h>
 
 #include "../../src/library/os/os.h"
-#include <licensecc/EventRegistry.h>
+#include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/locate/ApplicationFolder.hpp"
 #include "../../src/library/locate/EnvironmentVarLocation.hpp"
 #include "../../src/library/locate/ExternalDefinition.hpp"
@@ -39,8 +39,9 @@ public:
 	TestLocatorStrategy(const std::string& location, const std::string& data)
 		: LocatorStrategy("test"), location_(location), data_(data) {}
 
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) override {
-		return {location_};
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out) override {
+		license_location_out.push_back(location_);
+		return LICENSE_FOUND;
 	}
 
 	virtual const std::string retrieve_license_content(const std::string& location) const override { return data_; }
@@ -54,8 +55,9 @@ class TestLocatorEmptyStrategy : public LocatorStrategy {
 public:
 	TestLocatorEmptyStrategy() : LocatorStrategy("test_empty") {}
 
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) override {
-		return std::vector<std::string>();
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out) override {
+		(void)license_location_out;
+		return LICENSE_FILE_NOT_FOUND;
 	}
 
 	virtual const std::string retrieve_license_content(const std::string& location) const override { return ""; }

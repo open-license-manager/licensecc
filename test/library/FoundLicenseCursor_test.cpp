@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include <licensecc/EventRegistry.h>
+#include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/locate/LocatorFactory.hpp"
 #include <licensecc/LocatorStrategy.hpp>
 #include "../../src/library/locate/FoundLicenseCursor.hpp"
@@ -29,8 +29,9 @@ public:
 	StubStrategy(const std::vector<std::string>& locations, const std::string& data)
 		: LocatorStrategy("stub"), locations_(locations), data_(data) {}
 
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) override {
-		return locations_;
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out) override {
+		license_location_out = locations_;
+		return locations_.empty() ? LICENSE_FILE_NOT_FOUND : LICENSE_FOUND;
 	}
 
 	virtual const std::string retrieve_license_content(const std::string& location) const override { return data_; }

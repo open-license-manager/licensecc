@@ -43,7 +43,7 @@ namespace into their code.
 ### Exceptions across the C API boundary
 
 The library throws `std::logic_error` / `std::invalid_argument` / `std::runtime_error`
-internally (hardware identification, date parsing, file I/O). That's fine for
+internally (hardware identification, file I/O). That's fine for
 internal C++ code, but every function exported through the C API
 (`include/licensecc/licensecc.h`, i.e. `identify_pc`, `acquire_license`,
 `confirm_license`, `release_license`) is a hard boundary: **no exception may cross
@@ -52,8 +52,7 @@ boundary, where an escaping exception is undefined behavior, not a catchable err
 - `Licensecc::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
   and logs/degrades gracefully — this is the pattern to copy.
 - `Licensecc::acquire_license` currently does **not** wrap its call chain
-  (`LicenseParser::parseLicense`, `CompositeLimitVerifier::verify_limit`) in a try/catch, even though
-  those paths can throw. Don't replicate this gap in new code — any new logic
+  ( `CompositeLimitVerifier::verify_limit`) in a try/catch, even though those paths can throw. Don't replicate this gap in new code — any new logic
   reachable from a C API entry point needs its own top-level `try/catch`, and if
   you're touching `acquire_license`, wrapping it is an in-scope fix, not scope creep.
 - Do not suggest throwing exceptions in the generated code. Suggest returning error codes instead, and let the caller decide how to handle them. If you find opportunity refactor code that throws exceptions to return error codes instead (no separate PR).

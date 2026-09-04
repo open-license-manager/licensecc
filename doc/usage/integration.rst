@@ -82,7 +82,6 @@ The directory structure created by ``make install`` looks like this:
       │       ├── Licensecc.hpp                   <--- C++ API
       │       ├── LocatorStrategy.hpp
       │       ├── datatypes_cpp.hpp               <--- C++ data types (``FullLicenseInfo``, ``LimitVerifierFn``)
-      │       ├── EventRegistry.h
       │       └── <<PROJECT_NAME>>
       │           ├── licensecc_properties.h
       │           └── public_key.h

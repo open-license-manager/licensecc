@@ -10,6 +10,8 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 ##                             required and cannot be disabled. On Windows, when disabled,
 ##                             the Windows Crypto API (BCrypt) is used instead. Default OFF
 ##                             on Windows only.
+## OPENSSL_USE_STATIC_LIBS	   Link against the static or dynamic version of openssl libraries
+##                             Default is to use the static version.
 ## BOOST_ROOT                  Hint for a path to the Boost installation. If not set, CMake
 ##                             will try to find Boost in the system paths. Boost is used
 ##                             only by the tests and the inspector, never by liblicensecc.

@@ -22,10 +22,14 @@ FoundLicenseCursor::FoundLicenseCursor(const std::vector<std::unique_ptr<Locator
 
 void FoundLicenseCursor::advance_to_next_valid() {
 	while (current_strategy_idx < active_strategies.size() && current_locations.empty()) {
-		current_locations = active_strategies[current_strategy_idx]->license_locations(event_registry);
+		const std::string strategy_name = active_strategies[current_strategy_idx]->get_strategy_name();
+		const LCC_EVENT_TYPE result = active_strategies[current_strategy_idx]->license_locations(current_locations);
 		if (current_locations.empty()) {
+			event_registry.addEvent(result, strategy_name.c_str());
 			current_strategy_idx++;
 			current_location_idx = 0;
+		} else {
+			event_registry.addEvent(LICENSE_SPECIFIED, strategy_name.c_str());
 		}
 	}
 }
@@ -33,7 +37,7 @@ void FoundLicenseCursor::advance_to_next_valid() {
 FoundLicenseCursor FoundLicenseCursor::begin() {
 	FoundLicenseCursor begin_cursor(active_strategies, event_registry);
 	begin_cursor.advance_to_next_valid();
-	if (begin_cursor.current_strategy_idx == active_strategies.size()) {  // if it's already at the end...
+	if (begin_cursor.current_strategy_idx == active_strategies.size() && active_strategies.empty()) {
 		event_registry.addEvent(LICENSE_FILE_NOT_FOUND);
 	}
 	return begin_cursor;
@@ -62,7 +66,7 @@ RawLicenseData FoundLicenseCursor::operator*() const {
 		const std::string cur_loc = current_locations[current_location_idx];
 		const std::string data = active_strategies[current_strategy_idx]->retrieve_license_content(cur_loc);
 		event_registry.setCurrentLicenseId(cur_loc);
-		event_registry.addEvent(LICENSE_FOUND);
+		event_registry.addEvent(LICENSE_FOUND, cur_loc);
 		return RawLicenseData(cur_loc, data);
 	}
 	return RawLicenseData("", "");

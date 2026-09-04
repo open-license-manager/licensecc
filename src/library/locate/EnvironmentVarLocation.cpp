@@ -19,8 +19,8 @@ EnvironmentVarLocation::EnvironmentVarLocation() : LocatorStrategy("EnvironmentV
 
 EnvironmentVarLocation::~EnvironmentVarLocation() {}
 
-const vector<string> EnvironmentVarLocation::license_locations(EventRegistry& eventRegistry) {
-	vector<string> licenseFileFoundWithEnvVariable;
+const LCC_EVENT_TYPE EnvironmentVarLocation::license_locations(std::vector<std::string>& license_location_out) {
+	LCC_EVENT_TYPE result = ENVIRONMENT_VARIABLE_NOT_DEFINED;
 
 	const string varName(LCC_LICENSE_LOCATION_ENV_VAR);
 	if (varName.length() > 0) {
@@ -28,13 +28,11 @@ const vector<string> EnvironmentVarLocation::license_locations(EventRegistry& ev
 		char* env_var_value = getenv(LCC_LICENSE_LOCATION_ENV_VAR);
 		if (env_var_value != nullptr && env_var_value[0] != '\0') {
 			const vector<string> declared_positions = license::split_string(string(env_var_value), ';');
-			licenseFileFoundWithEnvVariable =
-				license::filter_existing_files(declared_positions, eventRegistry, LCC_LICENSE_LOCATION_ENV_VAR);
-		} else {
-			eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED);
+			license_location_out = license::filter_existing_files(declared_positions);
+			result = license_location_out.empty() ? LICENSE_FILE_NOT_FOUND : LICENSE_FOUND;
 		}
 	}
-	return licenseFileFoundWithEnvVariable;
+	return result;
 }
 
 std::unique_ptr<LocatorStrategy> EnvironmentVarLocation::clone() const {

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <cstdio>
 
-#include <licensecc/EventRegistry.h>
+#include "../../src/library/base/EventRegistry.h"
 
 namespace test {
 

@@ -94,4 +94,4 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 Use [discussions](https://github.com/open-license-manager/licensecc/discussions) for questions and help. Open an [issue](https://github.com/open-license-manager/licensecc/issues) for bug reports and feature requests. 
 See the [contribution guidelines](CONTRIBUTING.md) before reporting.
 
-There are infinite ways you can contribute. A special thanks to `Quaoar Workshop` for creating [a video](https://youtu.be/BHb-p-4aaZE?si=pdlkgZX5WmWivhwb) about this library. Please note that they independently produced this content (we are not affiliated with them). BTW the video provides a nice introduction if you want to get started.
+There are infinite ways you can contribute. A special thanks to `Quaoar Workshop` for creating [a video](https://youtu.be/BHb-p-4aaZE?si=pdlkgZX5WmWivhwb) about this library. Please note that they independently produced this content (we are not affiliated with them). The video provides a nice introduction if you want to get started (it is for version 2.0.0 but most of the ideas are still valid).

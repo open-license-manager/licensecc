@@ -82,14 +82,15 @@ Below a list of some useful cmake configurations:
 ============================== ====================================================================================================
 Definition name                Description
 ============================== ====================================================================================================
--DBOOST_ROOT=C:\..             Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by ``liblicensecc`` itself. If cmake is reporting Boost not found consider updating cmake.
--DBUILD_SHARED_LIBS=OFF        Additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
--DCMAKE_BUILD_TYPE=Release     Build configuration, use Release for a release build (should be used as default).
--DCMAKE_INSTALL_PREFIX=C:\XX   Folder where to install libraries and headers.
--DLCC_PROJECT_NAME=<name>      Name of the software you want to issue a license for. Defaults to "DEFAULT".
--DOPENSSL_ROOT_DIR=C:\..       (Optional) Folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64). Only used when OpenSSL support is enabled.
--DSTATIC_RUNTIME=ON            Link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
--DUSE_OPENSSL=OFF              Enable/Disable OpenSSL support (search for and link against OpenSSL). Default OFF on Windows: the Windows crypto APIs are used instead, no additional feature from OpenSSL. If enabled and OpenSSL is not found the build fails.
+BOOST_ROOT=C:\..               Folder where Boost is installed. Not needed if Boost is installed with the system package manager. Boost is used only by the tests and the inspector, never by ``liblicensecc`` itself. If cmake is reporting Boost not found consider updating cmake.
+BUILD_SHARED_LIBS=OFF          Additionally build the shared (DLL) version of the library. Requires -DSTATIC_RUNTIME=OFF.
+CMAKE_BUILD_TYPE=Release       Build configuration, use Release for a release build (should be used as default).
+CMAKE_INSTALL_PREFIX=C:\XX     Folder where to install libraries and headers.
+LCC_PROJECT_NAME=<name>        Name of the software you want to issue a license for. Defaults to "DEFAULT".
+OPENSSL_ROOT_DIR=C:\..         (Optional) Folder where OpenSSL is installed (eg. C:\Program Files\OpenSSL-Win64). Only used when OpenSSL support is enabled.
+STATIC_RUNTIME=ON              Link statically to the standard and runtime support libraries (compiler flag /MT). Default ON.
+USE_OPENSSL=OFF                Enable/Disable OpenSSL support (search for and link against OpenSSL). Default OFF on Windows: the Windows crypto APIs are used instead, no additional feature from OpenSSL. If enabled and OpenSSL is not found the build fails.
+OPENSSL_USE_STATIC_LIBS=ON     Link against the static or dynamic version of openssl libraries (if OpenSSL selected) 
 ============================== ====================================================================================================
 
 Compile and test 

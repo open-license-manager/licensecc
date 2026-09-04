@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "../base/base64.h"
-#include <licensecc/EventRegistry.h>
 #include "../base/string_utils.h"
 
 namespace license {
@@ -26,22 +25,19 @@ EnvironmentVarData::EnvironmentVarData() : LocatorStrategy("EnvironmentVarData")
 
 EnvironmentVarData::~EnvironmentVarData() {}
 
-const vector<string> EnvironmentVarData::license_locations(EventRegistry& eventRegistry) {
-	vector<string> diskFiles;
+const LCC_EVENT_TYPE EnvironmentVarData::license_locations(std::vector<std::string>& license_location_out) {
 	char* env_var_value = getenv(LCC_LICENSE_DATA_ENV_VAR);
 	if (env_var_value != nullptr && env_var_value[0] != '\0') {
-		eventRegistry.addEvent(LICENSE_SPECIFIED, LCC_LICENSE_DATA_ENV_VAR);
 		FILE_FORMAT licenseFormat = identify_format(env_var_value);
 		if (licenseFormat == UNKNOWN) {
-			eventRegistry.addEvent(LICENSE_MALFORMED, LCC_LICENSE_DATA_ENV_VAR);
+			return LICENSE_MALFORMED;
 		} else {
-			diskFiles.push_back(LCC_LICENSE_DATA_ENV_VAR);
+			license_location_out.push_back(LCC_LICENSE_DATA_ENV_VAR);
 			isBase64 = (licenseFormat == BASE64);
+			return LICENSE_FOUND;
 		}
-	} else {
-		eventRegistry.addEvent(ENVIRONMENT_VARIABLE_NOT_DEFINED, LCC_LICENSE_DATA_ENV_VAR);
 	}
-	return diskFiles;
+	return ENVIRONMENT_VARIABLE_NOT_DEFINED;
 }
 
 const std::string EnvironmentVarData::retrieve_license_content(const std::string& licenseLocation) const {

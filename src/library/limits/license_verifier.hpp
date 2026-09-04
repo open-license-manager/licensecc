@@ -12,8 +12,8 @@
 
 #include <licensecc/datatypes.h>
 #include <licensecc/datatypes_cpp.hpp>
-#include <licensecc/EventRegistry.h>
 
+#include "../base/EventRegistry.h"
 #include "../base/base.h"
 
 namespace license {

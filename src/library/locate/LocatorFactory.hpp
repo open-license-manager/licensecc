@@ -11,7 +11,6 @@
 
 #include "../base/base.h"
 #include <licensecc/LocatorStrategy.hpp>
-#include <licensecc/EventRegistry.h>
 
 namespace license {
 namespace locate {

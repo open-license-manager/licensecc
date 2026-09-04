@@ -30,8 +30,7 @@ RSA/SHA256 verification as security-critical:
 
 - `include/licensecc/` — public API headers: the C API (`licensecc.h`,
   `datatypes.h`) and the C++ API (`Licensecc.hpp` plus its public dependencies
-  `LocatorStrategy.hpp`, `datatypes_cpp.hpp`, `EventRegistry.h`,
-  `datatypes_cpp.hpp`).
+  `LocatorStrategy.hpp`, `datatypes_cpp.hpp`).
 - `src/library/license.cpp` — thin C API surface. `identify_pc` and `acquire_license`
   just delegate to `Licensecc`. **Do not change these function signatures.**
 - `src/library/Licensecc.{hpp,cpp}` — `Licensecc`: the actual entry point that

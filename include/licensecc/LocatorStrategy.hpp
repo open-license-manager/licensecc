@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <licensecc/EventRegistry.h>
+#include <licensecc/datatypes.h>
 
 namespace license {
 namespace locate {
@@ -16,10 +16,14 @@ namespace locate {
  *
  * Usage:
  * <ol>
- * <li> call licenseLocations to get a list of available locations (the returned format is defined by the class, it's
- * usually the file name)</li> <li> iterate over the returned vector and call retrieveLicense to get the content of the
- * license</li>
+ * <li> call license_locations to get a list of available locations (the returned format is defined by the class, it's
+ * usually the file name)</li> <li> iterate over the returned vector and call retrieve_license_content to get the
+ * content of the license</li>
  * </ol>
+ *
+ * Strategies do not register events into the EventRegistry: they return a status
+ * code and fill the out parameter with the locations found. Registering the
+ * outcome into the EventRegistry is the responsibility of the FoundLicenseCursor.
  */
 class LocatorStrategy {
 protected:
@@ -30,11 +34,13 @@ public:
 	const virtual std::string get_strategy_name() const { return m_strategy_name; }
 	/**
 	 * Try to find licenses
-	 * @param eventRegistry
+	 * @param license_location_out
+	 * Output parameter filled with a list of identifiers for call retrieve_license_content.
 	 * @return
-	 * A list of identifiers for call retrieve_license_content.
+	 * LCC_EVENT_TYPE status. LICENSE_FOUND (or LICENSE_OK) when at least one location is found,
+	 * otherwise the specific failure code.
 	 */
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry) = 0;
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out) = 0;
 
 	/**
 	 * Default implementation is to retrieve the license from file.

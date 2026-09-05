@@ -36,14 +36,14 @@ class LicenseVerifier;
  */
 class Licensecc {
 private:
-	const std::vector<std::unique_ptr<locate::LocatorStrategy>>* m_strategies;
-	std::unique_ptr<LicenseVerifier> m_verifier;
+	const std::vector<locate::LocatorStrategy> m_strategies;
+	const std::unique_ptr<LicenseVerifier> m_verifier;
 
 public:
 	/**
 	 * @brief
 	 */
-	Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in = nullptr,
+	Licensecc(const std::vector<locate::LocatorStrategy>& custom_strategies = std::vector<locate::LocatorStrategy>(),
 			  const std::vector<LimitVerifierFn>& extra_verifiers = std::vector<LimitVerifierFn>());
 
 	/**

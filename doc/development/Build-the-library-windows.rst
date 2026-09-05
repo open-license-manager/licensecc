@@ -2,7 +2,7 @@
 Build - Windows
 #######################################
 
-This page describes how to build the library under windows with licensecc 2.1.0.
+This page describes how to build the library under windows with licensecc 2.5.0.
 
 For quick compilation instructions see the `README.md <https://github.com/open-license-manager/licensecc#how-to-build>`_ file in the repository root. This page provides detailed, platform-specific instructions for Windows.
 
@@ -19,7 +19,7 @@ Supported Visual Studio versions are:
 
 Automated tests run on Windows Server 2022, Windows Server 2026 and Windows 11 (arm64).
 
-Libraries supported/tested in 2.1.0 (Windows x64):
+Libraries supported/tested in 2.5.0 (Windows x64):
 
 * CMake: >= 3.16.
 * Boost: tested with 1.64.0, 1.78.0 and 1.90.0. Boost is only needed to run the tests
@@ -137,7 +137,7 @@ cryptography APIs are used):
 
 MINGW 
 *****************
-Mingw is not tested (=unsupported) in 2.1.0 but it was by version 2.0 and it may be in future. 
+Mingw is not tested (=unsupported) in 2.5.0 but it was by version 2.0 and it may be in future. 
 This section is a placeholder from the old release (BTW if it works please comment in the forum)
 
 .. TODO::

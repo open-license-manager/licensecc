@@ -5,8 +5,8 @@
 #├── bin
 #│   ├── <<PROJECT_NAME>>
 #│   │   └── lccinspector
-#│   ├── lccgen -> lccgen-2.1.0
-#│   └── lccgen-2.1.0
+#│   ├── lccgen -> lccgen-2.5.0
+#│   └── lccgen-2.5.0
 #├── include
 #│   └── licensecc
 #│       ├── datatypes.h

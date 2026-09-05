@@ -43,7 +43,7 @@ submodule). This usually makes your build a bit faster.
 
 .. code-block:: cmake
 
-   find_package(licensecc 2.1.0 REQUIRED)
+   find_package(licensecc 2.5.0 REQUIRED)
    add_executable(my_app src/main.cpp)
    target_link_libraries(my_app PRIVATE licensecc::licensecc)
 
@@ -73,8 +73,8 @@ The directory structure created by ``make install`` looks like this:
       ├── bin
       │   ├── <<PROJECT_NAME>>                        <--- "DEFAULT"
       │   │   └── lccinspector
-      │   ├── lccgen -> lccgen-2.1.0
-      │   └── lccgen-2.1.0
+      │   ├── lccgen -> lccgen-2.5.0
+      │   └── lccgen-2.5.0
       ├── include
       │   └── licensecc
       │       ├── datatypes.h                     <--- C API    

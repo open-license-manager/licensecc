@@ -49,7 +49,7 @@ IF(POLICY CMP0144)
 ENDIF(POLICY CMP0144)
 cmake_policy(SET CMP0048 NEW)
 
-project (licensecc VERSION 2.1.0 LANGUAGES CXX DESCRIPTION "C++ copy protection and licensing library")
+project (licensecc VERSION 2.5.0 LANGUAGES CXX DESCRIPTION "C++ copy protection and licensing library")
 SET(licensecc_SHORT_LICENSE "BSD Software License")
 
 set(CMAKE_CXX_STANDARD 11)

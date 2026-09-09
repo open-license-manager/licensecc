@@ -84,12 +84,10 @@ static LCC_EVENT_TYPE verifyLicense(const string& fname) {
 }
 
 int main(int argc, char* argv[]) {
-	char hw_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
-	size_t bufSize = LCC_API_PC_IDENTIFIER_SIZE + 1;
+	char hw_identifier[LCC_API_PC_IDENTIFIER_SIZE];
 	ExecutionEnvironmentInfo exec_env_info;
 	for (const auto& x : stringByStrategyId) {
-		if (identify_pc(static_cast<LCC_API_HW_IDENTIFICATION_STRATEGY>(x.first), hw_identifier, &bufSize,
-						&exec_env_info)) {
+		if (identify_pc(static_cast<LCC_API_HW_IDENTIFICATION_STRATEGY>(x.first), hw_identifier, &exec_env_info)) {
 			std::cout << x.second << ':' << hw_identifier << std::endl;
 		} else {
 			std::cout << x.second << ": NA" << endl;

@@ -36,14 +36,14 @@ class LicenseVerifier;
  */
 class Licensecc {
 private:
-	const std::vector<locate::LocatorStrategy> m_strategies;
-	const std::unique_ptr<LicenseVerifier> m_verifier;
+	const std::vector<locate::LocatorStrategy>* m_strategies;
+	std::unique_ptr<LicenseVerifier> m_verifier;
 
 public:
 	/**
 	 * @brief
 	 */
-	Licensecc(const std::vector<locate::LocatorStrategy>& custom_strategies = std::vector<locate::LocatorStrategy>(),
+	Licensecc(const std::vector<locate::LocatorStrategy>* strategies_in = nullptr,
 			  const std::vector<LimitVerifierFn>& extra_verifiers = std::vector<LimitVerifierFn>());
 
 	/**
@@ -74,12 +74,11 @@ public:
 	 * specified identification strategy.
 	 *
 	 * @param hw_id_method Strategy to use for identification
-	 * @param identifier_out Buffer to receive the identifier string
-	 * @param buf_size Size of the output buffer (input/output parameter)
+	 * @param identifier_out Buffer of LCC_API_PC_IDENTIFIER_SIZE characters receiving the identifier string
 	 * @param execution_environment_info Optional output for execution environment info
 	 * @return true if successful, false otherwise
 	 */
-	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
+	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char identifier_out[LCC_API_PC_IDENTIFIER_SIZE],
 					 ExecutionEnvironmentInfo* execution_environment_info) noexcept;
 };
 

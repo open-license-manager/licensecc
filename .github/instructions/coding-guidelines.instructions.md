@@ -50,12 +50,20 @@ internal C++ code, but every function exported through the C API
 it**, since callers may be linking from C, a different runtime, or across a DLL
 boundary, where an escaping exception is undefined behavior, not a catchable error.
 - `Licensecc::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
-  and logs/degrades gracefully — this is the pattern to copy.
-- `Licensecc::acquire_license` currently does **not** wrap its call chain
-  ( `CompositeLimitVerifier::verify_limit`) in a try/catch, even though those paths can throw. Don't replicate this gap in new code — any new logic
-  reachable from a C API entry point needs its own top-level `try/catch`, and if
-  you're touching `acquire_license`, wrapping it is an in-scope fix, not scope creep.
-- Do not suggest throwing exceptions in the generated code. Suggest returning error codes instead, and let the caller decide how to handle them. If you find opportunity refactor code that throws exceptions to return error codes instead (no separate PR).
+  and logs/degrades gracefully.
+- `Licensecc::acquire_license` has **no** top-level `try/catch` by design. Every
+  logical error must instead be handled at the leaf functions it reaches: return a
+  `FUNCTION_RETURN` / `LCC_EVENT_TYPE` error code, or be `noexcept` and catch your
+  own exceptions (the limit verifiers in `src/library/limits/limit_verifiers.cpp`
+  are the pattern to copy). Never add a top-level `try/catch` to `acquire_license`.
+  Known leaves already refactored to error codes (do not reintroduce throws):
+  `base/file_utils.cpp` `get_file_contents`, `base/string_utils.cpp` `identify_format`.
+- `std::bad_alloc` (OOM) is intentionally left uncaught: an allocation failure
+  propagating through a `noexcept` entry point calls `std::terminate()`, which is
+  acceptable.
+- Do not suggest throwing exceptions in library code. Prefer returning error codes
+  and let the caller decide how to handle them. If you find code that throws, refactor
+  it to return an error code instead (no separate PR).
 
 ### Smart pointer construction
 

@@ -142,9 +142,8 @@ A typical usage pattern:
        // License is valid -- proceed
    } else if (result == LICENSE_FILE_NOT_FOUND) {
        // No license found -- print hardware identifier so the user can request one
-       char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
-       size_t pc_id_sz = sizeof(pc_identifier);
-       if (identify_pc(STRATEGY_DEFAULT, pc_identifier, &pc_id_sz, nullptr)) {
+       char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE];
+       if (identify_pc(STRATEGY_DEFAULT, pc_identifier, nullptr)) {
            std::cout << "Hardware ID: " << pc_identifier << std::endl;
        }
        exit(1);

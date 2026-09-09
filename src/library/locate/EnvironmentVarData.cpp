@@ -40,14 +40,20 @@ const LCC_EVENT_TYPE EnvironmentVarData::license_locations(std::vector<std::stri
 	return ENVIRONMENT_VARIABLE_NOT_DEFINED;
 }
 
-const std::string EnvironmentVarData::retrieve_license_content(const std::string& licenseLocation) const {
-	string env_val = getenv(licenseLocation.c_str());
+const LCC_EVENT_TYPE EnvironmentVarData::retrieve_license_content(const std::string& licenseLocation,
+																  std::string& content_out) const {
+	const char* env_val = getenv(licenseLocation.c_str());
+	if (env_val == nullptr || env_val[0] == '\0') {
+		content_out.clear();
+		return LICENSE_FILE_NOT_FOUND;
+	}
 	if (isBase64) {
 		vector<uint8_t> data = unbase64(env_val, true);
-		string str = string(reinterpret_cast<char*>(data.data()));
-		return str;
+		content_out = string(reinterpret_cast<char*>(data.data()));
+	} else {
+		content_out = env_val;
 	}
-	return env_val;
+	return LICENSE_FOUND;
 }
 
 std::unique_ptr<LocatorStrategy> EnvironmentVarData::clone() const {

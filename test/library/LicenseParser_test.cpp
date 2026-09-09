@@ -31,7 +31,8 @@ BOOST_AUTO_TEST_CASE(read_single_file) {
 	EventRegistry registry;
 	registry.addEvent(LCC_EVENT_TYPE::LICENSE_FOUND, location);
 	LicenseParser licenseParser(registry);
-	string license = get_file_contents(location.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH);
+	string license;
+	get_file_contents(location.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH, license);
 	cout << license << endl;
 	locate::RawLicenseData rawLicense(location, license);
 	// the product name is always converted to uppercase (case insensitive.)
@@ -49,7 +50,9 @@ BOOST_AUTO_TEST_CASE(product_not_licensed) {
 	EventRegistry registry;
 	registry.addEvent(LCC_EVENT_TYPE::LICENSE_FOUND, location);
 	LicenseParser licenseParser(registry);
-	locate::RawLicenseData rawLicense(location, get_file_contents(location.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH));
+	string license_content;
+	get_file_contents(location.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH, license_content);
+	locate::RawLicenseData rawLicense(location, license_content);
 	const vector<FullLicenseInfo> licenseInfos = licenseParser.parseLicense("NOT-A-PRODUCT", rawLicense);
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
 	registry.turnWarningsIntoErrors();

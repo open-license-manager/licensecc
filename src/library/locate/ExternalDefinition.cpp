@@ -49,20 +49,20 @@ const LCC_EVENT_TYPE ExternalDefinition::license_locations(std::vector<std::stri
 	return result;
 }
 
-const std::string ExternalDefinition::retrieve_license_content(const std::string& licenseLocation) const {
+const LCC_EVENT_TYPE ExternalDefinition::retrieve_license_content(const std::string& licenseLocation,
+																  std::string& content_out) const {
 	if (licenseLocation == get_strategy_name()) {
 		string licData(m_location->licenseData, mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 		if (m_location->license_data_type == LICENSE_ENCODED) {
 			// FIXME what if license content is not base64
 			vector<uint8_t> raw = unbase64(licData, true);
-			string str = string(reinterpret_cast<char*>(raw.data()));
-			return str;
+			content_out = string(reinterpret_cast<char*>(raw.data()));
 		} else {
-			return licData;
+			content_out = licData;
 		}
-	} else {
-		return LocatorStrategy::retrieve_license_content(licenseLocation);
+		return LICENSE_FOUND;
 	}
+	return LocatorStrategy::retrieve_license_content(licenseLocation, content_out);
 }
 
 std::unique_ptr<LocatorStrategy> ExternalDefinition::clone() const {

@@ -48,10 +48,14 @@ public:
 	 * @param licenseLocationId
 	 * 	String that identifies the license. It is usually the file name
 	 * 	but can be whatever is understood by the class
+	 * @param license_content_out
+	 * 	Filled with the license data (INI format) on success.
 	 * @return
-	 * 	a string containing the license data in INI format.
+	 * 	LICENSE_FOUND when the license content was successfully retrieved,
+	 * 	LICENSE_FILE_NOT_FOUND otherwise.
 	 */
-	const virtual std::string retrieve_license_content(const std::string& licenseLocationId) const;
+	const virtual LCC_EVENT_TYPE retrieve_license_content(const std::string& licenseLocationId,
+														  std::string& license_content_out) const;
 
 	virtual std::unique_ptr<LocatorStrategy> clone() const = 0;
 	inline virtual ~LocatorStrategy() {}

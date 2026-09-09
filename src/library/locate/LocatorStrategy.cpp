@@ -14,8 +14,11 @@ namespace license {
 namespace locate {
 using namespace std;
 
-const string LocatorStrategy::retrieve_license_content(const string& licenseLocation) const {
-	return get_file_contents(licenseLocation.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH);
+const LCC_EVENT_TYPE LocatorStrategy::retrieve_license_content(const string& licenseLocation,
+															   string& license_content_out) const {
+	const FUNCTION_RETURN ret =
+		get_file_contents(licenseLocation.c_str(), LCC_API_MAX_LICENSE_DATA_LENGTH, license_content_out);
+	return ret == FUNC_RET_OK ? LICENSE_FOUND : LICENSE_FILE_NOT_FOUND;
 }
 
 }  // namespace locate

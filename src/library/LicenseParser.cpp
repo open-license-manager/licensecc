@@ -42,6 +42,9 @@ std::vector<FullLicenseInfo> LicenseParser::parseLicense(const std::string& prod
 	std::vector<FullLicenseInfo> licenseInfoOut;
 	const std::string& license = rawLicense.data;
 	const std::string& locationId = rawLicense.location_id;
+	if (license.empty()) {
+		return licenseInfoOut;
+	}
 	const std::string product_up = toupper_copy(product);
 	const char* productNamePtr = product_up.c_str();
 	CSimpleIniA ini;

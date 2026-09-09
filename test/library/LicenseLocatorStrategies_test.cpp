@@ -74,7 +74,10 @@ BOOST_AUTO_TEST_CASE(read_license_near_module) {
 		string currentLocation = licenseInfos[0];
 		BOOST_CHECK_MESSAGE(equivalent(path(referenceLicenseFileName), path(currentLocation)),
 							"file " + currentLocation + "found at expected location");
-		string licenseRealContent = applicationFolder.retrieve_license_content(currentLocation);
+		string licenseRealContent;
+		const LCC_EVENT_TYPE retrieve_ret =
+			applicationFolder.retrieve_license_content(currentLocation, licenseRealContent);
+		BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 		src.seekg(0, ios::beg);
 		std::string referenceContent((std::istreambuf_iterator<char>(src)), std::istreambuf_iterator<char>());
 		BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
@@ -102,7 +105,10 @@ BOOST_AUTO_TEST_CASE(external_definition) {
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
 	string currentLocation = licenseInfos[0];
 	BOOST_CHECK_MESSAGE(string(MOCK_LICENSE).compare(currentLocation) == 0, "file found at expected location");
-	string licenseRealContent = externalDefinition.retrieve_license_content(currentLocation);
+	string licenseRealContent;
+	const LCC_EVENT_TYPE retrieve_ret =
+		externalDefinition.retrieve_license_content(currentLocation, licenseRealContent);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
 }
 
@@ -142,7 +148,10 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
 	string currentLocation = licenseInfos[0];
 	BOOST_CHECK_MESSAGE(string(MOCK_LICENSE).compare(currentLocation) == 0, "file found at expected location");
-	string licenseRealContent = envVarLocationStrategy.retrieve_license_content(currentLocation);
+	string licenseRealContent;
+	const LCC_EVENT_TYPE retrieve_ret =
+		envVarLocationStrategy.retrieve_license_content(currentLocation, licenseRealContent);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
 	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }

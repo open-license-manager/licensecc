@@ -10,10 +10,12 @@
 #include <string>
 #include <vector>
 
+#include "base.h"
+
 namespace license {
 
 std::vector<std::string> filter_existing_files(const std::vector<std::string>& fileList);
-std::string get_file_contents(const char* filename, size_t max_size);
+FUNCTION_RETURN get_file_contents(const char* filename, size_t max_size, std::string& contents_out);
 std::string remove_extension(const std::string& path);
 
 } /* namespace license */

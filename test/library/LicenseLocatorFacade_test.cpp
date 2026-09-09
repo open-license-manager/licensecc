@@ -44,7 +44,11 @@ public:
 		return LICENSE_FOUND;
 	}
 
-	virtual const std::string retrieve_license_content(const std::string& location) const override { return data_; }
+	virtual const LCC_EVENT_TYPE retrieve_license_content(const std::string& location,
+														  std::string& content_out) const override {
+		content_out = data_;
+		return LICENSE_FOUND;
+	}
 
 	std::unique_ptr<LocatorStrategy> clone() const override {
 		return std::unique_ptr<LocatorStrategy>(new TestLocatorStrategy(location_, data_));
@@ -60,7 +64,11 @@ public:
 		return LICENSE_FILE_NOT_FOUND;
 	}
 
-	virtual const std::string retrieve_license_content(const std::string& location) const override { return ""; }
+	virtual const LCC_EVENT_TYPE retrieve_license_content(const std::string& location,
+														  std::string& content_out) const override {
+		content_out.clear();
+		return LICENSE_FILE_NOT_FOUND;
+	}
 
 	std::unique_ptr<LocatorStrategy> clone() const override {
 		return std::unique_ptr<LocatorStrategy>(new TestLocatorEmptyStrategy());

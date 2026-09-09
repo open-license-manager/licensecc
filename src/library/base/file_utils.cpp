@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <cstring>
 #include "file_utils.hpp"
+#include "logger.h"
 
 namespace license {
 using namespace std;
@@ -29,20 +30,20 @@ vector<string> filter_existing_files(const vector<string>& fileList) {
 	return existingFiles;
 }
 
-string get_file_contents(const char* filename, size_t max_size) {
-	string contents;
+FUNCTION_RETURN get_file_contents(const char* filename, size_t max_size, std::string& contents_out) {
+	contents_out.clear();
 	ifstream in(filename, std::ios::binary);
-	if (in) {
-		size_t index = (size_t)in.seekg(0, ios::end).tellg();
-		size_t limited_size = min(index, max_size);
-		contents.resize(limited_size);
-		in.seekg(0, ios::beg);
-		in.read(&contents[0], limited_size);
-		in.close();
-	} else {
-		throw runtime_error(std::strerror(errno));
+	if (!in) {
+		LOG_ERROR("Error reading file [%s]: %s", filename, std::strerror(errno));
+		return FUNC_RET_NOT_AVAIL;
 	}
-	return contents;
+	const size_t index = static_cast<size_t>(in.seekg(0, ios::end).tellg());
+	const size_t limited_size = min(index, max_size);
+	contents_out.resize(limited_size);
+	in.seekg(0, ios::beg);
+	in.read(&contents_out[0], limited_size);
+	in.close();
+	return FUNC_RET_OK;
 }
 
 string remove_extension(const string& path) {

@@ -87,9 +87,9 @@ const static regex b64("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/
 
 FILE_FORMAT identify_format(const string& license) {
 	FILE_FORMAT result = UNKNOWN;
-	if (regex_match(license, b64)) {
+	if (std::regex_match(license, b64)) {
 		result = BASE64;
-	} else if (regex_search(license, iniSection)) {
+	} else if (std::regex_search(license, iniSection)) {
 		result = INI;
 	}
 	return result;

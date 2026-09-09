@@ -34,7 +34,7 @@ struct LicenseInfoEx {
 	FUNCTION_RETURN return_code;
 };
 
-Licensecc::Licensecc(const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in,
+Licensecc::Licensecc(const std::vector<locate::LocatorStrategy>* strategies_in,
 					 const std::vector<LimitVerifierFn>& extra_verifiers)
 	: m_strategies(strategies_in), m_verifier(new LicenseVerifier(extra_verifiers)) {}
 
@@ -42,14 +42,14 @@ Licensecc::~Licensecc() {}
 
 FUNCTION_RETURN getLocatorStrategies(std::vector<std::unique_ptr<locate::LocatorStrategy>>& strategiesOut,
 									 const LicenseLocation* locationHint, EventRegistry& eventRegistryRef,
-									 const std::vector<std::unique_ptr<locate::LocatorStrategy>>* strategies_in) {
+									 const std::vector<locate::LocatorStrategy>* strategies_in) {
 	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	if (strategies_in == nullptr) {
 		result = locate::LocatorFactory::get_active_strategies(strategiesOut, locationHint);
 	} else {
 		if (strategies_in->size() > 0) {
 			for (const auto& strategy : *strategies_in) {
-				strategiesOut.push_back(strategy->clone());
+				strategiesOut.push_back(strategy.clone());
 			}
 			result = FUNC_RET_OK;
 		}
@@ -117,19 +117,18 @@ LCC_EVENT_TYPE Licensecc::acquire_license(const CallerInformations* callerInform
 	return result;
 }
 
-bool Licensecc::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method, char* chbuffer, size_t* bufSize,
+bool Licensecc::identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY pc_id_method,
+							char identifier_out[LCC_API_PC_IDENTIFIER_SIZE],
 							ExecutionEnvironmentInfo* execution_environment_info) noexcept {
 	bool result = false;
-	if (*bufSize >= LCC_API_PC_IDENTIFIER_SIZE && chbuffer != nullptr) {
+	if (identifier_out != nullptr) {
 		try {
 			const string pc_id = license::hw_identifier::HwIdentifierFacade::generate_user_pc_signature(pc_id_method);
-			mstrlcpy(chbuffer, pc_id.c_str(), LCC_API_PC_IDENTIFIER_SIZE);
+			mstrlcpy(identifier_out, pc_id.c_str(), LCC_API_PC_IDENTIFIER_SIZE);
 			result = true;
 		} catch (const std::exception& ex) {
 			LOG_ERROR("Error calculating hw_identifier: %s", ex.what());
 		}
-	} else {
-		*bufSize = LCC_API_PC_IDENTIFIER_SIZE;
 	}
 	static const license::os::ExecutionEnvironment exec_env;
 	if (execution_environment_info != nullptr) {

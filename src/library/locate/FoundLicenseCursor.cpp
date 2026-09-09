@@ -64,10 +64,14 @@ FoundLicenseCursor& FoundLicenseCursor::operator++() {
 RawLicenseData FoundLicenseCursor::operator*() const {
 	if (current_strategy_idx < active_strategies.size() && current_location_idx < current_locations.size()) {
 		const std::string cur_loc = current_locations[current_location_idx];
-		const std::string data = active_strategies[current_strategy_idx]->retrieve_license_content(cur_loc);
+		std::string data;
+		const LCC_EVENT_TYPE ret = active_strategies[current_strategy_idx]->retrieve_license_content(cur_loc, data);
 		event_registry.setCurrentLicenseId(cur_loc);
-		event_registry.addEvent(LICENSE_FOUND, cur_loc);
-		return RawLicenseData(cur_loc, data);
+		if (ret == LICENSE_FOUND) {
+			event_registry.addEvent(LICENSE_FOUND, cur_loc);
+			return RawLicenseData(cur_loc, data);
+		}
+		event_registry.addEvent(LICENSE_FILE_NOT_FOUND, cur_loc);
 	}
 	return RawLicenseData("", "");
 }

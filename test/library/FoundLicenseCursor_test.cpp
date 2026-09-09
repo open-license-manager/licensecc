@@ -34,7 +34,11 @@ public:
 		return locations_.empty() ? LICENSE_FILE_NOT_FOUND : LICENSE_FOUND;
 	}
 
-	virtual const std::string retrieve_license_content(const std::string& location) const override { return data_; }
+	virtual const LCC_EVENT_TYPE retrieve_license_content(const std::string& location,
+														  std::string& content_out) const override {
+		content_out = data_;
+		return LICENSE_FOUND;
+	}
 
 	std::unique_ptr<LocatorStrategy> clone() const override {
 		return std::unique_ptr<LocatorStrategy>(new StubStrategy(locations_, data_));

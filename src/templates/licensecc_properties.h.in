@@ -41,15 +41,16 @@
 // Api structure limits
 /**
  * Maximum size of a license file or base64 data
+ * Prevent people from replacing the license with a large file and make the software crash.
  */
-#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 4
+#define LCC_API_MAX_LICENSE_DATA_LENGTH 1024 * 8
 
 // define api structure sizes
 
 /*
  * size of the buffer to allocate for the pc identifier
  */
-#define LCC_API_PC_IDENTIFIER_SIZE 15
+#define LCC_API_PC_IDENTIFIER_SIZE ((HW_IDENTIFIER_PROPRIETARY_DATA + 1) * 5 / 3)
 #define LCC_API_PROPRIETARY_DATA_SIZE 64
 #define LCC_API_AUDIT_EVENT_NUM 5
 #define LCC_API_AUDIT_EVENT_PARAM2 255
@@ -151,10 +152,17 @@ enum LCC_API_HW_IDENTIFICATION_STRATEGY {
  * The full lenght of the data is HW_IDENTIFIER_PROPRIETARY_DATA + 1
  *
  * To get the lenght of the pc identifier consider that the data will be encoded
- * in base64 so the pc identifier will be (HW_IDENTIFIER_PROPRIETARY_DATA + 1)*4/3
- * bytes long.
+ * in base64 and separated by "-" every 4 digits so the pc
+ * identifier will be (HW_IDENTIFIER_PROPRIETARY_DATA + 1)*5/3 - 1
+ * (-1 because there is no "-" in the end) bytes long.
  */
 #define HW_IDENTIFIER_PROPRIETARY_DATA 8
+
+/**
+ * If == 0 do not add default limits to the verifier.
+ *
+ */
+#define ADD_DEFAULT_LIMITS 1
 
 #endif
 /**

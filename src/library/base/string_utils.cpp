@@ -35,7 +35,7 @@ string trim_copy(const string& string_to_trim) {
 
 string toupper_copy(const string& lowercase) {
 	string cp(lowercase);
-	std::transform(cp.begin(), cp.end(), cp.begin(), (int (*)(int))toupper);
+	std::transform(cp.begin(), cp.end(), cp.begin(), static_cast<int (*)(int)>(toupper));
 	return cp;
 }
 
@@ -87,10 +87,14 @@ const static regex b64("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/
 
 FILE_FORMAT identify_format(const string& license) {
 	FILE_FORMAT result = UNKNOWN;
-	if (regex_match(license, b64)) {
-		result = BASE64;
-	} else if (regex_search(license, iniSection)) {
-		result = INI;
+	try {
+		if (std::regex_match(license, b64)) {
+			result = BASE64;
+		} else if (std::regex_search(license, iniSection)) {
+			result = INI;
+		}
+	} catch (const std::exception&) {
+		result = UNKNOWN;
 	}
 	return result;
 }

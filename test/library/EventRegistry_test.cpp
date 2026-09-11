@@ -55,7 +55,6 @@ BOOST_AUTO_TEST_CASE(test_current_license_id_functionality) {
 	BOOST_CHECK_MESSAGE(eventStr.find("ev:0") != string::npos, "Should have LICENSE_SPECIFIED event (value 0)");
 }
 
-
 BOOST_AUTO_TEST_CASE(test_default_current_license_id_behavior) {
 	EventRegistry er;
 	er.addEvent(LICENSE_FILE_NOT_FOUND);

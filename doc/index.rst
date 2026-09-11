@@ -76,7 +76,7 @@ The `examples`_ repository shows various ways to integrate `licensecc` into your
 Branches and status
 *********************
 
-* On branch ``master`` there is the 'stable' 2.1.0 version, that corresponds to this documentation.   
+* On branch ``master`` there is the 'stable' 2.5.0 version, that corresponds to this documentation.   
 * On branch ``develop`` there is the upcoming 2.x.0 version that is under active development and has not been extensively used/tested. 
 
 How to contribute

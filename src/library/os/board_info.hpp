@@ -22,7 +22,7 @@ private:
 
 public:
 	BoardInfo();
-	virtual ~BoardInfo(){}
+	virtual ~BoardInfo() {}
 	const std::string& bios_vendor() const { return m_bios_vendor; }
 	const std::string& sys_vendor() const { return m_sys_vendor; }
 	const std::string& bios_description() const { return m_bios_description; }

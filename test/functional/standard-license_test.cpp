@@ -41,7 +41,8 @@ BOOST_AUTO_TEST_CASE(test_read_license_data) {
 	const vector<string> extraArgs;
 	const fs::path licLocation = fs::path(generate_license("standard_license1", extraArgs));
 	const string licLocationStr = licLocation.string();
-	string license_data = get_file_contents(licLocationStr.c_str(), 65536);
+	string license_data;
+	get_file_contents(licLocationStr.c_str(), 65536, license_data);
 	LicenseInfo license;
 	LicenseLocation location = {LICENSE_PLAIN_DATA};
 	std::copy(license_data.begin(), license_data.end(), location.licenseData);
@@ -79,7 +80,8 @@ BOOST_AUTO_TEST_CASE(multiple_features) {
 	extraArgs.push_back("\"" LCC_PROJECT_NAME ",feature1,feature2\"");
 	const fs::path licLocation = fs::path(generate_license("multi_feature", extraArgs));
 	const string licLocationStr = licLocation.string();
-	string license_data = get_file_contents(licLocationStr.c_str(), 65536);
+	string license_data;
+	get_file_contents(licLocationStr.c_str(), 65536, license_data);
 	LicenseInfo license;
 	LicenseLocation location = {LICENSE_PLAIN_DATA};
 	std::copy(license_data.begin(), license_data.end(), location.licenseData);

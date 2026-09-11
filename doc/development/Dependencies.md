@@ -38,4 +38,4 @@ Notes:
 
 <sup>3</sup> Boost is mandadory dependency of `lccgen` executable. Components: `unit_test_framework`,`system` (boost < 1.90),`filesystem`
 
-<sup>4</sup> MinGW is not tested (=not supported) in version `licensecc` version 2.1.0. It was working in 2.0.0.
+<sup>4</sup> MinGW is not tested (=not supported) in version `licensecc` version 2.5.0. It was working in 2.0.0.

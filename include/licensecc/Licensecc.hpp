@@ -1,22 +1,25 @@
 /*
- * license_facade.hpp
+ * Licensecc.hpp
  *
  *  Created on: Aug 1, 2026
- *      Author: Your Name
+ *      Author: Gabriele Contini
  */
 
-#ifndef INCLUDE_LICENSECC_LICENSE_FACADE_HPP_
-#define INCLUDE_LICENSECC_LICENSE_FACADE_HPP_
+#ifndef INCLUDE_LICENSECC_LICENSECC_HPP_
+#define INCLUDE_LICENSECC_LICENSECC_HPP_
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include <licensecc/datatypes.h>
 #include <licensecc/licensecc.h>
-#include "limits/license_verifier.hpp"	// Include for LicenseInfoEx
+#include <licensecc/LocatorStrategy.hpp>
+#include <licensecc/datatypes_cpp.hpp>
 
 namespace license {
+
+class LicenseVerifier;
 
 /**
  * @brief Facade class to unify all license library access points
@@ -24,18 +27,29 @@ namespace license {
  * This class provides a unified interface for license acquisition and
  * hardware identification while maintaining backward compatibility
  * with the existing C API.
+ *
+ * The license acquisition flow (locator strategies loop, parsing,
+ * verification and merge) is described in the "License acquisition flow"
+ * documentation page: doc/analysis/license_acquisition_flow.rst in this
+ * repository, rendered at
+ * https://open-license-manager.github.io/licensecc/latest/ (Analysis section).
  */
-class LicenseFacade {
+class Licensecc {
+private:
+	const std::vector<locate::LocatorStrategy>* m_strategies;
+	std::unique_ptr<LicenseVerifier> m_verifier;
+
 public:
 	/**
-	 * @brief Constructor
+	 * @brief
 	 */
-	LicenseFacade();
+	Licensecc(const std::vector<locate::LocatorStrategy>* strategies_in = nullptr,
+			  const std::vector<LimitVerifierFn>& extra_verifiers = std::vector<LimitVerifierFn>());
 
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~LicenseFacade();
+	virtual ~Licensecc();
 
 	/**
 	 * @brief Acquire a license for the specified product
@@ -60,29 +74,14 @@ public:
 	 * specified identification strategy.
 	 *
 	 * @param hw_id_method Strategy to use for identification
-	 * @param identifier_out Buffer to receive the identifier string
-	 * @param buf_size Size of the output buffer (input/output parameter)
+	 * @param identifier_out Buffer of LCC_API_PC_IDENTIFIER_SIZE characters receiving the identifier string
 	 * @param execution_environment_info Optional output for execution environment info
 	 * @return true if successful, false otherwise
 	 */
-	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
+	bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char identifier_out[LCC_API_PC_IDENTIFIER_SIZE],
 					 ExecutionEnvironmentInfo* execution_environment_info) noexcept;
-
-private:
-	/**
-	 * @brief Helper method to merge multiple licenses into one
-	 *
-	 * Selects the best license based on expiration date (choosing the one
-	 * that expires later).
-	 *
-	 * @param licenses Vector of extended license information with return codes
-	 * @param license_out Output license information
-	 * @return LCC_EVENT_TYPE indicating success or failure
-	 */
-	LCC_EVENT_TYPE mergeLicenses(const std::vector<LicenseInfoEx>& licenses, EventRegistry& er,
-								 LicenseInfo* license_out) noexcept;
 };
 
 } /* namespace license */
 
-#endif /* INCLUDE_LICENSECC_LICENSE_FACADE_HPP_ */
+#endif /* INCLUDE_LICENSECC_LICENSECC_HPP_ */

@@ -39,25 +39,19 @@ static const void formatError(DWORD status, const char* description) {
 	LOG_DEBUG("error %s : %s %h", description, msgBuffer, status);
 }
 
-// #pragma pack(push, 1)
-// typedef struct {
-//	BCRYPT_RSAKEY_BLOB rsakey;
-//	BYTE pkExp[3];	// Fixed size for exponent
-// } PUBKEY_HEADER, *P_PUBKEY_HEADER;
-// #pragma pack(pop)
-
-static BCRYPT_ALG_HANDLE openHashProvider() {
+static FUNCTION_RETURN openHashProvider(BCRYPT_ALG_HANDLE& hash_alg) {
 	DWORD status;
-	BCRYPT_ALG_HANDLE hHashAlg = nullptr;
-	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hHashAlg, BCRYPT_SHA256_ALGORITHM, NULL, 0))) {
-		throw logic_error("Error opening hash provider");
+	hash_alg = nullptr;
+	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hash_alg, BCRYPT_SHA256_ALGORITHM, NULL, 0))) {
+		return FUNC_RET_NOT_AVAIL;
 	}
-	return hHashAlg;
+	return FUNC_RET_OK;
 }
 
 static DWORD hashData(BCRYPT_HASH_HANDLE& hHash, const string& data, PBYTE pbHash, DWORD hashDataLenght) {
 	DWORD status;
-	if (NT_SUCCESS(status = BCryptHashData(hHash, (BYTE*)data.c_str(), (ULONG)data.length(), 0))) {
+	BYTE* pInput = const_cast<BYTE*>(reinterpret_cast<const BYTE*>(data.c_str()));
+	if (NT_SUCCESS(status = BCryptHashData(hHash, pInput, (ULONG)data.length(), 0))) {
 		status = BCryptFinishHash(hHash, pbHash, hashDataLenght, 0);
 	}
 	return status;
@@ -184,7 +178,7 @@ static FUNCTION_RETURN readPublicKey(const BCRYPT_ALG_HANDLE sig_alg, BCRYPT_KEY
 	vector<BYTE> blob_buffer(total_blob_size);
 
 	// Set up the key blob
-	BCRYPT_RSAKEY_BLOB* pubk_header = (BCRYPT_RSAKEY_BLOB*)blob_buffer.data();
+	BCRYPT_RSAKEY_BLOB* pubk_header = reinterpret_cast<BCRYPT_RSAKEY_BLOB*>(blob_buffer.data());
 	pubk_header->Magic = BCRYPT_RSAPUBLIC_MAGIC;
 	pubk_header->BitLength = (ULONG)key_bitlen;
 	pubk_header->cbPublicExp = (ULONG)exp_size;
@@ -274,13 +268,16 @@ static FUNCTION_RETURN verifyHash(const PBYTE pbHash, const DWORD hashDataLenght
 FUNCTION_RETURN verify_signature(const std::string& stringToVerify, const std::string& signatureB64) {
 	BCRYPT_HASH_HANDLE hHash = nullptr;
 	PBYTE pbHashObject = nullptr, pbHashData = nullptr;
+	DWORD status;
 
-	FUNCTION_RETURN result = FUNC_RET_ERROR;
 	const HANDLE hProcessHeap = GetProcessHeap();
 	// BCRYPT_ALG_HANDLE sig_alg = openSignatureProvider();
 
-	BCRYPT_ALG_HANDLE hash_alg = openHashProvider();
-	DWORD status;
+	BCRYPT_ALG_HANDLE hash_alg = nullptr;
+	FUNCTION_RETURN result = openHashProvider(hash_alg);
+	if (result != FUNC_RET_OK) {
+		return result;
+	}
 
 	// calculate the size of the buffer to hold the hash object
 	DWORD cbData = 0, cbHashObject = 0;

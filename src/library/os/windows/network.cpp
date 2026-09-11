@@ -6,7 +6,8 @@
  * The only public function of this module is #getAdapterInfos(OsAdapterInfo *,
  *		size_t *), other functions are either static or inline.
  *
- * Responsibility of this module is to fill OsAdapterInfo structures, in a predictable way (skip loopback/vpn interfaces)
+ * Responsibility of this module is to fill OsAdapterInfo structures, in a predictable way (skip loopback/vpn
+ * interfaces)
  */
 
 #define _CRTDBG_MAP_ALLOC
@@ -36,7 +37,7 @@ using namespace std;
 static int translate(const char ipStringIn[16], unsigned char ipv4[4]) {
 	size_t index = 0;
 
-	const char *str2 = ipStringIn; /* save the pointer */
+	const char* str2 = ipStringIn; /* save the pointer */
 	while (*str2) {
 		if (isdigit((unsigned char)*str2)) {
 			ipv4[index] *= 10;
@@ -49,11 +50,11 @@ static int translate(const char ipStringIn[16], unsigned char ipv4[4]) {
 	return 0;
 }
 
-int score(const OsAdapterInfo &a) {
+int score(const OsAdapterInfo& a) {
 	int score = 0;
 	bool allzero = true;
-	const char *bads[] = {"virtual", "ppp", "tunnel", "vpn"};
-	const char *goods[] = {"realtek", "intel", "wireless"};
+	const char* bads[] = {"virtual", "ppp", "tunnel", "vpn"};
+	const char* goods[] = {"realtek", "intel", "wireless"};
 
 	for (int i = 0; i < sizeof(a.description) && allzero; i++) {
 		allzero = allzero && (a.description[i] == 0);
@@ -62,9 +63,9 @@ int score(const OsAdapterInfo &a) {
 		score++;
 	}
 
-	string descr=string(a.description);
+	string descr = string(a.description);
 	std::transform(descr.begin(), descr.end(), descr.begin(), [](unsigned char c) { return std::tolower(c); });
-	for (auto bad: bads) {
+	for (auto bad : bads) {
 		score += descr.find(bad) == std::string::npos ? 1 : -1;
 	}
 	for (auto good : goods) {
@@ -73,34 +74,33 @@ int score(const OsAdapterInfo &a) {
 	return score;
 }
 
-bool cmp(const OsAdapterInfo &a, const OsAdapterInfo &b) { return score(a) > score(b); }
-	/**
+bool cmp(const OsAdapterInfo& a, const OsAdapterInfo& b) { return score(a) > score(b); }
+/**
  *
  * @param adapterInfos
  * @param adapter_info_size
  * @return
  */
-FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
+FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo>& adapterInfos) {
 	vector<OsAdapterInfo> tmpAdapters;
 	FUNCTION_RETURN f_return = FUNC_RET_OK;
 	DWORD dwStatus;
 
-	ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO) *10;
-	IP_ADAPTER_INFO *pAdapterInfo = (IP_ADAPTER_INFO *)MALLOC(sizeof(IP_ADAPTER_INFO) * 10);
+	ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO) * 10;
+	IP_ADAPTER_INFO* pAdapterInfo = static_cast<IP_ADAPTER_INFO*>(MALLOC(sizeof(IP_ADAPTER_INFO) * 10));
 
 	if (pAdapterInfo == nullptr) {
 		return FUNC_RET_ERROR;
 	}
 
-	dwStatus = GetAdaptersInfo(
-		pAdapterInfo,  // [out] buffer to receive data
-		&ulOutBufLen  // [in] size of receive data buffer
+	dwStatus = GetAdaptersInfo(pAdapterInfo,  // [out] buffer to receive data
+							   &ulOutBufLen	 // [in] size of receive data buffer
 	);
 
 	// Incase the buffer was too small, reallocate with the returned dwBufLen
 	if (dwStatus == ERROR_BUFFER_OVERFLOW) {
 		FREE(pAdapterInfo);
-		pAdapterInfo = (IP_ADAPTER_INFO *)MALLOC(ulOutBufLen);
+		pAdapterInfo = static_cast<IP_ADAPTER_INFO*>(MALLOC(ulOutBufLen));
 
 		// Will only fail if buffer cannot be allocated (out of memory)
 		if (pAdapterInfo == nullptr) {
@@ -130,7 +130,8 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 	while (pAdapter) {
 		if (pAdapter->Type == MIB_IF_TYPE_ETHERNET) {
 			OsAdapterInfo ai = {};
-			LOG_DEBUG("Ethernet found %s, %s, mac_l: %d", pAdapter->AdapterName, pAdapter->Description, pAdapter->AddressLength);
+			LOG_DEBUG("Ethernet found %s, %s, mac_l: %d", pAdapter->AdapterName, pAdapter->Description,
+					  pAdapter->AddressLength);
 			if (pAdapter->AddressLength > 0) {
 				bool allzero = true;
 				const size_t size_to_be_copied = std::min(sizeof(ai.mac_address), (size_t)pAdapter->AddressLength);
@@ -148,7 +149,7 @@ FUNCTION_RETURN getAdapterInfos(vector<OsAdapterInfo> &adapterInfos) {
 		}
 		pAdapter = pAdapter->Next;
 	}
-	if (pAdapterInfo!=nullptr) {
+	if (pAdapterInfo != nullptr) {
 		FREE(pAdapterInfo);
 	}
 

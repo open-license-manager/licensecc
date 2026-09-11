@@ -16,7 +16,6 @@
 #include "../../src/library/os/network.hpp"
 #include "generate-license.h"
 
-
 namespace license {
 namespace test {
 namespace fs = boost::filesystem;
@@ -24,8 +23,8 @@ using namespace std;
 using namespace hw_identifier;
 
 /**
- * If the current pc has at least one disk generate a hardware identifier using disk, generate a license, verify the license
- * is OK
+ * If the current pc has at least one disk generate a hardware identifier using disk, generate a license, verify the
+ * license is OK
  */
 
 static void generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY strategy, const string& lic_fname) {
@@ -62,7 +61,6 @@ BOOST_AUTO_TEST_CASE(cpu_lic_file) {
 	HwIdentifier identifier_out;
 	generate_and_verify_license(LCC_API_HW_IDENTIFICATION_STRATEGY::STRATEGY_CPU_MODEL, "cpu_lic_file");
 }
-
 
 BOOST_AUTO_TEST_CASE(strategy_mac_address) {
 	vector<os::OsAdapterInfo> adapters;

@@ -19,8 +19,9 @@ using namespace license;
 using namespace std;
 
 /**
- * Test a generic license, passing a bad license number trough the api.
- * see projects/DEFAULT/include/licensecc/DEFAULT/licensecc_properties.h (magic should be 0)
+ * Test a generic license, passing a license magic different from the one used
+ * at compile time. The magic number check has been removed, so the license is
+ * accepted regardless of the magic value passed by the caller.
  */
 BOOST_AUTO_TEST_CASE(test_bad_magic_number) {
 	const vector<string> extraArgs;
@@ -32,7 +33,7 @@ BOOST_AUTO_TEST_CASE(test_bad_magic_number) {
 	// magic should be 0 for this build...
 	CallerInformations callInfo{{0}, {0}, 42};
 	const LCC_EVENT_TYPE result = acquire_license(&callInfo, &location, &license);
-	BOOST_CHECK_EQUAL(result, LICENSE_CORRUPTED);
+	BOOST_CHECK_EQUAL(result, LICENSE_OK);
 }
 
 }  // namespace test

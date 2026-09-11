@@ -11,7 +11,6 @@
 #include <licensecc/datatypes.h>
 
 #include "../base/base64.h"
-#include "../base/EventRegistry.h"
 #include "../base/string_utils.h"
 
 #include "ExternalDefinition.hpp"
@@ -26,43 +25,44 @@ ExternalDefinition::ExternalDefinition(const LicenseLocation* location)
 
 ExternalDefinition::~ExternalDefinition() {}
 
-const std::vector<std::string> ExternalDefinition::license_locations(EventRegistry& eventRegistry) {
-	vector<string> existing_pos;
+const LCC_EVENT_TYPE ExternalDefinition::license_locations(std::vector<std::string>& license_location_out) {
+	LCC_EVENT_TYPE result = LICENSE_FILE_NOT_FOUND;
 	if (m_location->licenseData[0] != '\0') {
-		eventRegistry.addEvent(LICENSE_SPECIFIED, get_strategy_name());
 		switch (m_location->license_data_type) {
 			case LICENSE_PATH: {
 				string licData(m_location->licenseData,
 							   mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 				const vector<string> declared_positions = license::split_string(licData, ';');
-				existing_pos =
-					license::filter_existing_files(declared_positions, eventRegistry, get_strategy_name().c_str());
+				license_location_out = license::filter_existing_files(declared_positions);
+				result = license_location_out.empty() ? LICENSE_FILE_NOT_FOUND : LICENSE_FOUND;
 			} break;
 			case LICENSE_ENCODED:
 			case LICENSE_PLAIN_DATA:
-				existing_pos.push_back(get_strategy_name());
+				license_location_out.push_back(get_strategy_name());
+				result = LICENSE_FOUND;
 				break;
 			default:
-				throw logic_error("license type not supported ");
+				result = LICENSE_MALFORMED;
+				break;
 		}
 	}
-	return existing_pos;
+	return result;
 }
 
-const std::string ExternalDefinition::retrieve_license_content(const std::string& licenseLocation) const {
+const LCC_EVENT_TYPE ExternalDefinition::retrieve_license_content(const std::string& licenseLocation,
+																  std::string& content_out) const {
 	if (licenseLocation == get_strategy_name()) {
 		string licData(m_location->licenseData, mstrnlen_s(m_location->licenseData, LCC_API_MAX_LICENSE_DATA_LENGTH));
 		if (m_location->license_data_type == LICENSE_ENCODED) {
 			// FIXME what if license content is not base64
 			vector<uint8_t> raw = unbase64(licData, true);
-			string str = string(reinterpret_cast<char*>(raw.data()));
-			return str;
+			content_out = string(reinterpret_cast<char*>(raw.data()));
 		} else {
-			return licData;
+			content_out = licData;
 		}
-	} else {
-		return LocatorStrategy::retrieve_license_content(licenseLocation);
+		return LICENSE_FOUND;
 	}
+	return LocatorStrategy::retrieve_license_content(licenseLocation, content_out);
 }
 
 std::unique_ptr<LocatorStrategy> ExternalDefinition::clone() const {

@@ -20,7 +20,7 @@ FUNCTION_RETURN getMachineName(unsigned char identifier[6]) {
 	int bufsize = MAX_COMPUTERNAME_LENGTH + 1;
 	const BOOL cmpName = GetComputerName(buffer, (unsigned long*)&bufsize);
 	if (cmpName) {
-		strncpy((char*)identifier, buffer, 6);
+		strncpy(reinterpret_cast<char*>(identifier), buffer, 6);
 		result = FUNC_RET_OK;
 	}
 	return result;

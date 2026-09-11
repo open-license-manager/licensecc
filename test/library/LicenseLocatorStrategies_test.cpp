@@ -16,7 +16,6 @@
 #include <licensecc_properties_test.h>
 
 #include "../../src/library/os/os.h"
-#include "../../src/library/base/EventRegistry.h"
 #include "../../src/library/locate/ApplicationFolder.hpp"
 #include "../../src/library/locate/EnvironmentVarLocation.hpp"
 #include "../../src/library/locate/ExternalDefinition.hpp"
@@ -67,15 +66,18 @@ BOOST_AUTO_TEST_CASE(read_license_near_module) {
 		dst << src.rdbuf();
 		dst.close();
 
-		license::EventRegistry registry;
 		ApplicationFolder applicationFolder;
-		vector<string> licenseInfos = applicationFolder.license_locations(registry);
-		BOOST_CHECK(registry.isGood());
+		vector<string> licenseInfos;
+		const LCC_EVENT_TYPE ret = applicationFolder.license_locations(licenseInfos);
+		BOOST_CHECK_EQUAL(LICENSE_FOUND, ret);
 		BOOST_REQUIRE_EQUAL(1, licenseInfos.size());
 		string currentLocation = licenseInfos[0];
 		BOOST_CHECK_MESSAGE(equivalent(path(referenceLicenseFileName), path(currentLocation)),
 							"file " + currentLocation + "found at expected location");
-		string licenseRealContent = applicationFolder.retrieve_license_content(currentLocation);
+		string licenseRealContent;
+		const LCC_EVENT_TYPE retrieve_ret =
+			applicationFolder.retrieve_license_content(currentLocation, licenseRealContent);
+		BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 		src.seekg(0, ios::beg);
 		std::string referenceContent((std::istreambuf_iterator<char>(src)), std::istreambuf_iterator<char>());
 		BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
@@ -94,16 +96,19 @@ BOOST_AUTO_TEST_CASE(external_definition) {
 	// read test license
 	std::ifstream src(MOCK_LICENSE, std::ios::binary);
 	std::string referenceContent((std::istreambuf_iterator<char>(src)), std::istreambuf_iterator<char>());
-	license::EventRegistry registry;
 	LicenseLocation licLocation = {LICENSE_PATH};
 	std::copy(applicationDefinedString.begin(), applicationDefinedString.end(), licLocation.licenseData);
 	ExternalDefinition externalDefinition(&licLocation);
-	vector<string> licenseInfos = externalDefinition.license_locations(registry);
-	BOOST_CHECK(registry.isGood());
+	vector<string> licenseInfos;
+	const LCC_EVENT_TYPE ret = externalDefinition.license_locations(licenseInfos);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, ret);
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
 	string currentLocation = licenseInfos[0];
 	BOOST_CHECK_MESSAGE(string(MOCK_LICENSE).compare(currentLocation) == 0, "file found at expected location");
-	string licenseRealContent = externalDefinition.retrieve_license_content(currentLocation);
+	string licenseRealContent;
+	const LCC_EVENT_TYPE retrieve_ret =
+		externalDefinition.retrieve_license_content(currentLocation, licenseRealContent);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
 }
 
@@ -112,17 +117,14 @@ BOOST_AUTO_TEST_CASE(external_definition) {
  */
 BOOST_AUTO_TEST_CASE(external_definition_not_found) {
 	string applicationDefinedString = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
-	license::EventRegistry registry;
 	LicenseLocation licLocation = {LICENSE_PATH};
 	std::copy(applicationDefinedString.begin(), applicationDefinedString.end(), licLocation.licenseData);
 	ExternalDefinition externalDefinition(&licLocation);
-	vector<string> licenseInfos = externalDefinition.license_locations(registry);
+	vector<string> licenseInfos;
+	const LCC_EVENT_TYPE ret = externalDefinition.license_locations(licenseInfos);
 
-	BOOST_CHECK_MESSAGE(registry.isGood(), "No fatal error for now, only warnings");
-	registry.turnWarningsIntoErrors();
-	BOOST_REQUIRE_MESSAGE(!registry.isGood(), "Error detected");
+	BOOST_CHECK_EQUAL(LICENSE_FILE_NOT_FOUND, ret);
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
-	BOOST_CHECK_MESSAGE(registry.getLastFailure()->event_type == LICENSE_FILE_NOT_FOUND, "Error detected");
 }
 
 /*****************************************************************************
@@ -139,15 +141,17 @@ BOOST_AUTO_TEST_CASE(environment_var_location) {
 	// read test license
 	std::ifstream src(MOCK_LICENSE, std::ios::binary);
 	std::string referenceContent((std::istreambuf_iterator<char>(src)), std::istreambuf_iterator<char>());
-	license::EventRegistry registry;
-
 	EnvironmentVarLocation envVarLocationStrategy;
-	vector<string> licenseInfos = envVarLocationStrategy.license_locations(registry);
-	BOOST_CHECK(registry.isGood());
+	vector<string> licenseInfos;
+	const LCC_EVENT_TYPE ret = envVarLocationStrategy.license_locations(licenseInfos);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, ret);
 	BOOST_CHECK_EQUAL(1, licenseInfos.size());
 	string currentLocation = licenseInfos[0];
 	BOOST_CHECK_MESSAGE(string(MOCK_LICENSE).compare(currentLocation) == 0, "file found at expected location");
-	string licenseRealContent = envVarLocationStrategy.retrieve_license_content(currentLocation);
+	string licenseRealContent;
+	const LCC_EVENT_TYPE retrieve_ret =
+		envVarLocationStrategy.retrieve_license_content(currentLocation, licenseRealContent);
+	BOOST_CHECK_EQUAL(LICENSE_FOUND, retrieve_ret);
 	BOOST_CHECK_MESSAGE(referenceContent.compare(licenseRealContent) == 0, "File content is same");
 	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }
@@ -159,14 +163,11 @@ BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
 	const char* environment_variable_value = PROJECT_TEST_SRC_DIR "/this/file/doesnt/exist";
 	SETENV(LCC_LICENSE_LOCATION_ENV_VAR, environment_variable_value);
 
-	license::EventRegistry registry;
 	EnvironmentVarLocation envVarLocationStrategy;
-	vector<string> licenseInfos = envVarLocationStrategy.license_locations(registry);
-	BOOST_CHECK_MESSAGE(registry.isGood(), "No fatal error for now, only warnings");
-	registry.turnWarningsIntoErrors();
-	BOOST_REQUIRE_MESSAGE(!registry.isGood(), "Error detected");
+	vector<string> licenseInfos;
+	const LCC_EVENT_TYPE ret = envVarLocationStrategy.license_locations(licenseInfos);
+	BOOST_CHECK_EQUAL(LICENSE_FILE_NOT_FOUND, ret);
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
-	BOOST_CHECK_MESSAGE(registry.getLastFailure()->event_type == LICENSE_FILE_NOT_FOUND, "Error detected");
 	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
 }
 
@@ -175,15 +176,11 @@ BOOST_AUTO_TEST_CASE(environment_var_location_not_found) {
  */
 BOOST_AUTO_TEST_CASE(environment_var_location_not_defined) {
 	UNSETENV(LCC_LICENSE_LOCATION_ENV_VAR);
-	license::EventRegistry registry;
 	EnvironmentVarLocation environmentVarLocation;
-	vector<string> licenseInfos = environmentVarLocation.license_locations(registry);
+	vector<string> licenseInfos;
+	const LCC_EVENT_TYPE ret = environmentVarLocation.license_locations(licenseInfos);
 
-	BOOST_CHECK_MESSAGE(registry.isGood(), "No fatal error for now, only warnings");
-	registry.turnWarningsIntoErrors();
-	BOOST_REQUIRE_MESSAGE(!registry.isGood(), "Error detected");
+	BOOST_CHECK_EQUAL(ENVIRONMENT_VARIABLE_NOT_DEFINED, ret);
 	BOOST_CHECK_EQUAL(0, licenseInfos.size());
-	BOOST_CHECK_MESSAGE(registry.getLastFailure()->event_type == ENVIRONMENT_VARIABLE_NOT_DEFINED, "Error detected");
 }
-
 }  // namespace test

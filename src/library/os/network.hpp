@@ -14,7 +14,7 @@
 #include <netdb.h>
 #define LCC_ADAPTER_DESCRIPTION_LEN NI_MAXHOST
 #else
-//mingw cross compile for Windows
+// mingw cross compile for Windows
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
@@ -28,7 +28,6 @@ namespace license {
 namespace os {
 
 typedef enum { IFACE_TYPE_ETHERNET, IFACE_TYPE_WIRELESS } IFACE_TYPE;
-
 
 typedef struct {
 	int id;

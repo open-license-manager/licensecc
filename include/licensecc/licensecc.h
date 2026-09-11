@@ -28,19 +28,21 @@ void print_error(char out_buffer[LCC_API_ERROR_BUFFER_SIZE], LicenseInfo* licens
  *
  * pc_id_method = ::STRATEGY_DEFAULT is usually the best choice.
  *
- * First call this method with `identifier_out` = nullptr and `buf_size` = 0 , it will return the requested buffer size
- * in `buf_size` parameter.
+ * The caller is expected to declare a buffer of #LCC_API_PC_IDENTIFIER_SIZE characters, eg:
  *
- * Then allocate the necessary memory, and call the method again.
+ * \code{.c}
+ * char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE];
+ * bool result = identify_pc(STRATEGY_DEFAULT, pc_identifier, nullptr);
+ * \endcode
  *
- * @return true if successful, false if failure (because it is not possible to identify or buffer too small).
+ * @return true if successful, false if failure (because it is not possible to identify the pc).
  * @param hw_id_method[in] specifies a preferred identification method. Usually #STRATEGY_DEFAULT works well. See the
  * wiki for more informations.
- * @param identifier_out[out] buffer where the identification string will be placed.
- * @param buf_size[in-out] size of the buffer where the identification string will be placed.
+ * @param identifier_out[out] buffer of #LCC_API_PC_IDENTIFIER_SIZE characters where the identification string will be
+ * placed. It must not be null.
  * @param execution_environment_info[out] if not null will contain the informations about the execution environment.
  */
-bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char* identifier_out, size_t* buf_size,
+bool identify_pc(LCC_API_HW_IDENTIFICATION_STRATEGY hw_id_method, char identifier_out[LCC_API_PC_IDENTIFIER_SIZE],
 				 ExecutionEnvironmentInfo* execution_environment_info);
 
 /**

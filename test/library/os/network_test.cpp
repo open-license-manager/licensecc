@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(read_network_adapters) {
 		return;
 	}
 	BOOST_CHECK_EQUAL(result, FUNC_RET_OK);
-	BOOST_CHECK_GT(adapters.size(),0);
+	BOOST_CHECK_GT(adapters.size(), 0);
 	for (auto& it : adapters) {
 		cout << "Interface found: " << string(it.description) << endl;
 		BOOST_CHECK_GT(strlen(it.description), 0);

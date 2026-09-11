@@ -43,20 +43,27 @@ namespace into their code.
 ### Exceptions across the C API boundary
 
 The library throws `std::logic_error` / `std::invalid_argument` / `std::runtime_error`
-internally (hardware identification, date parsing, file I/O). That's fine for
+internally (hardware identification, file I/O). That's fine for
 internal C++ code, but every function exported through the C API
 (`include/licensecc/licensecc.h`, i.e. `identify_pc`, `acquire_license`,
 `confirm_license`, `release_license`) is a hard boundary: **no exception may cross
 it**, since callers may be linking from C, a different runtime, or across a DLL
 boundary, where an escaping exception is undefined behavior, not a catchable error.
-- `LicenseFacade::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
-  and logs/degrades gracefully — this is the pattern to copy.
-- `LicenseFacade::acquire_license` currently does **not** wrap its call chain
-  (`LicenseParser::readLicenses`, `LicenseVerifier`) in a try/catch, even though
-  those paths can throw. Don't replicate this gap in new code — any new logic
-  reachable from a C API entry point needs its own top-level `try/catch`, and if
-  you're touching `acquire_license`, wrapping it is an in-scope fix, not scope creep.
-- Do not suggest throwing exceptions in the generated code. Suggest returning error codes instead, and let the caller decide how to handle them. If you find opportunity refactor code that throws exceptions to return error codes instead (no separate PR).
+- `Licensecc::identify_pc` wraps its work in `try { ... } catch (const std::exception&)`
+  and logs/degrades gracefully.
+- `Licensecc::acquire_license` has **no** top-level `try/catch` by design. Every
+  logical error must instead be handled at the leaf functions it reaches: return a
+  `FUNCTION_RETURN` / `LCC_EVENT_TYPE` error code, or be `noexcept` and catch your
+  own exceptions (the limit verifiers in `src/library/limits/limit_verifiers.cpp`
+  are the pattern to copy). Never add a top-level `try/catch` to `acquire_license`.
+  Known leaves already refactored to error codes (do not reintroduce throws):
+  `base/file_utils.cpp` `get_file_contents`, `base/string_utils.cpp` `identify_format`.
+- `std::bad_alloc` (OOM) is intentionally left uncaught: an allocation failure
+  propagating through a `noexcept` entry point calls `std::terminate()`, which is
+  acceptable.
+- Do not suggest throwing exceptions in library code. Prefer returning error codes
+  and let the caller decide how to handle them. If you find code that throws, refactor
+  it to return an error code instead (no separate PR).
 
 ### Smart pointer construction
 
@@ -131,6 +138,10 @@ Unlike Java's garbage collection, C++ uses RAII for automatic resource managemen
 - Design exception-safe code using RAII
 - Prefer stack unwinding over manual error handling
 - Use RAII for automatic cleanup in exception paths
+
+### 6. Method visibility
+
+- Prefer static methods inside .cpp files over methods in 'private:' sections. Keep it as preference. Evaluate case by case depending on how much the method needs to access class fields.
 
 ## Avoid C++ Common Errors
 

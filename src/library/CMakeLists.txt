@@ -4,9 +4,10 @@ add_subdirectory("locate")
 add_subdirectory("hw_identifier")
 
 set(LICENSECC_SOURCES
-    licensecc.cpp
-    license_facade.cpp
+    license.cpp
+    Licensecc.cpp
     LicenseParser.cpp
+    limits/limit_verifiers.cpp
     limits/license_verifier.cpp
     ini/ConvertUTF.cpp
     $<TARGET_OBJECTS:hw_identifier>

@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 
-#include "LocatorStrategy.hpp"
+#include <licensecc/LocatorStrategy.hpp>
 
 namespace license {
 namespace locate {
@@ -19,7 +19,7 @@ namespace locate {
 class ApplicationFolder : public LocatorStrategy {
 public:
 	ApplicationFolder();
-	const virtual std::vector<std::string> license_locations(EventRegistry& eventRegistry);
+	const virtual LCC_EVENT_TYPE license_locations(std::vector<std::string>& license_location_out);
 	virtual std::unique_ptr<LocatorStrategy> clone() const override;
 	virtual ~ApplicationFolder();
 };

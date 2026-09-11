@@ -55,7 +55,7 @@ void _log(const char* format, ...) {
 			return;
 		}
 	}
-	buffer = (char*)malloc(sizeof(char) * strlen(format) + 64);
+	buffer = static_cast<char*>(malloc(sizeof(char) * strlen(format) + 64));
 	timenow(buffer);
 	strcat(buffer, format);
 	va_start(args, format);

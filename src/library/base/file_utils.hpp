@@ -9,12 +9,13 @@
 #define FILEUTILS_H_
 #include <string>
 #include <vector>
-#include "EventRegistry.h"
+
+#include "base.h"
 
 namespace license {
 
-std::vector<std::string> filter_existing_files(const std::vector<std::string>& fileList,EventRegistry& registry, const char* extraData);
-std::string get_file_contents(const char *filename,size_t max_size);
+std::vector<std::string> filter_existing_files(const std::vector<std::string>& fileList);
+FUNCTION_RETURN get_file_contents(const char* filename, size_t max_size, std::string& contents_out);
 std::string remove_extension(const std::string& path);
 
 } /* namespace license */

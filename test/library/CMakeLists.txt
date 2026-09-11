@@ -1,8 +1,8 @@
-add_executable( test_license_reader
+add_executable( test_license_parser
  LicenseParser_test.cpp
 )
 
-target_link_libraries( test_license_reader
+target_link_libraries( test_license_parser
    licensecc
    ${Boost_LIBRARIES}
 )
@@ -32,6 +32,18 @@ target_link_libraries(
 	${Boost_LIBRARIES}
 )
 
+### FoundLicenseCursor tests
+add_executable(
+	test_found_license_cursor
+	FoundLicenseCursor_test.cpp
+)
+
+target_link_libraries(
+	test_found_license_cursor
+	licensecc
+	${Boost_LIBRARIES}
+)
+
 ### Event Registry tests
 add_executable(
  test_event_registry
@@ -46,13 +58,23 @@ target_link_libraries(
 
 if(CODE_COVERAGE AND UNIX)
   target_link_libraries(test_event_registry gcov)
-  target_link_libraries(test_license_reader gcov)
+  target_link_libraries(test_license_parser gcov)
+  target_link_libraries(test_found_license_cursor gcov)
+  target_link_libraries(test_license_locator_facade gcov)
+  target_link_libraries(test_license_locator_strategies gcov)
 endif(CODE_COVERAGE AND UNIX)
 
-ADD_TEST(NAME test_license_reader COMMAND test_license_reader)
-ADD_TEST(NAME test_license_locator_strategies COMMAND test_license_locator_strategies)
-ADD_TEST(NAME test_license_locator_facade COMMAND test_license_locator_facade)
+ADD_TEST(NAME test_license_parser COMMAND test_license_parser)
+ADD_TEST(NAME test_found_license_cursor COMMAND test_found_license_cursor)
 ADD_TEST(NAME test_event_registry COMMAND test_event_registry)
+
+#set environment variables & use static variables, need to run separated from the others
+ADD_TEST(NAME test_license_locator_facade COMMAND test_license_locator_facade)
+set_tests_properties(test_license_locator_facade PROPERTIES RUN_SERIAL TRUE) 
+#set environment variables need to run separated from the others
+ADD_TEST(NAME test_license_locator_strategies COMMAND test_license_locator_strategies)
+set_tests_properties(test_license_locator_strategies PROPERTIES RUN_SERIAL TRUE) 
 
 ADD_SUBDIRECTORY(os)
 ADD_SUBDIRECTORY(hw_identifier)
+ADD_SUBDIRECTORY(limits)

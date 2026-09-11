@@ -75,7 +75,7 @@ enum {
 	management_controller_host = 42,
 	inactive = 126,
 	end_of_table = 127,
-// Always last structure
+	// Always last structure
 };
 }
 
@@ -84,12 +84,12 @@ typedef uint16_t word_t;
 typedef uint32_t dword_t;
 
 #ifdef _MSC_VER
-	typedef __int64 qword_t;
+typedef __int64 qword_t;
 #else
 #ifdef INT64_C
-	typedef uint64_t qword_t;
+typedef uint64_t qword_t;
 #else
-typedef (unsigned long long int) qwordt_t;
+typedef(unsigned long long int) qwordt_t;
 #endif
 #endif
 
@@ -117,11 +117,11 @@ struct header {
 	word_t handle;
 };
 
-struct string_list: header {
+struct string_list : header {
 	byte_t count;
 };
 
-struct baseboard_info: header {
+struct baseboard_info : header {
 	byte_t manufacturer_name;
 	byte_t product_name;
 	byte_t version;
@@ -131,7 +131,7 @@ struct baseboard_info: header {
 	byte_t serial_number1;
 };
 
-struct bios_info: header {
+struct bios_info : header {
 	// 2.0
 	str_id vendor;
 	str_id version;
@@ -148,7 +148,7 @@ struct bios_info: header {
 	byte_t ec_minor;
 };
 
-struct system_info: header {
+struct system_info : header {
 	// 2.0
 	str_id manufacturer;
 	str_id product_name;
@@ -171,10 +171,11 @@ struct system_info: header {
 	str_id family;
 };
 
-struct system_chassis: header {
+struct system_chassis : header {
 	// 2.0
 	str_id manufacturer;
-	byte_t type;
+	// SMBIOS 'chassis type' field; distinct from header::type (structure type).
+	byte_t chassis_type;
 	str_id version;
 	str_id serial_number;
 	str_id assert_tag;
@@ -189,10 +190,11 @@ struct system_chassis: header {
 	byte_t cords;
 };
 
-struct proc_info: header {
+struct proc_info : header {
 	// 2.0
 	str_id socket_designation;
-	enum_t type;
+	// SMBIOS 'processor type' field; distinct from header::type (structure type).
+	enum_t processor_type;
 	enum_t family;
 	str_id manufacturer;
 	qword_t id;
@@ -219,7 +221,7 @@ struct proc_info: header {
 	enum_t family2;
 };
 
-struct cache_info: header {
+struct cache_info : header {
 	// 2.0
 	str_id socket_designation;
 	word_t config;
@@ -234,13 +236,15 @@ struct cache_info: header {
 	enum_t associativity;
 };
 
-struct slot: header {
+struct slot : header {
 	// 2.0
 	str_id slot_designation;
-	enum_t type;
+	// SMBIOS 'slot type' field; distinct from header::type (structure type).
+	enum_t slot_type;
 	enum_t data_bus_width;
 	enum_t current_usage;
-	enum_t length;
+	// SMBIOS 'slot length' field; distinct from header::length (structure area length).
+	enum_t slot_length;
 	word_t id;
 	byte_t characteristics;
 	// 2.1
@@ -254,14 +258,14 @@ struct slot: header {
 typedef string_list oem_strings;
 typedef string_list system_config_options;
 
-struct lang_info: header {
+struct lang_info : header {
 	byte_t installed_langs;
 	byte_t flags;
 	byte_t reserved[15];
 	str_id current_lang;
 };
 
-struct mem_arr: header {
+struct mem_arr : header {
 	// 2.1
 	enum_t location;
 	enum_t use;
@@ -273,7 +277,7 @@ struct mem_arr: header {
 	qword_t capacity_ext;
 };
 
-struct mem_device: header {
+struct mem_device : header {
 	// 2.1
 	word_t mem_arr_handle;
 	word_t mem_arr_error_info_handle;
@@ -284,7 +288,8 @@ struct mem_device: header {
 	byte_t device_set;
 	str_id device_locator;
 	str_id bank_locator;
-	enum_t type;
+	// SMBIOS 'memory device type' field; distinct from header::type (structure type).
+	enum_t memory_type;
 	word_t type_detail;
 	// 2.3
 	word_t speed;
@@ -309,13 +314,9 @@ class parser final {
 public:
 	parser() = default;
 
-	parser(const parser &x) {
-		feed(x.raw_data_, x.raw_size_);
-	}
+	parser(const parser& x) { feed(x.raw_data_, x.raw_size_); }
 
-	~parser() {
-		clear();
-	}
+	~parser() { clear(); }
 
 	std::vector<header*> headers;
 
@@ -323,18 +324,18 @@ public:
 
 	static header* extract_strings(header*, string_array_t&);
 
-	void feed(const void *raw_smbios, size_t size);
+	void feed(const void* raw_smbios, size_t size);
 
 	void clear();
 
 protected:
-	byte_t *raw_data_ { };
+	byte_t* raw_data_{};
 
-	size_t raw_size_ { };
+	size_t raw_size_{};
 };
 
-inline byte_t* parser::skip(byte_t *x) {
-	auto *ptr = x + reinterpret_cast<header*>(x)->length;
+inline byte_t* parser::skip(byte_t* x) {
+	auto* ptr = x + reinterpret_cast<header*>(x)->length;
 	size_t len;
 
 	if (*ptr == 0)
@@ -348,8 +349,8 @@ inline byte_t* parser::skip(byte_t *x) {
 	return ptr;
 }
 
-inline header* parser::extract_strings(header *x, string_array_t &a) {
-	auto *ptr = reinterpret_cast<byte_t*>(x) + x->length;
+inline header* parser::extract_strings(header* x, string_array_t& a) {
+	auto* ptr = reinterpret_cast<byte_t*>(x) + x->length;
 
 	a.clear();
 	a.push_back(nullptr);
@@ -358,13 +359,12 @@ inline header* parser::extract_strings(header *x, string_array_t &a) {
 		ptr += 2;
 	else
 		for (;;) {
-			auto *str = reinterpret_cast<char*>(ptr);
+			auto* str = reinterpret_cast<char*>(ptr);
 			const auto len = strlen(str);
 
 			ptr += len + 1;
 
-			if (len == 0)
-				break;
+			if (len == 0) break;
 
 			a.push_back(str);
 		}
@@ -372,7 +372,7 @@ inline header* parser::extract_strings(header *x, string_array_t &a) {
 	return reinterpret_cast<header*>(ptr);
 }
 
-inline void parser::feed(const void *raw_smbios, const size_t size) {
+inline void parser::feed(const void* raw_smbios, const size_t size) {
 	clear();
 
 	raw_size_ = size;
@@ -380,7 +380,7 @@ inline void parser::feed(const void *raw_smbios, const size_t size) {
 
 	memcpy(raw_data_, raw_smbios, size);
 
-	auto *x = raw_data_;
+	auto* x = raw_data_;
 
 	while (static_cast<size_t>(x - raw_data_) < raw_size_) {
 		headers.push_back(reinterpret_cast<header*>(x));
@@ -393,5 +393,5 @@ inline void parser::clear() {
 	delete[] raw_data_;
 	raw_size_ = 0;
 }
-} // namespace smbios
+}  // namespace smbios
 #endif

@@ -1,36 +1,48 @@
 /*
- * LicenseVerifier.hpp
+ * license_verifier.hpp
  *
- *  Created on: Nov 17, 2019
+ *  Created on: Aug 31, 2026
  *      Author: GC
  */
 
-#ifndef SRC_LIBRARY_LIMITS_LICENSEVERIFIER_HPP_
-#define SRC_LIBRARY_LIMITS_LICENSEVERIFIER_HPP_
+#ifndef SRC_LIBRARY_LIMITS_LICENSE_VERIFIER_HPP_
+#define SRC_LIBRARY_LIMITS_LICENSE_VERIFIER_HPP_
+
+#include <vector>
+
+#include <licensecc/datatypes.h>
+#include <licensecc/datatypes_cpp.hpp>
+
 #include "../base/EventRegistry.h"
-#include "../LicenseParser.hpp"
+#include "../base/base.h"
 
 namespace license {
 
-struct LicenseInfoEx {
-	LicenseInfo license_info;
-	FUNCTION_RETURN return_code;
-};
-
+/**
+ * Runs every limit verifier, aggregates the results and registers the outcome
+ * events into the shared event registry. `LICENSE_OK` is registered only when
+ * every limit verifier answered with an OK event.
+ */
 class LicenseVerifier {
 private:
-	EventRegistry& m_event_registry;
-
-	FUNCTION_RETURN verify_signature(const FullLicenseInfo& licInfo);
-	FUNCTION_RETURN verify_limits(const FullLicenseInfo& licInfo);
-	LicenseInfo toLicenseInfo(const FullLicenseInfo& fullLicInfo) const;
+	std::vector<LimitVerifierFn> m_verifiers;
 
 public:
-	explicit LicenseVerifier(EventRegistry& er);
-	LicenseInfoEx verify_license(const FullLicenseInfo& licInfo) noexcept;
-	virtual ~LicenseVerifier();
+	/**
+	 * Builds the default verifier: date + pc signature + virtualization type +
+	 * license signature.
+	 */
+	LicenseVerifier();
+
+	/**
+	 * Builds a verifier from an explicit list of limit verifiers.
+	 */
+	explicit LicenseVerifier(const std::vector<LimitVerifierFn>& verifiers);
+
+	FUNCTION_RETURN verify_limit(const FullLicenseInfo& licInfo, EventRegistry& event_registry, LicenseInfo& out);
+	~LicenseVerifier() {}
 };
 
 } /* namespace license */
 
-#endif /* SRC_LIBRARY_LIMITS_LICENSEVERIFIER_HPP_ */
+#endif /* SRC_LIBRARY_LIMITS_LICENSE_VERIFIER_HPP_ */

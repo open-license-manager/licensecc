@@ -36,6 +36,7 @@ std::string guidToString(const unsigned char (&bytes)[16]) {
 	return std::string(buffer);
 }
 
+// check if used, if not remove...
 FUNCTION_RETURN getCPUModel(uint32_t& cpu_model) {
 	license::os::CpuInfo cpu;
 	cpu_model = cpu.model();

@@ -6,8 +6,8 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Linux build](https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml/badge.svg)](https://github.com/open-license-manager/licensecc/actions/workflows/linux-standard.yml)
 [![Windows build](https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml/badge.svg)](https://github.com/open-license-manager/licensecc/actions/workflows/windows-standard.yml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://www.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=open-license-manager/licensecc&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/open-license-manager/licensecc/branch/develop/graph/badge.svg?token=vdrBBzX6Rl)](https://codecov.io/gh/open-license-manager/licensecc)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/81a1f6bc15014618934fc5fab4d3c206)](https://app.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Coverage Badge](https://app.codacy.com/project/badge/Coverage/81a1f6bc15014618934fc5fab4d3c206)](https://app.codacy.com/gh/open-license-manager/licensecc/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![Github Issues](https://img.shields.io/github/issues/open-license-manager/licensecc)](http://github.com/open-license-manager/licensecc/issues)
 [![Forum](https://img.shields.io/badge/forum-licensecc-blue.svg?style=flat)](https://github.com/open-license-manager/licensecc/discussions)
 [![Maintenance](https://img.shields.io/badge/maintenance-seeking--maintainers-yellow)](https://open-license-manager.github.io/licensecc/latest/other/maintenance.html)
@@ -94,4 +94,4 @@ The [examples](https://github.com/open-license-manager/examples) repository that
 Use [discussions](https://github.com/open-license-manager/licensecc/discussions) for questions and help. Open an [issue](https://github.com/open-license-manager/licensecc/issues) for bug reports and feature requests. 
 See the [contribution guidelines](CONTRIBUTING.md) before reporting.
 
-There are infinite ways you can contribute. A special thanks to `Quaoar Workshop` for creating [a video](https://youtu.be/BHb-p-4aaZE?si=pdlkgZX5WmWivhwb) about this library. Please note that they independently produced this content (we are not affiliated with them). BTW the video provides a nice introduction if you want to get started.
+There are infinite ways you can contribute. A special thanks to `Quaoar Workshop` for creating [a video](https://youtu.be/BHb-p-4aaZE?si=pdlkgZX5WmWivhwb) about this library. Please note that they independently produced this content (we are not affiliated with them). The video provides a nice introduction if you want to get started (it is for version 2.0.0 but most of the ideas are still valid).

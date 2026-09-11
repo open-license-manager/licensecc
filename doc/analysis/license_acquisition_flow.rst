@@ -2,7 +2,7 @@
 License acquisition flow
 ########################
 
-Short description of the architecture used by ``LicenseFacade::acquire_license``
+Short description of the architecture used by ``Licensecc::acquire_license``
 after the cursor/parser refactor.
 
 Components
@@ -14,7 +14,7 @@ Components
 
    * - Component
      - Responsibility
-   * - ``LicenseFacade``
+   * - ``Licensecc``
      - Orchestrates the whole flow; owns the ``EventRegistry`` and the
        ``LicenseVerifier``.
    * - ``LocatorFactory::get_active_strategies``
@@ -26,10 +26,11 @@ Components
        are skipped.
    * - ``LicenseParser::parseLicense``
      - Parses one ``RawLicenseData`` (INI) into zero or more ``FullLicenseInfo``.
-   * - ``LicenseVerifier::verify_license``
-     - Verifies (signature and limits) one ``FullLicenseInfo``, returns
-       ``LicenseInfoEx`` (``LicenseInfo`` + ``FUNCTION_RETURN``).
-   * - ``LicenseFacade::mergeLicenses``
+   * - ``LicenseVerifier::verify_limit``
+     - Verifies (signature and limits) one ``FullLicenseInfo``, registers the
+       outcome events into the ``EventRegistry`` and fills the ``LicenseInfo``
+       output, returning a ``FUNCTION_RETURN``.
+   * - ``merge_licenses`` (file-static free function in ``Licensecc.cpp``)
      - Picks the best valid license (no-input, or latest expiry) and fills
        ``LicenseInfo``; decides the final ``LCC_EVENT_TYPE``.
 
@@ -40,7 +41,7 @@ Sequence diagram
 
    sequenceDiagram
       participant C as C API
-      participant F as LicenseFacade
+      participant F as Licensecc
       participant LF as LocatorFactory
       participant P as LicenseParser
       participant V as LicenseVerifier
@@ -53,12 +54,12 @@ Sequence diagram
           F->>+P: parseLicense(RawLicenseData)
           P-->>-F: vector <FullLicenseInfo>
           loop each FullLicenseInfo
-              F->>+V: verify_license(fullLicenseInfo)
-              V-->>-F: LicenseInfoEx (return_code + LicenseInfo)
+              F->>+V: verify_limit(fullLicenseInfo, er, LicenseInfo)
+              V-->>-F: FUNCTION_RETURN
           end
       end
       
-      F->>F: mergeLicenses(all_results, er, license_out)
+      F->>F: merge_licenses(all_results, er, license_out)
       F-->>-C: result
 
 Notes
@@ -67,6 +68,7 @@ Notes
 - Strategies that return no locations are skipped by the cursor.
 - Events (found/not found/malformed) are recorded in the shared
   ``EventRegistry`` and exported to ``LicenseInfo::status`` at the end.
-- ``mergeLicenses`` chooses the license with no expiry, else the one with the
-  latest ``days_left``/expiry among the valid ones.
+- ``merge_licenses`` (a file-static free function in ``Licensecc.cpp``) chooses
+  the license with no expiry, else the one with the latest ``days_left``/expiry
+  among the valid ones.
 

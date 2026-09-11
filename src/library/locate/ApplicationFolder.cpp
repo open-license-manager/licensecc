@@ -13,7 +13,6 @@
 
 #include "../base/logger.h"
 #include "../base/base.h"
-#include "../base/EventRegistry.h"
 #include "../os/os.h"
 #include "ApplicationFolder.hpp"
 #include "../base/file_utils.hpp"
@@ -26,8 +25,8 @@ ApplicationFolder::ApplicationFolder() : LocatorStrategy("ApplicationFolder") {}
 
 ApplicationFolder::~ApplicationFolder() {}
 
-const vector<string> ApplicationFolder::license_locations(EventRegistry& eventRegistry) {
-	vector<string> diskFiles;
+const LCC_EVENT_TYPE ApplicationFolder::license_locations(std::vector<std::string>& license_location_out) {
+	LCC_EVENT_TYPE result = LICENSE_FILE_NOT_FOUND;
 	char fname[MAX_PATH] = {0};
 	const FUNCTION_RETURN fret = getModuleName(fname);
 	if (fret == FUNC_RET_OK) {
@@ -35,16 +34,14 @@ const vector<string> ApplicationFolder::license_locations(EventRegistry& eventRe
 		const string temptativeLicense = string(module_name) + LCC_LICENSE_FILE_EXTENSION;
 		ifstream f(temptativeLicense.c_str());
 		if (f.good()) {
-			diskFiles.push_back(temptativeLicense);
-			eventRegistry.addEvent(LICENSE_FOUND, temptativeLicense.c_str());
-		} else {
-			eventRegistry.addEvent(LICENSE_FILE_NOT_FOUND, temptativeLicense.c_str());
+			license_location_out.push_back(temptativeLicense);
+			result = LICENSE_FOUND;
 		}
 		f.close();
 	} else {
 		LOG_WARN("Error determining module name.");
 	}
-	return diskFiles;
+	return result;
 }
 
 std::unique_ptr<LocatorStrategy> ApplicationFolder::clone() const {

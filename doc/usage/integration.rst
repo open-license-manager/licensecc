@@ -43,7 +43,7 @@ submodule). This usually makes your build a bit faster.
 
 .. code-block:: cmake
 
-   find_package(licensecc 2.1.0 REQUIRED)
+   find_package(licensecc 2.5.0 REQUIRED)
    add_executable(my_app src/main.cpp)
    target_link_libraries(my_app PRIVATE licensecc::licensecc)
 
@@ -73,15 +73,19 @@ The directory structure created by ``make install`` looks like this:
       ├── bin
       │   ├── <<PROJECT_NAME>>                        <--- "DEFAULT"
       │   │   └── lccinspector
-      │   ├── lccgen -> lccgen-2.1.0
-      │   └── lccgen-2.1.0
+      │   ├── lccgen -> lccgen-2.5.0
+      │   └── lccgen-2.5.0
       ├── include
       │   └── licensecc
-      │       ├── datatypes.h
-      │       ├── <<PROJECT_NAME>>
-      │       │   ├── licensecc_properties.h
-      │       │   └── public_key.h
-      │       └── licensecc.h
+      │       ├── datatypes.h                     <--- C API    
+      │       ├── licensecc.h
+      │       ├── Licensecc.hpp                   <--- C++ API
+      │       ├── LocatorStrategy.hpp
+      │       ├── datatypes_cpp.hpp               <--- C++ data types (``FullLicenseInfo``, ``LimitVerifierFn``)
+      │       └── <<PROJECT_NAME>>
+      │           ├── licensecc_properties.h
+      │           └── public_key.h
+
       └── lib
          ├── cmake
          │   └── licensecc                           <--- Point your licensecc_DIR here
@@ -115,11 +119,15 @@ project.
 Call Licensecc from your code
 ***************************************
 
-The public API is declared in ``include/licensecc/licensecc.h``. The two main
+The public C API is declared in ``include/licensecc/licensecc.h``. The two main
 entry points are:
 
 - ``identify_pc()`` — compute a hardware identifier for the current machine.
 - ``acquire_license()`` — locate, parse, and verify a license file.
+
+C++ applications may instead use the C++ api declared in
+``include/licensecc/Licensecc.hpp`` (class ``license::Licensecc``), which wraps
+the same functionality in an object oriented interface.
 
 A typical usage pattern:
 
@@ -134,9 +142,8 @@ A typical usage pattern:
        // License is valid -- proceed
    } else if (result == LICENSE_FILE_NOT_FOUND) {
        // No license found -- print hardware identifier so the user can request one
-       char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE + 1];
-       size_t pc_id_sz = sizeof(pc_identifier);
-       if (identify_pc(STRATEGY_DEFAULT, pc_identifier, &pc_id_sz, nullptr)) {
+       char pc_identifier[LCC_API_PC_IDENTIFIER_SIZE];
+       if (identify_pc(STRATEGY_DEFAULT, pc_identifier, nullptr)) {
            std::cout << "Hardware ID: " << pc_identifier << std::endl;
        }
        exit(1);

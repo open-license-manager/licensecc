@@ -2,4 +2,4 @@
 	path = extern/license-generator
 	url = https://github.com/open-license-manager/lcc-license-generator.git
 	branch = develop
-	update = rebase
+	update = merge

@@ -174,7 +174,8 @@ struct system_info : header {
 struct system_chassis : header {
 	// 2.0
 	str_id manufacturer;
-	byte_t type;
+	// SMBIOS 'chassis type' field; distinct from header::type (structure type).
+	byte_t chassis_type;
 	str_id version;
 	str_id serial_number;
 	str_id assert_tag;
@@ -192,7 +193,8 @@ struct system_chassis : header {
 struct proc_info : header {
 	// 2.0
 	str_id socket_designation;
-	enum_t type;
+	// SMBIOS 'processor type' field; distinct from header::type (structure type).
+	enum_t processor_type;
 	enum_t family;
 	str_id manufacturer;
 	qword_t id;
@@ -237,10 +239,12 @@ struct cache_info : header {
 struct slot : header {
 	// 2.0
 	str_id slot_designation;
-	enum_t type;
+	// SMBIOS 'slot type' field; distinct from header::type (structure type).
+	enum_t slot_type;
 	enum_t data_bus_width;
 	enum_t current_usage;
-	enum_t length;
+	// SMBIOS 'slot length' field; distinct from header::length (structure area length).
+	enum_t slot_length;
 	word_t id;
 	byte_t characteristics;
 	// 2.1
@@ -284,7 +288,8 @@ struct mem_device : header {
 	byte_t device_set;
 	str_id device_locator;
 	str_id bank_locator;
-	enum_t type;
+	// SMBIOS 'memory device type' field; distinct from header::type (structure type).
+	enum_t memory_type;
 	word_t type_detail;
 	// 2.3
 	word_t speed;

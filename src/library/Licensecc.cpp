@@ -167,7 +167,7 @@ static LCC_EVENT_TYPE merge_licenses(const std::vector<LicenseInfoEx>& licenses,
 
 	if (license_out != nullptr) {
 		int days_left = INT_MIN;
-		for (auto it = licenses.begin(); it != licenses.end(); it++) {
+		for (auto it = licenses_to_process.begin(); it != licenses_to_process.end(); it++) {
 			// choose the license that expires later...
 			if (!it->license_info.has_expiry) {
 				*license_out = it->license_info;

@@ -1,6 +1,6 @@
 # Licensecc
 
-*Copy protection, licensing library and license generator for Windows and Linux.*
+*Copy protection, licensing library and license generator for Windows, Linux and macOS.*
 
 [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -56,8 +56,8 @@ or [Windows](https://open-license-manager.github.io/licensecc/latest/development
 
 ### Prerequisites
 
--   Operating system: Ubuntu 22.04 to 26.04 (tested), other may be supported. Windows server 2022
--   compilers       : GCC (Linux), Visual Studio 2022 or 2026 (Windows) 
+-   Operating system: Ubuntu 22.04 to 26.04 (tested), other may be supported. Windows server 2022. macOS (tested on Apple Silicon)
+-   compilers       : GCC (Linux), Visual Studio 2022 or 2026 (Windows), Clang/GCC (macOS, tested with AppleClang) 
 -   tools           : cmake(>=3.16), git, make/ninja
 -   libs            : If target is Linux Openssl is required. Windows depends only on system libraries. Boost is necessary to build license generator and to run the tests but it's NOT a dependency of the final `licensecc` library. 
 
@@ -71,7 +71,7 @@ git clone --recursive https://github.com/open-license-manager/licensecc.git
 cd licensecc/build
 ```
 
-### build on Linux
+### build on Linux and macOS
 
 ```console
 cmake .. -DCMAKE_INSTALL_PREFIX=../install

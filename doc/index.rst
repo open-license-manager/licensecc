@@ -1,7 +1,7 @@
 ##############
 Licensecc
 ##############
-*Copy protection, licensing library and license generator for Windows and Linux.*
+*Copy protection, licensing library and license generator for Windows, Linux and macOS.*
 
 |c11|_ |License|_ |LinuxBuild|_ |WindowsBuild|_ |CodacyBadge|_ |codecov|_ |issues|_ |forum|_ |maintenance|_ 
 

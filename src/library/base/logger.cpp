@@ -8,7 +8,7 @@
 
 #ifndef LOG_DISABLED
 
-#ifdef __unix__
+#ifndef _WIN32
 #include <unistd.h>
 #define MAX_PATH 255
 #else
@@ -28,7 +28,7 @@ static void timenow(char* buffer) {
 }
 
 static void getLogFname(char* logpath) {
-#ifdef __unix__
+#ifndef _WIN32
 	const char* folder = getenv("TMPDIR");
 	if (folder == nullptr || folder[0] == '\0') {
 		folder = "/tmp";

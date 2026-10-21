@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
-#ifdef __unix__
+#ifndef _WIN32
 #include <unistd.h>
 #include <stdbool.h>
 #endif

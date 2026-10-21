@@ -42,6 +42,11 @@ if(CODE_COVERAGE AND UNIX)
     target_link_libraries(licensecc PUBLIC gcov)
 endif(CODE_COVERAGE AND UNIX)
 
+if(APPLE)
+    # IOKit/CoreFoundation are used by the apple/ OS backend for machine identifiers
+    target_link_libraries(licensecc PUBLIC "-framework IOKit" "-framework CoreFoundation")
+endif()
+
 define_property(TARGET PROPERTY WITH_OPENSSL BRIEF_DOCS "need openssl to compile" FULL_DOCS "ff")
 
 IF(OPENSSL_FOUND)

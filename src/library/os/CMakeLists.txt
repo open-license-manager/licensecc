@@ -1,4 +1,15 @@
-IF(UNIX OR OPENSSL_FOUND)
+IF(APPLE)
+	add_library(os OBJECT
+	    openssl/signature_verifier.cpp
+        execution_environment_common.cpp
+	    apple/execution_environment.cpp
+	    apple/cpu_info.cpp
+	    apple/board_info.cpp
+	    apple/network.cpp
+	    apple/os_mac.cpp
+	    os_common.cpp)
+	target_include_directories(os PUBLIC ${OPENSSL_INCLUDE_DIR})
+ELSEIF(UNIX OR OPENSSL_FOUND)
 	IF(UNIX)
 		add_library(os OBJECT
 		    openssl/signature_verifier.cpp
@@ -33,7 +44,7 @@ ELSE(UNIX OR OPENSSL_FOUND)
         windows/os_win.cpp
         windows/network.cpp
         os_common.cpp)
-ENDIF(UNIX OR OPENSSL_FOUND)
+ENDIF(APPLE)
 
 #dependency of signature_verifier.cpp
 add_dependencies( os project_initialize )

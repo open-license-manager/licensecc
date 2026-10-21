@@ -18,7 +18,7 @@ IF(NOT DEFINED MINGW)
 ENDIF(NOT DEFINED MINGW)
 
 add_executable( test_cpu_info cpu_info_test.cpp "cpu_info_test.cpp")
-	target_link_libraries( test_cpu_info
+target_link_libraries( test_cpu_info
  		licensecc
 		${Boost_LIBRARIES}
 	)
@@ -43,11 +43,24 @@ IF(WIN32)
 
 	target_link_libraries(
  		test_os_windows
- 		licensecc
+		licensecc
 		${Boost_LIBRARIES}
 	)
 
 	ADD_TEST(NAME test_os_windows COMMAND test_os_windows)
+ELSEIF(APPLE)
+    add_executable(
+        test_os_macos
+        os_macos_test.cpp
+    )
+
+    target_link_libraries(
+        test_os_macos
+        licensecc
+        ${Boost_LIBRARIES}
+    )
+
+    ADD_TEST(NAME test_os_macos COMMAND test_os_macos)
 ELSE(WIN32)
     add_executable(
  		test_os_linux
@@ -56,7 +69,7 @@ ELSE(WIN32)
 
 	target_link_libraries(
  		test_os_linux
- 		licensecc
+		licensecc
 		${Boost_LIBRARIES}
 	)
 
@@ -71,7 +84,10 @@ if(CODE_COVERAGE AND UNIX)
 	
 	target_compile_options(test_execution_environment PUBLIC -O0 -g --coverage)
 	target_compile_options(test_network PUBLIC -O0 -g --coverage)
-	target_compile_options(test_os_linux PUBLIC -O0 -g --coverage)
+	if(APPLE)
+		target_compile_options(test_os_macos PUBLIC -O0 -g --coverage)
+	else(APPLE)
+		target_compile_options(test_os_linux PUBLIC -O0 -g --coverage)
+	endif(APPLE)
 
 endif(CODE_COVERAGE AND UNIX)
-

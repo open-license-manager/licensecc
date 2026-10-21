@@ -15,14 +15,14 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-#ifdef __unix__
+#ifdef _WIN32
+#include <windows.h>
+#define DllExport __declspec(dllexport)
+#else
 #define DllExport
 #ifndef MAX_PATH
 #define MAX_PATH 1024
 #endif
-#else
-#include <windows.h>
-#define DllExport __declspec(dllexport)
 #endif
 
 #include <licensecc_properties.h>

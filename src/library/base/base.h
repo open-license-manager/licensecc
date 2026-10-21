@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#ifdef __unix__
+#ifndef _WIN32
 #include <limits.h>
 #define DllExport
 #ifndef MAX_PATH
